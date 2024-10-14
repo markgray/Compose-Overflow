@@ -26,13 +26,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.FilterChip
+import com.example.jetsnack.ui.home.FilterChipSection
 import com.example.jetsnack.ui.home.FilterScreen
 import com.example.jetsnack.ui.home.SortFilters
 import com.example.jetsnack.ui.home.SortFiltersSection
+import com.example.jetsnack.ui.home.SortOption
 
 /**
  * This class holds the state of the various [FilterChip] that are at the top of the home screen in
- * a [FilterBar].
+ * a [FilterBar] (our [List] of [Filter] property [filters]), in a [FilterChipSection] (our [List]
+ * of [Filter] property [priceFilters]), in a [SortOption] displayed in a [SortFilters] (our our
+ * [List] of [Filter] property [sortFilters]), in a [FilterChipSection] (our [List] of [Filter]
+ * property [categoryFilters]), and in a [FilterChipSection] (our [List] of [Filter] property
+ * [lifeStyleFilters])
  *
  * @param name [String] describing the type of filtering that ths [FilterChip] will perform if it is
  * in a selected state.
@@ -53,32 +59,55 @@ class Filter(
     val enabled: MutableState<Boolean> = mutableStateOf(enabled)
 }
 
-val filters = listOf(
+/**
+ * These [Filter] are used for the state of the various [FilterChip] that are at the top of the home
+ * screen in a [FilterBar].
+ */
+val filters: List<Filter> = listOf(
     Filter(name = "Organic"),
     Filter(name = "Gluten-free"),
     Filter(name = "Dairy-free"),
     Filter(name = "Sweet"),
     Filter(name = "Savory")
 )
-val priceFilters = listOf(
+
+/**
+ * These [Filter] are used for the state of the various [FilterChip] in the [FilterChipSection]
+ * whose title is "Price".
+ */
+val priceFilters: List<Filter> = listOf(
     Filter(name = "$"),
     Filter(name = "$$"),
     Filter(name = "$$$"),
     Filter(name = "$$$$")
 )
-val sortFilters = listOf(
+
+/**
+ * These [Filter] are used for the state of the various [SortOption] in the [SortFilters]
+ * Composable.
+ */
+val sortFilters: List<Filter> = listOf(
     Filter(name = "Android's favorite (default)", icon = Icons.Filled.Android),
     Filter(name = "Rating", icon = Icons.Filled.Star),
     Filter(name = "Alphabetical", icon = Icons.Filled.SortByAlpha)
 )
 
-val categoryFilters = listOf(
+/**
+ * These [Filter] are used for the state of the various [FilterChip] in the [FilterChipSection]
+ * whose title is "Category".
+ */
+val categoryFilters: List<Filter> = listOf(
     Filter(name = "Chips & crackers"),
     Filter(name = "Fruit snacks"),
     Filter(name = "Desserts"),
     Filter(name = "Nuts")
 )
-val lifeStyleFilters = listOf(
+
+/**
+ * These [Filter] are used for the state of the various [FilterChip] in the [FilterChipSection]
+ * whose title is "LifeStyle".
+ */
+val lifeStyleFilters: List<Filter> = listOf(
     Filter(name = "Organic"),
     Filter(name = "Gluten-free"),
     Filter(name = "Dairy-free"),
@@ -86,4 +115,7 @@ val lifeStyleFilters = listOf(
     Filter(name = "Savory")
 )
 
-var sortDefault = sortFilters.get(0).name
+/**
+ * This is used as the initial value of the [Filter.name] used by [SortFiltersSection].
+ */
+var sortDefault: String = sortFilters[0].name

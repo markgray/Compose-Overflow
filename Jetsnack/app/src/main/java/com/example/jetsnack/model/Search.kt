@@ -26,6 +26,9 @@ import kotlinx.coroutines.withContext
  * A fake repo for searching.
  */
 object SearchRepo {
+    /**
+     *
+     */
     fun getCategories(): List<SearchCategoryCollection> = searchCategoryCollections
     fun getSuggestions(): List<SearchSuggestionGroup> = searchSuggestions
 

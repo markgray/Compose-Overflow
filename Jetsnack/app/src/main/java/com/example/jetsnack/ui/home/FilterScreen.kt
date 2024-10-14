@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalLayoutApi::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 
 package com.example.jetsnack.ui.home
 
