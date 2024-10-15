@@ -16,28 +16,52 @@
 
 package com.example.jetsnack.model
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Immutable
 import com.example.jetsnack.R
+import com.example.jetsnack.ui.components.VerticalGrid
+import com.example.jetsnack.ui.home.JetsnackBottomNavigationItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 /**
- * A fake repo for searching.
+ * A fake repo for searching. Used by [com.example.jetsnack.ui.home.search.Search].
  */
 object SearchRepo {
     /**
-     *
+     * Returns our [List] of [SearchCategoryCollection] property [searchCategoryCollections].
      */
     fun getCategories(): List<SearchCategoryCollection> = searchCategoryCollections
+
+    /**
+     * Returns our [List] of [SearchSuggestionGroup] property [searchSuggestions].
+     */
     fun getSuggestions(): List<SearchSuggestionGroup> = searchSuggestions
 
+    /**
+     * Peforms a search of our [List] of [Snack] property [snacks] for entries whose [Snack.name]
+     * contains its [String] parameter [query], and returns the result as a [List] of [Snack].
+     *
+     * @param query The [String] to search [List] of [Snack] property [snacks] for.
+     * @return a [List] of [Snack] whose [Snack.name] contains [String] parameter [query].
+     */
     suspend fun search(query: String): List<Snack> = withContext(Dispatchers.Default) {
         delay(200L) // simulate an I/O delay
         snacks.filter { it.name.contains(query, ignoreCase = true) }
     }
 }
 
+/**
+ * Used to hold a [List] of [SearchCategory] which are (both) displayed when the "Magnifying Glass"
+ * [JetsnackBottomNavigationItem] at the bottom of the "Home" screen is clicked.
+ *
+ * @param id a unique number identifying this [SearchCategoryCollection] (unused)
+ * @param name a name which is displayed in a [Text] "Title" above the [VerticalGrid] that displays
+ * all of the [SearchCategory] displayed in its [VerticalGrid] of
+ * [com.example.jetsnack.ui.home.search.SearchCategory] Composables.
+ * @param categories the [List] of [SearchCategory] this [SearchCategoryCollection] holds.
+ */
 @Immutable
 data class SearchCategoryCollection(
     val id: Long,
@@ -45,12 +69,29 @@ data class SearchCategoryCollection(
     val categories: List<SearchCategory>
 )
 
+/**
+ * Displayed in a [com.example.jetsnack.ui.home.search.SearchCategory] Composable when the
+ * [SearchCategoryCollection] containing it in its [SearchCategoryCollection.categories] is
+ * displayed after the "Magnifying Glass" [JetsnackBottomNavigationItem] at the bottom of the
+ * "Home" screen is clicked.
+ *
+ * @param name the name of this [SearchCategory] it is displayed in a [Text] at the left side of
+ * a [com.example.jetsnack.ui.home.search.SearchCategory] Composable.
+ * @param imageRes a resource ID of a jpeg to display in a [com.example.jetsnack.ui.components.SnackImage]
+ * that is a the right side of a [com.example.jetsnack.ui.home.search.SearchCategory] Composable..
+ */
 @Immutable
 data class SearchCategory(
     val name: String,
     val imageRes: Int
 )
 
+/**
+ * Used to hold a grouping of a [List] of [String] that is displayed when the search box at the top
+ * of the "Search" screen is clicked. There are two lists used by the app "Recent Searches" and
+ * "Popular Searches". These are displayed in a [com.example.jetsnack.ui.home.search.SearchSuggestions]
+ * Composable
+ */
 @Immutable
 data class SearchSuggestionGroup(
     val id: Long,
