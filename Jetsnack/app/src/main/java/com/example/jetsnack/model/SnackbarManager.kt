@@ -23,6 +23,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * Data class that holds a message to be displayed by our [SnackbarManager].
+ *
+ * @param id a unique ID number for the [Message].
+ * @param messageId the resource ID for the [String] to display in the Snackbar.
+ */
 data class Message(val id: Long, @StringRes val messageId: Int)
 
 /**

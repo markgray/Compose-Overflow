@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.model
 
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Immutable
 import com.example.jetsnack.R
@@ -90,7 +91,15 @@ data class SearchCategory(
  * Used to hold a grouping of a [List] of [String] that is displayed when the search box at the top
  * of the "Search" screen is clicked. There are two lists used by the app "Recent Searches" and
  * "Popular Searches". These are displayed in a [com.example.jetsnack.ui.home.search.SearchSuggestions]
- * Composable
+ * Composable.
+ *
+ * @param id an unique ID number (unused)
+ * @param name a [String] naming this group, in our case "Recent searches", or "Popular searches".
+ * It is displayed using a `SuggestionHeader` (a stylized [Text]) at the top of the
+ * [com.example.jetsnack.ui.home.search.SearchSuggestions] Composable.
+ * @param suggestions a [List] of different suggested words to search for each displayed in a
+ * `Suggestion` (a stylized [Text]) at the bottom of the
+ * [com.example.jetsnack.ui.home.search.SearchSuggestions] Composable.
  */
 @Immutable
 data class SearchSuggestionGroup(
@@ -99,10 +108,15 @@ data class SearchSuggestionGroup(
     val suggestions: List<String>
 )
 
-/**
+/*
  * Static data
  */
 
+/**
+ * Our [List] of two [SearchCategoryCollection], "Categories", and "Lifestyles". These are displayed
+ * in a [com.example.jetsnack.ui.home.search.SearchCategories] Composable. (Which is a [LazyColumn]
+ * holding a `SearchCategoryCollection` for each of them).
+ */
 private val searchCategoryCollections = listOf(
     SearchCategoryCollection(
         id = 0L,
@@ -158,6 +172,10 @@ private val searchCategoryCollections = listOf(
     )
 )
 
+/**
+ * This is our [List] of two [SearchSuggestionGroup] "Recent searches" and "Popular searches". They
+ * are displayed in a [com.example.jetsnack.ui.home.search.SearchSuggestions] Composable.
+ */
 private val searchSuggestions = listOf(
     SearchSuggestionGroup(
         id = 0L,

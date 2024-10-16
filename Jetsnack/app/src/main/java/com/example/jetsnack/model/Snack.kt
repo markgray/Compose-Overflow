@@ -17,10 +17,25 @@
 package com.example.jetsnack.model
 
 import androidx.annotation.DrawableRes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Immutable
 import com.example.jetsnack.R
 import kotlin.random.Random
 
+/**
+ * This class holds the information need to display one of our [Snack].
+ *
+ * @param id a unique ID number, used as a `key` in several places in order to cause a re-composition
+ * when it changes.
+ * @param name a [String] naming this [Snack]. It is displayed in a [Text] in several places that
+ * display a [Snack] as well as the [String] that is searched for in a [List] of [Snack] when the
+ * user uses the search operation.
+ * @param imageRes the resource ID of a jpeg of the [Snack].
+ * @param price the "price" that the user will be charged for the [Snack].
+ * @param tagline a [String] that is displayed below the [Snack.name] when the [Snack] is displayed.
+ * Always the [String] "A tag line".
+ * @param tags an unused [Set] of [String] (no idea why it is included).
+ */
 @Immutable
 data class Snack(
     val id: Long,
@@ -32,11 +47,15 @@ data class Snack(
     val tags: Set<String> = emptySet()
 )
 
-/**
+/*
  * Static data
  */
 
-val snacks = listOf(
+/**
+ * Our [List] of [Snack]. It is searched by its [Snack.name] when the user uses the search operation
+ * and split up using [List.subList] to populate the various [SnackCollection] that the app displays.
+ */
+val snacks: List<Snack> = listOf(
     Snack(
         id = 1L,
         name = "Cupcake",
