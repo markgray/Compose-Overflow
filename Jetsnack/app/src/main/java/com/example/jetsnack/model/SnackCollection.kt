@@ -16,9 +16,26 @@
 
 package com.example.jetsnack.model
 
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Immutable
 import kotlin.random.Random
 
+/**
+ * This class is used to hold a [List] of [Snack] whose entries are grouped together for some reason
+ * or other.
+ *
+ * @param id a unique ID number.
+ * @param name a [String] naming this [SnackCollection]. It is displayed in a [Text] rendered by the
+ * [com.example.jetsnack.ui.components.SnackCollection] Composable as the title above the display
+ * of its [List] of [Snack] property [snacks] which are displayed in a [LazyRow] below it.
+ * @param snacks the [List] of [Snack] that this [SnackCollection] holds. They are each displayed
+ * in a `HighlightSnackItem` inside a [LazyRow] by the `HighlightedSnacks` Composable if their
+ * [type] is [CollectionType.Highlight] or in a `Snacks` if they are [CollectionType.Normal] (none
+ * of them are).
+ * @param type the [CollectionType] of this [SnackCollection], either [CollectionType.Normal] or
+ * [CollectionType.Highlight]
+ */
 @Immutable
 data class SnackCollection(
     val id: Long,
@@ -27,12 +44,30 @@ data class SnackCollection(
     val type: CollectionType = CollectionType.Normal
 )
 
-enum class CollectionType { Normal, Highlight }
+/**
+ * The type of this [SnackCollection].
+ */
+enum class CollectionType {
+    /**
+     * When a [SnackCollection] is of this [CollectionType] the [Snack]s in its [List] of [Snack]
+     * property [snacks] should be displayed in a `Snacks` Composable.
+     */
+    Normal,
+
+    /**
+     * When a [SnackCollection] is of this [CollectionType] the [Snack]s in its [List] of [Snack]
+     * property [snacks] should be displayed in a `HighlightSnackItem` Composable.
+     */
+    Highlight
+}
 
 /**
  * A fake repo
  */
 object SnackRepo {
+    /**
+     * Returns our [List] of [SnackCollection] field [snackCollections].
+     */
     fun getSnacks(): List<SnackCollection> = snackCollections
     fun getSnack(snackId: Long) = snacks.find { it.id == snackId }!!
     fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
