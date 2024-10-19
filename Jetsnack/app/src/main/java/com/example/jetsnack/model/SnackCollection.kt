@@ -69,22 +69,71 @@ object SnackRepo {
      * Returns our [List] of [SnackCollection] field [snackCollections].
      */
     fun getSnacks(): List<SnackCollection> = snackCollections
-    fun getSnack(snackId: Long) = snacks.find { it.id == snackId }!!
-    fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long) = related
-    fun getInspiredByCart() = inspiredByCart
-    fun getFilters() = filters
-    fun getPriceFilters() = priceFilters
-    fun getCart() = cart
-    fun getSortFilters() = sortFilters
-    fun getCategoryFilters() = categoryFilters
-    fun getSortDefault() = sortDefault
-    fun getLifeStyleFilters() = lifeStyleFilters
+
+    /**
+     * Returns the [Snack] in our [List] of [Snack] field field [snacks] whose [Snack.id] is equal
+     * to our [Long] parameter [snackId].
+     *
+     * @param snackId the [Snack.id] of the [Snack] that is wanted.
+     * @return the [Snack] in our [List] of [Snack] field field [snacks] whose [Snack.id] is equal
+     * to our [Long] parameter [snackId].
+     */
+    fun getSnack(snackId: Long): Snack = snacks.find { it.id == snackId }!!
+
+    /**
+     * Returns our [List] of [SnackCollection] field [related].
+     */
+    fun getRelated(@Suppress("UNUSED_PARAMETER") snackId: Long): List<SnackCollection> = related
+
+    /**
+     * Returns our [SnackCollection] field [inspiredByCart].
+     */
+    fun getInspiredByCart(): SnackCollection = inspiredByCart
+
+    /**
+     * Returns our [List] of [Filter] field [filters]
+     */
+    fun getFilters(): List<Filter> = filters
+
+    /**
+     * Returns our [List] of [Filter] field [priceFilters]
+     */
+    fun getPriceFilters(): List<Filter> = priceFilters
+
+    /**
+     * Returns our [List] of [OrderLine] field [cart]
+     */
+    fun getCart(): List<OrderLine> = cart
+
+    /**
+     * Returns our [List] of [Filter] field [sortFilters]
+     */
+    fun getSortFilters(): List<Filter> = sortFilters
+
+    /**
+     * Returns our [List] of [Filter] field [categoryFilters]
+     */
+    fun getCategoryFilters(): List<Filter> = categoryFilters
+
+    /**
+     * Returns our [String] field [sortDefault]
+     */
+    fun getSortDefault(): String = sortDefault
+
+    /**
+     * Returns our [List] of [Filter] field [lifeStyleFilters]
+     */
+    fun getLifeStyleFilters(): List<Filter> = lifeStyleFilters
 }
 
 /**
  * Static data
  */
 
+/**
+ * Our [SnackCollection] field [tastyTreats] named "Android's picks" consists of the [List.subList]
+ * or the [Snack]s between index 0 and index 13 in our [List] of [Snack] field [snacks].
+ */
 private val tastyTreats = SnackCollection(
     id = 1L,
     name = "Android's picks",
