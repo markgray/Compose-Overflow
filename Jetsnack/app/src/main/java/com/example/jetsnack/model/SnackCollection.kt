@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.model
 
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Immutable
@@ -141,38 +142,66 @@ private val tastyTreats = SnackCollection(
     snacks = snacks.subList(0, 13)
 )
 
+/**
+ * Our [SnackCollection] field [popular] named "Popular on Jetsnack" consists of the [List.subList]
+ * or the [Snack]s between index 14 and index 19 in our [List] of [Snack] field [snacks].
+ */
 private val popular = SnackCollection(
     id = Random.nextLong(),
     name = "Popular on Jetsnack",
     snacks = snacks.subList(14, 19)
 )
 
+/**
+ * Our [SnackCollection] field [wfhFavs] named "WFH favourites" is a copy of our [SnackCollection]
+ * field [tastyTreats]
+ */
 private val wfhFavs = tastyTreats.copy(
     id = Random.nextLong(),
     name = "WFH favourites"
 )
 
+/**
+ * Our [SnackCollection] field [newlyAdded] named "Newly Added" is a copy of our [SnackCollection]
+ * field [popular]
+ */
 private val newlyAdded = popular.copy(
     id = Random.nextLong(),
     name = "Newly Added"
 )
 
+/**
+ * Our [SnackCollection] field [exclusive] named "Only on Jetsnack" is a copy of our [SnackCollection]
+ * field [tastyTreats]
+ */
 private val exclusive = tastyTreats.copy(
     id = Random.nextLong(),
     name = "Only on Jetsnack"
 )
 
+/**
+ * Our [SnackCollection] field [also] named "Customers also bought" is a copy of our [SnackCollection]
+ * field [tastyTreats]
+ */
 private val also = tastyTreats.copy(
     id = Random.nextLong(),
     name = "Customers also bought"
 )
 
+/**
+ * Our [SnackCollection] field [inspiredByCart] named "Inspired by your cart" is a copy of our
+ * [SnackCollection] field [tastyTreats]
+ */
 private val inspiredByCart = tastyTreats.copy(
     id = Random.nextLong(),
     name = "Inspired by your cart"
 )
 
-private val snackCollections = listOf(
+/**
+ * This is displayed in a `SnackCollectionList` Composable with each [SnackCollection] displayed
+ * using a [com.example.jetsnack.ui.components.SnackCollection] Composable in a [LazyColumn].
+ */
+private val snackCollections: List<SnackCollection> = listOf(
     tastyTreats,
     popular,
     wfhFavs,
@@ -180,12 +209,18 @@ private val snackCollections = listOf(
     exclusive
 )
 
-private val related = listOf(
+/**
+ * This [List] of [SnackCollection] is displayed in a `com.example.jetsnack.ui.snackdetail.Body` that
+ * is part of the [com.example.jetsnack.ui.snackdetail.SnackDetail] Composable that is displayed when
+ * the user clicks on one of the [Snack]s.
+ * TODO: The navigation performed is rather difficult to grok, so needs much further study.
+ */
+private val related: List<SnackCollection> = listOf(
     also.copy(id = Random.nextLong()),
     popular.copy(id = Random.nextLong())
 )
 
-private val cart = listOf(
+private val cart: List<OrderLine> = listOf(
     OrderLine(snacks[4], 2),
     OrderLine(snacks[6], 3),
     OrderLine(snacks[8], 1)
