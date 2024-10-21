@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -45,10 +46,22 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.jetsnack.model.Snack
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * This button is used in two places, as the "+" button on the result [Snack] of a search operation
+ * and as the "ADD TO CART" button on the [Snack] detail screen.
+ *
+ * @param onClick a lambda to call when the [JetsnackButton] is clicked. Both uses are no-ops at the
+ * moment.
+ * @param modifier a [Modifier] instance that the use can use to modify our appearance and/or
+ * behavior. The "ADD TO CART" button uses a [RowScope.weight] of 1f to have it take up all
+ * the space left after its siblings have been measured and placed, and the "+" button uses a
+ * [Modifier.size] of 36.dp with a [ConstraintLayout] modifier specifying its positioning.
+ */
 @Composable
-
 fun JetsnackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

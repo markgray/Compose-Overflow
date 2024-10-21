@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Immutable
+import com.example.jetsnack.ui.home.cart.CartViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.random.Random
 
 /**
@@ -220,12 +222,24 @@ private val related: List<SnackCollection> = listOf(
     popular.copy(id = Random.nextLong())
 )
 
+/**
+ * This is read by the [StateFlow] wrapped [List] of [OrderLine] property [CartViewModel.orderLines]
+ * which is collected by the [com.example.jetsnack.ui.home.cart.Cart] Composable to feed data for the
+ * `CartContent` Composable to display. (This is displayed when the user is viewing the "MY CART"
+ * Screen which is displayed when the user clicks the "shopping cart" icon on the "HOME" screen).
+ */
 private val cart: List<OrderLine> = listOf(
     OrderLine(snacks[4], 2),
     OrderLine(snacks[6], 3),
     OrderLine(snacks[8], 1)
 )
 
+/**
+ * This used to hold an order that is in our [List] of [OrderLine] field [cart]
+ *
+ * @param snack the [Snack] that has been ordered.
+ * @param count the number of [Snack] in [snack] that has been ordered.
+ */
 @Immutable
 data class OrderLine(
     val snack: Snack,
