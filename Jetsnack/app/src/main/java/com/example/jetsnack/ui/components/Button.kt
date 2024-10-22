@@ -18,6 +18,7 @@ package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
@@ -30,6 +31,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -60,6 +62,18 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * behavior. The "ADD TO CART" button uses a [RowScope.weight] of 1f to have it take up all
  * the space left after its siblings have been measured and placed, and the "+" button uses a
  * [Modifier.size] of 36.dp with a [ConstraintLayout] modifier specifying its positioning.
+ * @param enabled determines whether the button is clickable, and changes the colors of the button
+ * to indicate whether it is enabled or not. Our callers never override the default value `true`.
+ * @param interactionSource is used as the `interactionSource` argument of a [Modifier.indication]
+ * and a [Modifier.clickable] that are applied to the Composables making up the [JetsnackButton].
+ * Our callers never override the default which is a remembered [MutableInteractionSource].
+ * @param shape the [Shape] that the [JetsnackButton] is clipped to. We are called with a
+ * [RectangleShape] by `CheckoutBar` and a [CircleShape] by `SearchResult`.
+ * @param border this is the `border` argument of a [Modifier.border] that is used if it is not the
+ * default of `null`. Our callers do not override the default so no border is drawn.
+ * @param backgroundGradient this is used as the `colors` of a [Brush.horizontalGradient] that
+ * is used as the `brush` argument of a [Modifier.background] if our [Boolean] parameter [enabled]
+ * is `true`.
  */
 @Composable
 fun JetsnackButton(
@@ -84,7 +98,7 @@ fun JetsnackButton(
         modifier = modifier
             .clip(shape)
             .background(
-                Brush.horizontalGradient(
+                brush = Brush.horizontalGradient(
                     colors = if (enabled) backgroundGradient else disabledBackgroundGradient
                 )
             )
@@ -105,7 +119,7 @@ fun JetsnackButton(
                         minWidth = ButtonDefaults.MinWidth,
                         minHeight = ButtonDefaults.MinHeight
                     )
-                    .indication(interactionSource, ripple())
+                    .indication(interactionSource = interactionSource, indication = ripple())
                     .padding(contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
