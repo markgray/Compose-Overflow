@@ -36,8 +36,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,14 +49,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.model.Snack
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
  * This button is used in two places, as the "+" button on the result [Snack] of a search operation
- * and as the "ADD TO CART" button on the [Snack] detail screen.
+ * and as the "ADD TO CART" button on the [Snack] detail screen. Our root Composable is a
+ * [JetsnackSurface] whose `shape` argument is our [Shape] parameter [shape], whose `color` argument
+ * is [Color.Transparent], whose `contentColor` argument is our [Color] parameter [contentColor] if
+ * our [enabled] parameter is `true` or our [Color] parameter [disabledContentColor] if it is `false`,
+ * whose `border`  argument is our [BorderStroke] parameter [border] (always `null`), whose `modifier`
+ * argument chains to our [Modifier] parameter [modifier] a [Modifier.clip] that uses our [Shape]
+ * parameter [shape] as its `shape` argument followed by a [Modifier.background] whose `brush` is
+ * a [Brush.horizontalGradient] that uses for its `colors` argument our [backgroundGradient] parameter
+ * if our [enabled] parameter is `true` or our [disabledBackgroundGradient] if it is `false`, followed
+ * by a [Modifier.clickable] whose `onClick` argument is our lambda parameter [onClick], whose `enabled`
+ * argument is our [Boolean] parameter [enabled], whose `role` argument is [Role.Button], whose
+ * `interactionSource` argument is our [MutableInteractionSource] parameter [interactionSource], and
+ * whose `indication` argument is `null`. The `content` of the [JetsnackSurface] uses a [ProvideTextStyle]
+ * to produce a [CompositionLocalProvider] that provides as [TextStyle] the [Typography.labelLarge]
+ * of the [MaterialTheme.typography] of our [JetsnackTheme] custom [MaterialTheme] and this wraps a
+ * [Row] whose `modifier` argument is a [Modifier.defaultMinSize] with `minWidth` argument
+ * [ButtonDefaults.MinWidth] and `minHeight` argument [ButtonDefaults.MinHeight], and chained to that
+ * is a [Modifier.indication] whose `interactionSource` argument is our [MutableInteractionSource]
+ * parameter [interactionSource], and chained to that is a [Modifier.padding] whose `paddingValues`
+ * argument is our [PaddingValues] parameter [contentPadding]. The `horizontalArrangement` argument
+ * of the [Row] is [Arrangement.Center], the `verticalAlignment` argument is [Alignment.CenterVertically]
+ * and the `content` argument is our Composable lambda parameter [content].
+ *
  *
  * @param onClick a lambda to call when the [JetsnackButton] is clicked. Both uses are no-ops at the
  * moment.
@@ -72,8 +98,23 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * @param border this is the `border` argument of a [Modifier.border] that is used if it is not the
  * default of `null`. Our callers do not override the default so no border is drawn.
  * @param backgroundGradient this is used as the `colors` of a [Brush.horizontalGradient] that
- * is used as the `brush` argument of a [Modifier.background] if our [Boolean] parameter [enabled]
- * is `true`.
+ * are used as the `brush` argument of a [Modifier.background] if our [Boolean] parameter [enabled]
+ * is `true`. Our callers do not override the default so the [List] of [Color] in the
+ * [JetsnackColors.interactivePrimary] of our [JetsnackTheme.colors] is used.
+ * @param disabledBackgroundGradient this is used as the `colors` of a [Brush.horizontalGradient]
+ * that are used as the `brush` argument of a [Modifier.background] if our [Boolean] parameter
+ * [enabled] is `false`. Our callers do not override the default so the [List] of [Color] in the
+ * [JetsnackColors.interactiveSecondary] of our [JetsnackTheme.colors] is used.
+ * @param contentColor this is used as the `contentColor` argument od our [JetsnackSurface] Composable
+ * if our [Boolean] parameter [enabled] is `true`. Our callers do not override the default so the
+ * [Color] in the [JetsnackColors.textInteractive] of our [JetsnackTheme.colors] is used.
+ * @param disabledContentColor this is used as the `contentColor` argument od our [JetsnackSurface]
+ * Composable if our [Boolean] parameter [enabled] is `false`. Our callers do not override the
+ * default so the [Color] in the [JetsnackColors.textHelp] of our [JetsnackTheme.colors] is used.
+ * @param contentPadding this is used as the `paddingValues` argument of the [Modifier.padding]
+ * of the [Row] holding our `content` Composable lambda parameter. Our callers do not override the
+ * default so [ButtonDefaults.ContentPadding] is used.
+ * @param content a Composable lambda that will be used as the `content` argument of our [Row].
  */
 @Composable
 fun JetsnackButton(
@@ -96,7 +137,7 @@ fun JetsnackButton(
         contentColor = if (enabled) contentColor else disabledContentColor,
         border = border,
         modifier = modifier
-            .clip(shape)
+            .clip(shape = shape)
             .background(
                 brush = Brush.horizontalGradient(
                     colors = if (enabled) backgroundGradient else disabledBackgroundGradient
@@ -114,13 +155,13 @@ fun JetsnackButton(
             value = MaterialTheme.typography.labelLarge
         ) {
             Row(
-                Modifier
+                modifier = Modifier
                     .defaultMinSize(
                         minWidth = ButtonDefaults.MinWidth,
                         minHeight = ButtonDefaults.MinHeight
                     )
                     .indication(interactionSource = interactionSource, indication = ripple())
-                    .padding(contentPadding),
+                    .padding(paddingValues = contentPadding),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 content = content
@@ -129,8 +170,15 @@ fun JetsnackButton(
     }
 }
 
-private val ButtonShape = RoundedCornerShape(percent = 50)
+/**
+ * The default [Shape] of our [JetsnackButton] is a [RoundedCornerShape] whose `percent` argument
+ * is 50.
+ */
+private val ButtonShape: RoundedCornerShape = RoundedCornerShape(percent = 50)
 
+/**
+ * Three different Previews of a round [JetsnackButton]
+ */
 @Preview("default", "round")
 @Preview("dark theme", "round", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", "round", fontScale = 2f)
@@ -143,6 +191,9 @@ private fun ButtonPreview() {
     }
 }
 
+/**
+ * Three different Previews of a rectangle shaped [JetsnackButton]
+ */
 @Preview("default", "rectangle")
 @Preview("dark theme", "rectangle", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", "rectangle", fontScale = 2f)
