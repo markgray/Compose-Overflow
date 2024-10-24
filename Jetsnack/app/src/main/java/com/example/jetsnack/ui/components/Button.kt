@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.model.Snack
@@ -72,15 +73,16 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * `interactionSource` argument is our [MutableInteractionSource] parameter [interactionSource], and
  * whose `indication` argument is `null`. The `content` of the [JetsnackSurface] uses a [ProvideTextStyle]
  * to produce a [CompositionLocalProvider] that provides as [TextStyle] the [Typography.labelLarge]
- * of the [MaterialTheme.typography] of our [JetsnackTheme] custom [MaterialTheme] and this wraps a
- * [Row] whose `modifier` argument is a [Modifier.defaultMinSize] with `minWidth` argument
- * [ButtonDefaults.MinWidth] and `minHeight` argument [ButtonDefaults.MinHeight], and chained to that
- * is a [Modifier.indication] whose `interactionSource` argument is our [MutableInteractionSource]
- * parameter [interactionSource], and chained to that is a [Modifier.padding] whose `paddingValues`
- * argument is our [PaddingValues] parameter [contentPadding]. The `horizontalArrangement` argument
- * of the [Row] is [Arrangement.Center], the `verticalAlignment` argument is [Alignment.CenterVertically]
- * and the `content` argument is our Composable lambda parameter [content].
- *
+ * of the [MaterialTheme.typography] of our [JetsnackTheme] custom [MaterialTheme] (which is Montserrat`
+ * `fontFamily`, `fontSize` = 14.sp, `fontWeight` = [FontWeight.SemiBold], `lineHeight` = 16.sp, and
+ * `letterSpacing` = 1.25.sp). This wraps a [Row] whose `modifier` argument is a [Modifier.defaultMinSize]
+ * with `minWidth` argument [ButtonDefaults.MinWidth] and `minHeight` argument [ButtonDefaults.MinHeight],
+ * and chained to that is a [Modifier.indication] whose `interactionSource` argument is our
+ * [MutableInteractionSource] parameter [interactionSource], and chained to that is a [Modifier.padding]
+ * whose `paddingValues` argument is our [PaddingValues] parameter [contentPadding]. The
+ * `horizontalArrangement` argument of the [Row] is [Arrangement.Center], the `verticalAlignment`
+ * argument is [Alignment.CenterVertically] and the `content` argument is our Composable lambda
+ * parameter [content].
  *
  * @param onClick a lambda to call when the [JetsnackButton] is clicked. Both uses are no-ops at the
  * moment.

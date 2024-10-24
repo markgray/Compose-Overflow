@@ -93,7 +93,7 @@ private fun SearchResult(
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         if (showDivider) {
             JetsnackDivider(
-                Modifier.constrainAs(divider) {
+                modifier = Modifier.constrainAs(divider) {
                     linkTo(start = parent.start, end = parent.end)
                     top.linkTo(parent.top)
                 }

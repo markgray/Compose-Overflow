@@ -29,6 +29,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * Our custom [HorizontalDivider]. It just passes its parameters to its [HorizontalDivider] arguments
+ * of the same name.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior.
+ */
 @Composable
 fun JetsnackDivider(
     modifier: Modifier = Modifier,
@@ -49,8 +56,8 @@ private const val DividerAlpha = 0.12f
 @Composable
 private fun DividerPreview() {
     JetsnackTheme {
-        Box(Modifier.size(height = 10.dp, width = 100.dp)) {
-            JetsnackDivider(Modifier.align(Alignment.Center))
+        Box(modifier = Modifier.size(height = 10.dp, width = 100.dp)) {
+            JetsnackDivider(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

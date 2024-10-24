@@ -319,9 +319,9 @@ private fun HighlightSnackItem(
                     height = 250.dp
                 )
                 .border(
-                    1.dp,
-                    JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
-                    RoundedCornerShape(roundedCornerAnimation)
+                    width = 1.dp,
+                    color = JetsnackTheme.colors.uiBorder.copy(alpha = 0.12f),
+                    shape = RoundedCornerShape(size = roundedCornerAnimation)
                 )
 
         ) {
