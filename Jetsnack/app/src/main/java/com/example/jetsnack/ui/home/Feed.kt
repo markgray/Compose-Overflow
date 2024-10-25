@@ -59,10 +59,10 @@ fun Feed(
     val snackCollections = remember { SnackRepo.getSnacks() }
     val filters = remember { SnackRepo.getFilters() }
     Feed(
-        snackCollections,
-        filters,
-        onSnackClick,
-        modifier
+        snackCollections = snackCollections,
+        filters = filters,
+        onSnackClick = onSnackClick,
+        modifier = modifier
     )
 }
 
@@ -74,14 +74,14 @@ private fun Feed(
     modifier: Modifier = Modifier
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
-        var filtersVisible by remember {
+        var filtersVisible: Boolean by remember {
             mutableStateOf(false)
         }
         SharedTransitionLayout {
             Box {
                 SnackCollectionList(
-                    snackCollections,
-                    filters,
+                    snackCollections = snackCollections,
+                    filters = filters,
                     filtersVisible = filtersVisible,
                     onFiltersSelected = {
                         filtersVisible = true
@@ -119,7 +119,7 @@ private fun SnackCollectionList(
                 )
             )
             FilterBar(
-                filters,
+                filters = filters,
                 sharedTransitionScope = sharedTransitionScope,
                 filterScreenVisible = filtersVisible,
                 onShowFilters = onFiltersSelected

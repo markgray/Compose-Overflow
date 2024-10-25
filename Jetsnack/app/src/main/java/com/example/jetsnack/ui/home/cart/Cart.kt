@@ -395,9 +395,9 @@ fun CartItem(
             }
         )
         JetsnackDivider(
-            modifier = Modifier.constrainAs(divider) {
+            modifier = Modifier.constrainAs(ref = divider) {
                 linkTo(start = parent.start, end = parent.end)
-                top.linkTo(parent.bottom)
+                top.linkTo(anchor = parent.bottom)
             }
         )
     }

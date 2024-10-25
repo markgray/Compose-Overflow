@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
 
 package com.example.jetsnack.ui.components
 
@@ -42,6 +42,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -53,9 +54,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
+import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
+import com.example.jetsnack.ui.home.FilterScreen
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * Used by `SnackCollectionList` to hold a [LazyRow] of [FilterChip] to display the [List] of [Filter]
+ * it is passed as its `filters` argument.
+ *
+ * @param filters the [List] of [Filter] that we are to display in our [LazyRow] of [FilterChip].
+ * `SnackCollectionList` passes us one that traces back to that returned by [SnackRepo.getPriceFilters].
+ * @param onShowFilters a lambda that we pass to the [IconButton] at the beginning of our [LazyRow].
+ * `SnackCollectionList` passes us its `onFiltersSelected` parameter which traces back to a lambda
+ * that sets the `filtersVisible` [MutableState] wrapped [Boolean] variable to `true` which animates
+ * the visibility of its [FilterScreen] Composable to visible (this displays a pop-up with more
+ * filter possibilities).
+ * @param filterScreenVisible is the [FilterScreen] Composable visible? This traces back to
+ * `filtersVisible` [MutableState] wrapped [Boolean] variable that is set by the [onShowFilters]
+ * lambda parameter.
+ * @param sharedTransitionScope this is the [SharedTransitionScope] that handles a shared element
+ * transition for the [FilterScreen] Composable.
+ */
 @Composable
 fun FilterBar(
     filters: List<Filter>,
@@ -100,6 +120,11 @@ fun FilterBar(
     }
 }
 
+/**
+ * This used by [FilterBar] and [FilterScreen] to display a [Filter].
+ *
+ * @param filter the [Filter] we are supposed to display.
+ */
 @Composable
 fun FilterChip(
     filter: Filter,
@@ -131,12 +156,13 @@ fun FilterChip(
         val interactionSource = remember { MutableInteractionSource() }
 
         val pressed by interactionSource.collectIsPressedAsState()
+        @Suppress("RedundantValueArgument")
         val backgroundPressed =
             if (pressed) {
                 Modifier.offsetGradientBackground(
-                    JetsnackTheme.colors.interactiveSecondary,
-                    200f,
-                    0f
+                    colors = JetsnackTheme.colors.interactiveSecondary,
+                    width = 200f,
+                    offset = 0f
                 )
             } else {
                 Modifier.background(Color.Transparent)
@@ -171,7 +197,11 @@ fun FilterChip(
 @Composable
 private fun FilterDisabledPreview() {
     JetsnackTheme {
-        FilterChip(Filter(name = "Demo", enabled = false), Modifier.padding(4.dp))
+        @Suppress("RedundantValueArgument")
+        FilterChip(
+            filter = Filter(name = "Demo", enabled = false),
+            modifier = Modifier.padding(4.dp)
+        )
     }
 }
 

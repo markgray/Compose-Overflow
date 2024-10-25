@@ -27,14 +27,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.jetsnack.ui.home.cart.CartItem
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- * Our custom [HorizontalDivider]. It just passes its parameters to its [HorizontalDivider] arguments
+ * Our custom [HorizontalDivider]. It just passes its parameters to the [HorizontalDivider] arguments
  * of the same name.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
- * behavior.
+ * behavior, we pass it unchanged to our [HorizontalDivider] root Composable. Our caller [CartItem]
+ * passes us a [androidx.constraintlayout.compose.ConstraintLayoutScope.constrainAs] that specifies
+ * our position, as does `SearchResult`, `Title` passes an empty, default, or starter [Modifier]
+ * that contains no elements and the rest of our caller pass us none so the empty, default, or
+ * starter [Modifier] that contains no elements is used.
+ * @param color the [Color] to pass to our [HorizontalDivider] root composable as its `color` argument
+ * (color of the divider line.) None of our callers pass us one so our default value of a copy of
+ * [JetsnackColors.uiBorder] with alpha of `DividerAlpha` (0,12f) is used.
+ * @param thickness passed to our [HorizontalDivider] root composable as its `thickness` argument
+ * (thickness of the divider line). Only our `SnackCollectionList` caller passes us a value (2.dp)
+ * so for all the others our default value of 1.dp is used instead.
  */
 @Composable
 fun JetsnackDivider(
@@ -49,8 +61,14 @@ fun JetsnackDivider(
     )
 }
 
+/**
+ * The alpha to use for the `color` of the [HorizontalDivider].
+ */
 private const val DividerAlpha = 0.12f
 
+/**
+ * Two Previews of our [JetsnackDivider] using different configurations.
+ */
 @Preview("default", showBackground = true)
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
