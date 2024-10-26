@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 
 package com.example.jetsnack.ui.components
 
@@ -24,6 +26,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -40,13 +43,16 @@ import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
@@ -57,6 +63,7 @@ import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.home.FilterScreen
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
@@ -121,9 +128,44 @@ fun FilterBar(
 }
 
 /**
- * This used by [FilterBar] and [FilterScreen] to display a [Filter].
+ * This used by [FilterBar] and [FilterScreen] to display a [Filter]. We start by using a destructuring
+ * declaration to initialize our [Boolean] variable `val selected` and lambda taking a [Boolean]
+ * argument `val setSelected` to the [MutableState] wrapped [Boolean] field [Filter.enabled] of our
+ * [Filter] parameter [filter]. We initialize our [Color] variable `val backgroundColor` to an [State]
+ * wrapped animated [Color] that animates between [JetsnackColors.brandSecondary] when `selected` is
+ * `true` to [JetsnackColors.uiBackground] when it is `false`. We initialize our [Modifier] variable
+ * `val border` to our [Modifier.fadeInDiagonalGradientBorder] which is configured to animate in
+ * and out the border of the [Box] of our composable using the [JetsnackColors.interactiveSecondary]
+ * [List] of [Color] as the [Brush.linearGradient] used based on the inverse of our [Boolean] variable
+ * `selected` with our [Shape] argument [shape] as the [Shape] of the border. We initialize our [Color]
+ * variable `val textColor` to a [State] wrapped animated [Color] that animates between [Color.Black]
+ * when `selected` is `true` to [JetsnackColors.textSecondary] when it is `false`.
+ *
+ * Our root Composable is a [JetsnackSurface] whose `modifier` argument is our [Modifier] parameter
+ * [modifier], whose `color` argument is our [State] wrapped animated [Color] variable `backgroundColor`,
+ * whose `contentColor` argument is our [State] wrapped animated [Color] variable `textColor`, whose
+ * `shape` argument is our [Shape] parameter [shape], and whose `elevation` argument is 2.dp. The
+ * `content` Compable lambda argument of the [JetsnackSurface] starts by initializing and remembering
+ * its [MutableInteractionSource] variable `val interactionSource` to a new instance. It initializes
+ * its [State] wrapped [Boolean] variable `val pressed` to the value returned by the
+ * [InteractionSource.collectIsPressedAsState] method of method of `interactionSource`. It initializes
+ * its [Modifier] variable `val backgroundPressed` to a [Modifier.offsetGradientBackground] which is
+ * configured to animate in and out the background of the [Box] of our composable using the
+ * [JetsnackColors.interactiveSecondary] [List] of [Color] as the [Brush.linearGradient] when `pressed`
+ * is `true` or a [Modifier.background] whose `color` is [Color.Transparent].
+ *
+ * The root composable of the [JetsnackSurface] is a [Box] whose `modifier` argument is a
+ * [Modifier.toggleable]
  *
  * @param filter the [Filter] we are supposed to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [com.example.jetsnack.ui.home.FilterChipSection] calls us with a [Modifier.padding]
+ * that adds 4.dp to our `end` and 8.dp to our `bottom` but [FilterBar] does not pass us any so the
+ * empty, default, or starter Modifier that contains no elements is used.
+ * @param shape the [Shape] we should use for our border and our [JetsnackSurface]. [FilterBar]
+ * passes us the [Shapes.small] of our custom [MaterialTheme] (which is also our default?), but
+ * [com.example.jetsnack.ui.home.FilterChipSection] passes us none so our default [Shapes.small] of
+ * our custom [MaterialTheme] is used.
  */
 @Composable
 fun FilterChip(
@@ -131,18 +173,18 @@ fun FilterChip(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.small
 ) {
-    val (selected, setSelected) = filter.enabled
-    val backgroundColor by animateColorAsState(
-        if (selected) JetsnackTheme.colors.brandSecondary else JetsnackTheme.colors.uiBackground,
+    val (selected: Boolean, setSelected: (Boolean) -> Unit) = filter.enabled
+    val backgroundColor: Color by animateColorAsState(
+        targetValue = if (selected) JetsnackTheme.colors.brandSecondary else JetsnackTheme.colors.uiBackground,
         label = "background color"
     )
-    val border = Modifier.fadeInDiagonalGradientBorder(
+    val border: Modifier = Modifier.fadeInDiagonalGradientBorder(
         showBorder = !selected,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = shape
     )
-    val textColor by animateColorAsState(
-        if (selected) Color.Black else JetsnackTheme.colors.textSecondary,
+    val textColor: Color by animateColorAsState(
+        targetValue = if (selected) Color.Black else JetsnackTheme.colors.textSecondary,
         label = "text color"
     )
 
@@ -153,11 +195,11 @@ fun FilterChip(
         shape = shape,
         elevation = 2.dp
     ) {
-        val interactionSource = remember { MutableInteractionSource() }
+        val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 
-        val pressed by interactionSource.collectIsPressedAsState()
+        val pressed: Boolean by interactionSource.collectIsPressedAsState()
         @Suppress("RedundantValueArgument")
-        val backgroundPressed =
+        val backgroundPressed: Modifier =
             if (pressed) {
                 Modifier.offsetGradientBackground(
                     colors = JetsnackTheme.colors.interactiveSecondary,
@@ -165,7 +207,7 @@ fun FilterChip(
                     offset = 0f
                 )
             } else {
-                Modifier.background(Color.Transparent)
+                Modifier.background(color = Color.Transparent)
             }
         Box(
             modifier = Modifier

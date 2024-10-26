@@ -56,7 +56,7 @@ class Filter(
     /**
      * This is used to hold and set the selected state of the [FilterChip] using this [Filter]
      */
-    val enabled: MutableState<Boolean> = mutableStateOf(enabled)
+    val enabled: MutableState<Boolean> = mutableStateOf(value = enabled)
 }
 
 /**
