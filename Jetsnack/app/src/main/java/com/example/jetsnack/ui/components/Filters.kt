@@ -45,6 +45,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -56,6 +57,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
@@ -155,7 +157,17 @@ fun FilterBar(
  * is `true` or a [Modifier.background] whose `color` is [Color.Transparent].
  *
  * The root composable of the [JetsnackSurface] is a [Box] whose `modifier` argument is a
- * [Modifier.toggleable]
+ * [Modifier.toggleable] whose `value` argument is our [Boolean] variable `selected`, whose
+ * `onValueChange` argument is our lambda variable `setSelected`, whose `interactionSource` argument
+ * is our [MutableInteractionSource] variable `interactionSource`, and whose `indication` argument
+ * is `null`, and to this is chained our [Modifier] variable `backgroundPressed`, and our [Modifier]
+ * variable `border`.
+ *
+ * The `content` of the [Box] is a [Text] whose `text` argument is the [Filter.name] of our [Filter]
+ * parameter [filter], whose [TextStyle] `style` argument is the [Typography.bodySmall] of our
+ * custom [MaterialTheme.typography], whose `maxLines` argument is 1, and whose `modifier` argument
+ * is a [Modifier.padding] that adds 20.dp padding to our `horizontal` sides and 6.dp padding to our
+ * `vertical` sides.
  *
  * @param filter the [Filter] we are supposed to display.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
@@ -233,6 +245,9 @@ fun FilterChip(
     }
 }
 
+/**
+ * Three Previews of our [FilterChip] with the [Filter.enabled] property `false`
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
@@ -247,6 +262,9 @@ private fun FilterDisabledPreview() {
     }
 }
 
+/**
+ * Three Previews of our [FilterChip] with the [Filter.enabled] property `true`
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
