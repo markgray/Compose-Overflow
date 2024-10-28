@@ -94,7 +94,9 @@ fun Modifier.offsetGradientBackground(
 }
 
 /**
- *
+ * Creates a [Modifier.border] whose `width` argument is our [Dp] parameter [borderSize], whose
+ * `brush` argument is a [Brush.linearGradient] whose `colors` argument is our [List] of [Color]
+ * parameter [colors], and whose `shape` argument is our [Shape] parameter [shape].
  */
 fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
@@ -102,12 +104,21 @@ fun Modifier.diagonalGradientBorder(
     shape: Shape
 ): Modifier = border(
     width = borderSize,
-    brush = Brush.linearGradient(colors),
+    brush = Brush.linearGradient(colors = colors),
     shape = shape
 )
 
 /**
- *
+ * Creates a [Modifier.composed] which is a just-in-time composition of a [Modifier] that will be
+ * composed for each element it modifies. It may then be used to implement stateful modifiers that
+ * have instance-specific state for each modified element, allowing the same [Modifier] instance to
+ * be safely reused for multiple elements while maintaining element-specific state. The `factory`
+ * lambda that this [Modifier] uses creates an animated [List] of [Color] variable `val animatedColors`
+ * which uses each [Color] in our [List] of [Color] parameter [colors] as is if our [Boolean] parameter
+ * [showBorder] is `true` or a copy of that [Color] with an `alpha` of 0f if it is `false`. Then the
+ * [Modifier] it returns is a [Modifier.diagonalGradientBorder] whose `colors` argument is our
+ * animated [List] of [Color] variable `animatedColors`, whose `borderSize` argument is our [Dp]
+ * parameter [borderSize], and whose `shape` argument is our [Shape] parameter [shape]
  */
 fun Modifier.fadeInDiagonalGradientBorder(
     showBorder: Boolean,
@@ -115,7 +126,7 @@ fun Modifier.fadeInDiagonalGradientBorder(
     borderSize: Dp = 2.dp,
     shape: Shape
 ): Modifier = composed {
-    val animatedColors = List(colors.size) { i ->
+    val animatedColors: List<Color> = List(colors.size) { i: Int ->
         animateColorAsState(
             if (showBorder) colors[i] else colors[i].copy(alpha = 0f),
             label = "animated color"

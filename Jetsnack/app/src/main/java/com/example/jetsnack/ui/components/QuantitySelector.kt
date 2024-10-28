@@ -62,7 +62,7 @@ fun QuantitySelector(
             imageVector = Icons.Default.Remove,
             onClick = decreaseItemCount,
             contentDescription = stringResource(R.string.label_decrease),
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(alignment = Alignment.CenterVertically)
         )
         Crossfade(
             targetState = count,
@@ -82,7 +82,7 @@ fun QuantitySelector(
             imageVector = Icons.Default.Add,
             onClick = increaseItemCount,
             contentDescription = stringResource(R.string.label_increase),
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(alignment = Alignment.CenterVertically)
         )
     }
 }
