@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,7 +50,25 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * This Composable displays its [ImageVector] parameter [imageVector] in an [Icon] which is clipped
  * by a [CircleShape] and whose background, border and tint use a gradient created from its [List]
  * of [Color] parameter [colors]. It is used by the [QuantitySelector] Composable to draw its
- * "-" and "+" symbols.
+ * "-" and "+" symbols. We start by initializing and remembering our [MutableInteractionSource]
+ * variable `val interactionSource` to a new instance. We initialize our [Modifier] variable
+ * `val border` to a [Modifier.fadeInDiagonalGradientBorder] whose `showBorder` argument is `true`,
+ * whose `colors` argument is the [JetsnackColors.interactiveSecondary] of our custom
+ * [JetsnackTheme.colors], and whose `shape` argument is [CircleShape]. We initialize our [State]
+ * wrapped [Boolean] variable `val pressed` to the value collected by the
+ * [MutableInteractionSource.collectIsPressedAsState] method of our [MutableInteractionSource]
+ * variable `interactionSource`. If `pressed` is `true` we initialize our [Modifier] variable
+ * `val background` to a [Modifier.offsetGradientBackground] that whose `colors` argument is our
+ * [List] of [Color] parameter [colors], whose `width` is 200f, and whose `offset` is 0f, or if
+ * `pressed` is `false` to a  [Modifier.background] whose `color` is the [JetsnackColors.uiBackground]
+ * of our custom [JetsnackTheme.colors]. If the [JetsnackColors.isDark] method of our custom
+ * [JetsnackTheme.colors] returns `true` we initialize our [BlendMode] variable `val blendMode`
+ * to [BlendMode.Darken] (Composites the source and destination image by choosing the lowest value
+ * from each color channel. The opacity of the output image is computed in the same way as for SrcOver),
+ * and if it is `false` we initialize it to [BlendMode.Plus] (Sums the components of the source and
+ * destination images). If `pressed` is `true` we initialize our [Modifier] variable
+ * `val modifierColor` to a [Modifier.diagonalGradientTint] whose `colors` is a [List] of [Color]
+ * composed of two copies of the [JetsnackColors.textSecondary] of our custom
  *
  * @param imageVector the [ImageVector] we should draw in our [Icon]. One of our calls passes us the
  * [androidx.compose.material.icons.filled.Remove] ("-" symbol) and the other passes us the
@@ -74,22 +93,22 @@ fun JetsnackGradientTintedIconButton(
     modifier: Modifier = Modifier,
     colors: List<Color> = JetsnackTheme.colors.interactiveSecondary
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
+    val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 
     // This should use a layer + srcIn but needs investigation
-    val border = Modifier.fadeInDiagonalGradientBorder(
+    val border: Modifier = Modifier.fadeInDiagonalGradientBorder(
         showBorder = true,
         colors = JetsnackTheme.colors.interactiveSecondary,
         shape = CircleShape
     )
-    val pressed by interactionSource.collectIsPressedAsState()
-    val background = if (pressed) {
+    val pressed: Boolean by interactionSource.collectIsPressedAsState()
+    val background: Modifier = if (pressed) {
         Modifier.offsetGradientBackground(colors = colors, width = 200f, offset = 0f)
     } else {
-        Modifier.background(JetsnackTheme.colors.uiBackground)
+        Modifier.background(color = JetsnackTheme.colors.uiBackground)
     }
-    val blendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
-    val modifierColor = if (pressed) {
+    val blendMode: BlendMode = if (JetsnackTheme.colors.isDark) BlendMode.Darken else BlendMode.Plus
+    val modifierColor: Modifier = if (pressed) {
         Modifier.diagonalGradientTint(
             colors = listOf(
                 JetsnackTheme.colors.textSecondary,
