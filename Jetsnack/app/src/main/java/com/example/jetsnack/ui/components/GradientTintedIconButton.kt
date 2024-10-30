@@ -68,7 +68,22 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * and if it is `false` we initialize it to [BlendMode.Plus] (Sums the components of the source and
  * destination images). If `pressed` is `true` we initialize our [Modifier] variable
  * `val modifierColor` to a [Modifier.diagonalGradientTint] whose `colors` is a [List] of [Color]
- * composed of two copies of the [JetsnackColors.textSecondary] of our custom
+ * composed of two copies of the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors],
+ * and its `blendMode` argument is our [BlendMode] variable `blendMode`, and if `pressed` is `false`
+ * we initialize it to a [Modifier.diagonalGradientTint] whose `colors` argument is our [List] of
+ * [Color] parameter [colors], and whose `blendMode` argument is our [BlendMode] variable `blendMode`.
+ *
+ * Our root Composable is a [Surface] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.clickable] whose `onClick` argument is our lambda parameter [onClick],
+ * whose `interactionSource` is our [MutableInteractionSource] variable `interactionSource` and
+ * whose `indication` argument is `null`, followed by a [Modifier.clip] whose `shape` argument if
+ * [CircleShape], followed by our [Modifier] variable `border`, and followed by our [Modifier]
+ * variable `background`. The `color` argument of the [Surface] is [Color.Transparent].
+ *
+ * The `content` lambda argument of the [Surface] is an [Icon] whose `imageVector` argument is our
+ * [ImageVector] parameter [imageVector], whose `contentDescription` argument is our [String]
+ * parameter [contentDescription], and whose `modifier` argument is our [Modifier] argument
+ * `modifierColor`.
  *
  * @param imageVector the [ImageVector] we should draw in our [Icon]. One of our calls passes us the
  * [androidx.compose.material.icons.filled.Remove] ("-" symbol) and the other passes us the
@@ -142,6 +157,10 @@ fun JetsnackGradientTintedIconButton(
     }
 }
 
+/**
+ * Two Previews of our [JetsnackGradientTintedIconButton], one with the default `uiMode` and the
+ * other with [Configuration.UI_MODE_NIGHT_YES].
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

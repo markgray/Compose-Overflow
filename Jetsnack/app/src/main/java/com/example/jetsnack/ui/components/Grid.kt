@@ -18,10 +18,30 @@ package com.example.jetsnack.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.unit.Constraints
+import com.example.jetsnack.model.SearchCategoryCollection
 
 /**
- * A simple grid which lays elements out vertically in evenly sized [columns].
+ * A simple grid which lays elements out vertically in evenly sized [columns]. This is used by the
+ * `SearchCategoryCollection` composable to display its [SearchCategoryCollection] argument, and it
+ * is used by [com.example.jetsnack.ui.home.search.SearchCategories] to display its [List] of
+ * [SearchCategoryCollection] argument. Our root Composable is a [Layout] whose `content` argument
+ * is our lambda parameter [content], and whose `modifier` argument is our [Modifier] parameter
+ * [modifier].
+ *
+ * In the [MeasureScope] block of the [Layout]
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller passes us a [Modifier.padding] that adds 16.dp to each of our horizontal
+ * sides.
+ * @param columns the number of columns we should use. Our caller does not pass us a value so our
+ * default of 2 is used.
+ * @param content the Composable lambda containing multiple Composables which we should display in
+ * our grid.
  */
 @Composable
 fun VerticalGrid(
@@ -32,7 +52,7 @@ fun VerticalGrid(
     Layout(
         content = content,
         modifier = modifier
-    ) { measurables, constraints ->
+    ) { measurables: List<Measurable>, constraints: Constraints ->
         val itemWidth = constraints.maxWidth / columns
         // Keep given height constraints, but set an exact width
         val itemConstraints = constraints.copy(
