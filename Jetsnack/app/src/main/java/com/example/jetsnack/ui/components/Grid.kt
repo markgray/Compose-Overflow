@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import com.example.jetsnack.model.SearchCategoryCollection
 
@@ -33,7 +34,31 @@ import com.example.jetsnack.model.SearchCategoryCollection
  * is our lambda parameter [content], and whose `modifier` argument is our [Modifier] parameter
  * [modifier].
  *
- * In the [MeasureScope] block of the [Layout]
+ * In the [MeasureScope] lambda block of the [Layout] we accept the [List] of [Measurable] passed the
+ * lambda in our variable `measurables` and the [Constraints] passed it in our variable `constraints`.
+ * We initialize our [Int] variable `val itemWidth` to the [Constraints.maxWidth] of `constraints`
+ * divided by our [Int] parameter [columns]. We then initialize our [Constraints] variable
+ * `val itemConstraints` to a copy of `constraints` with the overridden values `minWidth` =
+ * `itemWidth` and `maxWidth` = `itemWidth`. We initialize our [List] of [Placeable] variable
+ * `val placeables` by using the [List.map] method of [List] of [Measurable] variable `measurables`
+ * to apply [Measurable.measure] using `itemConstraints` as the `constraints` argument to each of
+ * the [Measurable] in the [List]. We initialize our [Array] of [Int] variable `val columnHeights`
+ * to an [Int] parameter [columns] sized array initialized to all zeros. We use the [List.forEachIndexed]
+ * method of `placeables` to loop over its contents accepting the index in [Int] variable `index`
+ * and the [Placeable] in [Placeable] variable `placeable`. We initialize our [Int] variable
+ * `val column` to `index` modulo our [Int] parameter [columns] and add the [Placeable.height] of
+ * `placeable` to the `column` index of `columnHeights`. When done initialize our [Int] variable
+ * `val height` to the maximum value in `columnHeights` coerced to at most the [Constraints.maxHeight]
+ * of `constraints`. Then we call the [MeasureScope.layout] method with its `width` argument the
+ * [Constraints.minWidth] of `constraints` and its `height` argument our [Int] variable `height`.
+ * In the `placementBlock` lambda we initialize our [Array] of [Int] variable `val columnY` to an
+ * [Array] to an [Int] parameter [columns] sized array initialized to all zeros. Then we use the
+ * [List.forEachIndexed] method of `placeables` to loop through all its entries accepting the
+ * index in [Int] variable `index` and the [Placeable] in [Placeable] variable `placeable`. Then we
+ * use the [Placeable.PlacementScope.placeRelative] method of `placeable` to place it at `x` coordinate
+ * `column` times `itemWidth` and `y` coordinate of the `column` entry of array `columnY`. Then we
+ * add the [Placeable.height] of `placeable` to the value of the `column` entry in `columnY` and loop
+ * around for the next [Placeable].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller passes us a [Modifier.padding] that adds 16.dp to each of our horizontal
@@ -53,29 +78,29 @@ fun VerticalGrid(
         content = content,
         modifier = modifier
     ) { measurables: List<Measurable>, constraints: Constraints ->
-        val itemWidth = constraints.maxWidth / columns
+        val itemWidth: Int = constraints.maxWidth / columns
         // Keep given height constraints, but set an exact width
-        val itemConstraints = constraints.copy(
+        val itemConstraints: Constraints = constraints.copy(
             minWidth = itemWidth,
             maxWidth = itemWidth
         )
         // Measure each item with these constraints
-        val placeables = measurables.map { it.measure(itemConstraints) }
+        val placeables: List<Placeable> = measurables.map { it.measure(constraints = itemConstraints) }
         // Track each columns height so we can calculate the overall height
-        val columnHeights = Array(columns) { 0 }
-        placeables.forEachIndexed { index, placeable ->
-            val column = index % columns
+        val columnHeights: Array<Int> = Array(size = columns) { 0 }
+        placeables.forEachIndexed { index: Int, placeable: Placeable ->
+            val column: Int = index % columns
             columnHeights[column] += placeable.height
         }
-        val height = (columnHeights.maxOrNull() ?: constraints.minHeight)
+        val height: Int = (columnHeights.maxOrNull() ?: constraints.minHeight)
             .coerceAtMost(constraints.maxHeight)
         layout(
             width = constraints.maxWidth,
             height = height
         ) {
             // Track the Y co-ord per column we have placed up to
-            val columnY = Array(columns) { 0 }
-            placeables.forEachIndexed { index, placeable ->
+            val columnY: Array<Int> = Array(columns) { 0 }
+            placeables.forEachIndexed { index: Int, placeable: Placeable ->
                 val column = index % columns
                 placeable.placeRelative(
                     x = column * itemWidth,
