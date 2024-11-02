@@ -32,12 +32,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import com.example.jetsnack.model.SnackbarManager
+import com.example.jetsnack.ui.MainContainer
+import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
  * Wrap Material [androidx.compose.material3.Scaffold] and set [JetsnackTheme] colors.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [MainContainer] passes us its own [Modifier] parameter which since its own
+ * caller passes it none is the empty, default, or starter [Modifier] that contains no elements.
+ * @param snackBarHostState the [SnackbarHostState] that will control the [SnackbarHost] that we
+ * use as the `snackbarHost` argument of our [Scaffold]. Our caller [MainContainer] passes us the
+ * [JetsnackScaffoldState.snackBarHostState] of a remembered default [JetsnackScaffoldState].
+ * @param topBar a lambda to use as the `topBar` argument of our [Scaffold]. Our caller [MainContainer]
+ * does not pass us one so our default do-nothing lambda.
+ * @param bottomBar the Composable lambda that we should use as the `bottomBar` of our [Scaffold].
+ * Our caller calls us with an animated shared transition [JetsnackBottomBar] that has a lot of
+ * complex arguments passed it which need some careful study (when I get there).
+ * @param snackbarHost the Composable lambda we should use as the `snackbarHost` argument of our
+ * [Scaffold].
  */
 @Composable
 fun JetsnackScaffold(
@@ -81,7 +97,9 @@ fun rememberJetsnackScaffoldState(
 }
 
 /**
- * Responsible for holding [ScaffoldState], handles the logic of showing snackbar messages
+ * Responsible for holding [SnackbarHostState], handles the logic of showing snackbar messages
+ *
+ * @param snackBarHostState the [SnackbarHostState] we are to hold.
  */
 @Stable
 class JetsnackScaffoldState(

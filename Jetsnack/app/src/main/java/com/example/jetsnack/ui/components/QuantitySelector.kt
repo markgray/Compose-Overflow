@@ -63,7 +63,19 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  *  [Icons.Filled.Remove] (a "-" sign), whose `onClick` argument is our labmda parameter
  *  [decreaseItemCount], whose `contentDescription` argument is the string "Decrease", and whose
  *  `modifier` argument is a [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically].
- *
+ *  - [Crossfade] whose `targetState` argument is our [Int] parameter [count], whose `modifier` argument
+ *  is a [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically], and whose
+ *  `label` argument is the [String] "Count animation". The `content` Composable lambda of the
+ *  [Crossfade] is a [Text] whose `text` argument is the [String] value of the [Int] passed the
+ *  `content` lambda, whose [TextStyle] `style` argument is the [Typography.titleSmall] of our custom
+ *  [MaterialTheme.typography], whose `fontSize` argument is 18.sp, whose `color` argument is the
+ *  [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors], whose `textAlign` is
+ *  [TextAlign.Center] to align the text in the center of the [Text], and whose `modifier` argument
+ *  is a [Modifier.widthIn] to constrain the width of the content to be greater than 24.dp.
+ *  - [JetsnackGradientTintedIconButton] whose `imageVector` argument is the [ImageVector] drawn by
+ *  [Icons.Filled.Add] (a "+" sign), whose `onClick` argument is our labmda parameter [increaseItemCount],
+ *  whose `contentDescription` argument is the string "Increase", and whose `modifier` argument is a
+ *  [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically].
  *
  * @param count the current count of the snack.
  * @param decreaseItemCount a lambda we should call when the user wishes to decrease the snack count.
