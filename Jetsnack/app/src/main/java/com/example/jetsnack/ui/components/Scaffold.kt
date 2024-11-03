@@ -31,15 +31,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.NavHost
 import com.example.jetsnack.model.SnackbarManager
 import com.example.jetsnack.ui.MainContainer
 import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Wrap Material [androidx.compose.material3.Scaffold] and set [JetsnackTheme] colors.
+ * Wrap Material [androidx.compose.material3.Scaffold] and set [JetsnackTheme] colors. Our root
+ * composable is a [Scaffold] whose `modifier` argument is our [Modifier] parameter [modifier],
+ * whose `topBar` argument is our Composable lambda parameter [topBar], whose `bottomBar` argument
+ * is our Composable lambda parameter [bottomBar], whose `snackbarHost` argument is a lambda that
+ * calls our lambda parameter [snackbarHost] with our [SnackbarHostState] parameter [snackBarHostState],
+ * whose `floatingActionButton` argument is our lambda parameter [floatingActionButton], whose
+ * `floatingActionButtonPosition` argument is our [FabPosition] parameter [floatingActionButtonPosition],
+ * whose `containerColor` argument is our [Color] parameter [backgroundColor], whose `contentColor`
+ * argument is our [Color] parameter [contentColor], and whose `content` argument is our Composable
+ * lambda parameter [content].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [MainContainer] passes us its own [Modifier] parameter which since its own
@@ -52,8 +63,23 @@ import kotlinx.coroutines.launch
  * @param bottomBar the Composable lambda that we should use as the `bottomBar` of our [Scaffold].
  * Our caller calls us with an animated shared transition [JetsnackBottomBar] that has a lot of
  * complex arguments passed it which need some careful study (when I get there).
- * @param snackbarHost the Composable lambda we should use as the `snackbarHost` argument of our
- * [Scaffold].
+ * @param snackbarHost the Composable lambda taking a [SnackbarHostState] we should use as the
+ * `snackbarHost` argument of our [Scaffold].
+ * @param floatingActionButton the Composable lambda we should use as the `floatingActionButton`
+ * argument of our [Scaffold]. Our caller does not pass us one so the default do-nothing lambda is
+ * used.
+ *  @param floatingActionButtonPosition the [FabPosition] we should use as the
+ *  `floatingActionButtonPosition` of our [Scaffold]. Our caller does not pass us one so the default
+ *  [FabPosition.End] is used.
+ *  @param backgroundColor the [Color] we should use as the `containerColor` argument of our
+ *  [Scaffold]. Our caller does not pass us one so the default [JetsnackColors.uiBackground] of our
+ *  custom [JetsnackTheme.colors] is used.
+ *  @param contentColor the [Color] we should use as the `contentColor` argument of our [Scaffold].
+ *  Our caller does not pass us one so the default [JetsnackColors.textSecondary] of our custom
+ *  [JetsnackTheme.colors] is used.
+ *  @param content the Composable lambda taking [PaddingValues] that we should use as the `content`
+ *  argument of our [Scaffold]. Our caller [MainContainer] passes us a [NavHost] that controls which
+ *  screen is being displayed.
  */
 @Composable
 fun JetsnackScaffold(
@@ -84,7 +110,21 @@ fun JetsnackScaffold(
 }
 
 /**
- * Remember and creates an instance of [JetsnackScaffoldState]
+ * Remember and creates an instance of [JetsnackScaffoldState]. Our caller does not pass us any
+ * arguments so all our default values are used.
+ *
+ * @param snackBarHostState the [SnackbarHostState] we should use as the `snackBarHostState` argument
+ * of the [JetsnackScaffoldState] we remember and return. Since our caller [MainContainer] does not
+ * pass us any the default of a remembered [SnackbarHostState] is used.
+ * @param snackbarManager the [SnackbarManager] that is responsible for managing Snackbar messages
+ * to show on the screen. This is our object [SnackbarManager] which we use as the `snackbarManager`
+ * of the [JetsnackScaffoldState] we remember and return.
+ * @param resources a [Resources] instance to us as the `resources` argument of the [JetsnackScaffoldState]
+ * we remember and return. We use the [Resources] returned by our [resources] function, which is the
+ * Resources instance for the application's package according to the current [LocalContext].
+ * @param coroutineScope a remembered [CoroutineScope] to use as the `coroutineScope` argument of the
+ * [JetsnackScaffoldState] we remember and return. We use the remembered [CoroutineScope] that the
+ * method [rememberCoroutineScope] returns.
  */
 @Composable
 fun rememberJetsnackScaffoldState(
@@ -93,7 +133,12 @@ fun rememberJetsnackScaffoldState(
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ): JetsnackScaffoldState = remember(snackBarHostState, snackbarManager, resources, coroutineScope) {
-    JetsnackScaffoldState(snackBarHostState, snackbarManager, resources, coroutineScope)
+    JetsnackScaffoldState(
+        snackBarHostState = snackBarHostState,
+        snackbarManager = snackbarManager,
+        resources = resources,
+        coroutineScope = coroutineScope
+    )
 }
 
 /**
