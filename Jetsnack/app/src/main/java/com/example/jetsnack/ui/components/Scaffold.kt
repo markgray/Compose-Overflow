@@ -32,12 +32,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
+import com.example.jetsnack.model.Message
 import com.example.jetsnack.model.SnackbarManager
 import com.example.jetsnack.ui.MainContainer
 import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -142,29 +145,45 @@ fun rememberJetsnackScaffoldState(
 }
 
 /**
- * Responsible for holding [SnackbarHostState], handles the logic of showing snackbar messages
+ * Responsible for holding [SnackbarHostState] and handling the logic of showing snackbar messages.
+ * In our `init` block we use the [CoroutineScope.launch] method of our [CoroutineScope] parameter
+ * [coroutineScope] to launch a coroutine in which we use the [StateFlow.collect] method of the
+ * [StateFlow] wrapped [List] of [Message] field [SnackbarManager.messages] of our [SnackbarManager]
+ * parameter [snackbarManager] to collect and emit into the `collector` [FlowCollector] block the
+ * current [List] of [Message] it contains which the block accepts as its `currentMessages` variable.
+ * In the `collector` block we check if `currentMessages` is not empty and if so we set our [Message]
+ * variable `val message` to the [Message] at index 0 in `currentMessages`, and set out [CharSequence]
+ * variable `val text` to the [CharSequence] whose resource ID is the [Message.messageId] of our
+ * `message` variable. We then call the [SnackbarManager.setMessageShown] method of our [SnackbarManager]
+ * parameter [snackbarManager] to Notify the SnackbarManager that it can remove the current message
+ * from its list. Finally we call the [SnackbarHostState.showSnackbar] of our [SnackbarHostState]
+ * parameter [snackBarHostState] to Display the snackbar on the screen. `showSnackbar` is a function
+ * that suspends until the snackbar disappears from the screen.
  *
  * @param snackBarHostState the [SnackbarHostState] we are to hold.
+ * @param snackbarManager the singleton [SnackbarManager] of the app.
+ * @param resources a [Resources] instance for the application's package.
+ * @param coroutineScope a [CoroutineScope] we can use to launch a coroutine.
  */
 @Stable
 class JetsnackScaffoldState(
     val snackBarHostState: SnackbarHostState,
     private val snackbarManager: SnackbarManager,
     private val resources: Resources,
-    coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope
 ) {
     // Process snackbars coming from SnackbarManager
     init {
         coroutineScope.launch {
-            snackbarManager.messages.collect { currentMessages ->
+            snackbarManager.messages.collect { currentMessages: List<Message> ->
                 if (currentMessages.isNotEmpty()) {
-                    val message = currentMessages[0]
-                    val text = resources.getText(message.messageId)
+                    val message: Message = currentMessages[0]
+                    val text: CharSequence = resources.getText(message.messageId)
                     // Notify the SnackbarManager so it can remove the current message from the list
-                    snackbarManager.setMessageShown(message.id)
+                    snackbarManager.setMessageShown(messageId = message.id)
                     // Display the snackbar on the screen. `showSnackbar` is a function
                     // that suspends until the snackbar disappears from the screen
-                    snackBarHostState.showSnackbar(text.toString())
+                    snackBarHostState.showSnackbar(message = text.toString())
                 }
             }
         }
@@ -174,6 +193,9 @@ class JetsnackScaffoldState(
 /**
  * A composable function that returns the [Resources]. It will be recomposed when `Configuration`
  * gets updated.
+ *
+ * @return the [Resources] instance for the application's package according to the current
+ * [LocalContext].
  */
 @Composable
 @ReadOnlyComposable

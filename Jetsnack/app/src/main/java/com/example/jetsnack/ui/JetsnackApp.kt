@@ -31,6 +31,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -150,7 +151,7 @@ fun MainContainer(
             SnackbarHost(
                 hostState = it,
                 modifier = Modifier.systemBarsPadding(),
-                snackbar = { snackbarData -> JetsnackSnackbar(snackbarData) }
+                snackbar = { snackbarData: SnackbarData -> JetsnackSnackbar(snackbarData = snackbarData) }
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
