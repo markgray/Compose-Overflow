@@ -32,7 +32,11 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 /**
  * An alternative to [Snackbar] utilizing [JetsnackColors]. We just call the [Snackbar] Composable
  * with our [SnackbarData] parameter [snackbarData] as its `snackbarData`, with our [Modifier]
- * parameter [modifier] as its `modifier` argument,
+ * parameter [modifier] as its `modifier` argument, with our [Boolean] parameter [actionOnNewLine]
+ * as its `actionOnNewLine` argument, with our [Shape] parameter [shape] as its `shape`, with our
+ * [Color] parameter [backgroundColor] as its `containerColor` argument, with our [Color] parameter
+ * [contentColor] as its `contentColor` argument, and with our [Color] parameter [actionColor] as
+ * its `actionColor` argument.
  *
  * @param snackbarData Interface to represent the data of one particular Snackbar as a piece of the
  * [SnackbarHostState]. Used as the `snackbarData` argument of our [Snackbar]. Our caller [MainContainer]

@@ -86,11 +86,17 @@ import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ *
+ */
 private val HighlightCardWidth = 170.dp
 private val HighlightCardPadding = 16.dp
 private val Density.cardWidthWithPaddingPx
     get() = (HighlightCardWidth + HighlightCardPadding).toPx()
 
+/**
+ * Displays its [SnackCollection] parameter [snackCollection] and all its [SnackCollection.snacks].
+ */
 @Composable
 fun SnackCollection(
     snackCollection: SnackCollection,
