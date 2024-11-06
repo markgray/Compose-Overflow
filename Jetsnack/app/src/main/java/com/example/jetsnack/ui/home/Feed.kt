@@ -125,7 +125,7 @@ private fun SnackCollectionList(
                 onShowFilters = onFiltersSelected
             )
         }
-        itemsIndexed(snackCollections) { index, snackCollection ->
+        itemsIndexed(snackCollections) { index: Int, snackCollection: SnackCollection ->
             if (index > 0) {
                 JetsnackDivider(thickness = 2.dp)
             }

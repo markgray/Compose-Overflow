@@ -43,6 +43,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -61,6 +62,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -82,20 +84,53 @@ import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
 import com.example.jetsnack.ui.LocalSharedTransitionScope
 import com.example.jetsnack.ui.SnackSharedElementKey
 import com.example.jetsnack.ui.SnackSharedElementType
+import com.example.jetsnack.ui.home.Feed
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.snackDetailBoundsTransform
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- *
+ * Width of a [JetsnackCard]
  */
 private val HighlightCardWidth = 170.dp
+
+/**
+ * Padding of a [JetsnackCard]
+ */
 private val HighlightCardPadding = 16.dp
+
+/**
+ * Convenience extension property to obtain the sum of the width and padding of a [JetsnackCard]
+ * from the `current` [LocalDensity].
+ */
 private val Density.cardWidthWithPaddingPx
     get() = (HighlightCardWidth + HighlightCardPadding).toPx()
 
 /**
  * Displays its [SnackCollection] parameter [snackCollection] and all its [SnackCollection.snacks].
+ * Our root composable is a [Column]
+ *
+ * @param snackCollection the [SnackCollection] whose [List] of [Snack] field [SnackCollection.snacks]
+ * we should display.
+ * @param onSnackClick the lambda that each of the [JetsnackCard] displaying a [Snack] from our
+ * [SnackCollection] should call with the [Snack.id] of the [Snack] and the [String] version of the
+ * [SnackCollection.id] of our [SnackCollection] parameter [snackCollection].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. The `CartContent` composable calls us with a fancy [LazyItemScope.animateItem] that
+ * animates the item placement within its Lazy list which we use as the `modifier` argument of our
+ * root [Column] Composable, our other two callers pass us none so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ * @param index the position of this [SnackCollection] in a [List] of [SnackCollection] that are
+ * being displayed. We use it to select the [List] of [Color] to use as the gradient of any
+ * [HighlightSnackItem] from our [SnackCollection] parameter [snackCollection] that we display,
+ * either [JetsnackColors.gradient6_1] for even values, or [JetsnackColors.gradient6_2] for odd.
+ * @param highlight if `true` and the [SnackCollection.type] of our [SnackCollection] paramter
+ * [snackCollection] is [CollectionType.Highlight] we use a [HighlightedSnacks] to display the
+ * [List] of [Snack] in [SnackCollection.snacks] otherwise we use a [Snacks]. `CartContent` calls
+ * us with `false`, as does the `Body` composable used by [SnackDetail], but the `SnackCollectionList`
+ * composable used by [Feed] passes us none so the default of `true` is used.
  */
 @Composable
 fun SnackCollection(
@@ -134,9 +169,18 @@ fun SnackCollection(
             }
         }
         if (highlight && snackCollection.type == CollectionType.Highlight) {
-            HighlightedSnacks(snackCollection.id, index, snackCollection.snacks, onSnackClick)
+            HighlightedSnacks(
+                snackCollectionId = snackCollection.id,
+                index = index,
+                snacks = snackCollection.snacks,
+                onSnackClick = onSnackClick
+            )
         } else {
-            Snacks(snackCollection.id, snackCollection.snacks, onSnackClick)
+            Snacks(
+                snackCollectionId = snackCollection.id,
+                snacks = snackCollection.snacks,
+                onSnackClick = onSnackClick
+            )
         }
     }
 }
@@ -158,7 +202,7 @@ private fun HighlightedSnacks(
         offsetFromStart + rowState.firstVisibleItemScrollOffset
     }
 
-    val gradient = when ((index / 2) % 2) {
+    val gradient: List<Color> = when ((index / 2) % 2) {
         0 -> JetsnackTheme.colors.gradient6_1
         else -> JetsnackTheme.colors.gradient6_2
     }
@@ -199,6 +243,9 @@ private fun Snacks(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun SnackItem(
     snack: Snack,
@@ -456,14 +503,21 @@ private fun HighlightSnackItem(
     }
 }
 
+/**
+ *
+ */
 @Composable
-fun debugPlaceholder(@DrawableRes debugPreview: Int) =
+fun
+    debugPlaceholder(@DrawableRes debugPreview: Int): Painter? =
     if (LocalInspectionMode.current) {
         painterResource(id = debugPreview)
     } else {
         null
     }
 
+/**
+ *
+ */
 @Composable
 fun SnackImage(
     @DrawableRes
@@ -491,6 +545,9 @@ fun SnackImage(
     }
 }
 
+/**
+ *
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
@@ -509,6 +566,9 @@ fun SnackCardPreview() {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun JetsnackPreviewWrapper(content: @Composable () -> Unit) {
     JetsnackTheme {

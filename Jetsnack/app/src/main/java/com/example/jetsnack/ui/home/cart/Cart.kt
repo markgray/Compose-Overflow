@@ -154,7 +154,7 @@ private fun CartContent(
     }
     val itemAnimationSpecFade = nonSpatialExpressiveSpring<Float>()
     val itemPlacementSpec = spatialExpressiveSpring<IntOffset>()
-    LazyColumn(modifier) {
+    LazyColumn(modifier = modifier) {
         item(key = "title") {
             Spacer(
                 Modifier.windowInsetsTopHeight(

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class)
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 
 package com.example.jetsnack.ui.snackdetail
 
@@ -138,6 +140,7 @@ fun <T> nonSpatialExpressiveSpring() = spring<T>(
     stiffness = 1600f
 )
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 val snackDetailBoundsTransform = BoundsTransform { _, _ ->
     spatialExpressiveSpring()
 }
