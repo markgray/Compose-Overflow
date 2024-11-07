@@ -33,8 +33,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +45,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -56,6 +59,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -63,11 +67,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
@@ -110,7 +116,43 @@ private val Density.cardWidthWithPaddingPx
 
 /**
  * Displays its [SnackCollection] parameter [snackCollection] and all its [SnackCollection.snacks].
- * Our root composable is a [Column]
+ * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In its [ColumnScope] `content` composable lambda argument it has:
+ *  - a [Row] whose `verticalAlignment` argument is [Alignment.CenterVertically], and whose `modifier`
+ *  argument is a [Modifier.heightIn] that constrains its minimum height to 56.dp to which is chained
+ *  a [Modifier.padding] that adds 24.dp padding to the start of the [Row]. In its [RowScope] `content`
+ *  composable lambda argument it holds:
+ *
+ *  - a [Text] whose `text` argument is the [SnackCollection.name] of our [SnackCollection] parameter
+ *  [snackCollection], whose [TextStyle] `style` argument is the [Typography.titleLarge] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.brand] or our
+ *  custom [JetsnackTheme.colors], whose `maxLines` argument is 1, whose [TextOverflow] `overflow`
+ *  argument is [TextOverflow.Ellipsis] causing it to use an ellipsis to indicate that the text has
+ *  overflowed the 1 line allowed it, and whose [Modifier] `modifier` argument is a [RowScope.weight]
+ *  of 1f causing it to take up all the space left after its siblings have been measured and placed
+ *  to which is chained a [Modifier.wrapContentWidth] whose `align` argument of [Alignment.Start]
+ *  that allows it to occupy its desired width without regard to the incoming minimum width with it
+ *  alignment at the start of the [Row],
+ *  - an [IconButton] whose `onClick` argument is a do-nothing lambda, and whose [Modifier] `modifier`
+ *  argument is a [RowScope.align] whose `alignment` argument of [Alignment.CenterVertically] causes
+ *  it to be be vertically centered in the [Row]. The `content` composable lambda argument of the
+ *  [IconButton] is an [Icon] whose [ImageVector] `imageVector` argument is that drawn by
+ *  [Icons.AutoMirrored.Outlined.ArrowBack] (a backwards pointing arrow), whose [Color] `tint` argument
+ *  is the [JetsnackColors.brand] or our custom [JetsnackTheme.colors], and whose `contentDescription`
+ *  argument is `null`.
+ *
+ *   - Next in the [Column] if our [Boolean] parameter [highlight] is `true` and the
+ *   [SnackCollection.type] of our [SnackCollection] parameter [snackCollection] is equal to
+ *   [CollectionType.Highlight] is a [HighlightedSnacks] composable whose `snackCollectionId` argument
+ *   is the [SnackCollection.id] of our [SnackCollection] parameter [snackCollection], whose `index`
+ *   argument is our [Int] parameter [index], whose [List] of [Snack] argument `snacks` is the
+ *   [SnackCollection.snacks] property of our [SnackCollection] parameter [snackCollection], and
+ *   whose `onSnackClick` argument is the lambda taking [Long] and [String] parameter [onSnackClick].
+ *   - Otherwise the next in the [Column] is a [Snacks] Composable whose `snackCollectionId` argument
+ *   is the [SnackCollection.id] of our [SnackCollection] parameter [snackCollection], whose [List]
+ *   of [Snack] argument `snacks` is the [SnackCollection.snacks] property of our [SnackCollection]
+ *   parameter [snackCollection], and whose `onSnackClick` argument is the lambda taking [Long] and
+ *   [String] parameter [onSnackClick].
  *
  * @param snackCollection the [SnackCollection] whose [List] of [Snack] field [SnackCollection.snacks]
  * we should display.
@@ -154,12 +196,12 @@ fun SnackCollection(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
+                    .weight(weight = 1f)
+                    .wrapContentWidth(align = Alignment.Start)
             )
             IconButton(
                 onClick = { /* todo */ },
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(alignment = Alignment.CenterVertically)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
@@ -185,6 +227,17 @@ fun SnackCollection(
     }
 }
 
+/**
+ * This [Composable] is used to display the [List] of [Snack] in [SnackCollection.snacks] if the
+ * [SnackCollection] Composable is called with its [Boolean] parameter `highlight` `true` and the
+ * [SnackCollection.type] of the [SnackCollection] is [CollectionType.Highlight].
+ *
+ * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed.
+ * @param index the index of the [SnackCollection] in the [LazyColumn] that our [SnackCollection]
+ * Composable is being displayed in if it matters to its caller or the default of 0. We use it to
+ * select different [List] of [Color] to be used as the `gradient` argument of all or our
+ * [HighlightSnackItem]'s depending on where [index] is even or odd.
+ */
 @Composable
 private fun HighlightedSnacks(
     snackCollectionId: Long,
