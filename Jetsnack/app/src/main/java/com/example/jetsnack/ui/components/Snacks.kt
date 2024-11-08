@@ -47,6 +47,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -230,13 +232,45 @@ fun SnackCollection(
 /**
  * This [Composable] is used to display the [List] of [Snack] in [SnackCollection.snacks] if the
  * [SnackCollection] Composable is called with its [Boolean] parameter `highlight` `true` and the
- * [SnackCollection.type] of the [SnackCollection] is [CollectionType.Highlight].
+ * [SnackCollection.type] of the [SnackCollection] is [CollectionType.Highlight]. We start by
+ * initializing and remembering our [LazyListState] variable `val rowState` to a new instance. We
+ * initialize our [Float] variable `val cardWidthWithPaddingPx` to the value returned by the
+ * [Density.cardWidthWithPaddingPx] extension property for the current [LocalDensity]. We initialize
+ * our lambda returning [Float] variable `val scrollProvider` to a function that returns the result
+ * of performing a simple calculation of scroll distance for homogenous item types with the same width.
+ * We initialize our [List] of [Color] variable `val gradient` to the [JetsnackColors.gradient6_1]
+ * of our custom [JetsnackTheme.colors] if our [Int] parameter [index] is even or to the
+ * [JetsnackColors.gradient6_2] if it is odd.
+ *
+ * Our root composable is a [LazyRow] whose `state` argument is our [LazyListState] variable
+ * `rowState`, its `modifier` argument is our [Modifier] parameter [modifier], whose
+ * `horizontalArrangement` argument is a [Arrangement.spacedBy] that places its children spaced by
+ * 16.dp, and whose `contentPadding` argument is a [PaddingValues] whose `start` is 24.dp and whose
+ * `end` is 24.dp.
+ *
+ * In the [LazyListScope] `content` composable lambda of the [LazyRow] we have an
+ * [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [Snack] parameter [snacks],
+ * and in its [LazyItemScope] `itemContent` composable lambda we accept the index of the [Snack] in
+ * the [List] of [Snack] parameter [snacks] in the [Int] variable `index` and the [Snack] in the
+ * [Snack] variable `snack`, then for each of these [Snack] we call the [HighlightSnackItem]
+ * composable with its [Long] `snackCollectionId` argument our [Long] parameter [snackCollectionId],
+ * its [Snack] `snack` argument our current [Snack] variable `snack`, its `onSnackClick` argument our
+ * lambda parameter [onSnackClick], its `index` argument our [Int] parameter [index], its `gradient`
+ * argument our [List] of [Color] variable `gradient`, and its `scrollProvider` argument our lambda
+ * variable `scrollProvider`.
  *
  * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed.
  * @param index the index of the [SnackCollection] in the [LazyColumn] that our [SnackCollection]
  * Composable is being displayed in if it matters to its caller or the default of 0. We use it to
- * select different [List] of [Color] to be used as the `gradient` argument of all or our
- * [HighlightSnackItem]'s depending on where [index] is even or odd.
+ * select different [List] of [Color] to be used as the `gradient` argument of all of our
+ * [HighlightSnackItem]'s depending on whether [index] is even or odd.
+ * @param snacks the [List] of [Snack] that we are to display.
+ * @param onSnackClick the lambda that each [HighlightSnackItem] should call with the [Snack.id]
+ * of the [Snack] it is displaying and the [String] version of the [SnackCollection.id] of the
+ * [SnackCollection] being displayed.
+ * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 private fun HighlightedSnacks(
@@ -246,10 +280,10 @@ private fun HighlightedSnacks(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val rowState = rememberLazyListState()
-    val cardWidthWithPaddingPx = with(LocalDensity.current) { cardWidthWithPaddingPx }
+    val rowState: LazyListState = rememberLazyListState()
+    val cardWidthWithPaddingPx: Float = with(LocalDensity.current) { cardWidthWithPaddingPx }
 
-    val scrollProvider = {
+    val scrollProvider: () -> Float = {
         // Simple calculation of scroll distance for homogenous item types with the same width.
         val offsetFromStart = cardWidthWithPaddingPx * rowState.firstVisibleItemIndex
         offsetFromStart + rowState.firstVisibleItemScrollOffset
@@ -263,10 +297,10 @@ private fun HighlightedSnacks(
     LazyRow(
         state = rowState,
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 16.dp),
         contentPadding = PaddingValues(start = 24.dp, end = 24.dp)
     ) {
-        itemsIndexed(snacks) { index, snack ->
+        itemsIndexed(items = snacks) { index: Int, snack: Snack ->
             HighlightSnackItem(
                 snackCollectionId = snackCollectionId,
                 snack = snack,
@@ -279,6 +313,20 @@ private fun HighlightedSnacks(
     }
 }
 
+/**
+ * This [Composable] is used to display the [List] of [Snack] in [SnackCollection.snacks] if the
+ * [SnackCollection] Composable is called with its [Boolean] parameter `highlight` `false` or if
+ * the [SnackCollection.type] of the [SnackCollection] is _not_ [CollectionType.Highlight].
+ *
+ * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed.
+ * @param snacks the [List] of [Snack] that we are to display.
+ * @param onSnackClick the lambda that each [SnackItem] should call with the [Snack.id] of the
+ * [Snack] it is displaying and the [String] version of the [SnackCollection.id] of the
+ * [SnackCollection] being displayed.
+ * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ */
 @Composable
 private fun Snacks(
     snackCollectionId: Long,
@@ -290,8 +338,12 @@ private fun Snacks(
         modifier = modifier,
         contentPadding = PaddingValues(start = 12.dp, end = 12.dp)
     ) {
-        items(snacks) { snack ->
-            SnackItem(snack, snackCollectionId, onSnackClick)
+        items(items = snacks) { snack: Snack ->
+            SnackItem(
+                snack = snack,
+                snackCollectionId = snackCollectionId,
+                onSnackClick = onSnackClick
+            )
         }
     }
 }
