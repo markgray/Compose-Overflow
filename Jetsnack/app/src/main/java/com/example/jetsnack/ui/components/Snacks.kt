@@ -21,6 +21,7 @@ package com.example.jetsnack.ui.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -60,6 +61,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -268,7 +270,7 @@ fun SnackCollection(
  * @param onSnackClick the lambda that each [HighlightSnackItem] should call with the [Snack.id]
  * of the [Snack] it is displaying and the [String] version of the [SnackCollection.id] of the
  * [SnackCollection] being displayed.
- * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
  * contains no elements is used.
  */
@@ -317,13 +319,22 @@ private fun HighlightedSnacks(
  * This [Composable] is used to display the [List] of [Snack] in [SnackCollection.snacks] if the
  * [SnackCollection] Composable is called with its [Boolean] parameter `highlight` `false` or if
  * the [SnackCollection.type] of the [SnackCollection] is _not_ [CollectionType.Highlight].
+ * Our root composable is a [LazyRow] whose `modifier` argument is our [Modifier] parameter
+ * [modifier], and whose `contentPadding` argument is a [PaddingValues] that adds 12.dp padding
+ * to the `start` and 12.dp to the `end`. In the [LazyListScope] `content` composable lambda of the
+ * [LazyRow] we have an [LazyListScope.items] whose `items` argument is our [List] of [Snack]
+ * parameter [snacks], and in its [LazyItemScope] `itemContent` composable lambda we accept the
+ * [Snack] passed the lambda in our `snack` variable then for each of the [Snack] passed it the
+ * lambda composes a [SnackItem] whose [Snack] `snack` argument is our `snack` variable, whose
+ * `snackCollectionId` argument is [Snacks] parameter [snackCollectionId], and whose `onSnackClick`
+ * argument is [Snacks] lambda parameter [onSnackClick].
  *
  * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed.
  * @param snacks the [List] of [Snack] that we are to display.
  * @param onSnackClick the lambda that each [SnackItem] should call with the [Snack.id] of the
  * [Snack] it is displaying and the [String] version of the [SnackCollection.id] of the
  * [SnackCollection] being displayed.
- * @param modifier a [Modifier] instance that our user can use to modify our appearance and/or
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
  * contains no elements is used.
  */
@@ -349,7 +360,30 @@ private fun Snacks(
 }
 
 /**
+ * This is used by [Snacks] to display each of the [Snack] in its [List] of [Snack] parameter. Our
+ * root Composable is a [JetsnackSurface] whose `shape` argument is the [Shapes.medium] of our custom
+ * [MaterialTheme.shapes] (which is a [RoundedCornerShape] whose `size` is 20.dp), and whose `modifier`
+ * argument chains a [Modifier.padding] to our [Modifier] parameter [modifier] that adds 4.dp to the
+ * `start`, 4.dp to the `end` and 8.dp to the `bottom`. In its `content` composable lambda argument
+ * we initialize our [SharedTransitionScope] variable `val sharedTransitionScope` to the current
+ * [LocalSharedTransitionScope] or throw an [IllegalStateException] ("No sharedTransitionScope found").
+ * We initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the current
+ * [LocalNavAnimatedVisibilityScope] or throw an [IllegalStateException] ("No animatedVisibilityScope found")
  *
+ * Then `with` the `receiver` [SharedTransitionScope] variable `sharedTransitionScope` we Compose a
+ * [Column] whose `horizontalAlignment` argument is [Alignment.CenterHorizontally], and whose `modifier`
+ * argument is a [Modifier.clickable] whose `onClick` argument is a lambda that calls our lambda parameter
+ * [onSnackClick] with the [Snack.id] of our [Snack] parameter [snack], and the [String] version of our
+ * [Long] parameter [snackCollectionId], and to this is chained a [Modifier.padding] that adds 8.dp
+ * padding to all sides of the [Column].
+ *
+ * @param snack the [Snack] we are to display.
+ * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by [Snacks]
+ * @param onSnackClick the lambda that the Composable we compose should call with the [Snack.id] of the
+ * [Snack] it is displaying and the [String] version of our [snackCollectionId] parameter.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 fun SnackItem(
@@ -367,19 +401,19 @@ fun SnackItem(
         )
 
     ) {
-        val sharedTransitionScope = LocalSharedTransitionScope.current
+        val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
             ?: throw IllegalStateException("No sharedTransitionScope found")
-        val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+        val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
             ?: throw IllegalStateException("No animatedVisibilityScope found")
 
-        with(sharedTransitionScope) {
+        with(receiver = sharedTransitionScope) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .clickable(onClick = {
                         onSnackClick(snack.id, snackCollectionId.toString())
                     })
-                    .padding(8.dp)
+                    .padding(all = 8.dp)
             ) {
                 SnackImage(
                     imageRes = snack.imageRes,
