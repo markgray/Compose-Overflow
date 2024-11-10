@@ -22,10 +22,15 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionScope.ResizeMode
+import androidx.compose.animation.SharedTransitionScope.SharedContentState
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -375,7 +380,35 @@ private fun Snacks(
  * argument is a [Modifier.clickable] whose `onClick` argument is a lambda that calls our lambda parameter
  * [onSnackClick] with the [Snack.id] of our [Snack] parameter [snack], and the [String] version of our
  * [Long] parameter [snackCollectionId], and to this is chained a [Modifier.padding] that adds 8.dp
- * padding to all sides of the [Column].
+ * padding to all sides of the [Column]. In the [ColumnScope] `content` lambda argument of the [Column]
+ * we have:
+ *  - a [SnackImage] whose [Int] `imageRes` argument is the [Snack.imageRes] property of our [Snack]
+ *  parameter [snack] (the resource ID of the jpg to display), whose `elevation` argument is 1.dp,
+ *  whose `contentDescription` argument is `null`, and whose `modifier` argument is a [Modifier.size]
+ *  that sets its size to 120.dp, to which is chained a [SharedTransitionScope.sharedBounds] whose
+ *  `sharedContentState` argument is a remembered [SharedContentState] whose `key` is a
+ *  [SnackSharedElementKey] constructed with its `snackId` argument the [Snack.id] of [snack], whose
+ *  `origin` argument is the [String] version of [snackCollectionId], and whose `type` argument is
+ *  [SnackSharedElementType.Image], the `animatedVisibilityScope` argument of the
+ *  [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
+ *  and its `boundsTransform` argument is our global [BoundsTransform] property  [snackDetailBoundsTransform].
+ *  - a [Text] whose `text` argument is the [Snack.name] of our [Snack] parameter [snack], whose [TextStyle]
+ *  `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography], whose
+ *  [Color] argument `color` is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors],
+ *  and whose `modifier` argument is a [Modifier.padding] that adds 8.dp padding to the `top` of the
+ *  [Text], to which is chained a [Modifier.wrapContentWidth] that allows it to occupy its desired
+ *  width without regard to the incoming minimum width constraint, and finally in the [Modifier] chain
+ *  is a [SharedTransitionScope.sharedBounds] whose `sharedContentState` argument is a remembered
+ *  [SharedContentState] whose `key` is a [SnackSharedElementKey] constructed with its `snackId`
+ *  argument the [Snack.id] of [snack], whose `origin` argument is the [String] version of
+ *  [snackCollectionId], and whose `type` argument is [SnackSharedElementType.Title], the
+ *  `animatedVisibilityScope` argument of the [SharedTransitionScope.sharedBounds] is our
+ *  [AnimatedVisibilityScope] variable `animatedVisibilityScope`, its [EnterTransition] argument `enter`
+ *  is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring] spring, its [ExitTransition]
+ *  argument `exit` is a [fadeOut] whose `animationSpec` is our [nonSpatialExpressiveSpring] spring,
+ *  its [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale the stable
+ *  layout based on the animated size), and its `boundsTransform` argument is our global
+ *  [BoundsTransform] property  [snackDetailBoundsTransform].
  *
  * @param snack the [Snack] we are to display.
  * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by [Snacks]
@@ -420,9 +453,9 @@ fun SnackItem(
                     elevation = 1.dp,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(size = 120.dp)
                         .sharedBounds(
-                            rememberSharedContentState(
+                            sharedContentState = rememberSharedContentState(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
@@ -441,7 +474,7 @@ fun SnackItem(
                         .padding(top = 8.dp)
                         .wrapContentWidth()
                         .sharedBounds(
-                            rememberSharedContentState(
+                            sharedContentState = rememberSharedContentState(
                                 key = SnackSharedElementKey(
                                     snackId = snack.id,
                                     origin = snackCollectionId.toString(),
@@ -449,9 +482,9 @@ fun SnackItem(
                                 )
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
-                            enter = fadeIn(nonSpatialExpressiveSpring()),
-                            exit = fadeOut(nonSpatialExpressiveSpring()),
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(),
+                            enter = fadeIn(animationSpec = nonSpatialExpressiveSpring()),
+                            exit = fadeOut(animationSpec = nonSpatialExpressiveSpring()),
+                            resizeMode = ResizeMode.ScaleToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                 )
@@ -460,6 +493,25 @@ fun SnackItem(
     }
 }
 
+/**
+ * This is used by [HighlightedSnacks] to display each of the [Snack] in its [List] of [Snack]
+ * parameter.
+ *
+ * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by
+ * [HighlightedSnacks].
+ * @param snack the [Snack] we are to display.
+ * @param onSnackClick the lambda that the Composable we compose should call with the [Snack.id] of
+ * the [Snack] it is displaying and the [String] version of our [snackCollectionId] parameter.
+ * @param index the index of our position in the [List] of [Snack] that [HighlightedSnacks] is
+ * reading our [Snack] parameter [snack] from.
+ * @param gradient the [List] of [Color] we should use as the `colors` argument of our
+ * [Modifier.offsetGradientBackground] used to draw a backgound behind our [SnackImage].
+ * @param scrollProvider lambda that provides a [Float] that is a simple calculation of scroll
+ * distance for homogenous item types with the same width.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ */
 @Composable
 private fun HighlightSnackItem(
     snackCollectionId: Long,
@@ -547,7 +599,7 @@ private fun HighlightSnackItem(
                                 boundsTransform = snackDetailBoundsTransform,
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
-                                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                                resizeMode = ResizeMode.ScaleToBounds()
                             )
                             .height(100.dp)
                             .fillMaxWidth()
@@ -609,7 +661,7 @@ private fun HighlightSnackItem(
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            resizeMode = ResizeMode.ScaleToBounds()
                         )
                         .wrapContentWidth()
                 )
@@ -633,7 +685,7 @@ private fun HighlightSnackItem(
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            resizeMode = ResizeMode.ScaleToBounds()
                         )
                         .wrapContentWidth()
                 )
@@ -672,9 +724,9 @@ fun SnackImage(
     ) {
 
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageRes)
-                .crossfade(true)
+            model = ImageRequest.Builder(context = LocalContext.current)
+                .data(data = imageRes)
+                .crossfade(enable = true)
                 .build(),
             placeholder = debugPlaceholder(debugPreview = R.drawable.placeholder),
             contentDescription = contentDescription,
