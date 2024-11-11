@@ -29,8 +29,10 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionScope.OverlayClip
 import androidx.compose.animation.SharedTransitionScope.ResizeMode
 import androidx.compose.animation.SharedTransitionScope.SharedContentState
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -75,6 +77,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -495,7 +498,41 @@ fun SnackItem(
 
 /**
  * This is used by [HighlightedSnacks] to display each of the [Snack] in its [List] of [Snack]
- * parameter.
+ * parameter. We start by initialize our [SharedTransitionScope] variable `val sharedTransitionScope`
+ * to the current [LocalSharedTransitionScope] or throw [IllegalStateException] ("No Scope found")
+ * if it is `null`. We initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope`
+ * to the current [LocalNavAnimatedVisibilityScope] or throw [IllegalStateException] ("No Scope found")
+ * if it is `null`. Then `with` [SharedTransitionScope] variable `sharedTransitionScope` as the
+ * receiver we execute a lambda `block` wherein we:
+ *  - Initialize our animated [Dp] variable `val roundedCornerAnimation` to a [Transition.animateDp]
+ *  of `animatedVisibilityScope` whose `label` is "rounded corner" and whose [EnterExitState] fed
+ *  to the `targetValueByState` lambda argument choses 0.dp for [EnterExitState.PreEnter], 20.dp
+ *  for [EnterExitState.Visible] and 20.dp for [EnterExitState.PostExit].
+ *
+ * Then our root Composable is a [JetsnackCard] whose arguments are:
+ *  - `elevation` 0.dp (the [Dp] to use as the `elevation` argument of its [JetsnackSurface])
+ *  - `shape` is a [RoundedCornerShape] whose `size` is our animated [Dp] variable
+ *  `roundedCornerAnimation` (the [Shape] to use as the `shape` argument of its [JetsnackSurface])
+ *  - `modifier` we chain a [Modifier.padding] that adds 16.dp padding to its `bottom` to our
+ *  [Modifier] parameter [modifier], followed by a [SharedTransitionScope.sharedBounds] whose
+ *  `sharedContentState` argument is a remembered [SharedContentState] whose `key` is a
+ *  [SnackSharedElementKey] constructed with its `snackId` argument the [Snack.id] of [snack], whose
+ *  `origin` argument is the [String] version of [snackCollectionId], and whose `type` argument is
+ *  [SnackSharedElementType.Bounds], the `animatedVisibilityScope` argument of the
+ *  [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
+ *  its `boundsTransform` argument is our global [BoundsTransform] property  [snackDetailBoundsTransform],
+ *  its `clipInOverlayDuringTransition` argument is an [OverlayClip] whose `clipShape` is a
+ *  [RoundedCornerShape] whose `size` is our animated [Dp] variable `roundedCornerAnimation` (used
+ *  to specify the clipping for when the shared element is going through an active transition towards
+ *  a new target bounds), the `enter` argument of the [SharedTransitionScope.sharedBounds] is [fadeIn]
+ *  and its `exit` argument is [fadeOut]. And to this is chained a [Modifier.size] whose `width` is
+ *  our constant [HighlightCardWidth] (170.dp), and whose `height` is 256.dp, and at the end of the
+ *  chain is a [Modifier.border] whose `width` argument is 1.dp, whose `color` argument is a copy
+ *  of the [JetsnackColors.uiBorder] of our custom [JetsnackTheme.colors] whoe `alpha` is 0.12f, and
+ *  whose `shape` argument is a [RoundedCornerShape] whose `size` is our animated [Dp] variable
+ *  `roundedCornerAnimation`.
+ *
+ * In the `content` Composable lambda argument of the [JetsnackCard]
  *
  * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by
  * [HighlightedSnacks].
@@ -522,12 +559,12 @@ private fun HighlightSnackItem(
     scrollProvider: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
     with(sharedTransitionScope) {
-        val roundedCornerAnimation by animatedVisibilityScope.transition
+        val roundedCornerAnimation: Dp by animatedVisibilityScope.transition
             .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
                 when (enterExit) {
                     EnterExitState.PreEnter -> 0.dp
@@ -537,7 +574,7 @@ private fun HighlightSnackItem(
             }
         JetsnackCard(
             elevation = 0.dp,
-            shape = RoundedCornerShape(roundedCornerAnimation),
+            shape = RoundedCornerShape(size = roundedCornerAnimation),
             modifier = modifier
                 .padding(bottom = 16.dp)
                 .sharedBounds(
@@ -551,7 +588,7 @@ private fun HighlightSnackItem(
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = snackDetailBoundsTransform,
                     clipInOverlayDuringTransition = OverlayClip(
-                        RoundedCornerShape(
+                        clipShape = RoundedCornerShape(
                             roundedCornerAnimation
                         )
                     ),
