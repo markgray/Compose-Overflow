@@ -40,6 +40,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -411,7 +412,7 @@ private fun Snacks(
  *  argument `exit` is a [fadeOut] whose `animationSpec` is our [nonSpatialExpressiveSpring] spring,
  *  its [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale the stable
  *  layout based on the animated size), and its `boundsTransform` argument is our global
- *  [BoundsTransform] property  [snackDetailBoundsTransform].
+ *  [BoundsTransform] property [snackDetailBoundsTransform].
  *
  * @param snack the [Snack] we are to display.
  * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by [Snacks]
@@ -532,7 +533,82 @@ fun SnackItem(
  *  whose `shape` argument is a [RoundedCornerShape] whose `size` is our animated [Dp] variable
  *  `roundedCornerAnimation`.
  *
- * In the `content` Composable lambda argument of the [JetsnackCard]
+ * In the `content` Composable lambda argument of the [JetsnackCard] we have a [Column] whose
+ * `modifier` argument is a [Modifier.clickable] whose `onClick` argument calls our [onSnackClick]
+ * lambda parameter with the [Snack.id] of our [Snack] parameter [snack] and the [String] version of
+ * our [Long] parameter [snackCollectionId], and to this is chained a [Modifier.fillMaxSize] that
+ * causes the [Column] to occupy its entire incoming size. In the [ColumnScope] composable lambda
+ * argument of the [Column] we have a:
+ *  - [Box] whose `modifier` argument is a [Modifier.height] that sets its `height` to 160.dp, with
+ *  a [Modifier.fillMaxWidth] chained to that to cause it to occupy its entire incoming width
+ *  constraint. In the [BoxScope] `content` composable lambda argument it has a [Box] with a
+ *  [SnackImage] on top of it.
+ *  - In the inner [Box] the `modifier` argument is a [SharedTransitionScope.sharedBounds] whose
+ *  `sharedContentState` argument is a remembered [SharedContentState] whose `key` is a
+ *  [SnackSharedElementKey] constructed with its `snackId` argument the [Snack.id] of [snack], whose
+ *  `origin` argument is the [String] version of [snackCollectionId], and whose `type` argument is
+ *  [SnackSharedElementType.Background], the `animatedVisibilityScope` argument of the
+ *  [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
+ *  its `boundsTransform` argument is our global [BoundsTransform] property  [snackDetailBoundsTransform],
+ *  its [EnterTransition] argument `enter` is a [fadeIn] whose `animationSpec` is our
+ *  [nonSpatialExpressiveSpring] spring, its [ExitTransition] argument `exit` is a [fadeOut] whose
+ *  `animationSpec` is our [nonSpatialExpressiveSpring] spring, and its [ResizeMode] argument
+ *  `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale the stable layout based on the animated
+ *  size).
+ *  - The [SnackImage] on top of this background [Box] has as its `imageRes` argument the [Snack.imageRes]
+ *  resource ID of our [Snack] parameter [snack], its `contentDescription` argument is `null`, and its
+ *  `modifier` argument is a [SharedTransitionScope.sharedBounds] whose `sharedContentState` argument
+ *  is a remembered [SharedContentState] whose `key` is a [SnackSharedElementKey] constructed with
+ *  its `snackId` argument the [Snack.id] of [snack], whose `origin` argument is the [String] version
+ *  of [snackCollectionId], and whose `type` argument is [SnackSharedElementType.Image], the
+ *  `animatedVisibilityScope` argument of the [SharedTransitionScope.sharedBounds] is our
+ *  [AnimatedVisibilityScope] variable `animatedVisibilityScope`, its [EnterTransition] argument
+ *  `enter` is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring] spring, its
+ *  [ExitTransition] argument `exit` is a [fadeOut] whose `animationSpec` is our [nonSpatialExpressiveSpring]
+ *  spring, and its `boundsTransform` argument is our global [BoundsTransform] property
+ *  [snackDetailBoundsTransform]. To the [Modifier] is chained a [BoxScope.align] that aligns it to
+ *  the [Alignment.BottomCenter], and to this is chained a [Modifier.size] that sets its `size` to
+ *  120.dp.
+ *
+ *  - Next in the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.height] that sets
+ *  its `height` to 8.dp
+ *  - Next in the [Column] is a [Text] whose `text` argument is the [Snack.name] of our [Snack]
+ *  parameter [snack], whose `maxLines` argument is 1, whose `overflow` argument is [TextOverflow.Ellipsis]
+ *  whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textSecondary]
+ *  of our custom [JetsnackTheme.colors], and its `modifier` argument is a [Modifier.padding] that
+ *  adds 16.dp  padding to each `horizontal` side, with chained to that a [SharedTransitionScope.sharedBounds]
+ *  whose `sharedContentState` argument is a remembered [SharedContentState] whose `key` is a
+ *  [SnackSharedElementKey] constructed with its `snackId` argument the [Snack.id] of [snack], whose
+ *  `origin` argument is the [String] version of [snackCollectionId], and whose `type` argument is
+ *  [SnackSharedElementType.Title], the `animatedVisibilityScope` argument of the
+ *  [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
+ *  its [EnterTransition] argument `enter` is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring]
+ *  spring, its [ExitTransition] argument `exit` is a [fadeOut] whose `animationSpec` is our
+ *  [nonSpatialExpressiveSpring] spring, its `boundsTransform` argument is our global [BoundsTransform]
+ *  property, and ts [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale
+ *  the stable layout based on the animated size), and at the end of the [Modifier] chain is a
+ *  [Modifier.wrapContentWidth] that allows the [Text] to measure at its desired width without regard
+ *  for the incoming minimum width constraint.
+ *  - Next in the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.height] that sets
+ *  its `height` to 4.dp
+ *  - Next in the [Column] is a [Text] whose `text` argument is the [Snack.tagline] of our [Snack]
+ *  parameter [snack], whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textHelp]
+ *  of our custom [JetsnackTheme.colors], and its `modifier` argument is a [Modifier.padding] that
+ *  adds 16.dp  padding to each `horizontal` side, with chained to that a [SharedTransitionScope.sharedBounds]
+ *  whose `sharedContentState` argument is a remembered [SharedContentState] whose `key` is a
+ *  [SnackSharedElementKey] constructed with its `snackId` argument the [Snack.id] of [snack], whose
+ *  `origin` argument is the [String] version of [snackCollectionId], and whose `type` argument is
+ *  [SnackSharedElementType.Tagline], the `animatedVisibilityScope` argument of the
+ *  [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
+ *  its [EnterTransition] argument `enter` is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring]
+ *  spring, its [ExitTransition] argument `exit` is a [fadeOut] whose `animationSpec` is our
+ *  [nonSpatialExpressiveSpring] spring, its `boundsTransform` argument is our global [BoundsTransform]
+ *  property, and ts [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale
+ *  the stable layout based on the animated size), and at the end of the [Modifier] chain is a
+ *  [Modifier.wrapContentWidth] that allows the [Text] to measure at its desired width without regard
+ *  for the incoming minimum width constraint.
  *
  * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by
  * [HighlightedSnacks].
@@ -619,7 +695,7 @@ private fun HighlightSnackItem(
             ) {
                 Box(
                     modifier = Modifier
-                        .height(160.dp)
+                        .height(height = 160.dp)
                         .fillMaxWidth()
                 ) {
                     Box(
@@ -638,7 +714,7 @@ private fun HighlightSnackItem(
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
                                 resizeMode = ResizeMode.ScaleToBounds()
                             )
-                            .height(100.dp)
+                            .height(height = 100.dp)
                             .fillMaxWidth()
                             .offsetGradientBackground(
                                 colors = gradient,
@@ -672,12 +748,12 @@ private fun HighlightSnackItem(
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 boundsTransform = snackDetailBoundsTransform
                             )
-                            .align(Alignment.BottomCenter)
-                            .size(120.dp)
+                            .align(alignment = Alignment.BottomCenter)
+                            .size(size = 120.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(height = 8.dp))
                 Text(
                     text = snack.name,
                     maxLines = 1,
@@ -702,7 +778,7 @@ private fun HighlightSnackItem(
                         )
                         .wrapContentWidth()
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(height = 4.dp))
 
                 Text(
                     text = snack.tagline,
