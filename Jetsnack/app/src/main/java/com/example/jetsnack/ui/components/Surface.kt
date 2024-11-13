@@ -53,15 +53,15 @@ fun JetsnackSurface(
     Box(
         modifier = modifier
             .shadow(elevation = elevation, shape = shape, clip = false)
-            .zIndex(elevation.value)
+            .zIndex(zIndex = elevation.value)
             .then(if (border != null) Modifier.border(border = border, shape = shape) else Modifier)
             .background(
-                color = getBackgroundColorForElevation(color, elevation),
+                color = getBackgroundColorForElevation(color = color, elevation = elevation),
                 shape = shape
             )
-            .clip(shape)
+            .clip(shape = shape)
     ) {
-        CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+        CompositionLocalProvider(value = LocalContentColor provides contentColor, content = content)
     }
 }
 
@@ -71,7 +71,7 @@ private fun getBackgroundColorForElevation(color: Color, elevation: Dp): Color {
         // JetsnackTheme.colors.isDark //&&
         // color == JetsnackTheme.colors.uiBackground
     ) {
-        color.withElevation(elevation)
+        color.withElevation(elevation = elevation)
     } else {
         color
     }

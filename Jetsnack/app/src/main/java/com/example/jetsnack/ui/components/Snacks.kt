@@ -808,11 +808,19 @@ private fun HighlightSnackItem(
 }
 
 /**
+ * This is used as the `placeholder` argument of the [AsyncImage] in the [SnackImage] composable.
+ * If the current [LocalInspectionMode] is `true` (the composition is composed inside a Inspectable
+ * component, ie. in a Preview) we return the [Painter] returned by a call to [painterResource] for
+ * our [Int] parameter [debugPreview], otherwise we return `null`.
  *
+ * @param debugPreview the resource ID of the jpg that is to be displayed while the [AsyncImage] in
+ * [SnackImage] is loading the image to be displayed. Our caller [SnackImage] passes us the resource
+ * ID `R.drawable.placeholder` (a bowl of popcorn).
+ * @return A [Painter] that is displayed while [AsyncImage] is loading the image it was called to load
+ * when we are used in a Preview, otherwise `null`.
  */
 @Composable
-fun
-    debugPlaceholder(@DrawableRes debugPreview: Int): Painter? =
+fun debugPlaceholder(@DrawableRes debugPreview: Int): Painter? =
     if (LocalInspectionMode.current) {
         painterResource(id = debugPreview)
     } else {
@@ -820,7 +828,35 @@ fun
     }
 
 /**
+ * This is used to render a jpg of the [Snack] being displayed. Our root Composable is a
+ * [JetsnackSurface] whose `elevation` argument is our [elevation] parameter, whose `shape` argument
+ * is [CircleShape], and whose `modifier` argument is our [Modifier] parameter [modifier]. In the
+ * `content` Composable lambda argument we have an [AsyncImage] whose arguments are:
+ *  - `model` is the [ImageRequest] that an [ImageRequest.Builder] whose `context` is the `current`
+ *  [LocalContext] builds using [ImageRequest.Builder.data] with its `data` argument our [Int]
+ *  parameter [imageRes] (Set the data to load), and using [ImageRequest.Builder.crossfade] with
+ *  `enable` argument `true` (Enables a crossfade animation when a request completes successfully).
+ *  - `placeholder` we pass a [debugPlaceholder] whose `debugPreview` argument is the resource ID
+ *  `R.drawable.placeholder` (a jpg of a bowl of popcorn) [AsyncImage] will display the [Painter]
+ *  that [debugPlaceholder] returns while the image is downloading (note the [debugPlaceholder] only
+ *  returns a non-`null` value when we are used in a Preview).
+ *  - `contentDescription` we pass our [String] parameter [contentDescription] (Text used by
+ *  accessibility services to describe what this image represents, always `null` in our case).
+ *  - `modifier` we pass a [Modifier.fillMaxSize] that causes the [AsyncImage] to occupy its entire
+ *  incoming size constraint.
+ *  - `contentScale` we pass [ContentScale.Crop] causing the [AsyncImage] to Scale the source
+ *  uniformly (maintaining the source's aspect ratio) so that both dimensions (width and height)
+ *  of the source will be equal to or larger than the corresponding dimension of the destination.
  *
+ * @param imageRes the resource ID of the jpg we are to render.
+ * @param contentDescription a [String] to be used as the `contentDescription` argument of our
+ * [AsyncImage] (Text used by accessibility services to describe what the image represents). All of
+ * our callers pass us `null` (other Composables that we a part of provide a `contentDescription`
+ * for the user).
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. All of our callers pass us complex chains of [Modifier]'s.
+ * @param elevation the [Dp] value to use as the `elevation` argument of our [JetsnackSurface].
+ * Only [SnackItem] passes us a value (1.dp), and our default of 0.dp is used for all the others.
  */
 @Composable
 fun SnackImage(
@@ -850,7 +886,7 @@ fun SnackImage(
 }
 
 /**
- *
+ * Three Previews of our [HighlightSnackItem]
  */
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
@@ -871,7 +907,8 @@ fun SnackCardPreview() {
 }
 
 /**
- *
+ * A wrapper that provides a [CompositionLocalProvider] to supply a [SharedTransitionLayout] for use
+ * in Previews.
  */
 @Composable
 fun JetsnackPreviewWrapper(content: @Composable () -> Unit) {
