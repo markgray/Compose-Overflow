@@ -89,6 +89,9 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlin.math.roundToInt
 
+/**
+ * Stateful override of our stateless `Cart` Composable.
+ */
 @Composable
 fun Cart(
     onSnackClick: (Long, String) -> Unit,
