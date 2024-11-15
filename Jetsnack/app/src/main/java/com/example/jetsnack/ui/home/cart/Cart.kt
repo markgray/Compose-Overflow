@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -52,6 +54,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -73,10 +76,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
 import com.example.jetsnack.model.OrderLine
+import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
 import com.example.jetsnack.model.SnackRepo
+import com.example.jetsnack.ui.MainContainer
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
@@ -87,10 +93,34 @@ import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
+import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.roundToInt
 
 /**
- * Stateful override of our stateless `Cart` Composable.
+ * Stateful override of our stateless `Cart` Composable. We start by initialize our [State] wrapped
+ * [List] of [OrderLine] variable `val orderLines` by using the [StateFlow.collectAsStateWithLifecycle]
+ * method of the [StateFlow] wrapped [List] of [OrderLine] property [CartViewModel.orderLines] of our
+ * [CartViewModel] parameter [viewModel]. Then we initialize and remember our [SnackCollection] variable
+ * `val inspiredByCart` to the [SnackCollection] returned by the [SnackRepo.getInspiredByCart] method.
+ * Our root Composable is then the stateless override of [Cart] which we call with the arguments:
+ *  - `orderLines` our [State] wrapped [List] of [OrderLine] variable `orderLines`
+ *  - `removeSnack` a function reference to the [CartViewModel.removeSnack] method of our
+ *  [CartViewModel] parameter [viewModel].
+ *  - `increaseItemCount` a function reference to the [CartViewModel.increaseSnackCount] method of
+ *  our [CartViewModel] parameter [viewModel].
+ *  - `decreaseItemCount`  a function reference to the [CartViewModel.decreaseSnackCount] method of
+ *  our [CartViewModel] parameter [viewModel].
+ *  - `inspiredByCart` our [SnackCollection] variable `inspiredByCart`.
+ *  - `onSnackClick` our lambda taking a [Long] and a [String] parameter [onSnackClick].
+ *
+ * @param onSnackClick a lambda taking a [Long] and a [String] that a Composable holding a [Snack]
+ * should call with the [Snack.id] of the [Snack] and a [String] identifying the [SnackCollection]
+ * it is part of whenever the Composable is clicked.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [modifier] parameter traces back to [MainContainer] where a [Modifier.padding]
+ * with the [PaddingValues] that are passed by [JetsnackScaffold] to its `content` lambda is
+ * chained to a [Modifier.consumeWindowInsets] that consumes those [PaddingValues] as insets.
+ * @param viewModel the [CartViewModel] for the app.
  */
 @Composable
 fun Cart(
@@ -98,8 +128,8 @@ fun Cart(
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = viewModel(factory = CartViewModel.provideFactory())
 ) {
-    val orderLines by viewModel.orderLines.collectAsStateWithLifecycle()
-    val inspiredByCart = remember { SnackRepo.getInspiredByCart() }
+    val orderLines: List<OrderLine> by viewModel.orderLines.collectAsStateWithLifecycle()
+    val inspiredByCart: SnackCollection = remember { SnackRepo.getInspiredByCart() }
     Cart(
         orderLines = orderLines,
         removeSnack = viewModel::removeSnack,
@@ -111,6 +141,24 @@ fun Cart(
     )
 }
 
+/**
+ * The stateless override of `Cart` (which is called by the stateful override).
+ *
+ * @param orderLines the [List] of [OrderLine] that our [CartContent] Composable should display.
+ * @param removeSnack a lambda that should be called with the [Snack.id] when the user indicates that
+ * they wish to remove a [Snack] from their order.
+ * @param increaseItemCount a lambda that should be called with the [Snack.id] when the user
+ * indicates that they want to add 1 more to their order of a [Snack].
+ * @param decreaseItemCount a lambda that should be called with the [Snack.id] when the user
+ * indicates that they want to subtract 1 from their order of a [Snack].
+ * @param inspiredByCart a [SnackCollection] that is "inspired" by the contents of the cart.
+ * @param onSnackClick a lambda that should be called with the [Snack.id] of the [Snack] that the
+ * user clicks on and a [String] describing the collection it belongs to.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [modifier] parameter traces back to [MainContainer] where a [Modifier.padding]
+ * with the [PaddingValues] that are passed by [JetsnackScaffold] to its `content` lambda is
+ * chained to a [Modifier.consumeWindowInsets] that consumes those [PaddingValues] as insets.
+ */
 @Composable
 fun Cart(
     orderLines: List<OrderLine>,
@@ -293,6 +341,9 @@ private fun SwipeDismissItemBackground(progress: Float) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun CartItem(
     orderLine: OrderLine,
@@ -302,7 +353,7 @@ fun CartItem(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val snack = orderLine.snack
+    val snack: Snack = orderLine.snack
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
@@ -406,6 +457,9 @@ fun CartItem(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun SummaryItem(
     subtotal: Long,

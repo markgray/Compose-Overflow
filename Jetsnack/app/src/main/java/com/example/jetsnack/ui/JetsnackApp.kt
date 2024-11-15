@@ -28,6 +28,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -155,7 +156,7 @@ fun MainContainer(
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
-    ) { padding ->
+    ) { padding: PaddingValues ->
         NavHost(
             navController = nestedNavController.navController,
             startDestination = HomeSections.FEED.route
@@ -163,8 +164,8 @@ fun MainContainer(
             addHomeGraph(
                 onSnackSelected = onSnackSelected,
                 modifier = Modifier
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
+                    .padding(paddingValues = padding)
+                    .consumeWindowInsets(paddingValues = padding)
             )
         }
     }
