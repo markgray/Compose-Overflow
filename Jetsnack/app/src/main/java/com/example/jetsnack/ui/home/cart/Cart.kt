@@ -23,6 +23,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -142,7 +143,26 @@ fun Cart(
 }
 
 /**
- * The stateless override of `Cart` (which is called by the stateful override).
+ * The stateless override of `Cart` (which is called by the stateful override). Our root Composable
+ * is a [JetsnackSurface] whose `modifier` argument chains a [Modifier.fillMaxSize] to our [Modifier]
+ * parameter [modifier] (causes it to occupy its entire incoming size constraints). In its `content`
+ * Composable lambda argument we have a [Box] whose `modifier` argument is a [Modifier.fillMaxSize],
+ * and in its [BoxScope] `content` lambda argument we have three Composables:
+ *  - A [CartContent] whose `orderLines` argument is our [List] of [OrderLine] parameter [orderLines],
+ *  whose `removeSnack` argument is our lambda taking [Long] parameter [removeSnack], whose
+ *  `increaseItemCount` argument is our lambda taking [Long] parameter [increaseItemCount], whose
+ *  `decreaseItemCount` argument is our lambda taking [Long] parameter [decreaseItemCount], whose
+ *  `inspiredByCart` argument is our [SnackCollection] parameter [inspiredByCart], whose `onSnackClick`
+ *  argument is our lambda taking [Long] and [String] parameter [onSnackClick], and whose `modifier`
+ *  argument is a [BoxScope.align] whose `alignment` is a [Alignment.TopCenter] that aligns the root
+ *  [LazyColumn] Composable of [CartContent] to the top center of the [Box] (note that the first
+ *  `item` in the [LazyColumn] contains a [Spacer] which compensates for the fact that the [DestinationBar]
+ *  is composed on top of the [CartContent]).
+ *  - A [DestinationBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` is a
+ *  [Alignment.TopCenter] that aligns it to the top center of the [Box] (on top of the [CartContent]).
+ *  - A [CheckoutBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` is a
+ *  [Alignment.BottomCenter] that aligns it to the bottom center of the [Box] (on top of the
+ *  [CartContent]).
  *
  * @param orderLines the [List] of [OrderLine] that our [CartContent] Composable should display.
  * @param removeSnack a lambda that should be called with the [Snack.id] when the user indicates that
@@ -178,14 +198,35 @@ fun Cart(
                 decreaseItemCount = decreaseItemCount,
                 inspiredByCart = inspiredByCart,
                 onSnackClick = onSnackClick,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(alignment = Alignment.TopCenter)
             )
-            DestinationBar(modifier = Modifier.align(Alignment.TopCenter))
-            CheckoutBar(modifier = Modifier.align(Alignment.BottomCenter))
+            DestinationBar(modifier = Modifier.align(alignment = Alignment.TopCenter))
+            CheckoutBar(modifier = Modifier.align(alignment = Alignment.BottomCenter))
         }
     }
 }
 
+/**
+ * This Composable displays the "current contents" of the cart (our [List] of [OrderLine] parameter
+ * [orderLines]), a [SummaryItem] that displays the total price of the [Snack]'s in the cart, and
+ * a [SnackCollection] displaying the [Snack]'s in our [SnackCollection] parameter [inspiredByCart].
+ *
+ * @param orderLines the [List] of [OrderLine] that represents the [Snack]'s the user has "ordered"
+ * and the number of them that they have ordered.
+ * @param removeSnack a lambda that should be called with the [Snack.id] when the user indicates that
+ * they wish to remove a [Snack] from their order.
+ * @param increaseItemCount a lambda that should be called with the [Snack.id] when the user
+ * indicates that they want to add 1 more to their order of a [Snack].
+ * @param decreaseItemCount a lambda that should be called with the [Snack.id] when the user
+ * indicates that they want to subtract 1 from their order of a [Snack].
+ * @param inspiredByCart a [SnackCollection] that is "inspired" by the contents of the cart.
+ * @param onSnackClick a lambda that should be called with the [Snack.id] of the [Snack] that the
+ * user clicks on and a [String] describing the collection it belongs to.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our [modifier] parameter traces back to [MainContainer] where a [Modifier.padding]
+ * with the [PaddingValues] that are passed by [JetsnackScaffold] to its `content` lambda is
+ * chained to a [Modifier.consumeWindowInsets] that consumes those [PaddingValues] as insets.
+ */
 @Composable
 private fun CartContent(
     orderLines: List<OrderLine>,
@@ -224,7 +265,7 @@ private fun CartContent(
                     .wrapContentHeight()
             )
         }
-        items(orderLines, key = { it.snack.id }) { orderLine ->
+        items(items = orderLines, key = { it.snack.id }) { orderLine ->
             SwipeDismissItem(
                 modifier = Modifier.animateItem(
                     fadeInSpec = itemAnimationSpecFade,
