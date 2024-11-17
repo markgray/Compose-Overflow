@@ -16,7 +16,10 @@
 
 package com.example.jetsnack.ui.home.cart
 
+import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Resources
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -44,6 +47,8 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -54,17 +59,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -92,6 +100,7 @@ import com.example.jetsnack.ui.home.DestinationBar
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 import kotlinx.coroutines.flow.StateFlow
@@ -210,6 +219,77 @@ fun Cart(
  * This Composable displays the "current contents" of the cart (our [List] of [OrderLine] parameter
  * [orderLines]), a [SummaryItem] that displays the total price of the [Snack]'s in the cart, and
  * a [SnackCollection] displaying the [Snack]'s in our [SnackCollection] parameter [inspiredByCart].
+ * We start by initializing our [Resources] variable `val resources` to the [Context.getResources]
+ * of the current [LocalContext], then initialize and remember our [String] variable
+ * `val snackCountFormattedString` to the [String] formed by using the format string with resource
+ * ID `R.plurals.cart_order_count` to format the [List.size] of our [List] of [OrderLine] parameter
+ * [orderLines] using the [Resources.getQuantityString] method of `resources`. Next we initialize
+ * our [SpringSpec] of [Float] variable `val itemAnimationSpecFade` to a [nonSpatialExpressiveSpring],
+ * and initialize our [SpringSpec] of [IntOffset] variable `val itemPlacementSpec` to a
+ * [spatialExpressiveSpring].
+ *
+ * Our root Composable is a [LazyColumn] whose `modifier` argument is our [Modifier] parameter
+ * [modifier] and in its [LazyListScope] `content` Composable lambda argument we have:
+ *  - an [LazyListScope.item] whose key is the constant string "title", and in its [LazyItemScope]
+ *  Composable lambda argument we have:
+ *
+ *  1. a [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight] whose `insets`
+ *  argument is the [WindowInsets.Companion.statusBars] with an additional [WindowInsets] whose
+ *  `top` is 56.dp.
+ *
+ *  2. a [Text] whose `text` is the [String] that is formatted using the format [String] with resouce
+ *  ID `R.string.cart_order_header` ("Order (%1s)") with our [String] variable `snackCountFormattedString`
+ *  as the substituted value. The [TextStyle] `style` argument of the [Text] is the [Typography.titleLarge]
+ *  of our custom [MaterialTheme.typography], its [Color] `color` argument is the [JetsnackColors.brand]
+ *  of our custom [JetsnackTheme.colors], its `maxLines` argument is 1, its `overflow` argument is
+ *  [TextOverflow.Ellipsis] (uses an ellipsis to indicate that the text has overflowed), and its
+ *  `modifier` argument is a [Modifier.heightIn] whose `min` is 56.dp with a [Modifier.padding] chained
+ *  to that which adds 24.dp to each `horizontal` side and 4.dp to each `vertical` side, and at the
+ *  end of the chain is a [Modifier.wrapContentHeight] that allows it to measure at its desired height.
+ *
+ *  - Next in the [LazyColumn] is a [LazyListScope.items] whose `items` argument is our [List] of
+ *  [OrderLine] parameter [orderLines], and whose `key` argument is the [Snack.id] of the
+ *  [OrderLine.snack] that is currently being composed in its `itemContent` [LazyItemScope] composable
+ *  lambda argument. In the `itemContent` [LazyItemScope] composable lambda argument accept the
+ *  [OrderLine] passed the lambda in our `orderLine` variable. Our root Composable is a
+ *  [SwipeDismissItem] (Holds the Swipe to dismiss composable, its animation and the current state)
+ *  whose `modifier` argument is a [LazyItemScope.animateItem] whose `fadeInSpec` argument is our
+ *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose `fadeOutSpec` argument is our
+ *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, and whose `placementSpec` argument is
+ *  our [SpringSpec] of [IntOffset] variable `itemPlacementSpec`. The `background` argument is a
+ *  lambda which accepts the [Float] it is passed in its `progress` variable then Composes our
+ *  [SwipeDismissItemBackground] Composable with its `progress` argument the [Float] passed to the
+ *  `progress` variable of the lambda. In the `content` Composable lambda argment of the
+ *  [SwipeDismissItem] we have a [CartItem] whose `orderLine` argument is the current [OrderLine] in
+ *  the `orderLine` variable passed by [LazyListScope.items] to its `itemContent` lambda argument,
+ *  whose `removeSnack` argument is the [removeSnack] lambda parameter of [CartContent], whose
+ *  `increaseItemCount` argument is the [increaseItemCount] lambda parameter of [CartContent], whose
+ *  `decreaseItemCount` argument is the [decreaseItemCount] lambda parameter of [CartContent], and
+ *  whose `onSnackClick` argument is the [onSnackClick] lambda parameter of [CartContent].
+ *
+ *  - Next in the [LazyColumn] is a [LazyListScope.item] whose `key` argument is the constant [String]
+ *  "summary", and in its [LazyItemScope] `content` lambda argument we have a [SummaryItem] whose
+ *  `modifier` argument is a [LazyItemScope.animateItem] whose `fadeInSpec` argument is our
+ *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose `fadeOutSpec` argument is our
+ *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, and whose `placementSpec` argument is
+ *  our [SpringSpec] of [IntOffset] variable `itemPlacementSpec`. The [Long] `subtotal` argument is
+ *  is the [List.sumOf] the [Snack.price] of the [OrderLine.snack]'s times the [OrderLine.count] of
+ *  all of the [OrderLine] in our [List] of [OrderLine] parameter [orderLines], and the `shippingCosts`
+ *  argument is the constant 369.
+ *
+ *  - Last in the [LazyColumn] is a [LazyListScope.item] whose `key` argument is the constant [String]
+ *  "inspiredByCart", and in its [LazyItemScope] `content` lambda argument we have:
+ *
+ *  1. a [SnackCollection] whose `modifier` argument is a [LazyItemScope.animateItem] whose
+ *  `fadeInSpec` argument is our [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose
+ *  `fadeOutSpec` argument is our [SpringSpec] of [Float] variable `itemAnimationSpecFade`, and
+ *  whose `placementSpec` argument is our [SpringSpec] of [IntOffset] variable `itemPlacementSpec`.
+ *  The `snackCollection` argument is the [SnackCollection] parameter [inspiredByCart] of [CartContent],
+ *  the `onSnackClick` argument is the [onSnackClick] lambda parameter of [CartContent], and the
+ *  `highlight` argument is `false`.
+ *
+ *  2. Below the [SnackCollection] is a [Spacer] whose `modifier` argument is a [Modifier.height]
+ *  that set its `height` to 56.dp.
  *
  * @param orderLines the [List] of [OrderLine] that represents the [Snack]'s the user has "ordered"
  * and the number of them that they have ordered.
@@ -237,20 +317,20 @@ private fun CartContent(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources = LocalContext.current.resources
-    val snackCountFormattedString = remember(orderLines.size, resources) {
+    val resources: Resources = LocalContext.current.resources
+    val snackCountFormattedString: String = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,
             orderLines.size, orderLines.size
         )
     }
-    val itemAnimationSpecFade = nonSpatialExpressiveSpring<Float>()
-    val itemPlacementSpec = spatialExpressiveSpring<IntOffset>()
+    val itemAnimationSpecFade: SpringSpec<Float> = nonSpatialExpressiveSpring()
+    val itemPlacementSpec: SpringSpec<IntOffset> = spatialExpressiveSpring()
     LazyColumn(modifier = modifier) {
         item(key = "title") {
             Spacer(
-                Modifier.windowInsetsTopHeight(
-                    WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
+                modifier = Modifier.windowInsetsTopHeight(
+                    insets = WindowInsets.statusBars.add(insets = WindowInsets(top = 56.dp))
                 )
             )
             Text(
@@ -265,15 +345,15 @@ private fun CartContent(
                     .wrapContentHeight()
             )
         }
-        items(items = orderLines, key = { it.snack.id }) { orderLine ->
+        items(items = orderLines, key = { it.snack.id }) { orderLine: OrderLine ->
             SwipeDismissItem(
                 modifier = Modifier.animateItem(
                     fadeInSpec = itemAnimationSpecFade,
                     fadeOutSpec = itemAnimationSpecFade,
                     placementSpec = itemPlacementSpec
                 ),
-                background = { progress ->
-                    SwipeDismissItemBackground(progress)
+                background = { progress: Float ->
+                    SwipeDismissItemBackground(progress = progress)
                 },
             ) {
                 CartItem(
@@ -307,16 +387,19 @@ private fun CartContent(
                 onSnackClick = onSnackClick,
                 highlight = false
             )
-            Spacer(Modifier.height(56.dp))
+            Spacer(modifier = Modifier.height(height = 56.dp))
         }
     }
 }
 
+/**
+ * This is used as the `background` argument of the [SwipeDismissItem] used by [CartContent].
+ */
 @Composable
 private fun SwipeDismissItemBackground(progress: Float) {
     Column(
         modifier = Modifier
-            .background(JetsnackTheme.colors.uiBackground)
+            .background(color = JetsnackTheme.colors.uiBackground)
             .fillMaxWidth()
             .fillMaxHeight(),
         horizontalAlignment = Alignment.End,
@@ -328,14 +411,14 @@ private fun SwipeDismissItemBackground(progress: Float) {
         )
         BoxWithConstraints(
             Modifier
-                .fillMaxWidth(progress)
+                .fillMaxWidth(fraction = progress)
         ) {
             Surface(
                 modifier = Modifier
                     .padding(padding)
                     .fillMaxWidth()
-                    .height(maxWidth)
-                    .align(Alignment.Center),
+                    .height(height = maxWidth)
+                    .align(alignment = Alignment.Center),
                 shape = RoundedCornerShape(percent = ((1 - progress) * 100).roundToInt()),
                 color = JetsnackTheme.colors.error
             ) {
@@ -353,7 +436,7 @@ private fun SwipeDismissItemBackground(progress: Float) {
                         Icon(
                             imageVector = Icons.Filled.DeleteForever,
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(size = 32.dp)
                                 .graphicsLayer(alpha = iconAlpha),
                             tint = JetsnackTheme.colors.uiBackground,
                             contentDescription = null,
@@ -361,7 +444,7 @@ private fun SwipeDismissItemBackground(progress: Float) {
                     }
                     /*Text opacity increases as the text is supposed to appear in
                                     the screen*/
-                    val textAlpha by animateFloatAsState(
+                    val textAlpha: Float by animateFloatAsState(
                         if (progress > 0.5f) 1f else 0.5f, label = "text alpha"
                     )
                     if (progress > 0.5f) {
