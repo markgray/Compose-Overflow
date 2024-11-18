@@ -28,7 +28,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -58,6 +60,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -393,7 +397,26 @@ private fun CartContent(
 }
 
 /**
- * This is used as the `background` argument of the [SwipeDismissItem] used by [CartContent].
+ * This is used as the `background` argument of the [SwipeDismissItem] used by [CartContent], which
+ * uses it as the `backgroundContent` composable lambda argument of the [SwipeToDismissBox] it uses
+ * (composable that is stacked behind the content and is exposed when the content is swiped). Our
+ * root Composable is a [Column] whose `modifier` argument is a [Modifier.background] whose `color`
+ * [Color] argument is the [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors] (draws
+ * a default [RectangleShape] in the [Color] `color` behind the `content`), with a
+ * [Modifier.fillMaxWidth], and a [Modifier.fillMaxHeight] chained to that (which causes it to
+ * occupy its entire incoming size constraints). The `horizontalAlignment` argument of the [Column]
+ * is [Alignment.End] (aligns its children to its end), and the `verticalArrangement` is
+ * [Arrangement.Center] (the children are vertically centered in their allotted spaces). In the
+ * [ColumnScope] `content` Composable lambda argument we start by initializing our animated [Dp]
+ * variable `val padding` using [animateDpAsState] with the [Dp] `targetValue` 4.dp for our [Float]
+ * parameter [progress] less than 0.5f, and 0.dp if it is greater than or equal to 0.5f. The root
+ * Composable is a [BoxWithConstraints] whose `modifier` argument is a [Modifier.fillMaxWidth] whose
+ * `fraction` argument is our [Float] parameter [progress] (sets the minimum width and the maximum
+ * width to be equal to the incoming maximum width constraint multiplied by [progress]). In the
+ * [BoxWithConstraintsScope] `content` Composable lambda argument
+ *
+ * @param progress this is the [SwipeToDismissBoxState.progress] of the [SwipeToDismissBox] that is
+ * being dismissed.
  */
 @Composable
 private fun SwipeDismissItemBackground(progress: Float) {
@@ -410,12 +433,11 @@ private fun SwipeDismissItemBackground(progress: Float) {
             if (progress < 0.5f) 4.dp else 0.dp, label = "padding"
         )
         BoxWithConstraints(
-            Modifier
-                .fillMaxWidth(fraction = progress)
+            modifier = Modifier.fillMaxWidth(fraction = progress)
         ) {
             Surface(
                 modifier = Modifier
-                    .padding(padding)
+                    .padding(all = padding)
                     .fillMaxWidth()
                     .height(height = maxWidth)
                     .align(alignment = Alignment.Center),
