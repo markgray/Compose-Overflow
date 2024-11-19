@@ -73,6 +73,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -413,7 +414,38 @@ private fun CartContent(
  * Composable is a [BoxWithConstraints] whose `modifier` argument is a [Modifier.fillMaxWidth] whose
  * `fraction` argument is our [Float] parameter [progress] (sets the minimum width and the maximum
  * width to be equal to the incoming maximum width constraint multiplied by [progress]). In the
- * [BoxWithConstraintsScope] `content` Composable lambda argument
+ * [BoxWithConstraintsScope] `content` Composable lambda argument we have a [Surface] whose `modifier`
+ * argument is a [Modifier.padding] that adds our animated [Dp] variable `padding` to `all` or its
+ * sides, with a [Modifier.fillMaxWidth] chained to that which causes it to occupy its entire incoming
+ * width constraint, with a [Modifier.height] chained to that which sets its `height` to the
+ * [BoxWithConstraintsScope.maxWidth] of the [BoxWithConstraints] (for some reason?), and with a
+ * [BoxWithConstraintsScope.align] chained to that which aligns the [Surface] to the `alignment`
+ * [Alignment.Center]. The `shape` argument of the [Surface] is a [RoundedCornerShape] whose `percent`
+ * (Size in percents to apply) is 1 minus our [Float] parameter [progress] times 100 rounded to an
+ * [Int], and its [Color] `color` argument is the [JetsnackColors.error] of our custom
+ * [JetsnackTheme.colors].
+ *
+ * The `content` Composable lambda argument of the [Surface] holds a [Box] whose `modifier` argument
+ * is a [Modifier.fillMaxSize] that causes it to occupy its entire incoming size constraint, and its
+ * `contentAlignment` argument is an [Alignment.Center] that centers its children to the center of the
+ * [Box]. In its [BoxScope] `content` Composable lambda argument we check if our [Float] parameter
+ * [progress] is in the width range of `[0.125 .. 0.475]` and if it is we initialize our [State]
+ * wrapped animated [Float] variable `val iconAlpha` to the value that the [animateFloatAsState]
+ * method returns for a `targetValue` argument which is 0.5f for [progress] greater than 0.4f or
+ * else 1f, when we Compose an [Icon] whose `imageVector` argument is the [ImageVector] drawn by
+ * [Icons.Filled.DeleteForever], whose `modifier` argument is a [Modifier.size] that sets its `size`
+ * to 32.dp, with a [Modifier.graphicsLayer] chained to that that sets its `alpha` to our [State]
+ * wrapped animated [Float] variable `iconAlpha`. The [Color] `tint` argument of the [Icon] is the
+ * [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors], and the `contentDescription`
+ * argment is `null`. Next we initialize our [State] wrapped animated [Float] variable `val textAlpha`
+ * to the value that the [animateFloatAsState] method returns for `targetValue` argument which is
+ * 1f for [progress] greater than 0.5f or else 0.5f. Then if [progress] is greater than 0.5f we
+ * compose a [Text] whose `text` is the [String] with resource `id` `R.string.remove_item`
+ * ("Remove Item"), whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
+ * [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.uiBackground]
+ * of our custom [JetsnackTheme.colors], its `textAlign` argument is [TextAlign.Center] (Aligns the
+ * text in the center of the container), and its `modifier` argument is a [Modifier.graphicsLayer]
+ * the sets its `alpha` to our [State] wrapped animated [Float] variable `textAlpha`.
  *
  * @param progress this is the [SwipeToDismissBoxState.progress] of the [SwipeToDismissBox] that is
  * being dismissed.
@@ -488,7 +520,20 @@ private fun SwipeDismissItemBackground(progress: Float) {
 }
 
 /**
+ * Displays the information stored in its [OrderLine] parameter [orderLine].
  *
+ * @param orderLine the [OrderLine] whose information we are to display.
+ * @param removeSnack a lambda that should be called with the [Snack.id] of the [OrderLine.snack]
+ * of [orderLine] when the user indicates that they wish to remove the [Snack] from their order.
+ * @param increaseItemCount a lambda that should be called with the [Snack.id] of the [OrderLine.snack]
+ * of [orderLine] when the user indicates that they want to add 1 more to their order of a [Snack].
+ * @param decreaseItemCount a lambda that should be called with the [Snack.id] of the [OrderLine.snack]
+ * of [orderLine] when the user indicates that they want to subtract 1 from their order of a [Snack].
+ * @param onSnackClick a lambda that should be called with the [Snack.id] of the [OrderLine.snack]
+ * of [orderLine] that the user clicks on and a [String] describing the collection it belongs to.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 fun CartItem(
