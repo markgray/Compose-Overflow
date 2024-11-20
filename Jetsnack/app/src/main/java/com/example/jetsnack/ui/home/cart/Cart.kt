@@ -85,7 +85,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstrainScope
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.jetsnack.R
@@ -520,7 +523,68 @@ private fun SwipeDismissItemBackground(progress: Float) {
 }
 
 /**
- * Displays the information stored in its [OrderLine] parameter [orderLine].
+ * Displays the information stored in its [OrderLine] parameter [orderLine]. We start by initializing
+ * our [Snack] variable `val snack` to the [OrderLine.snack] property of our [OrderLine] parameter
+ * [orderLine]. The our root Composable is a [ConstraintLayout] whose `modifier` chains a
+ * [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], followed by a [Modifier.clickable]
+ * whose `onClick` lambda argument is a lambda that calls our [onSnackClick] lambda parameter with
+ * the [Snack.id] of our [Snack] variable `snack` and the constant [String] "cart", this is followed
+ * by a [Modifier.background] that sets the background [Color] of the [ConstraintLayout] to the
+ * [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors], and that is followed by a
+ * [Modifier.padding] that sets the padding of the `horizontal` sides to 24.dp.
+ *
+ * In the [ConstraintLayoutScope] `content` lambda argument of the [ConstraintLayout] we start by
+ * initializing our [ConstrainedLayoutReference] variables `divider`, `image`, `name`, `tag`,
+ * `priceSpacer`, `price`, `remove`, and `quantity` to the values returned by the
+ * [ConstraintLayoutScope.createRef] method. Then we use the [ConstraintLayoutScope.createVerticalChain]
+ * method to create a vertical chain from `name`, `tag`, `priceSpacer`, and `price` using the
+ * `chainStyle` argument [ChainStyle.Packed] (chain style where the contained layouts are packed
+ * together and placed to the center of the available space).
+ *
+ * The first child of the [ConstraintLayout] is a [SnackImage] whose `imageRes` argument is the
+ * [Snack.imageRes] property of our [Snack] variable `snack`, whose `contentDescription` argument is
+ * `null`, and whose `modifier` argument is a [Modifier.size] that sets its size to 100.dp, with a
+ * [ConstraintLayoutScope.constrainAs] chained to that which constrains the [SnackImage] as
+ * [ConstrainedLayoutReference] `ref` argument `image`, and in its [ConstrainScope] `constrainBlock`
+ * it constrains its `top` `linkTo` to the `anchor` of its `parent.top` with a `margin` of 16.dp,
+ * constrains its `bottom` `linkTo` to the `anchor` of its `parent.bottom` with a `margin` of 16.dp,
+ * and  constrains its `start` `linkTo` to the `anchor` of its `parent.start`.
+ *
+ * The second child of the [ConstraintLayout] is a [Text] whose `text` argument is the [Snack.name]
+ * property of our [Snack] variable `snack`, whose [TextStyle] `style` argument is the
+ * [Typography.titleMedium] of our custom [MaterialTheme.typography], whose [Color] `color` argument
+ * is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors], and its `modifier`
+ * argument is a [ConstraintLayoutScope.constrainAs] which constrains the [Text] as
+ * [ConstrainedLayoutReference] `ref` argument `name`, and in its [ConstrainScope] `constrainBlock`
+ * it uses the [ConstrainScope.linkTo] method to constain its `start` to the `image.end` of the
+ * [SnackImage] with a `startMargin` of 16.dp, to constain its `end` to the `remove.start` (`remove`
+ * is used for the third child, an [IconButton]) with an `endMargin` of 16.dp, and the `bias`
+ * argument of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias" horizontal bias of the
+ * Constraint).
+ *
+ * The third child of the [ConstraintLayout] is an [IconButton] whose `onClick` lambda argument is
+ * a lambda that calls our [removeSnack] lambda parameter with the [Snack.id] of our `snack` variable,
+ * and whose `modifier` argument is a [ConstraintLayoutScope.constrainAs] which constrains the
+ * [IconButton] as [ConstrainedLayoutReference] `ref` argument `remove`, and in its [ConstrainScope]
+ * `constrainBlock` it constrains its `top` `linkTo` to the `anchor` of its `parent.top`, and its
+ * `end` `linkTo` to the `anchor` of its `parent.end`, and to that [Modifier] is chained a
+ * [Modifier.padding] that adds 12.dp to its `top` margin. In its `content` Composable lambda argument
+ * is an [Icon] whose `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Close] (an
+ * "X" character), whose `tint` argument is the [JetsnackColors.iconSecondary] of our custom
+ * [JetsnackTheme.colors], and its `contentDescription` argument is the [String] with resource ID
+ * `R.string.label_remove` ("Remove item").
+ *
+ * The fourth child of the [ConstraintLayout] is a [Text] whose `text` argument is the [Snack.tagline]
+ * property of our [Snack] variable `snack`, whose [TextStyle] `style` argument is the
+ * [Typography.bodyLarge] of our custom [MaterialTheme.typography], whose [Color] `color` argument
+ * is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], and its `modifier` argument
+ * is a [ConstraintLayoutScope.constrainAs] which constrains the [Text] as [ConstrainedLayoutReference]
+ * `ref` argument `tag`, and in its [ConstrainScope] `constrainBlock` it uses the [ConstrainScope.linkTo]
+ * method to constain its `start` to the `image.end` of the [SnackImage] with a `startMargin` of 16.dp,
+ * to constain its `end` to its `parent.end`, with an `endMargin` of 16.dp, and the `bias` argument
+ * of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias" horizontal bias of the Constraint).
+ *
+ * The fifth child of the [ConstraintLayout] is a
  *
  * @param orderLine the [OrderLine] whose information we are to display.
  * @param removeSnack a lambda that should be called with the [Snack.id] of the [OrderLine.snack]
@@ -549,28 +613,35 @@ fun CartItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onSnackClick(snack.id, "cart") }
-            .background(JetsnackTheme.colors.uiBackground)
+            .background(color = JetsnackTheme.colors.uiBackground)
             .padding(horizontal = 24.dp)
 
     ) {
-        val (divider, image, name, tag, priceSpacer, price, remove, quantity) = createRefs()
+        val (divider: ConstrainedLayoutReference,
+            image: ConstrainedLayoutReference,
+            name: ConstrainedLayoutReference,
+            tag: ConstrainedLayoutReference,
+            priceSpacer: ConstrainedLayoutReference,
+            price: ConstrainedLayoutReference,
+            remove: ConstrainedLayoutReference,
+            quantity: ConstrainedLayoutReference) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         SnackImage(
             imageRes = snack.imageRes,
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    start.linkTo(parent.start)
+                .size(size = 100.dp)
+                .constrainAs(ref = image) {
+                    top.linkTo(anchor = parent.top, margin = 16.dp)
+                    bottom.linkTo(anchor = parent.bottom, margin = 16.dp)
+                    start.linkTo(anchor = parent.start)
                 }
         )
         Text(
             text = snack.name,
             style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
+            modifier = Modifier.constrainAs(ref = name) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -583,23 +654,23 @@ fun CartItem(
         IconButton(
             onClick = { removeSnack(snack.id) },
             modifier = Modifier
-                .constrainAs(remove) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
+                .constrainAs(ref = remove) {
+                    top.linkTo(anchor = parent.top)
+                    end.linkTo(anchor = parent.end)
                 }
                 .padding(top = 12.dp)
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
                 tint = JetsnackTheme.colors.iconSecondary,
-                contentDescription = stringResource(R.string.label_remove)
+                contentDescription = stringResource(id = R.string.label_remove)
             )
         }
         Text(
             text = snack.tagline,
             style = MaterialTheme.typography.bodyLarge,
             color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
+            modifier = Modifier.constrainAs(ref = tag) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -611,16 +682,16 @@ fun CartItem(
         )
         Spacer(
             Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
+                .height(height = 8.dp)
+                .constrainAs(ref = priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
                 }
         )
         Text(
-            text = formatPrice(snack.price),
+            text = formatPrice(price = snack.price),
             style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
+            modifier = Modifier.constrainAs(ref = price) {
                 linkTo(
                     start = image.end,
                     end = quantity.start,
@@ -634,9 +705,9 @@ fun CartItem(
             count = orderLine.count,
             decreaseItemCount = { decreaseItemCount(snack.id) },
             increaseItemCount = { increaseItemCount(snack.id) },
-            modifier = Modifier.constrainAs(quantity) {
-                baseline.linkTo(price.baseline)
-                end.linkTo(parent.end)
+            modifier = Modifier.constrainAs(ref = quantity) {
+                baseline.linkTo(anchor = price.baseline)
+                end.linkTo(anchor = parent.end)
             }
         )
         JetsnackDivider(
