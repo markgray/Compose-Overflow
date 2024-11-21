@@ -584,7 +584,37 @@ private fun SwipeDismissItemBackground(progress: Float) {
  * to constain its `end` to its `parent.end`, with an `endMargin` of 16.dp, and the `bias` argument
  * of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias" horizontal bias of the Constraint).
  *
- * The fifth child of the [ConstraintLayout] is a
+ * The fifth child of the [ConstraintLayout] is a [Spacer] whose `modifier` argument is a [Modifier.height]
+ * that sets its `height` to 8.dp, with a [ConstraintLayoutScope.constrainAs] which constrains the [Spacer]
+ * as [ConstrainedLayoutReference] `ref` argument `priceSpacer`, and in its [ConstrainScope] `constrainBlock`
+ * it uses the [ConstrainScope.linkTo] to constrain its `top` to the `tag.bottom` of our, and its `bottom`
+ * to the `price.top`.
+ *
+ * The sixth child of the [ConstraintLayout] is a [Text] whose `text` argument is the [String] returned
+ * by the [formatPrice] method when its argument is the [Snack.price] of our [Snack] variable `snack`,
+ * whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography],
+ * whose [Color] `color` argument is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors],
+ * and whose `modifier` argument is a [ConstraintLayoutScope.constrainAs] which constrains the [Text] as
+ * [ConstrainedLayoutReference] `ref` argument `price`, and in its [ConstrainScope] `constrainBlock` it uses
+ * the [ConstrainScope.linkTo] method to constain its `start` to the `image.end` of the [SnackImage],
+ * to constrain its `end` to the `quantity.start`, with a `startMargin` of 16.dp and an `endMargin`
+ * of 16.dp, and the `bias` argument of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias"
+ * horizontal bias of the Constraint).
+ *
+ * The seventh child of the [ConstraintLayout] is a [QuantitySelector] whose `count` argument is the
+ * [OrderLine.count] of our [OrderLine] parameter [orderLine], the `decreaseItemCount` argument is a
+ * lambda that calls our lambda parameter [decreaseItemCount] with the [Snack.id] of our [Snack]
+ * variable `snack`, the `increaseItemCount` argument is a lambda that calls our lambda parameter
+ * [increaseItemCount] with the [Snack.id] of our [Snack], and the `modifier` argument is a
+ * [ConstraintLayoutScope.constrainAs] which constrains the [QuantitySelector] as [ConstrainedLayoutReference]
+ * `ref` argument `quantity`, and in its [ConstrainScope] `constrainBlock` it constrains its `baseline.linkTo`
+ * to the `anchor` of the `price.baseline`, and its constrains its `end.linkTo` to the `anchor` of
+ * its `parent.end``ref` argument `divider`, and in its [ConstrainScope] `constrainBlock`
+ *
+ * The eighth child of the [ConstraintLayout] is a [JetsnackDivider] whose `modifier` argument is a
+ * [ConstraintLayoutScope.constrainAs] which constrains the [JetsnackDivider] as [ConstrainedLayoutReference]
+ * it uses the [ConstrainScope.linkTo] method to constain its `start` to the `parent.start` and its
+ * `end` to the `parent.end`, then constrains its `top.linkTo` to the `anchor` of its `parent.bottom`.
  *
  * @param orderLine the [OrderLine] whose information we are to display.
  * @param removeSnack a lambda that should be called with the [Snack.id] of the [OrderLine.snack]
@@ -681,7 +711,7 @@ fun CartItem(
             }
         )
         Spacer(
-            Modifier
+            modifier = Modifier
                 .height(height = 8.dp)
                 .constrainAs(ref = priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
@@ -720,7 +750,21 @@ fun CartItem(
 }
 
 /**
+ * This Composable is used to display the total price of the [Snack]'s in the cart. Our root Composable
+ * is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier]. In its [ColumnScope]
+ * `content` Composable lambda argument we have:
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_summary_header`
+ *  ("Summary"), whose [TextStyle] `style` argument is the [Typography.titleLarge] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.brand] of our
+ *  custom [JetsnackTheme.colors]
  *
+ * @param subtotal the total of the [Snack.price] of the [OrderLine.snack] times its [OrderLine.count]
+ * of all the [OrderLine] in our cart.
+ * @param shippingCosts the shipping cost. Our caller passes us the constant 369L
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [CartContent] passes us a [LazyItemScope.animateItem] whose `fadeInSpec` and
+ * `fadeOutSpec` arguments a [SpringSpec] of [Float], and whose `placementSpec` argument is a
+ * [SpringSpec] of [IntOffset].
  */
 @Composable
 fun SummaryItem(
@@ -728,9 +772,9 @@ fun SummaryItem(
     shippingCosts: Long,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier) {
+    Column(modifier = modifier) {
         Text(
-            text = stringResource(R.string.cart_summary_header),
+            text = stringResource(id = R.string.cart_summary_header),
             style = MaterialTheme.typography.titleLarge,
             color = JetsnackTheme.colors.brand,
             maxLines = 1,
@@ -742,50 +786,50 @@ fun SummaryItem(
         )
         Row(modifier = Modifier.padding(horizontal = 24.dp)) {
             Text(
-                text = stringResource(R.string.cart_subtotal_label),
+                text = stringResource(id = R.string.cart_subtotal_label),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
-                    .alignBy(LastBaseline)
+                    .weight(weight = 1f)
+                    .wrapContentWidth(align = Alignment.Start)
+                    .alignBy(alignmentLine = LastBaseline)
             )
             Text(
-                text = formatPrice(subtotal),
+                text = formatPrice(price = subtotal),
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.alignBy(LastBaseline)
+                modifier = Modifier.alignBy(alignmentLine = LastBaseline)
             )
         }
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.cart_shipping_label),
+                text = stringResource(id = R.string.cart_shipping_label),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.Start)
-                    .alignBy(LastBaseline)
+                    .weight(weight = 1f)
+                    .wrapContentWidth(align = Alignment.Start)
+                    .alignBy(alignmentLine = LastBaseline)
             )
             Text(
-                text = formatPrice(shippingCosts),
+                text = formatPrice(price = shippingCosts),
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.alignBy(LastBaseline)
+                modifier = Modifier.alignBy(alignmentLine = LastBaseline)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
         JetsnackDivider()
         Row(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             Text(
-                text = stringResource(R.string.cart_total_label),
+                text = stringResource(id = R.string.cart_total_label),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(weight = 1f)
                     .padding(end = 16.dp)
-                    .wrapContentWidth(Alignment.End)
-                    .alignBy(LastBaseline)
+                    .wrapContentWidth(align = Alignment.End)
+                    .alignBy(alignmentLine = LastBaseline)
             )
             Text(
-                text = formatPrice(subtotal + shippingCosts),
+                text = formatPrice(price = subtotal + shippingCosts),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.alignBy(LastBaseline)
+                modifier = Modifier.alignBy(alignmentLine = LastBaseline)
             )
         }
         JetsnackDivider()
