@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
@@ -756,7 +757,31 @@ fun CartItem(
  *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_summary_header`
  *  ("Summary"), whose [TextStyle] `style` argument is the [Typography.titleLarge] of our custom
  *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.brand] of our
- *  custom [JetsnackTheme.colors]
+ *  custom [JetsnackTheme.colors], whose `maxLines` argument is 1, whose `overflow` argument is
+ *  [TextOverflow.Ellipsis], and whose `modifier` argument is a [Modifier.padding] that adds 24.dp
+ *  to each `horizontal` size of the [Text], chained to a [Modifier.heightIn] whose `min` is 56.dp,
+ *  and at the end of the chain is a [Modifier.wrapContentHeight] (allows it to measure at its desired
+ *  height without regard for the incoming measurement minimum height).
+ *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
+ *  side of the [Row]. In its [RowScope] `content` lambda argument we have:
+ *
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_subtotal_label`
+ *  ("Subtotal") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
+ *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with its `weight`
+ *  argument 1f (causes the [Text] to occupy all remaining incoming width constraint after its siblings
+ *  are measured and placed), chained to a [Modifier.wrapContentWidth] whose `align` argument is
+ *  [Alignment.Start] causing it to align to the start, and with an [RowScope.alignBy] whose
+ *  `alignmentLine` argument is [LastBaseline] (Positions the element vertically such that its
+ *  alignmentLine aligns with sibling elements aligned to the the baseline of their last line).
+ *  - a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
+ *  `price` argument of our [Long] parameter [subtotal], whose [TextStyle] `style` argument is the
+ *  [Typography.bodyLarge] of our custom [MaterialTheme.typography], and whose `modifier` argument
+ *  is a [RowScope.alignBy] whose `alignmentLine` argument is [LastBaseline] (Positions the element
+ *  vertically such that its alignmentLine aligns with sibling elements aligned to the the baseline
+ *  of their last line).
+ *
+ *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
+ *  and 8.dp to each `vertical` side. In its [RowScope] `content` lambda argument we have:
  *
  * @param subtotal the total of the [Snack.price] of the [OrderLine.snack] times its [OrderLine.count]
  * of all the [OrderLine] in our cart.
