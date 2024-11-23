@@ -754,6 +754,7 @@ fun CartItem(
  * This Composable is used to display the total price of the [Snack]'s in the cart. Our root Composable
  * is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier]. In its [ColumnScope]
  * `content` Composable lambda argument we have:
+ *
  *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_summary_header`
  *  ("Summary"), whose [TextStyle] `style` argument is the [Typography.titleLarge] of our custom
  *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.brand] of our
@@ -762,9 +763,9 @@ fun CartItem(
  *  to each `horizontal` size of the [Text], chained to a [Modifier.heightIn] whose `min` is 56.dp,
  *  and at the end of the chain is a [Modifier.wrapContentHeight] (allows it to measure at its desired
  *  height without regard for the incoming measurement minimum height).
+ *
  *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
  *  side of the [Row]. In its [RowScope] `content` lambda argument we have:
- *
  *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_subtotal_label`
  *  ("Subtotal") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
  *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with its `weight`
@@ -782,6 +783,44 @@ fun CartItem(
  *
  *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
  *  and 8.dp to each `vertical` side. In its [RowScope] `content` lambda argument we have:
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_shipping_label`
+ *  ("Shipping &amp; Handling") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of
+ *  our custom [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with
+ *  its `weight` argument 1f (causes the [Text] to occupy all remaining incoming width constraint
+ *  after its siblings are measured and placed), chained to a [Modifier.wrapContentWidth] whose
+ *  `align` argument is [Alignment.Start] causing it to align to the start, and with an [RowScope.alignBy]
+ *  whose `alignmentLine` argument is [LastBaseline] (Positions the element vertically such that its
+ *  alignmentLine aligns with sibling elements aligned to the the baseline of their last line).
+ *  - a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
+ *  `price` argument of our [Long] parameter [shippingCosts], whose [TextStyle] `style` argument is
+ *  the [Typography.bodyLarge] of our custom [MaterialTheme.typography], and whose `modifier` argument
+ *  is a [RowScope.alignBy] whose `alignmentLine` argument is [LastBaseline] (Positions the element
+ *  vertically such that its alignmentLine aligns with sibling elements aligned to the the baseline
+ *  of their last line).
+ *
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 8.dp
+ *
+ *  - a [JetsnackDivider] (Our custom colored `HorizontalDivider`)
+ *
+ *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
+ *  and 8.dp to each `vertical` side. In its [RowScope] `content` lambda argument we have:
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_total_label`
+ *  ("Total") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
+ *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with its `weight`
+ *  argument 1f (causes the [Text] to occupy all remaining incoming width constraint after its
+ *  siblings are measured and placed), chained to a [Modifier.padding] that adds 16.dp padding to its
+ *  `end`, chained to a [Modifier.wrapContentWidth] whose `align` argument is [Alignment.End] causing
+ *  it to align to the end, and with an [RowScope.alignBy] whose `alignmentLine` argument is
+ *  [LastBaseline] (Positions the element vertically such that its alignmentLine aligns with sibling
+ *  elements aligned to the the baseline of their last line).
+ *  - a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
+ *  `price` argument of our [Long] parameter [subtotal] plus our [Long] parameter [shippingCosts],
+ *  whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
+ *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.alignBy] whose
+ *  `alignmentLine` argument is [LastBaseline] (Positions the element vertically such that its
+ *  alignmentLine aligns with sibling elements aligned to the the baseline of their last line).
+ *
+ *  - and at the bottom of the [Column] a [JetsnackDivider] (Our custom colored `HorizontalDivider`)
  *
  * @param subtotal the total of the [Snack.price] of the [OrderLine.snack] times its [OrderLine.count]
  * of all the [OrderLine] in our cart.
@@ -861,6 +900,10 @@ fun SummaryItem(
     }
 }
 
+/**
+ * This Composable holds a "Checkout" [JetsnackButton] which is displayed at the bottom of the [Cart]
+ * (currently does nothing).
+ */
 @Composable
 private fun CheckoutBar(modifier: Modifier = Modifier) {
     Column(
