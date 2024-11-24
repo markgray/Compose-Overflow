@@ -29,6 +29,10 @@ import kotlinx.coroutines.flow.StateFlow
  * Holds the contents of the cart and allows changes to it.
  *
  * TODO: Move data to Repository so it can be displayed and changed consistently throughout the app.
+ *
+ * @param snackbarManager The singleton [SnackbarManager] of the app, responsible for managing
+ * Snackbar messages to show on the screen.
+ * @param snackRepository the singleton [SnackRepo] fake repo of the app.
  */
 class CartViewModel(
     private val snackbarManager: SnackbarManager,
@@ -37,12 +41,18 @@ class CartViewModel(
 
     private val _orderLines: MutableStateFlow<List<OrderLine>> =
         MutableStateFlow(snackRepository.getCart())
+    /**
+     *
+     */
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
     // Logic to show errors every few requests
     private var requestCount = 0
     private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 
+    /**
+     *
+     */
     fun increaseSnackCount(snackId: Long) {
         if (!shouldRandomlyFail()) {
             val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
@@ -52,6 +62,9 @@ class CartViewModel(
         }
     }
 
+    /**
+     *
+     */
     fun decreaseSnackCount(snackId: Long) {
         if (!shouldRandomlyFail()) {
             val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
@@ -67,6 +80,9 @@ class CartViewModel(
         }
     }
 
+    /**
+     *
+     */
     fun removeSnack(snackId: Long) {
         _orderLines.value = _orderLines.value.filter { it.snack.id != snackId }
     }
@@ -85,6 +101,9 @@ class CartViewModel(
      * Factory for CartViewModel that takes SnackbarManager as a dependency
      */
     companion object {
+        /**
+         *
+         */
         fun provideFactory(
             snackbarManager: SnackbarManager = SnackbarManager,
             snackRepository: SnackRepo = SnackRepo

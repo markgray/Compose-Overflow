@@ -57,6 +57,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -179,8 +180,8 @@ fun Cart(
  *  - A [DestinationBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` is a
  *  [Alignment.TopCenter] that aligns it to the top center of the [Box] (on top of the [CartContent]).
  *  - A [CheckoutBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` is a
- *  [Alignment.BottomCenter] that aligns it to the bottom center of the [Box] (on top of the
- *  [CartContent]).
+ *  [Alignment.BottomCenter] that aligns it to the bottom center of the [Box] (overlayed on top of
+ *  the [CartContent]).
  *
  * @param orderLines the [List] of [OrderLine] that our [CartContent] Composable should display.
  * @param removeSnack a lambda that should be called with the [Snack.id] when the user indicates that
@@ -902,19 +903,44 @@ fun SummaryItem(
 
 /**
  * This Composable holds a "Checkout" [JetsnackButton] which is displayed at the bottom of the [Cart]
- * (currently does nothing).
+ * (currently does nothing). Our root Composable is a [Column] whose `modifier` argument is a
+ * [Modifier.background] whose [Color] `color` argument is a copy of the [JetsnackColors.uiBackground]
+ * with its `alpha` set to [AlphaNearOpaque] (0.95f). In the `content` [ColumnScope] Composable lambda
+ * of the [Column] we have:
+ *
+ *  - a [JetsnackDivider] (our custom [HorizontalDivider])
+ *
+ *  - a [Row] which has in its `content` [RowScope] Composable lambda argument:
+ *  - a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` argument of 1f causes
+ *  it to take up all remaining width of the incoming constraints after its unweighted siblings are
+ *  measured and placed (since its [JetsnackButton] sibling has a `weight` of 1f also, they share
+ *  the [Row] width equally).
+ *  - a [JetsnackButton] whose `onClick` argument is a do-nothing lambda, whose `shape` argument is
+ *  a [RectangleShape] and whose `modifier` argument is a [Modifier.padding] that adds 12.dp padding
+ *  to each of its `horizontal` sides and 8.dp to its `vertical` sides, chained to a [RowScope.weight]
+ *  of `weight` 1f that will cause it to share the horizontal size of the [Row] with the [Spacer].
+ *  In the `content` [RowScope] Composable lambda argument of the [JetsnackButton] is a [Text] whose
+ *  `text` argument is the [String] with resource `id` `R.string.cart_checkout` ("Checkout"), whose
+ *  `modifier` argument is a [Modifier.fillMaxWidth] that causes it occupy its entire incoming width
+ *  constraint, its `textAlign` argument is [TextAlign.Left] (aligning its text to the left), and its
+ *  `maxLines` argument is 1.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [CartContent] passes us a a [BoxScope.align] whose `alignment` is a
+ * [Alignment.BottomCenter] that aligns is to the bottom center of its [Box] (overlayed on top of
+ * the [CartContent]).
  */
 @Composable
 private fun CheckoutBar(modifier: Modifier = Modifier) {
     Column(
-        modifier.background(
-            JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)
+        modifier = modifier.background(
+            color = JetsnackTheme.colors.uiBackground.copy(alpha = AlphaNearOpaque)
         )
     ) {
 
         JetsnackDivider()
         Row {
-            Spacer(Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(weight = 1f))
             JetsnackButton(
                 onClick = { /* todo */ },
                 shape = RectangleShape,
@@ -933,6 +959,9 @@ private fun CheckoutBar(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Three previews of our [Cart] Composable.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
