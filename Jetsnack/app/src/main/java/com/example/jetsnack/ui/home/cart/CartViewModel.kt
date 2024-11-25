@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.home.cart
 
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.jetsnack.R
@@ -24,6 +25,7 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.model.SnackbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /**
  * Holds the contents of the cart and allows changes to it.
@@ -39,15 +41,32 @@ class CartViewModel(
     snackRepository: SnackRepo
 ) : ViewModel() {
 
-    private val _orderLines: MutableStateFlow<List<OrderLine>> =
-        MutableStateFlow(snackRepository.getCart())
     /**
-     *
+     * This private [MutableStateFlow] wrapped [List] of [OrderLine] is read using our publicly
+     * accessible property [orderLines]. The list of fake data is initialized from the
+     * [SnackRepo.getCart] property when our [CartViewModel] is first constructed and modified using
+     * our [decreaseSnackCount] method, our [increaseSnackCount] method, our [removeSnack] method
+     * and our [updateSnackCount] method.
+     */
+    private val _orderLines: MutableStateFlow<List<OrderLine>> =
+        MutableStateFlow(value = snackRepository.getCart())
+
+    /**
+     * Publicly accessible read-only access to our [_orderLines] property. The stateful [Cart]
+     * Composable override uses the [StateFlow.collectAsStateWithLifecycle] extension method to
+     * initialize its [State] wrapped `orderLines` variable which it then passes to the stateless
+     * [Cart] Composable override as its `orderLines` argument.
      */
     val orderLines: StateFlow<List<OrderLine>> get() = _orderLines
 
-    // Logic to show errors every few requests
+    /**
+     * Counter used by our [shouldRandomlyFail] method to fake a failure every fifth request.
+     */
     private var requestCount = 0
+
+    /**
+     * Logic to show errors every fifth request, `true` if [requestCount] is a multiple of 5.
+     */
     private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 
     /**
