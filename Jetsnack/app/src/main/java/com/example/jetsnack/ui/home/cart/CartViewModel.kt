@@ -26,6 +26,7 @@ import com.example.jetsnack.model.SnackbarManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.jetsnack.model.Snack
 
 /**
  * Holds the contents of the cart and allows changes to it.
@@ -70,29 +71,62 @@ class CartViewModel(
     private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 
     /**
+     * Adds 1 to the [OrderLine.count] of the [OrderLine] whose [OrderLine.snack] has a [Snack.id]
+     * that is equal to its [Long] parameter [snackId]. If our [shouldRandomlyFail] method returns
+     * `false` we set [Int] variable `val currentCount` by fetching the [MutableStateFlow.value] of
+     * our [MutableStateFlow] wrapped [List] of [OrderLine], then using the [List.first] method of
+     * that [List] to fetch the [OrderLine] whose [OrderLine.snack] has a [Snack.id] that is equal
+     * to our [Int] parameter [snackId] then set `currentCount` to the [OrderLine.count] of that
+     * [OrderLine]. We then call our [updateSnackCount] method with its `snackId` argument our [Int]
+     * parameter [snackId] and its `count` argument our `currentCount` variable plus 1 to have it
+     * store the updated [OrderLine.count] in the [OrderLine] whose [OrderLine.snack] has a [Snack.id]
+     * equal to [snackId]. If [shouldRandomlyFail] returns `true` however we call the
+     * [SnackbarManager.showMessage] method of our [SnackbarManager] field [snackbarManager] with its
+     * `messageTextId` argument the resource ID `R.string.cart_increase_error` ("There was an error
+     * and the quantity couldn't be increased. Please try again.").
      *
+     * @param snackId the [Snack.id] of the [OrderLine.snack] of the [OrderLine] whose
+     * [OrderLine.count] we wish to add 1 to.
      */
     fun increaseSnackCount(snackId: Long) {
         if (!shouldRandomlyFail()) {
-            val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
-            updateSnackCount(snackId, currentCount + 1)
+            val currentCount: Int = _orderLines.value.first { it.snack.id == snackId }.count
+            updateSnackCount(snackId = snackId, count = currentCount + 1)
         } else {
-            snackbarManager.showMessage(R.string.cart_increase_error)
+            snackbarManager.showMessage(messageTextId = R.string.cart_increase_error)
         }
     }
 
     /**
+     * Subtracts 1 from the [OrderLine.count] of the [OrderLine] whose [OrderLine.snack] has a
+     * [Snack.id] that is equal to its [Long] parameter [snackId]. If our [shouldRandomlyFail] method
+     * returns `false` we set [Int] variable `val currentCount` by fetching the [MutableStateFlow.value]
+     * of our [MutableStateFlow] wrapped [List] of [OrderLine], then using the [List.first] method of
+     * that [List] to fetch the [OrderLine] whose [OrderLine.snack] has a [Snack.id] that is equal
+     * to our [Int] parameter [snackId] then set `currentCount` to the [OrderLine.count] of that
+     * [OrderLine]. If `currentCount` is equal to 1 we call our [removeSnack] method with its
+     * ``snackId` argument our [Int] parameter [snackId] to have it remove the [OrderLine] from our
+     * [MutableStateFlow] wrapped [List] of [OrderLine] field [_orderLines]. Otherwise we call our
+     * [updateSnackCount] method with its `snackId` argument our [Int] parameter [snackId] and its
+     * `count` argument our `currentCount` variable minus 1 to have it store the updated
+     * [OrderLine.count] in the [OrderLine] whose [OrderLine.snack] has a [Snack.id] equal to
+     * [snackId]. If [shouldRandomlyFail] returns `true` however we call the [SnackbarManager.showMessage]
+     * method of our [SnackbarManager] field [snackbarManager] with its `messageTextId` argument the
+     * resource ID `R.string.cart_decrease_error` ("There was an error and the quantity couldn't be
+     * decreased. Please try again.")
      *
+     * @param snackId the [Snack.id] of the [OrderLine.snack] of the [OrderLine] whose
+     * [OrderLine.count] we wish to subtract 1 from.
      */
     fun decreaseSnackCount(snackId: Long) {
         if (!shouldRandomlyFail()) {
             val currentCount = _orderLines.value.first { it.snack.id == snackId }.count
             if (currentCount == 1) {
                 // remove snack from cart
-                removeSnack(snackId)
+                removeSnack(snackId = snackId)
             } else {
                 // update quantity in cart
-                updateSnackCount(snackId, currentCount - 1)
+                updateSnackCount(snackId = snackId, count = currentCount - 1)
             }
         } else {
             snackbarManager.showMessage(R.string.cart_decrease_error)
