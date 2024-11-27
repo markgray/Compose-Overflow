@@ -19,20 +19,42 @@ package com.example.jetsnack.ui.home.cart
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
+import com.example.jetsnack.model.OrderLine
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 /**
- * Holds the Swipe to dismiss composable, its animation and the current state
+ * Holds the Swipe to dismiss composable, its animation and the current state. It is used to hold
+ * all of the [CartItem]'s in the `CartContent` of the [Cart] screen.
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller `CartContent` passes us a [LazyItemScope.animateItem] whose `fadeInSpec`
+ * argument is custom [SpringSpec] of [Float] and whose `fadeOutSpec` argument is the same
+ * [SpringSpec], and whose `placementSpec` argument is a custom [SpringSpec] of [IntOffset].
+ * @param enter the [EnterTransition] to use as the `enter` argument of the [AnimatedVisibility]
+ * wrapping our [SwipeToDismissBox]. Our caller does not pass us one so the default [expandVertically]
+ * is used instead.
+ * @param exit the [ExitTransition] to use as the `exit` argument of the [AnimatedVisibility] wrapping
+ * our [SwipeToDismissBox]. Our caller does not pass us one so the default [shrinkVertically] is used
+ * instead.
+ * @param background a Composable lambda to use as the `backgroundContent` argument of our
+ * [SwipeToDismissBox] (composable that is stacked behind its `content` and is exposed when the
+ * `content` is swiped). Our caller passes us a `SwipeDismissItemBackground` which does a fancy
+ * animation based on the value of the [Float] parameter `progress` passed it. We pass it the
+ * [SwipeToDismissBoxState.progress] of the [SwipeToDismissBoxState] of the [SwipeToDismissBox].
+ * @param content the Composable lambda that is used as the `content` argument of our
+ * [SwipeToDismissBox]. Our caller passes us a [CartItem] for each of the [OrderLine] in the Cart.
  */
+@Composable
 fun SwipeDismissItem(
     modifier: Modifier = Modifier,
     enter: EnterTransition = expandVertically(),
@@ -41,9 +63,9 @@ fun SwipeDismissItem(
     content: @Composable (isDismissed: Boolean) -> Unit,
 ) {
     // Hold the current state from the Swipe to Dismiss composable
-    val dismissState = rememberSwipeToDismissBoxState()
+    val dismissState: SwipeToDismissBoxState = rememberSwipeToDismissBoxState()
     // Boolean value used for hiding the item if the current state is dismissed
-    val isDismissed = dismissState.currentValue == SwipeToDismissBoxValue.EndToStart
+    val isDismissed: Boolean = dismissState.currentValue == SwipeToDismissBoxValue.EndToStart
 
     AnimatedVisibility(
         modifier = modifier,
