@@ -50,6 +50,9 @@ import com.example.jetsnack.ui.components.VerticalGrid
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
+/**
+ *
+ */
 @Composable
 fun SearchCategories(
     categories: List<SearchCategoryCollection>

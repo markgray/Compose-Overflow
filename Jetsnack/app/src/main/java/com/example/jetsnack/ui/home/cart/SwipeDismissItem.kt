@@ -34,7 +34,32 @@ import com.example.jetsnack.model.OrderLine
 
 /**
  * Holds the Swipe to dismiss composable, its animation and the current state. It is used to hold
- * all of the [CartItem]'s in the `CartContent` of the [Cart] screen.
+ * each of the [CartItem]'s in the `CartContent` of the [Cart] screen, making it possible to swipe
+ * to dismiss them. We initialize and remember our [SwipeToDismissBoxState] variable `val dismissState`
+ * to a new instance. We initialize our animated [Boolean] variable `val isDismissed` to `true` when
+ * the [SwipeToDismissBoxState.currentValue] is equal to [SwipeToDismissBoxValue.EndToStart] (it can
+ * be dismissed by swiping in the reverse of the reading direction, ie right to left - apparently this
+ * is believed to be `true` until the [SwipeToDismissBox] has been dismissed?). Our root Composable
+ * is an [AnimatedVisibility] holding a [SwipeToDismissBox] in its `content` Composable lambda argument.
+ * The `modifier` argument of the [AnimatedVisibility] is our [Modifier] parameter [modifier], its
+ * `visible` argument is the inverse of our [Boolean] variable `isDismissed` (defines whether the
+ * content should be visible), its `enter` argument is our [EnterTransition] parameter [enter], and
+ * its `exit` argument is our [ExitTransition] parameter [exit] (these are the animations used for
+ * the appearance and disappearance of its `content` respectively).
+ *
+ * The arguments of the [SwipeToDismissBox] `content` of the [AnimatedVisibility] are:
+ *  - `modifier` we pass our [Modifier] parameter [modifier]
+ *  - `state` we pass our [SwipeToDismissBoxState] variable `dismissState` (state of the component)
+ *  - `enableDismissFromStartToEnd` we pass `false` ([SwipeToDismissBox] _cannot_ be dismissed from
+ *  start to end)
+ *  - `backgroundContent` composable that is stacked behind the content and is exposed when the
+ *  content is swiped, we pass a lambda which calls our Composable lambda parameter [background]
+ *  with the [SwipeToDismissBoxState.progress] of our [SwipeToDismissBoxState] variable `dismissState`
+ *  as its [Float] argument `progress`.
+ *  - `content` The content that can be dismissed. We pass a lambda that calls our Composable lambda
+ *  parameter [content] with our [Boolean] variable `isDismissed` as its `isDismissed` argument.
+ *  The lambda passed us by our caller `CartContent` does not appear to use the `isDismissed` argument
+ *  which gives me a queasy feeling, but perhaps this is just a relic of a copy/paste the author did.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller `CartContent` passes us a [LazyItemScope.animateItem] whose `fadeInSpec`
