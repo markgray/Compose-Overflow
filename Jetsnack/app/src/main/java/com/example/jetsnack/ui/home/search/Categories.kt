@@ -51,7 +51,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
 /**
- *
+ * This is used by the [Search] screen
  */
 @Composable
 fun SearchCategories(
