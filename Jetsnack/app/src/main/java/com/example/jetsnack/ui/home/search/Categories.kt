@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -51,27 +54,47 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
 /**
- * This is used by the [Search] screen
+ * Displays a [List] of [SearchCategoryCollection]. Our root Composable is a [LazyColumn], and in its
+ * [LazyListScope] `content` composable lambda argument we have a [LazyListScope.itemsIndexed] whose
+ * `items` argument is our [List] of [SearchCategoryCollection]s, and in its `itemContent` [LazyItemScope]
+ * Composable lambda argument it passes the index of the current [SearchCategoryCollection] in the
+ * variable `index` and the [SearchCategoryCollection] in the variable `collection` to the lambda
+ * where we compose a [SearchCategoryCollection] Composable whose`collection` argument is the
+ * `collection` variable and `index` argument is the `index` variable. We also add a [Spacer] after
+ * the [LazyColumn] whose `modifier` argument is a [Modifier.height] of 8.dp.
+ *
+ * @param categories The [List] of [SearchCategoryCollection] to display.
  */
 @Composable
 fun SearchCategories(
     categories: List<SearchCategoryCollection>
 ) {
     LazyColumn {
-        itemsIndexed(categories) { index, collection ->
-            SearchCategoryCollection(collection, index)
+        itemsIndexed(items = categories) { index: Int, collection: SearchCategoryCollection ->
+            SearchCategoryCollection(collection = collection, index = index)
         }
     }
-    Spacer(Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(height = 8.dp))
 }
 
+/**
+ * Displays a single [SearchCategoryCollection]. Our root Composable is a [Column] whose `modifier`
+ * argument is our [Modifier] parameter [modifier], and in its [ColumnScope] `content` Composable
+ * lambda argument
+ *
+ * @param collection The [SearchCategoryCollection] to display.
+ * @param index The index of the collection in the [List] of [SearchCategoryCollection]s.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behaviour. Our caller does not pass us one, so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ */
 @Composable
 private fun SearchCategoryCollection(
     collection: SearchCategoryCollection,
     index: Int,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier) {
+    Column(modifier = modifier) {
         Text(
             text = collection.name,
             style = MaterialTheme.typography.titleLarge,
@@ -81,7 +104,7 @@ private fun SearchCategoryCollection(
                 .padding(horizontal = 24.dp, vertical = 4.dp)
                 .wrapContentHeight()
         )
-        VerticalGrid(Modifier.padding(horizontal = 16.dp)) {
+        VerticalGrid(modifier = Modifier.padding(horizontal = 16.dp)) {
             val gradient = when (index % 2) {
                 0 -> JetsnackTheme.colors.gradient2_2
                 else -> JetsnackTheme.colors.gradient2_3
@@ -98,10 +121,28 @@ private fun SearchCategoryCollection(
     }
 }
 
+/**
+ * Minimum size for the category image
+ */
 private val MinImageSize = 134.dp
+
+/**
+ *
+ */
 private val CategoryShape = RoundedCornerShape(10.dp)
+
+/**
+ *
+ */
 private const val CategoryTextProportion = 0.55f
 
+/**
+ * Displays a single search category.
+ *
+ * @param category The search category to display.
+ * @param gradient The gradient colors to use for the background.
+ * @param modifier The modifier to apply to the category.
+ */
 @Composable
 private fun SearchCategory(
     category: SearchCategory,
@@ -156,6 +197,9 @@ private fun SearchCategory(
     }
 }
 
+/**
+ * Three previews of the [SearchCategory] composable.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
