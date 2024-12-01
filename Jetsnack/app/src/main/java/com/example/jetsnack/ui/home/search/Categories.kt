@@ -35,13 +35,16 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
@@ -50,6 +53,7 @@ import com.example.jetsnack.model.SearchCategory
 import com.example.jetsnack.model.SearchCategoryCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.components.VerticalGrid
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
@@ -80,7 +84,28 @@ fun SearchCategories(
 /**
  * Displays a single [SearchCategoryCollection]. Our root Composable is a [Column] whose `modifier`
  * argument is our [Modifier] parameter [modifier], and in its [ColumnScope] `content` Composable
- * lambda argument
+ * lambda argument we have:
+ *  - a [Text] whose `text` argument is the [SearchCategoryCollection.name] of our [SearchCategoryCollection]
+ *  parameter [collection], the [TextStyle] `style` argument is the [Typography.titleLarge] of our
+ *  custom [MaterialTheme.typography], the [Color] `color` argument is the [JetsnackColors.textPrimary]
+ *  of our custom [JetsnackTheme.colors], and the [Modifier] `modifier` argument is a [Modifier.heightIn]
+ *  whose `min` height is 56.dp, chained to a [Modifier.padding] that sets the padding on the `horizontal`
+ *  sides to 24.dp, and the padding on the `vertical` sides to 4.dp, and that has chained to it a
+ *  [Modifier.wrapContentHeight] (it to measure at its desired height without regard for the incoming
+ *  measurement minimum height constraint).
+ *  - a [VerticalGrid] whose `modifier` argument is a [Modifier.padding] that adds 16.dp padding to
+ *  each of its `horizontal` sides, and in the `content` Composable lambda argument we start by assigning
+ *  the value of our [List] of [Color] variable `val gradient` the [JetsnackColors.gradient2_2] of our
+ *  custom custom [JetsnackTheme.colors] when our [Int] parameter [index] is even of the
+ *  [JetsnackColors.gradient2_3] if it is odd. Then use the [forEach] method of our [SearchCategoryCollection]
+ *  parameter [collection] to loop through its contents passing each [SearchCategory] to its lambda
+ *  argument in the variable `category` which we use to compose a [SearchCategory] whose `category`
+ *  argument is the [SearchCategory] variable `category`, whose `gradient` argument is our [List] of
+ *  [Color] variable `gradient`, and whose `modifier` argument is a [Modifier.padding] that adds 8.dp
+ *  to all side of the [SearchCategory].
+ *
+ *  - Below the [Column] is a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its
+ *  `height` to 4.dp.
  *
  * @param collection The [SearchCategoryCollection] to display.
  * @param index The index of the collection in the [List] of [SearchCategoryCollection]s.
@@ -105,19 +130,19 @@ private fun SearchCategoryCollection(
                 .wrapContentHeight()
         )
         VerticalGrid(modifier = Modifier.padding(horizontal = 16.dp)) {
-            val gradient = when (index % 2) {
+            val gradient: List<Color> = when (index % 2) {
                 0 -> JetsnackTheme.colors.gradient2_2
                 else -> JetsnackTheme.colors.gradient2_3
             }
-            collection.categories.forEach { category ->
+            collection.categories.forEach { category: SearchCategory ->
                 SearchCategory(
                     category = category,
                     gradient = gradient,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(all = 8.dp)
                 )
             }
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(height = 4.dp))
     }
 }
 
@@ -127,9 +152,10 @@ private fun SearchCategoryCollection(
 private val MinImageSize = 134.dp
 
 /**
- *
+ * [SearchCategory] uses this as the [Shape] for the [Modifier.shadow] and [Modifier.clip] it applies
+ * to its root [Layout] Composable.
  */
-private val CategoryShape = RoundedCornerShape(10.dp)
+private val CategoryShape = RoundedCornerShape(size = 10.dp)
 
 /**
  *
