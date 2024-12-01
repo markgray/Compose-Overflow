@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -36,11 +39,14 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,9 +59,32 @@ import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.utils.formatPrice
 
+/**
+ * Called by the [Search] Composable to display the search results in its [List] of [Snack] parameter
+ * [searchResults]. Our root Composable is a [Column]. In its [ColumnScope] `content` Composable lambda
+ * we have:
+ *  - a [Text] whose `text` argument is the [String] formed by the format [String] with the resource
+ *  ID `R.string.search_count` and the [Int] parameter of the [List.size] of our [List] of [Snack]
+ *  parameter [searchResults], its [TextStyle] `style` argument is the [Typography.titleLarge] of
+ *  our custom [MaterialTheme.typography], its [Color] `color` argument is the [JetsnackColors.textPrimary]
+ *  of our custom [JetsnackTheme.colors], and the [Modifier] `modifier` argument is a [Modifier.padding]
+ *  that adds 24.dp of padding on the `horizontal` sides and 4.dp of padding on the `vertical` sides.
+ *  - a [LazyColumn] in whose [LazyListScope] `content` Composable lambda argument we have a
+ *  [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [Snack] parameter [searchResults],
+ *  and the [LazyItemScope] `itemContent` Composable lambda argument is passed the index of the [Snack]
+ *  in the [Int] variable `index` and the [Snack] in the `snack` variable where we compose a [SearchResult]
+ *  whose `snack` argument is the `snack` variable, whose `onSnackClick` argument our lambda parameter
+ *  [onSnackClick], and whose `showDivider` argument is `true` if our [Int] variable `index` is not
+ *  even.
+ *
+ * @param searchResults the [List] of [Snack]s to display.
+ * @param onSnackClick a lambda that is called with the [Snack.id] and the [String] "search" when a
+ * [SearchResult] of a [Snack] is clicked.
+ */
 @Composable
 fun SearchResults(
     searchResults: List<Snack>,
@@ -69,8 +98,8 @@ fun SearchResults(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp)
         )
         LazyColumn {
-            itemsIndexed(searchResults) { index, snack ->
-                SearchResult(snack, onSnackClick, index != 0)
+            itemsIndexed(items = searchResults) { index: Int, snack: Snack ->
+                SearchResult(snack = snack, onSnackClick = onSnackClick, showDivider = index != 0)
             }
         }
     }
@@ -93,9 +122,9 @@ private fun SearchResult(
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         if (showDivider) {
             JetsnackDivider(
-                modifier = Modifier.constrainAs(divider) {
+                modifier = Modifier.constrainAs(ref = divider) {
                     linkTo(start = parent.start, end = parent.end)
-                    top.linkTo(parent.top)
+                    top.linkTo(anchor = parent.top)
                 }
             )
         }
@@ -103,22 +132,22 @@ private fun SearchResult(
             imageRes = snack.imageRes,
             contentDescription = null,
             modifier = Modifier
-                .size(100.dp)
-                .constrainAs(image) {
+                .size(size = 100.dp)
+                .constrainAs(ref = image) {
                     linkTo(
                         top = parent.top,
                         topMargin = 16.dp,
                         bottom = parent.bottom,
                         bottomMargin = 16.dp
                     )
-                    start.linkTo(parent.start)
+                    start.linkTo(anchor = parent.start)
                 }
         )
         Text(
             text = snack.name,
             style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textSecondary,
-            modifier = Modifier.constrainAs(name) {
+            modifier = Modifier.constrainAs(ref = name) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -132,7 +161,7 @@ private fun SearchResult(
             text = snack.tagline,
             style = MaterialTheme.typography.bodyLarge,
             color = JetsnackTheme.colors.textHelp,
-            modifier = Modifier.constrainAs(tag) {
+            modifier = Modifier.constrainAs(ref = tag) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -144,16 +173,16 @@ private fun SearchResult(
         )
         Spacer(
             Modifier
-                .height(8.dp)
-                .constrainAs(priceSpacer) {
+                .height(height = 8.dp)
+                .constrainAs(ref = priceSpacer) {
                     linkTo(top = tag.bottom, bottom = price.top)
                 }
         )
         Text(
-            text = formatPrice(snack.price),
+            text = formatPrice(price = snack.price),
             style = MaterialTheme.typography.titleMedium,
             color = JetsnackTheme.colors.textPrimary,
-            modifier = Modifier.constrainAs(price) {
+            modifier = Modifier.constrainAs(ref = price) {
                 linkTo(
                     start = image.end,
                     startMargin = 16.dp,
@@ -166,12 +195,12 @@ private fun SearchResult(
         JetsnackButton(
             onClick = { /* todo */ },
             shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
+            contentPadding = PaddingValues(all = 0.dp),
             modifier = Modifier
-                .size(36.dp)
-                .constrainAs(add) {
+                .size(size = 36.dp)
+                .constrainAs(ref = add) {
                     linkTo(top = parent.top, bottom = parent.bottom)
-                    end.linkTo(parent.end)
+                    end.linkTo(anchor = parent.end)
                 }
         ) {
             Icon(
@@ -182,6 +211,9 @@ private fun SearchResult(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun NoResults(
     query: String,
@@ -192,20 +224,20 @@ fun NoResults(
         modifier = modifier
             .fillMaxSize()
             .wrapContentSize()
-            .padding(24.dp)
+            .padding(all = 24.dp)
     ) {
         Image(
-            painterResource(R.drawable.empty_state_search),
+            painterResource(id = R.drawable.empty_state_search),
             contentDescription = null
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(height = 24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(height = 16.dp))
         Text(
             text = stringResource(R.string.search_no_matches_retry),
             style = MaterialTheme.typography.bodyMedium,
@@ -215,6 +247,9 @@ fun NoResults(
     }
 }
 
+/**
+ * Three previews of a [SearchResult] are provided here to show different device settings.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

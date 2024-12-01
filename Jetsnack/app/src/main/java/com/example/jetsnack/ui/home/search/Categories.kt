@@ -44,6 +44,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -158,16 +161,57 @@ private val MinImageSize = 134.dp
 private val CategoryShape = RoundedCornerShape(size = 10.dp)
 
 /**
- *
+ * The proportion of the [Constraints.maxWidth] used by the [Text] in the [SearchCategory] (the `x`
+ * position of the [SnackImage] which follow the [Text])
  */
 private const val CategoryTextProportion = 0.55f
 
 /**
- * Displays a single search category.
+ * Displays a single search category. Our root Composable is a [Layout] whose `modifier` argument is
+ * chains to our [Modifier] parameter [modifier] a [Modifier.aspectRatio] whose `ratio` argument is
+ * 1.45f, with a [Modifier.shadow] chained to that whose `elevation` argument is 3.dp and whose
+ * `shape` argument is [CategoryShape], with a [Modifier.clip] chained to that whose `shape` argument
+ * is [CategoryShape], with a [Modifier.background] chained to that whose `brush` argument is a
+ * [Brush.horizontalGradient] whose `colors` argument is our [List] of [Color] parameter [gradient],
+ * with a [Modifier.clickable] chained to that whose `onClick` lambda argument is a do-nothing lambda.
+ * In its `content` Composable lambda argument we have:
+ *  - a [Text] whose `text` argument is the [SearchCategory.name] of our [SearchCategory] parameter
+ *  [category], whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textSecondary]
+ *  of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier` argument is a [Modifier.padding]
+ *  that adds 4.dp to all sides, with a [Modifier.padding] that adds 8.dp to the `start`.
+ *  - a [SnackImage] whose `imageRes` argument is the resource ID [SearchCategory.imageRes] of our
+ *  [SearchCategory] parameter [category], whose `content` description argument is `null`, and whose
+ *  `modifier` argument is a [Modifier.fillMaxSize] that allows it to measure at its desired size
+ *  without regard to the incoming measurement minimum size constraint.
  *
- * @param category The search category to display.
- * @param gradient The gradient colors to use for the background.
- * @param modifier The modifier to apply to the category.
+ * The arguments passed to the lambda of the [Layout] Composable are a [List] of [Measurable] passed
+ * in the variable `measurables` and a [Constraints] passed in the variable `constraints`. In that
+ * lambda we initialize our [Int]] variable `val textWidth` to the `maxWidth` of our [Constraints]
+ * times [CategoryTextProportion]. We initialize our [Placeable] variable `val textPlaceable` by
+ * using the [Measurable.measure] of the 0 index [Measurable] in the `measurables` list to measure
+ * the [Text] using our [Int] variable `textWidth` as the [Constraints.fixedWidth] of the [Placeable].
+ * We initialize our [Int] variable `imageSize` to the [max] of [MinImageSize] and the
+ * [Constraints.maxHeight] of the [Constraints] variable `constraints`. We initialize our [Placeable]
+ * variable `val imagePlaceable` by using the [Measurable.measure] of the 1 index [Measurable] in the
+ * [List] of [Measurable] variable `measurables` to measure the [SnackImage] using our [Int] variable
+ * `imageSize` as the [Constraints.fixed] size of the [Placeable] produced. We then call the
+ * [MeasureScope.layout] method with its `width` argument set to the [Constraints.maxWidth] of the
+ * [Constraints] variable `constraints`, and its `height` argument set to the [Constraints.minHeight]
+ * of the [Constraints] variable `constraints`. In the `placementBlock` lambda argument we have call:
+ *  - the `Placeable.placeRelative` method of [Placeable] variable `textPlaceable` with its `x`
+ *  argument set to 0, and its `y` argument set to the [Constraints.maxHeight] of the [Constraints]
+ *  variable `constraints` minus the [Placeable.height] of the [Placeable] variable `textPlaceable`
+ *  all divided by 2 (to center it vertically).
+ *  - the `Placeable.placeRelative` method of [Placeable] variable `imagePlaceable` with its `x`
+ *  argument our [Int] variable `textWidth`, and its `y` argument set to the [Constraints.maxHeight]
+ *  minus the [Placeable.height] of `imagePlaceable` all divided by 2 (to center it vertically).
+ *
+ * @param category The [SearchCategory] to display.
+ * @param gradient The [List] of [Color] to use as the gradient for the background.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behaviour. Our caller [SearchCategoryCollection] passes us a [Modifier.padding] that adds 8.dp to
+ * all sides.
  */
 @Composable
 private fun SearchCategory(
@@ -177,10 +221,10 @@ private fun SearchCategory(
 ) {
     Layout(
         modifier = modifier
-            .aspectRatio(1.45f)
+            .aspectRatio(ratio = 1.45f)
             .shadow(elevation = 3.dp, shape = CategoryShape)
-            .clip(CategoryShape)
-            .background(Brush.horizontalGradient(gradient))
+            .clip(shape = CategoryShape)
+            .background(brush = Brush.horizontalGradient(colors = gradient))
             .clickable { /* todo */ },
         content = {
             Text(
@@ -188,7 +232,7 @@ private fun SearchCategory(
                 style = MaterialTheme.typography.titleMedium,
                 color = JetsnackTheme.colors.textSecondary,
                 modifier = Modifier
-                    .padding(4.dp)
+                    .padding(all = 4.dp)
                     .padding(start = 8.dp)
             )
             SnackImage(
@@ -197,15 +241,15 @@ private fun SearchCategory(
                 modifier = Modifier.fillMaxSize()
             )
         }
-    ) { measurables, constraints ->
+    ) { measurables: List<Measurable>, constraints: Constraints ->
         // Text given a set proportion of width (which is determined by the aspect ratio)
-        val textWidth = (constraints.maxWidth * CategoryTextProportion).toInt()
-        val textPlaceable = measurables[0].measure(Constraints.fixedWidth(textWidth))
+        val textWidth: Int = (constraints.maxWidth * CategoryTextProportion).toInt()
+        val textPlaceable: Placeable = measurables[0].measure(Constraints.fixedWidth(textWidth))
 
         // Image is sized to the larger of height of item, or a minimum value
         // i.e. may appear larger than item (but clipped to the item bounds)
-        val imageSize = max(MinImageSize.roundToPx(), constraints.maxHeight)
-        val imagePlaceable = measurables[1].measure(Constraints.fixed(imageSize, imageSize))
+        val imageSize: Int = max(MinImageSize.roundToPx(), constraints.maxHeight)
+        val imagePlaceable: Placeable = measurables[1].measure(Constraints.fixed(imageSize, imageSize))
         layout(
             width = constraints.maxWidth,
             height = constraints.minHeight
