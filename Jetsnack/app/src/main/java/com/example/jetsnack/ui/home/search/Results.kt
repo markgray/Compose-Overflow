@@ -22,6 +22,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -148,7 +150,56 @@ fun SearchResults(
  * Our next Composable is a [Text] whose `text` argument is the [Snack.name] of our [Snack] parameter
  * [snack], its [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
  * [MaterialTheme.typography], its [Color] `color` argument is the [JetsnackColors.textSecondary]
- * of our custom [JetsnackTheme.colors], and its `modifier` argument is
+ * of our custom [JetsnackTheme.colors], and its `modifier` argument is a
+ * [ConstraintLayoutScope.constrainAs] to constrain the [Text] using [ConstrainedLayoutReference]
+ * variable `name`, and in its [ConstrainScope] `constrainBlock` lambda argument we use the
+ * [ConstrainScope.linkTo] method to link its `start` to the [ConstrainedLayoutReference.end] of the
+ * [ConstrainedLayoutReference] variable `image` with a `startMargin` of 16.dp, and to link its `end`
+ * to the [ConstrainedLayoutReference.start] of the [ConstrainedLayoutReference] variable `add` with
+ * an `endMargin` of 16.dp, and a `bias` to `0f`.
+ *
+ * The next Composable is a [Text] whose `text` argument is the [Snack.tagline] of our [Snack] parameter
+ * [snack], whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
+ * [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textHelp] of our
+ * custom [JetsnackTheme.colors], and whose `modifier` argument is a [ConstraintLayoutScope.constrainAs]
+ * to constrain the [Text] using [ConstrainedLayoutReference] variable `tag`, and in its constrainBlock`
+ * lambda argument we use the [ConstrainScope.linkTo] method to link its `start` to the
+ * [ConstrainedLayoutReference.end] of [ConstrainedLayoutReference] variable `image` with a `startMargin`
+ * of 16.dp, and to link its `end` to the [ConstrainedLayoutReference.start] of [ConstrainedLayoutReference]
+ * variable `add` with an `endMargin` of 16.dp, and a `bias` to `0f`.
+ *
+ * Next we have a [Spacer] whose `modifier` argument is a [Modifier.height] to set its `height` to 8.dp,
+ * with a [ConstraintLayoutScope.constrainAs] chained to that to constrain the [Spacer] using
+ * [ConstrainedLayoutReference] variable `priceSpacer`, and in its [ConstrainScope] `constrainBlock`
+ * we use the [ConstrainScope.linkTo] method to link its `top` to the [ConstrainedLayoutReference.bottom]
+ * of [ConstrainedLayoutReference] variable `tag` and its `bottom` to the [ConstrainedLayoutReference.top]
+ * of [ConstrainedLayoutReference] variable `price`.
+ *
+ * Next we have a [Text] whose `text` argument is the [String] returned by the method [formatPrice]
+ * for the [Snack.price] of our [Snack] parameter [snack], whose [TextStyle] `style` argument is the
+ * [Typography.titleMedium] of our custom [MaterialTheme.typography], whose [Color] `color` argument
+ * is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors], and whose `modifier`
+ * argument is a [ConstraintLayoutScope.constrainAs] to contrain the [Text] using [ConstrainedLayoutReference]
+ * variable `price`, and in its [ConstrainScope] `constrainBlock` lambda argument we use the
+ * [ConstrainScope.linkTo] method to link its `start` to the [ConstrainedLayoutReference.end] of the
+ * [ConstrainedLayoutReference] variable `image` with a `startMargin` of 16.dp, and to link its `end` to
+ * to the [ConstrainedLayoutReference.start] of [ConstrainedLayoutReference] variable `add` with an
+ * `endMargin` of 16.dp and a `bias` of `Of`.
+ *
+ * At the bottom of our layout we have a [JetsnackButton] whose `onClick` argument is a do-nothing
+ * lambda, whose `shape` argument is [CircleShape], whose `contentPadding` argument is a [PaddingValues]
+ * that adds 0.dp to all sides, and whose `modifier` argument is a [Modifier.size] that sets its `size`
+ * to 36.dp with a with a [ConstraintLayoutScope.constrainAs] chained to that to constrain the
+ * [JetsnackButton] using [ConstrainedLayoutReference] variable `add` and in its [ConstrainScope]
+ * `constrainBlock` lambda argument we use the [ConstrainScope.linkTo] method to link its `top` to
+ * the [ConstrainedLayoutReference.top] of its [ConstrainScope.parent] and its `bottom` to the
+ * [ConstrainedLayoutReference.bottom] of its [ConstrainScope.parent], then we call the
+ * [VerticalAnchorable.linkTo] of its [ConstrainedLayoutReference.end] to link it to the
+ * [ConstrainedLayoutReference.end] of its [ConstrainScope.parent]. In the [RowScope] `content`
+ * Composable lambda argument of the [JetsnackButton] we have an [Icon] whose [ImageVector]
+ * `imageVector` argument is the [ImageVector] drawn by [Icons.Outlined.Add] (a "Plus" sign), and
+ * whose `contentDescription` argument is the [String] with resource ID `R.string.label_add`
+ * ("Add to cart").
  *
  * @param snack the [Snack] that we are to display.
  * @param onSnackClick a lambda that should be called with the [Snack.id] of [snack] and the [String]
@@ -271,7 +322,26 @@ private fun SearchResult(
 }
 
 /**
+ * This is composed by [Search] when there are no [Snack]s that match the [String] parameter [query].
+ * Our root Composable is a [Column] whose `horizontalAlignment` argument is [Alignment.CenterHorizontally]
+ * to center its children horizontally, and whose `modifier` argument is a [Modifier.fillMaxSize] that
+ * causes it to occupy its entire incoming size constraint, with a [Modifier.wrapContentSize] chained
+ * to that that causes it to measure at its desired size, and chained to that is a [Modifier.padding]
+ * that adds 24.dp to `all` sides. In its [ColumnScope] `content` Composable lambda argument we have:
+ *  - an [Image] whose `painter` argument is a [painterResource] whose `id` argument is the resource ID
+ *  `R.drawable.empty_state_search` (a stylized "Flashight shining on a "android" head with a question
+ *  mark on it"), and whose `contentDescription` argument is `null`.
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 24.dp
+ *  - a [Text] whose `text` argument is the [String] formed by the format [String] with the resource
+ *  ID `R.string.search_no_matches` (No matches for “%1s”) from our [String] parameter [query], whose
+ *  [TextStyle] `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography],
+ *  whose `textAlign` argument is [TextAlign.Center] (centers the text), and whose `modifier` argument
+ *  is a [Modifier.fillMaxWidth] that causes it to occupy its entire incoming wight constraint.
  *
+ * @param query the [String] that the user entered for the [Search] Composable to search for.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [Search] does not pass us one so the empty, default, or starter [Modifier]
+ * that contains no elements is used.
  */
 @Composable
 fun NoResults(
@@ -286,10 +356,10 @@ fun NoResults(
             .padding(all = 24.dp)
     ) {
         Image(
-            painterResource(id = R.drawable.empty_state_search),
+            painter = painterResource(id = R.drawable.empty_state_search),
             contentDescription = null
         )
-        Spacer(Modifier.height(height = 24.dp))
+        Spacer(modifier = Modifier.height(height = 24.dp))
         Text(
             text = stringResource(R.string.search_no_matches, query),
             style = MaterialTheme.typography.titleMedium,

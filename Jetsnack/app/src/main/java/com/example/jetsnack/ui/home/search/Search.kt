@@ -85,24 +85,24 @@ fun Search(
 
             LaunchedEffect(state.query.text) {
                 state.searching = true
-                state.searchResults = SearchRepo.search(state.query.text)
+                state.searchResults = SearchRepo.search(query = state.query.text)
                 state.searching = false
             }
             when (state.searchDisplay) {
                 SearchDisplay.Categories -> SearchCategories(state.categories)
                 SearchDisplay.Suggestions -> SearchSuggestions(
                     suggestions = state.suggestions,
-                    onSuggestionSelect = { suggestion ->
+                    onSuggestionSelect = { suggestion: String ->
                         state.query = TextFieldValue(suggestion)
                     }
                 )
 
                 SearchDisplay.Results -> SearchResults(
-                    state.searchResults,
-                    onSnackClick
+                    searchResults = state.searchResults,
+                    onSnackClick = onSnackClick
                 )
 
-                SearchDisplay.NoResults -> NoResults(state.query.text)
+                SearchDisplay.NoResults -> NoResults(query = state.query.text)
             }
         }
     }
@@ -145,13 +145,13 @@ class SearchState(
     filters: List<Filter>,
     searchResults: List<Snack>
 ) {
-    var query by mutableStateOf(query)
-    var focused by mutableStateOf(focused)
-    var searching by mutableStateOf(searching)
-    var categories by mutableStateOf(categories)
-    var suggestions by mutableStateOf(suggestions)
-    var filters by mutableStateOf(filters)
-    var searchResults by mutableStateOf(searchResults)
+    var query: TextFieldValue by mutableStateOf(query)
+    var focused: Boolean by mutableStateOf(focused)
+    var searching: Boolean by mutableStateOf(searching)
+    var categories: List<SearchCategoryCollection> by mutableStateOf(categories)
+    var suggestions: List<SearchSuggestionGroup> by mutableStateOf(suggestions)
+    var filters: List<Filter> by mutableStateOf(filters)
+    var searchResults: List<Snack> by mutableStateOf(searchResults)
     val searchDisplay: SearchDisplay
         get() = when {
             !focused && query.text.isEmpty() -> SearchDisplay.Categories
