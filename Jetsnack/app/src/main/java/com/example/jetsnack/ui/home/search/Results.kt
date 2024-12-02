@@ -51,7 +51,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
+import androidx.constraintlayout.compose.ConstrainScope
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutScope
+import androidx.constraintlayout.compose.HorizontalAnchorable
+import androidx.constraintlayout.compose.VerticalAnchorable
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.snacks
@@ -105,6 +110,54 @@ fun SearchResults(
     }
 }
 
+/**
+ * This is used by the [SearchResults] Composable to display each [Snack] in its [List] of [Snack]
+ * parameter `searchResults`. Our root composable is a [ConstraintLayout] whose `modifier` argument
+ * is a [Modifier.fillMaxWidth] that makes it take up its entire incoming width constraint, with a
+ * [Modifier.clickable] whose `onClick` lambda argument is a lambda that calls our [onSnackClick]
+ * lambda parameter with the [Snack.id] of [Snack] parameter [snack] and the [String] "search", and
+ * chained to this is a [Modifier.padding] that adds 24.dp to each `horizontal` side. In its
+ * [ConstraintLayoutScope] `content` Composable lambda argument we start by initializing our
+ * [ConstrainedLayoutReference] variables `divider`, `image`, `name`, `tag`, `priceSpacer`, `price`,
+ * and `add` by using destructuring on the [ConstraintLayoutScope.ConstrainedLayoutReferences]
+ * returned by the [ConstraintLayoutScope.createRefs] method. Then we call the
+ * [ConstraintLayoutScope.createVerticalChain] method to create a vertical chain whose `chainStyle`
+ * is [ChainStyle.Packed] out of `name`, `tag`, `priceSpacer`, and `price` (chain style where the
+ * contained layouts are packed together and placed to the center of the available space). If
+ * our [Boolean] parameter [showDivider] is `true` we compose a [JetsnackDivider] whose `modifier`
+ * argument is a [ConstraintLayoutScope.constrainAs] whose `ref` argument is our
+ * [ConstrainedLayoutReference] variable `divider` and in its [ConstrainScope] `constrainBlock`
+ * lambda argument we use the [ConstrainScope.linkTo] method to link its `start` to the
+ * [ConstrainedLayoutReference.top] of its [ConstrainScope.parent] and its `end` to the
+ * [ConstrainedLayoutReference.end] of its [ConstrainScope.parent]. Then we call the
+ * [HorizontalAnchorable.linkTo] of its [ConstrainedLayoutReference.top] to link to the `anchor`
+ * of the [ConstrainedLayoutReference.top] of its [ConstrainScope.parent].
+ *
+ * Our next Composable is a [SnackImage] whose `imageRes` argument is the [Snack.imageRes] of our
+ * [Snack] parameter [snack] (the resource ID of a jpeg showing an example of the [Snack]), its
+ * `contentDescription` argument is `null`, and its `modifier` argument is a [Modifier.size] that
+ * sets its `size` to 100.dp with a [ConstraintLayoutScope.constrainAs] chained to that to constrain
+ * the [SnackImage] using [ConstrainedLayoutReference] variable `image` and in its [ConstrainScope]
+ * `constrainBlock` lambda argument we use the [ConstrainScope.linkTo] method to link its `top` to
+ * the [ConstrainedLayoutReference.top] of its [ConstrainScope.parent] with a `topMargin` of 16.dp,
+ * and to link its `bottom` to [ConstrainedLayoutReference.bottom] of its [ConstrainScope.parent]
+ * with a `bottomMargin` of 16.dp. Then we call the [VerticalAnchorable.linkTo] of its
+ * [ConstrainedLayoutReference.start] to link to the `anchor` of the [ConstrainedLayoutReference.start]
+ * of its [ConstrainScope.parent].
+ *
+ * Our next Composable is a [Text] whose `text` argument is the [Snack.name] of our [Snack] parameter
+ * [snack], its [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
+ * [MaterialTheme.typography], its [Color] `color` argument is the [JetsnackColors.textSecondary]
+ * of our custom [JetsnackTheme.colors], and its `modifier` argument is
+ *
+ * @param snack the [Snack] that we are to display.
+ * @param onSnackClick a lambda that should be called with the [Snack.id] of [snack] and the [String]
+ * "search" whenever this [SearchResult] is clicked.
+ * @param showDivider when `true` we will display a [JetsnackDivider] at the top of our layout.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [SearchResults] does not pass us one so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ */
 @Composable
 private fun SearchResult(
     snack: Snack,
@@ -118,7 +171,13 @@ private fun SearchResult(
             .clickable { onSnackClick(snack.id, "search") }
             .padding(horizontal = 24.dp)
     ) {
-        val (divider, image, name, tag, priceSpacer, price, add) = createRefs()
+        val (divider: ConstrainedLayoutReference,
+            image: ConstrainedLayoutReference,
+            name: ConstrainedLayoutReference,
+            tag: ConstrainedLayoutReference,
+            priceSpacer: ConstrainedLayoutReference,
+            price: ConstrainedLayoutReference,
+            add: ConstrainedLayoutReference) = createRefs()
         createVerticalChain(name, tag, priceSpacer, price, chainStyle = ChainStyle.Packed)
         if (showDivider) {
             JetsnackDivider(
