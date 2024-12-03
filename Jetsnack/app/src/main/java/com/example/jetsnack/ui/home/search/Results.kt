@@ -336,7 +336,7 @@ private fun SearchResult(
  *  ID `R.string.search_no_matches` (No matches for “%1s”) from our [String] parameter [query], whose
  *  [TextStyle] `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography],
  *  whose `textAlign` argument is [TextAlign.Center] (centers the text), and whose `modifier` argument
- *  is a [Modifier.fillMaxWidth] that causes it to occupy its entire incoming wight constraint.
+ *  is a [Modifier.fillMaxWidth] that causes it to occupy its entire incoming width constraint.
  *
  * @param query the [String] that the user entered for the [Search] Composable to search for.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or

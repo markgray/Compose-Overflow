@@ -44,6 +44,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +70,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.theme.JetsnackTheme
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Composed when the user navigates to [HomeSections.SEARCH.route]. Our root composable is a
@@ -77,13 +79,32 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * in whose [ColumnScope] `content` Composable lambda argument we have:
  *  - a [Spacer] whose `modifier` argument is a [Modifier.statusBarsPadding] that adds padding to
  *  accommodate the status bars insets.
- *  - a [SearchBar] whose `query` argument is the [SearchState.query] of our [SearchState] parameter
- *  [state], whose `onQueryChange` argument is a lambda that sets the [SearchState.query] of [state]
- *  to the [TextFieldValue] it is called with, whose `searchFocused` argument is the [SearchState.focused]
- *  of [state], whose `onSearchFocusChange` argument is a lambda that sets the [SearchState.focused]
- *  to the [Boolean] it is passed, whose `onClearQuery` argument is a lambda that sets the
- *  [SearchState.query] of [state] to a new instance of [TextFieldValue] whose `text` argument is the
- *  empty [String], and whose `searching` argument is the [SearchState.searching] of [state].
+ *  - a [SearchBar] whose [TextFieldValue] `query` argument is the [SearchState.query] of our
+ *  [SearchState] parameter [state], whose lambda `onQueryChange` argument is a lambda that sets the
+ *  [SearchState.query] of [state] to the [TextFieldValue] it is called with, whose [Boolean]
+ *  `searchFocused` argument is the [SearchState.focused] of [state], whose `onSearchFocusChange`
+ *  lambda argument is a lambda that sets the [SearchState.focused] of [state] to the [Boolean] it
+ *  it is passed, whose lambda `onClearQuery` argument is a lambda that sets the [SearchState.query]
+ *  of [state] to a new instance of [TextFieldValue] whose `text` argument is the empty [String], and
+ *  whose [Boolean] `searching` argument is the [SearchState.searching] of [state].
+ *  - a [JetsnackDivider]
+ *  - a [LaunchedEffect] whose `key1` is the [TextFieldValue.text] of the [SearchState.query] of
+ *  [state], and in its [CoroutineScope] `block` we set the [SearchState.searching] of [state] to
+ *  `true`, set the [SearchState.searchResults] of [state] to the [SearchRepo.search] for the `query`
+ *  of the [TextFieldValue.text] of [SearchState.query] of [state], and set the [SearchState.searching]
+ *  of [state] to `false` after the call to [SearchRepo.search] completes.
+ *
+ *  - When the [SearchState.searchDisplay] of [state] is:
+ *  - [SearchDisplay.Categories] we call the [SearchCategories] Composable with the [SearchState.categories]
+ *  of [state] as its [SearchCategories] `categories` argument.
+ *  - [SearchDisplay.Suggestions] we call the [SearchSuggestions] Composable with its `suggestions`
+ *  argument the [SearchState.suggestions] of [state], and its `onSuggestionSelect` lambda argument
+ *  a lambda that sets the [SearchState.query] of [state] to the [String] passed the lambda.
+ *  - [SearchDisplay.Results] we call the [SearchResults] Composable with its `searchResults` argument
+ *  the [SearchState.searchResults] of [state] and its `onSnackClick` lambda argument our lambda
+ *  parameter [onSnackClick].
+ *  - [SearchDisplay.NoResults] we call the [NoResults] Composable with the [String] `query` argument
+ *  passed to it the [TextFieldValue.text] of the [SearchState.query] of [state].
  *
  * @param onSnackClick a lambda that should be called when Camposable displaying a [Snack] is clicked
  * with the [Snack.id] of the [Snack] and a [String]. It traces back to a call to `navigateToSnackDetail`
@@ -113,13 +134,13 @@ fun Search(
             )
             JetsnackDivider()
 
-            LaunchedEffect(state.query.text) {
+            LaunchedEffect(key1 = state.query.text) {
                 state.searching = true
                 state.searchResults = SearchRepo.search(query = state.query.text)
                 state.searching = false
             }
             when (state.searchDisplay) {
-                SearchDisplay.Categories -> SearchCategories(state.categories)
+                SearchDisplay.Categories -> SearchCategories(categories = state.categories)
                 SearchDisplay.Suggestions -> SearchSuggestions(
                     suggestions = state.suggestions,
                     onSuggestionSelect = { suggestion: String ->
@@ -138,13 +159,61 @@ fun Search(
     }
 }
 
+/**
+ *
+ */
 enum class SearchDisplay {
-    Categories, Suggestions, Results, NoResults
+    /**
+     * This selects the [SearchCategories] Composable. It is the default when the user first opens
+     * the [Search] screen before entering any text. The `get` of [SearchState.searchDisplay]
+     * returns [SearchDisplay.Categories] when the [SearchState.categories] is `false` and the
+     * [TextFieldValue.text] of the [SearchState.query] is empty.
+     */
+    Categories,
+
+    /**
+     * This selects the [SearchSuggestions] Composable. It is called when the user clicks in the
+     * "Search Jetsnack" [SearchBar] but has not yet entered any text. The `get` of
+     * [SearchState.searchDisplay] returns [SearchDisplay.Suggestions] when the [SearchState.focused]
+     * is `true` and the [TextFieldValue.text] of the [SearchState.query] is empty.
+     */
+    Suggestions,
+
+    /**
+     * This selects the [SearchResults] Composable. It is called when the user has entered text and
+     * some results are found. The `get` of the [SearchState.searchDisplay] returns this as its `else`
+     * clause when the [SearchState.searchResults] is not empty, and the [TextFieldValue.text] of
+     * the [SearchState.query] is not empty.
+     */
+    Results,
+
+    /**
+     * This selects the [NoResults] Composable. It is called when the user has entered text but no
+     * results are found. The `get` of the [SearchState.searchDisplay] returns this when the
+     * [SearchState.searchResults] is empty, but the [TextFieldValue.text] of the [SearchState.query]
+     * is not empty, and the [SearchState.focused] is `true`
+     */
+    NoResults
 }
 
+/**
+ * Creates and returns a [SearchState] that is remembered across compositions. We just call [remember]
+ * for a new instance of [SearchState] constructed using the default values of our parameters because
+ * our caller [Search] does not pass us any.
+ *
+ * @param query the initial value for [SearchState.query] is an empty [TextFieldValue].
+ * @param focused the initial value for [SearchState.focused] is `false`.
+ * @param searching the initial value for [SearchState.searching] is `false`.
+ * @param categories the initial value for [SearchState.categories] is the [List] of
+ * [SearchCategoryCollection] returned by the [SearchRepo.getCategories] method.
+ * @param filters the initial value for [SearchState.filters] is the [List] of [Filter] returned
+ * by the [SnackRepo.getFilters] method.
+ * @param searchResults the initial value for [SearchState.searchResults] is an empty [List] of
+ * [Snack].
+ */
 @Composable
 private fun rememberSearchState(
-    query: TextFieldValue = TextFieldValue(""),
+    query: TextFieldValue = TextFieldValue(text = ""),
     focused: Boolean = false,
     searching: Boolean = false,
     categories: List<SearchCategoryCollection> = SearchRepo.getCategories(),
@@ -165,6 +234,24 @@ private fun rememberSearchState(
     }
 }
 
+/**
+ * A state holder for the state of the [Search] Composable.
+ *
+ * @param query the [TextFieldValue] to use to initialize our [MutableState] wrapped [TextFieldValue]
+ * property [SearchState.query].
+ * @param focused the [Boolean] to use to initialize our [MutableState] wrapped [Boolean] property
+ * [SearchState.focused].
+ * @param searching the [Boolean] to use to initialize our [MutableState] wrapped [Boolean] property
+ * [SearchState.searching].
+ * @param categories the [List] of [SearchCategoryCollection] to use to initialize our [MutableState]
+ * wrapped [List] of [SearchCategoryCollection] property [SearchState.categories].
+ * @param suggestions the [List] of [SearchSuggestionGroup] to use to initialize our [MutableState]
+ * wrapped [List] of [SearchSuggestionGroup] property [SearchState.suggestions].
+ * @param filters the [List] of [Filter] to use to initialize our [MutableState] wrapped [List] of
+ * [Filter] property [SearchState.filters].
+ * @param searchResults the [List] of [Snack] to use to initialize our [MutableState] wrapped [List]
+ * of [Snack] property [SearchState.searchResults].
+ */
 @Stable
 class SearchState(
     query: TextFieldValue,
@@ -175,13 +262,47 @@ class SearchState(
     filters: List<Filter>,
     searchResults: List<Snack>
 ) {
-    var query: TextFieldValue by mutableStateOf(query)
-    var focused: Boolean by mutableStateOf(focused)
-    var searching: Boolean by mutableStateOf(searching)
-    var categories: List<SearchCategoryCollection> by mutableStateOf(categories)
-    var suggestions: List<SearchSuggestionGroup> by mutableStateOf(suggestions)
-    var filters: List<Filter> by mutableStateOf(filters)
-    var searchResults: List<Snack> by mutableStateOf(searchResults)
+    /**
+     * This is the current [TextFieldValue] that the user has entered in the [SearchBar].
+     */
+    var query: TextFieldValue by mutableStateOf(value = query)
+
+    /**
+     * `true` if the [SearchBar] is currently focused.
+     */
+    var focused: Boolean by mutableStateOf(value = focused)
+
+    /**
+     * `true` while the [SearchRepo.search] method is being executed by the [LaunchedEffect] of [Search]
+     */
+    var searching: Boolean by mutableStateOf(value = searching)
+
+    /**
+     * The [List] of [SearchCategoryCollection] that should be displayed in the [SearchCategories]
+     * Composable.
+     */
+    var categories: List<SearchCategoryCollection> by mutableStateOf(value = categories)
+
+    /**
+     * The [List] of [SearchSuggestionGroup] that should be displayed in the [SearchSuggestions]
+     * Composable.
+     */
+    var suggestions: List<SearchSuggestionGroup> by mutableStateOf(value = suggestions)
+
+    /**
+     * The [List] of [Filter] returned by the [SnackRepo.getFilters] method (does not appear to be used)
+     */
+    var filters: List<Filter> by mutableStateOf(value = filters)
+
+    /**
+     * The [List] of [Snack] that should be displayed in the [SearchResults] Composable. It is set by
+     * a call to the [SearchRepo.search] method in the [LaunchedEffect] of [Search].
+     */
+    var searchResults: List<Snack> by mutableStateOf(value = searchResults)
+
+    /**
+     * The [SearchDisplay] that should be displayed in the [Search] Composable.
+     */
     val searchDisplay: SearchDisplay
         get() = when {
             !focused && query.text.isEmpty() -> SearchDisplay.Categories
@@ -191,6 +312,9 @@ class SearchState(
         }
 }
 
+/**
+ * Displayed in the [Search] Composable.
+ */
 @Composable
 private fun SearchBar(
     query: TextFieldValue,
