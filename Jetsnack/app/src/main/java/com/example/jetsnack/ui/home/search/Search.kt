@@ -19,8 +19,11 @@ package com.example.jetsnack.ui.home.search
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,9 +64,36 @@ import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.home.HomeSections
+import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * Composed when the user navigates to [HomeSections.SEARCH.route]. Our root composable is a
+ * [JetsnackSurface] whose `modifier` argument is a [Modifier.fillMaxSize] that has it occupy its
+ * entire incoming size constraints. In its `content` Composable lambda argument we have a [Column]
+ * in whose [ColumnScope] `content` Composable lambda argument we have:
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.statusBarsPadding] that adds padding to
+ *  accommodate the status bars insets.
+ *  - a [SearchBar] whose `query` argument is the [SearchState.query] of our [SearchState] parameter
+ *  [state], whose `onQueryChange` argument is a lambda that sets the [SearchState.query] of [state]
+ *  to the [TextFieldValue] it is called with, whose `searchFocused` argument is the [SearchState.focused]
+ *  of [state], whose `onSearchFocusChange` argument is a lambda that sets the [SearchState.focused]
+ *  to the [Boolean] it is passed, whose `onClearQuery` argument is a lambda that sets the
+ *  [SearchState.query] of [state] to a new instance of [TextFieldValue] whose `text` argument is the
+ *  empty [String], and whose `searching` argument is the [SearchState.searching] of [state].
+ *
+ * @param onSnackClick a lambda that should be called when Camposable displaying a [Snack] is clicked
+ * with the [Snack.id] of the [Snack] and a [String]. It traces back to a call to `navigateToSnackDetail`
+ * in the class [JetsnackNavController].
+ * @param modifier a [Modifier] instance that our caller can use to modidfy our appearance and/or
+ * behavior. Our caller passes its [Modifier] parameter which traces back to a [Modifier.padding]
+ * that adds the [PaddingValues] that are passed to content of the [JetsnackScaffold] it is in with
+ * a [consumeWindowInsets] chained to that called with those same [PaddingValues].
+ * @param state the [SearchState] to use to communicate between the different composables we contain.
+ */
 @Composable
 fun Search(
     onSnackClick: (Long, String) -> Unit,
@@ -78,7 +108,7 @@ fun Search(
                 onQueryChange = { state.query = it },
                 searchFocused = state.focused,
                 onSearchFocusChange = { state.focused = it },
-                onClearQuery = { state.query = TextFieldValue("") },
+                onClearQuery = { state.query = TextFieldValue(text = "") },
                 searching = state.searching
             )
             JetsnackDivider()
