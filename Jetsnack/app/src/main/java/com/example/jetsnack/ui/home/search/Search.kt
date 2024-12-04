@@ -41,6 +41,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +54,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,6 +72,7 @@ import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.navigation.JetsnackNavController
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlinx.coroutines.CoroutineScope
 
@@ -160,7 +164,9 @@ fun Search(
 }
 
 /**
- *
+ * This enum is used to select which Composable is to be displayed in [Search]. The
+ * [SearchState.searchDisplay] property uses a `when` in its `get` method to select
+ * amongst the possible values based on the values of other properties to the [SearchState].
  */
 enum class SearchDisplay {
     /**
@@ -313,7 +319,36 @@ class SearchState(
 }
 
 /**
- * Displayed in the [Search] Composable.
+ * Displayed in the [Search] Composable. Our root Composable is a [JetsnackSurface] whose [Color]
+ * `color` argument is the [JetsnackColors.uiFloated] of our custom [JetsnackTheme.colors], whose
+ * [Color] `contentColor` argument the [JetsnackColors.textSecondary] of our custom
+ * [JetsnackTheme.colors], whose [Shape] `shape` argument is the [Shapes.small] of our custom
+ * [MaterialTheme.shapes], and whose [Modifier] `modifier` argument chains a [Modifier.fillMaxWidth]
+ * to our [Modifier] parameter [modifier] to have it occupy its entire incoming width constaint, with
+ * a [Modifier.height] chained to that which sets its `height` to 56.dp, followed by a chain to a
+ * [Modifier.padding] that adds 24.dp padding to each `horizontal` side and 8.dp to each `vertical`
+ * side. In its `content` Composable lambda argument we have a [Box] whose `modifier` argument is
+ * a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints
+ *
+ * @param query the current [TextFieldValue] that the user has entered. Our caller [Search] passes
+ * us the value of the [SearchState.query] of the latest [SearchState].
+ * @param onQueryChange a lambda that we should call with the new [TextFieldValue] when the user
+ * modifies it. Our caller [Search] passes us a lambda that sets the [SearchState.query] of the
+ * latest [SearchState] to the [TextFieldValue] we pass the lambda.
+ * @param searchFocused `true` if our [BasicTextField] has the focus. Our caller [Search] passes
+ * us the [SearchState.focused] property of the current [SearchState].
+ * @param onSearchFocusChange a lambda to be called when the focus state of our [BasicTextField]
+ * changes. Our caller [Search] passes us a lambda that sets the [SearchState.focused] property
+ * of the current [SearchState] to the [Boolean] we pass the lambda.
+ * @param onClearQuery a lambda to be called when the user indicates he wishes to clear the current
+ * query. Our caller [Search] passes us a lambda that sets the [SearchState.query] property of the
+ * current [SearchState] to a [TextFieldValue] whose `text` is the empty [String].
+ * @param searching `true` while the [SearchRepo.search] method is being executed by the
+ * [LaunchedEffect] of [Search]. Our caller [Search] passes us the [SearchState.searching]
+ * property of the latest [SearchState].
+ * @param modifier a [Modifier] instance that our caller can use to modidfy our appearance and/or
+ * behavior. Our caller [Search] does not pass us one so the empty, default, or starter [Modifier]
+ * that contains no elements is used
  */
 @Composable
 private fun SearchBar(
@@ -331,10 +366,10 @@ private fun SearchBar(
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(height = 56.dp)
             .padding(horizontal = 24.dp, vertical = 8.dp)
     ) {
-        Box(Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             if (query.text.isEmpty()) {
                 SearchHint()
             }
