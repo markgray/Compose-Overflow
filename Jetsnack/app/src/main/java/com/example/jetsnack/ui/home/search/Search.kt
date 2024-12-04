@@ -18,10 +18,12 @@ package com.example.jetsnack.ui.home.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,9 +55,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -328,7 +332,32 @@ class SearchState(
  * a [Modifier.height] chained to that which sets its `height` to 56.dp, followed by a chain to a
  * [Modifier.padding] that adds 24.dp padding to each `horizontal` side and 8.dp to each `vertical`
  * side. In its `content` Composable lambda argument we have a [Box] whose `modifier` argument is
- * a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints
+ * a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints, and in its
+ * [BoxScope] `content` Composable lambda argument if the [TextFieldValue.text]  of our
+ * [TextFieldValue] parameter [query] is empty we compose a [SearchHint] Composable to provide the
+ * user with a hint in any case we Compose a [Row] whose `verticalAlignment` argument is set to
+ * [Alignment.CenterVertically] to center its children vertically, and whose `modifier` argument
+ * is a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints, with a
+ * [Modifier.wrapContentHeight] to have it occupy its entire incoming height constraints. In its
+ * [RowScope] `content` Composable lambda argument we have:
+ *  - if our [Boolean] parameter [searchFocused] is `true` we compose an [IconButton] whose `onClick`
+ *  argument our lambda parameter [onClearQuery], and whose `content` Composable lambda argument is
+ *  an [Icon] whose [ImageVector] `imageVector` argument is the [Icons.AutoMirrored.Outlined.ArrowBack]
+ *  (an arrow pointing to the left), whose [Color] `tint` argument is the [JetsnackColors.iconPrimary]
+ *  of our custom [JetsnackTheme.colors], and whose `contentDescription` argument is the string
+ *  whose resource ID is `R.string.label_back` ("Back").
+ *  - a [BasicTextField] whose [TextFieldValue] `value` argument is our [TextFieldValue] parameter
+ *  [query], whose `onValueChange` lambda argument is our lambda parameter [onQueryChange], and whose
+ *  [Modifier] `modifier` argument is a [RowScope.weight] which sets its `weight` to `1f` to have it
+ *  take up all horizontal space after its unweighted siblings have been measured and placed, and
+ *  whose `onFocusChanged` lambda argument is a lambda that calls our lambda parameter [onSearchFocusChange]
+ *  with the [FocusState.isFocused] property of the [FocusState] parameter the lambda.
+ *  - if our [Boolean] parameter [searching] is `true` we compose a [CircularProgressIndicator]
+ *  whose [Color] `color` argument is the [JetsnackColors.iconPrimary] of our custom [JetsnackTheme.colors]
+ *  and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds 6.dp to each `horizontal`
+ *  side with a [Modifier.size] that sets its `size` to 36.dp. If our [Boolean] parameter [searching]
+ *  is `false` we compose a [Spacer] whose `modifier` argument is a [Modifier.width] that sets its
+ *  `width` to [IconSize] to balance the arrow icon.
  *
  * @param query the current [TextFieldValue] that the user has entered. Our caller [Search] passes
  * us the value of the [SearchState.query] of the latest [SearchState].
@@ -392,7 +421,7 @@ private fun SearchBar(
                     value = query,
                     onValueChange = onQueryChange,
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .onFocusChanged {
                             onSearchFocusChange(it.isFocused)
                         }
@@ -402,18 +431,41 @@ private fun SearchBar(
                         color = JetsnackTheme.colors.iconPrimary,
                         modifier = Modifier
                             .padding(horizontal = 6.dp)
-                            .size(36.dp)
+                            .size(size = 36.dp)
                     )
                 } else {
-                    Spacer(Modifier.width(IconSize)) // balance arrow icon
+                    Spacer(modifier = Modifier.width(width = IconSize)) // balance arrow icon
                 }
             }
         }
     }
 }
 
+/**
+ * The default size of an [Icon], used as the width of the [Spacer] at the end of the [SearchBar]
+ * when the [IconButton] is not being composed.
+ */
 private val IconSize = 48.dp
 
+/**
+ * Displayed as a hint in the [SearchBar] when the [TextFieldValue.text] of the [TextFieldValue] of
+ * the [BasicTextField] is empty. Our root Composable is a [Row] whose `verticalAlignment` argument
+ * is an [Alignment.CenterVertically] to center its children vertically, and whose `modifier`
+ * argument is a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints, with
+ * a [Modifier.wrapContentSize] chained to that to allow it to measure at its desired size without
+ * regard for the incoming measurement minimum width or minimum height constraints. In its [RowScope]
+ * `content` Composable lambda argument we have:
+ *  - an [Icon] whose [ImageVector] `imageVector` argument is thean [Icon] whose [ImageVector]
+ *  `imageVector` argument is the [ImageVector] drawn by [Icons.Outlined.Search] (a magnifying glass),
+ *  whose [Color] `tint` argument is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors],
+ *  and whose `contentDescription` argument is the string whose resource ID is `R.string.label_search`
+ *  ("Perform Search").
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.width] that sets its `width` to
+ *  `8.dp`.
+ *  - a [Text] whose [String] `text` argument is the string whose resource ID is `R.string.search_jetsnack`
+ *  ("Search Jetsnack"), and whose [Color] `color` argument is the [JetsnackColors.textHelp] of our
+ *  custom [JetsnackTheme.colors].
+ */
 @Composable
 private fun SearchHint() {
     Row(
@@ -427,7 +479,7 @@ private fun SearchHint() {
             tint = JetsnackTheme.colors.textHelp,
             contentDescription = stringResource(R.string.label_search)
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(width = 8.dp))
         Text(
             text = stringResource(R.string.search_jetsnack),
             color = JetsnackTheme.colors.textHelp
@@ -435,6 +487,9 @@ private fun SearchHint() {
     }
 }
 
+/**
+ * Three Previews of our [SearchBar] using different device settings.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
