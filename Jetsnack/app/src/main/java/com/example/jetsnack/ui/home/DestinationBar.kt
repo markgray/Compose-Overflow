@@ -50,6 +50,9 @@ import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.AlphaNearOpaque
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DestinationBar(modifier: Modifier = Modifier) {
@@ -89,8 +92,7 @@ fun DestinationBar(modifier: Modifier = Modifier) {
                                 Icon(
                                     imageVector = Icons.Outlined.ExpandMore,
                                     tint = JetsnackTheme.colors.brand,
-                                    contentDescription =
-                                    stringResource(R.string.label_select_delivery)
+                                    contentDescription = stringResource(R.string.label_select_delivery)
                                 )
                             }
                         }
@@ -107,6 +109,9 @@ fun DestinationBar(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Three previews of our [DestinationBar] using different device settings.
+ */
 @Preview("default")
 @Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)

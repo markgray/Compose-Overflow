@@ -30,14 +30,18 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.model.SearchRepo
 import com.example.jetsnack.model.SearchSuggestionGroup
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
@@ -91,7 +95,15 @@ fun SearchSuggestions(
 }
 
 /**
- * A header to display at the top of the [LazyColumn] of [SearchSuggestions].
+ * A header to display at the top of the [LazyColumn] of [SearchSuggestions]. Our root Composable is
+ * a [Text] whose `text` argument is our [String] parameter [name], whose [TextStyle] `style` argument
+ * is the [Typography.titleLarge] of our custom [MaterialTheme.typography], whose [Color] `color`
+ * argument is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors], and whose
+ * [Modifier] `modifier` argument chains to our [Modifier] parameter [modifier] a [Modifier.heightIn]
+ * whose `min` is 56.dp (constrains the height of the content to be at least 56.dp), then chains a
+ * [Modifier.padding] that adds 24.dp to each `horizontal` side and 4.dp to each `vertical` side,
+ * and ends with chain of [Modifier.wrapContentHeight] (allows the content to measure at its desired
+ * height without regard for the incoming minimum height constraint).
  *
  * @param name the header title to display.
  * @param modifier a [Modifier] instance that our caller can use to modify the header's appearance
@@ -113,6 +125,27 @@ private fun SuggestionHeader(
     )
 }
 
+/**
+ * Used by [SearchSuggestions] to display each [String] parameter [suggestion] that it has found
+ * in the [List] of [String] field [SearchSuggestionGroup.suggestions] of the [SearchSuggestionGroup]
+ * it is displaying. Our root Composable is a [Text] whose `text` argument is our [String] parameter
+ * [suggestion], whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
+ * [MaterialTheme.typography], and whose [Modifier] argument `modifier` chains to our [Modifier]
+ * parameter [modifier] a [Modifier.heightIn] whose `min` is 48.dp (constrains the height of the
+ * content to be at least 48.dp), then chains a [Modifier.clickable] in whose `onClick` lambda we
+ * call our lambda taking [String] parameter [onSuggestionSelect] with the [String] parameter
+ * [suggestion], followed by a chain to a [Modifier.padding] that adds 24.dp padding to its `start`,
+ * and last in the chain is a [Modifier.wrapContentSize] to allow the content to measure at its
+ * desired size without regard for the incoming minimum width or minimum height constraints with
+ * the `align` argument [Alignment.CenterStart] to align the content to the `start` and center it.
+ *
+ * @param suggestion the [String] we are to display.
+ * @param onSuggestionSelect a lambda that should be called with our [String] parameter [suggestion]
+ * when the [Text] displaying it is clicked.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [SearchSuggestions] passes us a [LazyItemScope.fillParentMaxWidth] to have
+ * our [Suggestion] fill the width of its parent.
+ */
 @Composable
 private fun Suggestion(
     suggestion: String,
@@ -126,7 +159,7 @@ private fun Suggestion(
             .heightIn(min = 48.dp)
             .clickable { onSuggestionSelect(suggestion) }
             .padding(start = 24.dp)
-            .wrapContentSize(Alignment.CenterStart)
+            .wrapContentSize(align = Alignment.CenterStart)
     )
 }
 
