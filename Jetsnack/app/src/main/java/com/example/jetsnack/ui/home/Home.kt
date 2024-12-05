@@ -138,7 +138,7 @@ fun NavGraphBuilder.addHomeGraph(
     composable(HomeSections.FEED.route) { from: NavBackStackEntry ->
         Feed(
             onSnackClick = { id, origin -> onSnackSelected(id, origin, from) },
-            modifier
+            modifier = modifier
         )
     }
     composable(HomeSections.SEARCH.route) { from ->
