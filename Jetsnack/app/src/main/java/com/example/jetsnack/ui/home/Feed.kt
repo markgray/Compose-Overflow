@@ -20,6 +20,7 @@ package com.example.jetsnack.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
@@ -27,6 +28,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -38,6 +40,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -90,9 +93,41 @@ fun Feed(
 }
 
 /**
- * Private override of the [Feed] Composable that is called by the public [Feed] Composable (since it
- * also contains state I am not sure why it is needed, if it were stateless it would make more sense).
+ * Private override of the [Feed] Composable that is called by the public [Feed] Composable (since
+ * it also contains state I am not sure why it is needed, if it were stateless it would make more
+ * sense). Our root Composable is a [JetsnackSurface] whose [Modifier] `modifier` argument uses our
+ * [Modifier] parameter [modifier] with a [Modifier.fillMaxSize] chained to that that causess it to
+ * occupy its entire incoming size constraints. In its `content` Composable lambda argument we
+ * initialize and remember our [MutableState] wrapped [Boolean] variable `var filtersVisible` to
+ * an initial value of `false`. Then we Compose a [SharedTransitionLayout] (creates a layout and a
+ * SharedTransitionScope for the child layouts in its `content` argument. Any child (direct or
+ * indirect) of the SharedTransitionLayout can use the receiver scope SharedTransitionScope to
+ * create shared element or shared bounds transitions). In its [SharedTransitionScope] `content`
+ * composable lambda we have [Box] in whose [BoxScope] `content` Composable lambda argument we have:
+ *  - a [SnackCollectionList] whose [List] of [SnackCollection] argument `snackCollections` is our
+ *  [List] of [SnackCollection] parameter [snackCollections], whose [List] of [Filter] `filters`
+ *  argument is our [List] of [Filter] parameter [filters], whose [Boolean] `filtersVisible`
+ *  argument is our [MutableState] wrapped [Boolean] variable `filtersVisible`, whose
+ *  `onFiltersSelected` lambda argument is a lambda that sets `filtersVisible` to `true`,
+ *  whose [SharedTransitionScope] `sharedTransitionScope` argument is `this` [SharedTransitionLayout],
+ *  and whose `onSnackClick` lambda  argument taking [Long] and [String] is our [onSnackClick]
+ *  lambda  parameter taking [Long] and [String].
+ *  - a [DestinationBar] (displays over the top of the [SnackCollectionList], which has a [Spacer]
+ *  at its top to compensate for this).
+ *  - an [AnimatedVisibility] (animates the appearance and disappearance of its [AnimatedVisibilityScope]
+ *  `content` Composable lambda argument, as its [Boolean] `visible` argument changes). Its [Boolean]
+ *  `visible` argument is our [MutableState] wrapped [Boolean] variable `filtersVisible`
  *
+ * @param snackCollections the [List] of [SnackCollection] that we are supposed to display
+ * @param filters the [List] of [Filter] that is displayed by the [FilterBar] in the
+ * [SnackCollectionList] Composable.
+ * @param onSnackClick a lambda that should be called with the [Snack.id] of the [Snack] and a
+ * [String] when a composable displaying a [Snack] is clicked.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller (the other [Feed] override) passes us the [Modifier] passed it in its own
+ * `modifier` parameter and it traces back to a [Modifier.padding] that adds the [PaddingValues]
+ * that the [JetsnackScaffold] in [MainContainer] passes to its `content`, with a
+ * [Modifier.consumeWindowInsets] chained to that which consumes the same [PaddingValues].
  */
 @Composable
 private fun Feed(
@@ -103,7 +138,7 @@ private fun Feed(
 ) {
     JetsnackSurface(modifier = modifier.fillMaxSize()) {
         var filtersVisible: Boolean by remember {
-            mutableStateOf(false)
+            mutableStateOf(value = false)
         }
         SharedTransitionLayout {
             Box {
@@ -118,7 +153,7 @@ private fun Feed(
                     onSnackClick = onSnackClick
                 )
                 DestinationBar()
-                AnimatedVisibility(filtersVisible, enter = fadeIn(), exit = fadeOut()) {
+                AnimatedVisibility(visible = filtersVisible, enter = fadeIn(), exit = fadeOut()) {
                     FilterScreen(
                         animatedVisibilityScope = this@AnimatedVisibility,
                         sharedTransitionScope = this@SharedTransitionLayout
