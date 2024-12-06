@@ -21,6 +21,8 @@ package com.example.jetsnack.ui.home
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
@@ -38,7 +40,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -58,6 +63,8 @@ import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.SnackCollection
+import com.example.jetsnack.ui.navigation.MainDestinations
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
@@ -116,7 +123,13 @@ fun Feed(
  *  at its top to compensate for this).
  *  - an [AnimatedVisibility] (animates the appearance and disappearance of its [AnimatedVisibilityScope]
  *  `content` Composable lambda argument, as its [Boolean] `visible` argument changes). Its [Boolean]
- *  `visible` argument is our [MutableState] wrapped [Boolean] variable `filtersVisible`
+ *  `visible` argument is our [MutableState] wrapped [Boolean] variable `filtersVisible`, its
+ *  [EnterTransition] `enter` argument is a [fadeIn] animation, and its [ExitTransition] `exit`
+ *  argument is a [fadeOut] animation. In its [AnimatedVisibilityScope] `content` Composable lambda
+ *  we compose a [FilterScreen] whose [SharedTransitionScope] `sharedTransitionScope` argument is
+ *  `this` [SharedTransitionLayout], whose `animatedVisibilityScope` argument is `this`
+ *  [AnimatedVisibility]. Its `onDismiss` lambda argument is a lambda that sets `filtersVisible` to
+ *  `false`.
  *
  * @param snackCollections the [List] of [SnackCollection] that we are supposed to display
  * @param filters the [List] of [Filter] that is displayed by the [FilterBar] in the
@@ -164,6 +177,43 @@ private fun Feed(
     }
 }
 
+/**
+ * Composable that is called by the [Feed] Composable to display its [List] of [SnackCollection]
+ * parameter. Our root Composable is a [LazyColumn] whose [Modifier] `modifier` argument is our
+ * [Modifier] parameter [modifier]. In the [LazyListScope] `content` Composable lambda argument we
+ * have:
+ *  - a [LazyListScope.item] whose [LazyItemScope] `content` Composable lambda argument holds a
+ *  [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight] which adds a
+ *  [WindowInsets] whose `top` is 56.dp to the [WindowInsets.Companion.statusBars] (this compensates
+ *  for both the status bar and the [DestinationBar] that is composed on top of us). Next in the
+ *  [LazyListScope.item] is a [FilterBar] whose `filters` argument is our [List] of [Filter] parameter
+ *  [filters], whose `sharedTransitionScope` argument is our [SharedTransitionScope] parameter
+ *  [sharedTransitionScope], whose `filterScreenVisible` argument is our [Boolean] parameter
+ *  [filtersVisible], and whose `onShowFilters` lambda argument our lambda parameter [onFiltersSelected].
+ *  - a [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [SnackCollection] parameter
+ *  [snackCollections].
+ *
+ * @param snackCollections the [List] of [SnackCollection] that we are supposed to display.
+ * @param filters the [List] of [Filter] that is displayed by our [FilterBar] Composable
+ * @param filtersVisible a [Boolean] that is `true` when the [FilterScreen] Composable is visible.
+ * @param onFiltersSelected a lambda that is called by the [FilterBar] Composable when the "Filters"
+ * [IconButton] at the beginning of its Composable is clicked. Our caller [Feed] passes us a lambda
+ * that sets its [MutableState] wrapped [Boolean] variable `filtersVisible` to `true` which animates
+ * the visibilty of a [FilterScreen] Composable to visible (this displays a pop-up with more filter
+ * options).
+ * @param onSnackClick a lambda that should be called with the [Snack.id] and a [String] when a
+ * composable displaying a [Snack] is clicked. Our caller [Feed] passes us a lambda that traces back
+ * to a call to [com.example.jetsnack.ui.navigation.JetsnackNavController.navigateToSnackDetail]
+ * which navigates to the route [MainDestinations.SNACK_DETAIL_ROUTE] with the [Snack.id] as its
+ * arugment which composes a [SnackDetail] Composable displaying the [Snack].
+ * @param sharedTransitionScope a [SharedTransitionScope] that our caller [Feed] passes us. It is
+ * used by [FilterBar] to animate the disappearance and appearance of its `filters` [IconButton]
+ * Composable in concert with the appearance and disappearance of the [FilterScreen] Composable.
+ * (a very neat effect, but you have to be looking for it to notice).
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ */
 @Composable
 private fun SnackCollectionList(
     snackCollections: List<SnackCollection>,
@@ -177,8 +227,8 @@ private fun SnackCollectionList(
     LazyColumn(modifier = modifier) {
         item {
             Spacer(
-                Modifier.windowInsetsTopHeight(
-                    WindowInsets.statusBars.add(WindowInsets(top = 56.dp))
+                modifier = Modifier.windowInsetsTopHeight(
+                    WindowInsets.statusBars.add(insets = WindowInsets(top = 56.dp))
                 )
             )
             FilterBar(
@@ -188,7 +238,7 @@ private fun SnackCollectionList(
                 onShowFilters = onFiltersSelected
             )
         }
-        itemsIndexed(snackCollections) { index: Int, snackCollection: SnackCollection ->
+        itemsIndexed(items = snackCollections) { index: Int, snackCollection: SnackCollection ->
             if (index > 0) {
                 JetsnackDivider(thickness = 2.dp)
             }
