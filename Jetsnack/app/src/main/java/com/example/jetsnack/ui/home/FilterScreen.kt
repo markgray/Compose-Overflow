@@ -74,9 +74,21 @@ import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
+import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * This is a pop-up which is launched when the "Filters" [IconButton] in the [FilterBar] Composable
+ * is clicked. Its appearance and disappearance is animated using a shared transition that also
+ * animates the synchronized disappearance and appearance of the [IconButton].
+ *
+ * @param sharedTransitionScope the [SharedTransitionScope] that controls the animation we share with
+ * the "Filters" [IconButton] in the [FilterBar] Composable.
+ * @param animatedVisibilityScope the [AnimatedVisibilityScope] that controls our enter/exit
+ * animations.
+ * @param onDismiss a lambda we should call when the user indicates we should be dismissed.
+ */
 @Composable
 fun FilterScreen(
     sharedTransitionScope: SharedTransitionScope,
@@ -202,6 +214,9 @@ fun FilterScreen(
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilterChipSection(title: String, filters: List<Filter>) {
@@ -221,6 +236,9 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     FilterTitle(text = stringResource(id = R.string.sort))
@@ -232,6 +250,9 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun SortFilters(
     sortFilters: List<Filter> = SnackRepo.getSortFilters(),
@@ -251,6 +272,9 @@ fun SortFilters(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     FlowRow {
@@ -279,6 +303,9 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     )
 }
 
+/**
+ *
+ */
 @Composable
 fun FilterTitle(text: String) {
     Text(
@@ -289,6 +316,9 @@ fun FilterTitle(text: String) {
     )
 }
 
+/**
+ *
+ */
 @Composable
 fun SortOption(
     text: String,
@@ -321,6 +351,9 @@ fun SortOption(
     }
 }
 
+/**
+ * A preview of our [FilterScreen].
+ */
 @Preview("filter screen")
 @Composable
 fun FilterScreenPreview() {
