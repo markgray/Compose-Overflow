@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -80,6 +81,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Filter
+import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.FilterSharedElementKey
 import com.example.jetsnack.ui.components.FilterBar
@@ -313,7 +315,21 @@ fun FilterScreen(
 }
 
 /**
+ * This is used by the [FilterScreen] Composable to display each of the different [List] of [Filter]
+ * that it displays. First we compose a [FilterTitle] whose `text` argument is our [String] parameter
+ * [title]. Then we compose a [FlowRow] whose `modifier` argument is a [Modifier.fillMaxWidth], with
+ * a [Modifier.padding] chained to that that adds 12.dp padding to its `top`, and 16.dp to its
+ * `bottom`, and another [Modifier.padding] is chained to that adds 4.dp padding to each of its
+ * `horizontal` sides. In the [FlowRowScope] `content` Composable lambda argument of the [FlowRow]
+ * we use the [forEach] extension function of the [List] of [Filter] parameter [filters] to loop
+ * through each [Filter] in the [List] capturing the [Filter] in variable `filter`. In the `action`
+ * lambda argument of the [forEach] we compose a [FilterChip] whose `filter` argument is our [Filter]
+ * variable `filter`, and whose `modifier` argument is a [Modifier.padding] that adds 4.dp padding
+ * to its `end` and 8.dp padding to its `bottom`.
  *
+ *
+ * @param title the [String] title of the [FilterChipSection] to be displayed by a [FilterTitle]
+ * @param filters the [List] of [Filter] to be displayed, each in a [FilterChip]
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -325,7 +341,7 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
             .padding(top = 12.dp, bottom = 16.dp)
             .padding(horizontal = 4.dp)
     ) {
-        filters.forEach { filter ->
+        filters.forEach { filter: Filter ->
             FilterChip(
                 filter = filter,
                 modifier = Modifier.padding(end = 4.dp, bottom = 8.dp)
@@ -335,13 +351,24 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
 }
 
 /**
- * This is used by the [FilterScreen] Composable to display the [SortFilters] that are available
- * with the
+ * This is used by the [FilterScreen] Composable to display a [FilterTitle] for [SortFilters] and
+ * supply a [ColumnScope] for [SortFilters] to compose its [SortOption]'s into. First we compose a
+ * [FilterTitle] whose `text` argument is the [String] with resource ID `R.string.sort` ("Sort").
+ * Then we compose a [Column] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to
+ * the `bottom` of the [Column]. In the [ColumnScope] `content` Composable lambda argument of the
+ * [Column] we compose a [SortFilters] whose `sortState` argument is our [MutableState] wrapped
+ * [String] parameter [sortState], and whose `onFilterChange` lambda argument is our lambda parameter
+ * [onFilterChange].
+ *
+ * @param sortState the [Filter.name] of the currently selected sort [Filter].
+ * @param onFilterChange a lambda which can be called with a [Filter] to change the currently
+ * selected sort [Filter]. Our caller [FilterScreen] passes us a lambda which accepts a [Filter]
+ * in its `filter` variable and sets `sortState` to the [Filter.name] of `filter`.
  */
 @Composable
 fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
     FilterTitle(text = stringResource(id = R.string.sort))
-    Column(Modifier.padding(bottom = 24.dp)) {
+    Column(modifier = Modifier.padding(bottom = 24.dp)) {
         SortFilters(
             sortState = sortState,
             onChanged = onFilterChange
@@ -350,7 +377,22 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
 }
 
 /**
+ * This is used by the [SortFiltersSection] Composable to display the different [Filter]s that are
+ * available from the [SnackRepo.getSortFilters] method. We use the [forEach] extension function of
+ * [List] to loop through each [Filter] in the [List] capturing the [Filter] in variable `filter`.
+ * Then in the `action` lambda argument of the [forEach] we compose a [SortOption] whose `text`
+ * argument is the [Filter.name] of `filter`, whose `icon` argument is the [Filter.icon] of `filter`,
+ * whose `selected` argument is `true` if `sortState` is equal to the [Filter.name] of `filter`, and
+ * whose `onClickOption` lambda argument is a lambda that calls our lambda parameter [onChanged] with
+ * [Filter] variable `filter`.
  *
+ * @param sortFilters the [List] of [Filter] to be displayed, each [Filter] in a [SortOption]. Our
+ * caller [SortFiltersSection] doesn't pass us any so we use the default which is the [List] of
+ * [Filter] returned by the [SnackRepo.getSortFilters] method.
+ * @param sortState the [Filter.name] of the currently selected sort [Filter].
+ * @param onChanged a lambda which can be called with a [Filter] to change the currently selected
+ * sort [Filter]. Our caller [SortFiltersSection] passes us a lambda which accepts a [Filter] in
+ * its `filter` variable and sets [sortState] to the [Filter.name] of `filter`.
  */
 @Composable
 fun SortFilters(
@@ -372,7 +414,12 @@ fun SortFilters(
 }
 
 /**
+ * This is used by [FilterScreen] to allow the user to set the maximum calories they want in their
+ * [Snack]
  *
+ * @param sliderPosition the current [Float] position of the slider.
+ * @param onValueChanged a lambda which can be called with a [Float] to change the current
+ * [Float] position of the slider.
  */
 @Composable
 fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
@@ -387,7 +434,7 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
     }
     Slider(
         value = sliderPosition,
-        onValueChange = { newValue ->
+        onValueChange = { newValue: Float ->
             onValueChanged(newValue)
         },
         valueRange = 0f..300f,
