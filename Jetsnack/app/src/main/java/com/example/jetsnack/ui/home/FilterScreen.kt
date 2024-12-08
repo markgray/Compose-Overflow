@@ -111,11 +111,12 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * `interactionSource` argument is a [remember] of a [MutableInteractionSource]. In its `onClick`
  * lambda argument it calls our lambda parameter [onDismiss] (rather neat, it occupies the background
  * behind the actual filters displayed when they are animated in turning the background behind them
- * gray and allowing you to dismiss by clicking on the [Spacer]).
+ * a translucent gray (the content underneath still visible) and allowing you to dismiss by clicking
+ * on the [Spacer]).
  *
  * Composed on top of the [Spacer] in the [Box] we use `with` to set the receiver of a block to our
  * [SharedTransitionScope] parameter [sharedTransitionScope]. In its [SharedTransitionScope] `block`
- * we compose a [Column] (it will be animated in and our using the [SharedTransitionScope]) whose
+ * we compose a [Column] (it will be animated in and out using the [SharedTransitionScope]) whose
  * [Modifier] argument `modifier` is a [Modifier.padding] that sets the padding on `all` sides to
  * 16.dp, with a [BoxScope.align] whose `alignment` argument is [Alignment.Center] chained to that,
  * followed by a [Modifier.clip] whose `shape` argument is the [Shapes.medium] of our custom
@@ -150,7 +151,35 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * to that followed by a [Modifier.padding] that sets the padding of its `top` to 8.dp and the padding
  * of its `end` to 48.dp. The [TextAlign] `textAlign` argument of the [Text] is [TextAlign.Center],
  * and its [TextStyle] `style` argument is the [Typography.titleLarge] of our custom
- * [MaterialTheme.typography].
+ * [MaterialTheme.typography]. Next in the [Row] we initialize our [Boolean] variable
+ * `val resetEnabled` to `true` if our [String] variable `sortState` is not equal to our [String]
+ * variable `defaultFilter`. Then we compose an [IconButton] whose `onClick` argument is a do-nothing
+ * lambda, and whose [Boolean] `enabled` argument is our [Boolean] variable `resetEnabled`. In the
+ * `content` Composable lambda argument we initialize [FontWeight] variable to [FontWeight.Bold] if
+ * [Boolean] variable `resetEnabled` is `true` or to [FontWeight.Normal] if it is `false`. Then we
+ * compose a [Text] as the label whose `text` argument is the [String] with resource ID
+ * `R.string.reset` ("Reset"), whose [TextStyle] `style` argument is the [Typography.bodyMedium] of
+ * our custom [MaterialTheme.typography], whose [FontWeight] `fontWeight` argument is our [FontWeight]
+ * variable `fontWeight` and whose [Color] `color` argument is a copy of the [JetsnackColors.uiBackground]
+ * of our custom [JetsnackTheme.colors] with the `alpha` set to `0.38f` if `resetEnabled` is `false`
+ * or to `1f` if it is `true`.
+ *
+ *  - Below the [Row] in the [Column] is a [SortFiltersSection] whose `sortState` argument is our
+ *  [MutableState] wrapped [String] variable `sortState`, and whose lambda argument `onFilterChange`
+ *  is a lambda which accepts the [Filter] passed the lambda in variable `filter` and sets `sortState`
+ *  to the [Filter.name] of `filter`.
+ *  - Next in the [Column] is a [FilterChipSection] whose `title` argument is the [String] with
+ *  resource ID `R.string.price` ("Price"), and whose `filters` argument is our [List] of [Filter]
+ *  variable `priceFilters`.
+ *  - Next in the [Column] is a [FilterChipSection] whose `title` argument is the [String] with
+ *  resource ID `R.string.category` ("Category"), and whose `filters` argument is our [List] of
+ *  [Filter] variable `categoryFilters`.
+ *  - Next in the [Column] is a [MaxCalories] whose `sliderPosition` argument is our [MutableState]
+ *  wrapped [Float] variable `maxCalories`, and whose lambda argument `onValueChanged` which accepts
+ *  the [Float] passed the lambda in variable `newValue` and sets `maxCalories` to `newValue`
+ *  - Next in the [Column] is a [FilterChipSection] whose `title` argument is the [String] with
+ *  resource ID `R.string.lifestyle` ("LifeStyle"), and whose `filters` argument is our [List] of
+ *  [Filter] variable `lifeStyleFilters`.
  *
  * @param sharedTransitionScope the [SharedTransitionScope] that controls the animation we share with
  * the "Filters" [IconButton] in the [FilterBar] Composable.
@@ -306,7 +335,8 @@ fun FilterChipSection(title: String, filters: List<Filter>) {
 }
 
 /**
- *
+ * This is used by the [FilterScreen] Composable to display the [SortFilters] that are available
+ * with the
  */
 @Composable
 fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
