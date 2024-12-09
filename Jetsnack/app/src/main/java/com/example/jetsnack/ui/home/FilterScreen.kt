@@ -57,6 +57,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
@@ -327,7 +328,6 @@ fun FilterScreen(
  * variable `filter`, and whose `modifier` argument is a [Modifier.padding] that adds 4.dp padding
  * to its `end` and 8.dp padding to its `bottom`.
  *
- *
  * @param title the [String] title of the [FilterChipSection] to be displayed by a [FilterTitle]
  * @param filters the [List] of [Filter] to be displayed, each in a [FilterChip]
  */
@@ -415,7 +415,23 @@ fun SortFilters(
 
 /**
  * This is used by [FilterScreen] to allow the user to set the maximum calories they want in their
- * [Snack]
+ * [Snack]. Our first Composable is a [FlowRow] in whose [FlowRowScope] `content` Composable lambda
+ * we compose a [FilterTitle] whose `text` argument is the [String] with resource ID
+ * `R.string.max_calories` ("Max Calories"), then we compose a [Text] whose `text` argument is the
+ * [String] with resource ID `R.string.per_serving` ("per serving"), whose [TextStyle] `style`
+ * argument is the [Typography.bodyMedium] of our custom [MaterialTheme.typography], whose [Color]
+ * `color` argument is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors], and whose
+ * `modifier` argument is a [Modifier.padding] that adds 5.dp to its `top` and 10.dp to its `start`.
+ * The second composable is a [Slider] whose [Float] `value` argument is our [Float] parameter
+ * [sliderPosition], whose `onValueChange` lambda argument is a lambda which accepts the [Float]
+ * passed the lambda in variable `newValue` then calls our lambda taking [Float] parameter
+ * [onValueChanged] with `newValue`, whose [ClosedFloatingPointRange] `valueRange` is the closed
+ * range of 0f..300f, whose [Int] `steps` argument is 5, whose `modifier` argument is a
+ * [Modifier.fillMaxWidth], and whose [SliderColors] `colors` argument is [SliderDefaults.colors]
+ * with its [SliderColors.thumbColor] the [JetsnackColors.brand] of our custom [JetsnackTheme.colors],
+ * with its [SliderColors.activeTrackColor] the [JetsnackColors.brand] of our custom
+ * [JetsnackTheme.colors], and the [SliderColors.inactiveTrackColor] the
+ * [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors].
  *
  * @param sliderPosition the current [Float] position of the slider.
  * @param onValueChanged a lambda which can be called with a [Float] to change the current
@@ -450,7 +466,13 @@ fun MaxCalories(sliderPosition: Float, onValueChanged: (Float) -> Unit) {
 }
 
 /**
+ * Displays a "Title" for each of the [Filter] groupings. Our sole Composable is a [Text] whose
+ * `text` argument is our [String] parameter [text], whose [TextStyle] `style` argument is the
+ * [Typography.titleLarge] of our custom [MaterialTheme.typography], whose [Color] `color` argument
+ * is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier`
+ * argument is a [Modifier.padding] that adds 8.dp to the `bottom`.
  *
+ * @param text the [String] to use as the "Title".
  */
 @Composable
 fun FilterTitle(text: String) {
@@ -463,7 +485,12 @@ fun FilterTitle(text: String) {
 }
 
 /**
+ * Used by the [SortFilters] Composable to display each of the sort [Filter]'s in the [List] of
+ * [Filter] it retrieves from the [SnackRepo.getSortFilters] method.
  *
+ * @param text the [Filter.name] of the [Filter]
+ * @param icon the [Filter.icon] of the [Filter]
+ * @param onClickOption a lambda to be called when this [SortOption] is clicked.
  */
 @Composable
 fun SortOption(
