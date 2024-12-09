@@ -486,11 +486,26 @@ fun FilterTitle(text: String) {
 
 /**
  * Used by the [SortFilters] Composable to display each of the sort [Filter]'s in the [List] of
- * [Filter] it retrieves from the [SnackRepo.getSortFilters] method.
+ * [Filter] it retrieves from the [SnackRepo.getSortFilters] method. Our root Composable is a [Row]
+ * whose `modifier` argument is a [Modifier.padding] that adds 14.dp to the `top`, with a
+ * [Modifier.selectable] chained to that whose `selected` argument our [Boolean] parameter [selected],
+ * and the `onClick` lambda argument lambda that calls our lambda parameter [onClickOption]. In the
+ * [RowScope] `content` Composable lambda argument of the [Row] if our [ImageVector] parameter [icon]
+ * is not `null` we compose an [Icon] whose `imageVector` argument is our [ImageVector] parameter
+ * [icon], and whose `contentDescription` argument is `null`. Next in the [Row] we compose a [Text]
+ * whose `text` argument is our [String] parameter [text], whose [TextStyle] `style` argument is the
+ * [Typography.titleMedium] of our custom [MaterialTheme.typography], and whose [Modifier] `modifier`
+ * argument is a [Modifier.padding] that adds 10.dp to the `start`, with a [RowScope.weight] chained
+ * to that with a `weight` of `1f` to have it fill the remaining space after its unweighted siblings
+ * are measured and placed. If our [Boolean] parameter [selected] is `true` we compose an [Icon] whose
+ * [ImageVector] `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Done] (a "checkmark"),
+ * whose `contentDescription` argument is `null`, and whose [Color] `tint` argument is the
+ * [JetsnackColors.brand] of our custom [JetsnackTheme.colors].
  *
  * @param text the [Filter.name] of the [Filter]
  * @param icon the [Filter.icon] of the [Filter]
  * @param onClickOption a lambda to be called when this [SortOption] is clicked.
+ * @param selected `true` if this [SortOption] is the currently selected one.
  */
 @Composable
 fun SortOption(

@@ -74,14 +74,14 @@ fun JetsnackApp() {
                 ) {
                     composableWithCompositionLocal(
                         route = MainDestinations.HOME_ROUTE
-                    ) { backStackEntry ->
+                    ) { backStackEntry: NavBackStackEntry ->
                         MainContainer(
                             onSnackSelected = jetsnackNavController::navigateToSnackDetail
                         )
                     }
 
                     composableWithCompositionLocal(
-                        "${MainDestinations.SNACK_DETAIL_ROUTE}/" +
+                        route = "${MainDestinations.SNACK_DETAIL_ROUTE}/" +
                             "{${MainDestinations.SNACK_ID_KEY}}" +
                             "?origin={${MainDestinations.ORIGIN}}",
                         arguments = listOf(
@@ -117,7 +117,7 @@ fun MainContainer(
     val currentRoute = navBackStackEntry?.destination?.route
     val sharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
     JetsnackScaffold(
         bottomBar = {
