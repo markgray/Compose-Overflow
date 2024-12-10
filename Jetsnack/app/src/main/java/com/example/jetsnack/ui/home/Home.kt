@@ -83,6 +83,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
@@ -92,6 +93,7 @@ import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
+import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
@@ -103,7 +105,11 @@ import java.util.Locale
  * that is wrapped in a [CompositionLocalProvider] with the key [LocalNavAnimatedVisibilityScope]
  * providing the current [AnimatedVisibilityScope]. It is used for the shared transition between
  * the [MainDestinations.HOME_ROUTE] and the [MainDestinations.SNACK_DETAIL_ROUTE] when a
- * [Snack] is clicked and then back again.
+ * [Snack] is clicked and then back again. Our root Composable is just a call to the [composable]
+ * method, passing it all our parameters as its arguments, except for `content` argument which
+ * we wrap in a [CompositionLocalProvider] that provides the `current` [AnimatedVisibilityScope]
+ * under the key [LocalNavAnimatedVisibilityScope] to our [content] parameter before using it as
+ * the `content` argument of the [composable] method.
  *
  * @param route The destination route for the Composable created by the [composable] method.
  * @param arguments A [List] of [NamedNavArgument]s to be passed to the [composable] method to be
@@ -174,6 +180,25 @@ fun NavGraphBuilder.composableWithCompositionLocal(
 
 /**
  * This adds [composable] routes for all the home screens: [Feed], [Search], [Cart], and [Profile].
+ * Our content block just consists of 4 calls to the [NavGraphBuilder.composable] method to add
+ * the following routes to our [NavGraphBuilder]:
+ *  - `route` = [HomeSections.FEED.route] composes a [Feed] whose `onSnackClick` lambda argument
+ *  calls our [onSnackSelected] lambda parameter passing it the [Long] and [String] passed the
+ *  `onSnackClick` lambda as well as the [NavBackStackEntry] passed the `content` Composable of
+ *  the [composable] method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
+ *  [modifier].
+ *  - `route` = [HomeSections.SEARCH.route] composes a [Search] whose `onSnackClick` lambda argument
+ *  calls our [onSnackSelected] lambda parameter passing it the [Long] and [String] passed the
+ *  `onSnackClick` lambda as well as the [NavBackStackEntry] passed the content Composable of the
+ *  composable method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
+ *  [modifier].
+ *  - `route` = [HomeSections.CART.route] composes a [Cart] whose `onSnackClick` lambda argument
+ *  calls our [onSnackSelected] lambda parameter passing it the [Long] and [String] passed the
+ *  `onSnackClick` lambda as well as the [NavBackStackEntry] passed the content Composable of the
+ *  composable method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
+ *  [modifier].
+ *  - `route` = [HomeSections.PROFILE.route] composes a [Profile] whose [Modifier] `modifier`
+ *  argument is our [Modifier] parameter [modifier].
  *
  * @param onSnackSelected a lambda that can be called with the [Snack.id] of a [Snack] that is
  * clicked, a [String] identifying the "orgin" and a [NavBackStackEntry].
@@ -210,45 +235,54 @@ fun NavGraphBuilder.addHomeGraph(
 }
 
 /**
- *
+ * This enum is used to identify and label the different tabs in our [JetsnackBottomBar], as well as
+ * holding the `route` [String] in its [HomeSections.route] property to use for a call to
+ * [NavHostController.navigate]
  */
 enum class HomeSections(
     /**
-     *
+     * A [String] resource ID representing the title of this tab.
      */
     @StringRes val title: Int,
     /**
-     *
+     * An [ImageVector] to use for the [Icon] of this tab.
      */
     val icon: ImageVector,
     /**
-     *
+     * The [String] to use to use when calling [NavHostController.navigate] to navigate to the
+     * screen that this [HomeSections] represents.
      */
     val route: String
 ) {
     /**
-     *
+     * This is [HomeSections] for the [Feed] screen.
      */
     FEED(R.string.home_feed, Icons.Outlined.Home, "home/feed"),
 
     /**
-     *
+     * This is [HomeSections] for the [Search] screen.
      */
     SEARCH(R.string.home_search, Icons.Outlined.Search, "home/search"),
 
     /**
-     *
+     * This is [HomeSections] for the [Cart] screen.
      */
     CART(R.string.home_cart, Icons.Outlined.ShoppingCart, "home/cart"),
 
     /**
-     *
+     * This is [HomeSections] for the [Profile] screen.
      */
     PROFILE(R.string.home_profile, Icons.Outlined.AccountCircle, "home/profile")
 }
 
 /**
+ * This is used as the `bottomBar` argument of the [JetsnackScaffold] used by [MainContainer]
  *
+ * @param tabs a [List] of [HomeSections] to display in the [JetsnackBottomBar].
+ * @param currentRoute a [String] representing the current destination of the [NavHostController].
+ * @param navigateToRoute a lambda that can be called to navigate to a [String] destination of the
+ * [NavHostController]. Our caller [MainContainer] passes us a reference to the
+ * [JetsnackNavController.navigateToBottomBarRoute] method.
  */
 @Composable
 fun JetsnackBottomBar(

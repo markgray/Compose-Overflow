@@ -64,12 +64,12 @@ class JetsnackNavController(
 
     fun navigateToBottomBarRoute(route: String) {
         if (route != navController.currentDestination?.route) {
-            navController.navigate(route) {
+            navController.navigate(route = route) {
                 launchSingleTop = true
                 restoreState = true
                 // Pop up backstack to the first destination and save state. This makes going back
                 // to the start destination when pressing back in any other bottom tab.
-                popUpTo(findStartDestination(navController.graph).id) {
+                popUpTo(id = findStartDestination(graph = navController.graph).id) {
                     saveState = true
                 }
             }
