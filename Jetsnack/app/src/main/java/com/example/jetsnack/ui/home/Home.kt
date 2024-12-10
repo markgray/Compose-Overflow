@@ -35,6 +35,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -83,10 +85,14 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.jetsnack.R
+import com.example.jetsnack.model.Snack
 import com.example.jetsnack.ui.LocalNavAnimatedVisibilityScope
+import com.example.jetsnack.ui.MainContainer
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.home.search.Search
+import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -95,11 +101,31 @@ import java.util.Locale
 /**
  * This [NavGraphBuilder] extension function adds a Composable [composable] to the [NavGraphBuilder]
  * that is wrapped in a [CompositionLocalProvider] with the key [LocalNavAnimatedVisibilityScope]
- * providing the current [AnimatedVisibilityScope].
+ * providing the current [AnimatedVisibilityScope]. It is used for the shared transition between
+ * the [MainDestinations.HOME_ROUTE] and the [MainDestinations.SNACK_DETAIL_ROUTE] when a
+ * [Snack] is clicked and then back again.
  *
  * @param route The destination route for the Composable created by the [composable] method.
  * @param arguments A [List] of [NamedNavArgument]s to be passed to the [composable] method to be
  * associated with the destination.
+ * @param deepLinks list of deep links to associate with the destinations. Used as the `deepLinks`
+ * argument of the [composable] method.
+ * @param enterTransition callback to determine the destination's enter transition. Used as the
+ * `enterTransition` argument of the [composable] method. Our usages do not pass us any so the
+ * default [fadeIn] with an `animationSpec` of [nonSpatialExpressiveSpring] is used.
+ * @param exitTransition callback to determine the destination's exit transition. Used as the
+ * `exitTransition` argument of the [composable] method. Our usages do not pass us any so the
+ * default [fadeIn] with an `animationSpec` of [nonSpatialExpressiveSpring] is used.
+ * @param popEnterTransition callback to determine the destination's popEnter transition. Used as
+ * the `popEnterTransition` argument of the [composable] method. Our usages do not pass us any so
+ * the default of [enterTransition] is used.
+ * @param popExitTransition callback to determine the destination's popExit transition. Used as the
+ * `popExitTransition` argument of the [composable] method. Our usages do not pass us any so
+ * the default of [exitTransition] is used.
+ * @param content Composable lambda taking a [NavBackStackEntry]. It is called by the `content`
+ * Composable lambda argument of the [CompositionLocalProvider] wrapping it. The
+ * [CompositionLocalProvider] provides the [AnimatedVisibilityScope] of the [composable] method
+ * under the key [LocalNavAnimatedVisibilityScope].
  */
 fun NavGraphBuilder.composableWithCompositionLocal(
     route: String,
@@ -147,7 +173,14 @@ fun NavGraphBuilder.composableWithCompositionLocal(
 }
 
 /**
+ * This adds [composable] routes for all the home screens: [Feed], [Search], [Cart], and [Profile].
  *
+ * @param onSnackSelected a lambda that can be called with the [Snack.id] of a [Snack] that is
+ * clicked, a [String] identifying the "orgin" and a [NavBackStackEntry].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [MainContainer] passes us a [Modifier.padding] that adds the [PaddingValues]
+ * that [JetsnackScaffold] passes its `content` Composable lambda parameter, followed by a chain
+ * to [Modifier.consumeWindowInsets] that consumes those same [PaddingValues].
  */
 fun NavGraphBuilder.addHomeGraph(
     onSnackSelected: (Long, String, NavBackStackEntry) -> Unit,

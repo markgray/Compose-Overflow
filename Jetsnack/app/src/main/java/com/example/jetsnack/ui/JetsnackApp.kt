@@ -59,6 +59,7 @@ import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 fun JetsnackApp() {
@@ -90,7 +91,7 @@ fun JetsnackApp() {
                             }
                         ),
 
-                    ) { backStackEntry ->
+                    ) { backStackEntry: NavBackStackEntry ->
                         val arguments = requireNotNull(backStackEntry.arguments)
                         val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
                         val origin = arguments.getString(MainDestinations.ORIGIN)
@@ -106,6 +107,7 @@ fun JetsnackApp() {
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainContainer(
     modifier: Modifier = Modifier,
