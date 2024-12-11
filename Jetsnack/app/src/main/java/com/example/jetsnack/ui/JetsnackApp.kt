@@ -117,7 +117,7 @@ fun MainContainer(
     val nestedNavController = rememberJetsnackNavController()
     val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
     val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
@@ -134,13 +134,13 @@ fun MainContainer(
                                 zIndexInOverlay = 1f,
                             )
                             .animateEnterExit(
-                                enter = fadeIn(nonSpatialExpressiveSpring()) + slideInVertically(
-                                    spatialExpressiveSpring()
+                                enter = fadeIn(nonSpatialExpressiveSpring()) +
+                                    slideInVertically(spatialExpressiveSpring()
                                 ) {
                                     it
                                 },
-                                exit = fadeOut(nonSpatialExpressiveSpring()) + slideOutVertically(
-                                    spatialExpressiveSpring()
+                                exit = fadeOut(nonSpatialExpressiveSpring()) +
+                                    slideOutVertically(spatialExpressiveSpring()
                                 ) {
                                     it
                                 }

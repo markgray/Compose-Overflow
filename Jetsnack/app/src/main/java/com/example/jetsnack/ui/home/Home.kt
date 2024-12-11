@@ -24,6 +24,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -32,6 +33,8 @@ import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -51,6 +54,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -97,6 +101,7 @@ import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
+import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import java.util.Locale
 
@@ -276,13 +281,43 @@ enum class HomeSections(
 }
 
 /**
- * This is used as the `bottomBar` argument of the [JetsnackScaffold] used by [MainContainer]
+ * This is used as the `bottomBar` argument of the [JetsnackScaffold] used by [MainContainer]. We
+ * start by initializing and remembering our [List] of [String] variable `val routes` to the [List]
+ * that [Array.map] returns of all of the [HomeSections.route] in our [Array] of [HomeSections]
+ * parameter [tabs], and we initialize our [HomeSections] variable `val currentSection` to the
+ * [HomeSections] returned by the [Array.first] method of [tabs] search for the [HomeSections] whose
+ * [HomeSections.route] is equal to our [String] parameter [currentRoute].
+ *
+ * Our root Composable then is a [JetsnackSurface] whose `modifier` argument is our [Modifier]
+ * parameter [modifier], whose `color` argument is our [Color] parameter [color] and whose
+ * `contentColor` argument is our [Color] parameter [contentColor]. In the `content` Composable
+ * lambda argument of the [JetsnackSurface] we initialize our [SpringSpec] of [Float] variable
+ * `val springSpec` to a new instance of [spatialExpressiveSpring]. Then we compose a
+ * [JetsnackBottomNavLayout] whose `selectedIndex` argument is the [HomeSections.ordinal] of our
+ * [HomeSections] variable `currentSection`, whose `itemCount` argument is the [List.size] of our
+ * [List] of [String] variable `routes`, whose `indicator` argument is a [BoxScope] Composable
+ * lambda that composes our [JetsnackBottomNavIndicator], whose `animSpec` argument is our
+ * [SpringSpec] of [Float] variable `springSpec`, and whose `modifier` argument is a
+ * [Modifier.navigationBarsPadding].
+ *
+ * In the `content` Composable lambda argument of the [JetsnackBottomNavLayout]
  *
  * @param tabs a [List] of [HomeSections] to display in the [JetsnackBottomBar].
  * @param currentRoute a [String] representing the current destination of the [NavHostController].
  * @param navigateToRoute a lambda that can be called to navigate to a [String] destination of the
  * [NavHostController]. Our caller [MainContainer] passes us a reference to the
  * [JetsnackNavController.navigateToBottomBarRoute] method.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [MainContainer] passes us a [SharedTransitionScope.renderInSharedTransitionScopeOverlay]
+ * whose `zIndexInOverlay` argument is `1f` (causes us to render on top of the other shared elements),
+ * and chained to that is a [AnimatedVisibilityScope.animateEnterExit] whose `enter` is a [fadeIn]
+ * plus a [slideInVertically], and whose `exit` is a [fadeOut] plus a [slideOutVertically].
+ * @param color the background [Color] to use for our [JetsnackSurface]. Our caller does not pass us
+ * any so the default [JetsnackColors.iconPrimary] of our custom [JetsnackTheme.colors] is used.
+ * @param contentColor used as the `contentColor` argument of our [JetsnackSurface], it wraps it
+ * in a [CompositionLocalProvider] that provides it as the [LocalContentColor]. Our caller does not
+ * pass us any so the default [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors]
+ * is used.
  */
 @Composable
 fun JetsnackBottomBar(
