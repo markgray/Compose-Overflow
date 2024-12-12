@@ -420,7 +420,34 @@ fun JetsnackBottomBar(
 }
 
 /**
+ * This is used by [JetsnackBottomBar] to measure and place all the Composables that it uses. First
+ * we initialize and remember our [List] of [Animatable] of `size` [itemCount] variable
+ * `val selectionFractions` to a [List] which has an [Animatable] whose `initialValue` argument is
+ * `1f` if the list index is equal to our [Int] parameter [selectedIndex], or `0f` if it is not.
+ * Then we use the [List.forEachIndexed] method of `selectionFractions` to loop over its members
+ * setting [Float] variable `val target` to `1f` if the list index is equal to our [Int] parameter
+ * [selectedIndex] or to `0f` if it is not. Then we launch a [LaunchedEffect] for each of its members
+ * whose `key1` argument is our `target` variable and whose `key2` argument is our [AnimationSpec]
+ * parameter [animSpec] and in that [LaunchedEffect] we call the [Animatable.animateTo] method of
+ * the current member of `selectionFractions` with its `targetValue` argument set to our `target`
+ * variable and its `animationSpec` argument set to our [AnimationSpec] parameter [animSpec]. Next
+ * we animate the position of our [indicator] Composable lambda parameter.
  *
+ * @param selectedIndex the index of the item that is currently selected. Our caller [JetsnackBottomBar]
+ * passes us the [HomeSections.ordinal] of the [HomeSections] currently selected.
+ * @param itemCount the number of items in the [JetsnackBottomBar]. Our caller [JetsnackBottomBar]
+ * passes us the [List.size] of the [List] of [String]'s it creates from all of the
+ * [HomeSections.route] of the [HomeSections] in its [Array] of [HomeSections] parameter `tabs`.
+ * @param animSpec the [AnimationSpec] of [Float] used to animate all the animations in our
+ * [JetsnackBottomNavLayout]. Our caller [JetsnackBottomBar] passes us a [spatialExpressiveSpring].
+ * @param indicator a [BoxScope] Composable lambda that composes a [JetsnackBottomNavIndicator]
+ * that we use to highlight the currently selected [JetsnackBottomNavigationItem].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [JetsnackBottomBar] passes us a [Modifier.navigationBarsPadding] that
+ * adds padding to accommodate the navigation bars insets.
+ * @param content Composable lambda that our caller [JetsnackBottomBar] passes us that composes all
+ * of the [JetsnackBottomNavigationItem]'s in the [JetsnackBottomBar]. It will be used in the
+ * `content` argument of our [Layout] composable along with a [Box] holding our [indicator] parameter.
  */
 @Composable
 private fun JetsnackBottomNavLayout(
@@ -433,8 +460,8 @@ private fun JetsnackBottomNavLayout(
 ) {
     // Track how "selected" each item is [0, 1]
     val selectionFractions: List<Animatable<Float, AnimationVector1D>> = remember(itemCount) {
-        List(itemCount) { i ->
-            Animatable(if (i == selectedIndex) 1f else 0f)
+        List(size = itemCount) { i: Int ->
+            Animatable(initialValue = if (i == selectedIndex) 1f else 0f)
         }
     }
     selectionFractions.forEachIndexed { index: Int, selectionFraction: Animatable<Float, AnimationVector1D> ->
@@ -601,7 +628,7 @@ private fun MeasureScope.placeTextAndIcon(
 }
 
 /**
- *
+ * This is used to indicate which [JetsnackBottomNavigationItem] is currently selected.
  */
 @Composable
 private fun JetsnackBottomNavIndicator(
