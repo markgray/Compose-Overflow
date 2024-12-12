@@ -57,6 +57,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -77,6 +78,7 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
@@ -300,7 +302,36 @@ enum class HomeSections(
  * [SpringSpec] of [Float] variable `springSpec`, and whose `modifier` argument is a
  * [Modifier.navigationBarsPadding].
  *
- * In the `content` Composable lambda argument of the [JetsnackBottomNavLayout]
+ * In the `content` Composable lambda argument of the [JetsnackBottomNavLayout] we initialize our
+ * [Configuration] variable `val configuration` to the `current` [LocalConfiguration], and initialize
+ * our [Locale] variable `val currentLocale` to the [Locale] that the [ConfigurationCompat.getLocales]
+ * method returns for `configuration`, defaulting to [Locale.getDefault] if that is `null`. Then we
+ * use the [Array.forEach] method of our [Array] of [HomeSections] parameter [tabs] to loop through
+ * all of its members and in its `action` lambda argument we capture each [HomeSections] in the
+ * variable `section` then we set [Boolean] variable `val selected` to `true` if this `section` is
+ * equal to `currentSection`, and initialize our animated [Color] variable `val tint` to the value
+ * that [animateColorAsState] returns when its [Color] `targetValue` argument when `selected` is
+ * `true` is the [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors], or when it
+ * is `false` is the [JetsnackColors.iconInteractiveInactive]. Next we initialize our [String]
+ * variable `val text` to the string whose resource ID is the [HomeSections.title] of `section`
+ * using the [String.uppercase] method to convert it to uppercase for the [Locale] `currentLocale`.
+ *
+ * Finally we compose a [JetsnackBottomNavigationItem] whose arguments are:
+ *  - `icon` a [BoxScope] Composable lambda: we pass an [Icon] whose [ImageVector] `imageVector`
+ *  argument is the [ImageVector] drawn by the [HomeSections.icon] of `section`, whose [Color]
+ *  `tint` argument is our `tint` variable, and whose [String] `contentDescription` argument is our
+ *  `text` variable.
+ *  - `text` a [BoxScope] Composable lambda: we pass a lambda which composes a [Text] whose [String]
+ *  `text` argument is our `text` variable, whose [Color] `color` argument is our animated `tint`
+ *  variable, whose [TextStyle] `style` argument is the [Typography.labelLarge] of our custom
+ *  [MaterialTheme.typography], and whose [Int] `maxLines` argument is `1`.
+ *  - `selected` a [Boolean]: we pass our [Boolean] variable `selected`.
+ *  - `onSelected` a lambda: we pass a lambda that calls our lambda parameter [navigateToRoute] with
+ *  the [HomeSections.route] of `section`.
+ *  - `animSpec` an [AnimationSpec] of [Float]: we pass our [AnimationSpec] of [Float] variable
+ *  `springSpec` (a [spatialExpressiveSpring] recall).
+ *  - `modifier` a [Modifier] instance: we pass our [Modifier] variable [BottomNavigationItemPadding]
+ *  with a [Modifier.clip] chained to that that clips to the `shape` [BottomNavIndicatorShape].
  *
  * @param tabs a [List] of [HomeSections] to display in the [JetsnackBottomBar].
  * @param currentRoute a [String] representing the current destination of the [NavHostController].
