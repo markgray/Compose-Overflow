@@ -72,6 +72,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
@@ -430,8 +431,34 @@ fun JetsnackBottomBar(
  * whose `key1` argument is our `target` variable and whose `key2` argument is our [AnimationSpec]
  * parameter [animSpec] and in that [LaunchedEffect] we call the [Animatable.animateTo] method of
  * the current member of `selectionFractions` with its `targetValue` argument set to our `target`
- * variable and its `animationSpec` argument set to our [AnimationSpec] parameter [animSpec]. Next
- * we animate the position of our [indicator] Composable lambda parameter.
+ * variable and its `animationSpec` argument set to our [AnimationSpec] parameter [animSpec].
+ *
+ * Next we animate the position of our [indicator] Composable lambda parameter. To do this we
+ * initialize and remember our [Animatable] of [Float] variable to a new instance with its
+ * `initialValue` set to `0f`, then we initialize our [Float] variable `val targetIndicatorIndex`
+ * to the [Float] value of our [Int] parameter [selectedIndex]. Then we launch a [LaunchedEffect]
+ * whose `key1` argument is our [Float] variable `targetIndicatorIndex` and in that [LaunchedEffect]
+ * we call the [Animatable.animateTo] method of `indicatorIndex` with its `targetValue` argument set
+ * to our `targetIndicatorIndex` variable and its `animationSpec` argument set to our [AnimationSpec]
+ * parameter [animSpec].
+ *
+ * Our root Composable is a [Layout] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.height] whose `height` is [BottomNavHeight], and whose `content` Composable
+ * lambda argument composes our Composable lambda parameter [content] followed by a [Box] whose
+ * `modifier` argument is a [Modifier.layoutId] whose `layoutId` argument is the [String] "indicator",
+ * and whose `content` argument is our [BoxScope] Composable lambda parameter [indicator]. In the
+ * [MeasurePolicy] `measurePolicy` [MeasureScope] lambda argument we accept the [List] of [Measurable]
+ * passed the lambda in our `measurables` variable and the [Constraints] passed the lambda in our
+ * variable `constraints` ([Layout] produces the [List] of [Measurable] from the Composables that
+ * it finds in its `content` argument, in our case the four [JetsnackBottomNavigationItem] in our
+ * [content] composable lambda parameter and our [Box]). In the body of the `measurePolicy` lambda
+ * we first [check] that our [Int] parameter [itemCount] is equal to the [List.size] minus `1` of
+ * our [List] of [Measurable] variable `measurables` throwing [IllegalStateException] if it is not.
+ * If we pass this check we proceed to initialize our [Int] variable `val unselectedWidth` to the
+ * [Constraints.maxWidth] of `constraints` divided by out [Int] parameter [itemCount] plus `1` (this
+ * divides the width into n+1 slots). We initialize our [Int] variable `val selectedWidth` to `2`
+ * times `unselectedWidth` (gives the selected item 2 slots).
+ *
  *
  * @param selectedIndex the index of the item that is currently selected. Our caller [JetsnackBottomBar]
  * passes us the [HomeSections.ordinal] of the [HomeSections] currently selected.
