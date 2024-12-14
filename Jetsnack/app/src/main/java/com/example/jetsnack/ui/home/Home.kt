@@ -463,7 +463,7 @@ fun JetsnackBottomBar(
  *
  * Next we initialize our [List] of [Placeable] variable `val itemPlaceables` to a [List] which uses
  * the [List.filterNot] method of `measurables` to filter out the [Measurable] variable
- * `indicatorMeasurable`, and then use the [List.mapIndexed] method of the remaining [List] of
+ * `indicatorMeasurable`, and then uses the [List.mapIndexed] method of the remaining [List] of
  * [Placeable] capturing the [Int] index in the `index` variable, and the [Measurable] in the
  * `measurable` variable. In the `action` lambda argument we initialize our [Int] variable `val width`
  * to the [lerp] of `unselectedWidth` and `selectedWidth` linearly interpolated based upon the
@@ -486,7 +486,7 @@ fun JetsnackBottomBar(
  * `indicatorPlaceable` to place it at the `x` position of `indicatorLeft` and a `y` position of `0`.
  * Next we initialize our [Int] variable `var x` to `0`. Then we use the [List.forEach] method of
  * `itemPlaceables` to loop over all of its [Placeable]s capturing them in the `placeable` variable
- * and the call the [Placeable.PlacementScope.placeRelative] extension method of the [Placeable]
+ * and then call the [Placeable.PlacementScope.placeRelative] extension method of the [Placeable]
  * `placeable` to place it at the `x` position of `x` and a `y` position of `0`. Then we add the
  * [Placeable.width] of `placeable` to `x` and loop back for the next [Placeable] in `itemPlaceables`.
  *
@@ -649,9 +649,6 @@ fun JetsnackBottomNavigationItem(
  *  - a [Box] whose `modifier` argument is a [Modifier.layoutId] whose `layoutId` argument is the
  *  [String] "icon", with a [Modifier.padding] that adds [TextIconSpacing] padding to each horizontal
  *  side, and whose `content` argument is our [BoxScope] Composable lambda parameter [icon].
- *  - a [Box] whose `modifier` argument is a [Modifier.layoutId] whose `layoutId` argument is the
- *  [String] "text", with a [Modifier.padding] that adds [TextIconSpacing] padding to each horizontal
- *  side.
  *
  *  - We initialize our [Float] variable `val scale` to the [lerp] of `0.6f` and `1f` linearly
  *  interpolated by the `fraction` of our [Float] variable `animationProgress`. Then we compose
@@ -695,7 +692,7 @@ fun JetsnackBottomNavigationItem(
  * `selected` argument is `true` if the [JetsnackBottomNavigationItem] is selected, and whose
  * `onClick` argument is a lambda that calls its lambda parameter `onSelected`, with a
  * [Modifier.wrapContentSize] chained to that [Modifier] that allows us to measure at our desired
- * size.
+ * size without regard to the minimum size of the incoming constraints.
  */
 @Composable
 private fun JetsnackBottomNavItemLayout(
@@ -747,7 +744,23 @@ private fun JetsnackBottomNavItemLayout(
  * This is used by [JetsnackBottomNavItemLayout] to place its [Placeable] parameter [textPlaceable]
  * and [iconPlaceable]. We start by initializing our [Int] variable `val iconY` to our [Int] parameter
  * [height] minus the [Placeable.height] of our [Placeable] parameter [iconPlaceable] all divided by
- * `2`.
+ * `2`, and initializing our [Int] variable `val textY` to our [Int] parameter [height] minus the
+ * [Placeable.height] of our [Placeable] parameter [textPlaceable] all divided by `2`. We then
+ * initialize our [Int] variable `val textWidth` to the [Placeable.width] of [textPlaceable] times
+ * our animated [Float] parameter [animationProgress]. We initialize our [Float] variable `val iconX`
+ * to our [Int] parameter [width] minus our [Float] variable `textWidth` minus the [Placeable.width]
+ * of [Placeable] parameter [iconPlaceable] all divided by `2`, and we initialize our [Float] variable
+ * `val textX` to `iconX` plus the [Placeable.width] of [iconPlaceable].
+ *
+ * Finally we return the [MeasureResult] that is returned by a call to [MeasureScope.layout] with its
+ * `width` argument our [Int] parameter [width], its `height` argument our [Int] parameter [height],
+ * and its [Placeable.PlacementScope] `placementBlock` lambda parameter a lambda in which we call
+ * the [Placeable.PlacementScope.placeRelative] extension method of the [Placeable] parameter
+ * [iconPlaceable] to place it at `x` coordinate `iconX` (converted to [Int]) and `y` coordinate
+ * `iconY`. Then if our animated [Float] parameter [animationProgress] is not `0f` we also call
+ * [Placeable.PlacementScope.placeRelative] extension method of the [Placeable] parameter
+ * [textPlaceable] to place it at `x` coordinate `textX` (converted to [Int]) and `y` coordinate
+ * `textY`.
  *
  * @param textPlaceable the [Placeable] created from the [Measurable] of the [Text] displaying the
  * [HomeSections.title] of the [HomeSections] we represent.
