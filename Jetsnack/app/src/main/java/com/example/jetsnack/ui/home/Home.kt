@@ -794,7 +794,22 @@ private fun MeasureScope.placeTextAndIcon(
 }
 
 /**
- * This is used to indicate which [JetsnackBottomNavigationItem] is currently selected.
+ * This is used to indicate which [JetsnackBottomNavigationItem] is currently selected. Our root
+ * Composable is just a [Spacer] whose [Modifier] is a [Modifier.fillMaxSize] to have it take up
+ * the entire incoming size constraints, with a [BottomNavigationItemPadding] chained to that (it is
+ * a [Modifier.padding] that adds `16.dp` to its horizontal sides and `8.dp` to its vertical sides),
+ * and this is followed by a [Modifier.border] whose `width` argument is our [Dp] parameter
+ * `strokeWidth`, whose `color` argument is our [Color] parameter `color`, and whose [Shape] argument
+ * is our [Shape] parameter [shape] (which is [BottomNavIndicatorShape] by default).
+ *
+ * @param strokeWidth the [Dp] of the stroke width of the [Modifier.border] that is drawn around our
+ * [Spacer]. Our caller [JetsnackBottomBar] does not pass us any so the default of `2.dp` is used.
+ * @param color the [Color] of the [Modifier.border] that is drawn around our [Spacer]. Our caller
+ * does not pass us any so the default of [JetsnackColors.iconInteractive] of our custom
+ * [JetsnackTheme.colors] is used.
+ * @param shape the [Shape] of the [Modifier.border] that is drawn around our [Spacer]. Our caller
+ * does not pass us any so the default of [BottomNavIndicatorShape] is used (a [RoundedCornerShape]
+ * with a `percent` rounding of `50%`).
  */
 @Composable
 private fun JetsnackBottomNavIndicator(
@@ -811,17 +826,19 @@ private fun JetsnackBottomNavIndicator(
 }
 
 /**
- *
+ * The padding used on each horizonal side of the [Box]'s holding the [Icon] and [Text] composables
+ * used by [JetsnackBottomNavItemLayout].
  */
 private val TextIconSpacing = 2.dp
 
 /**
- *
+ * The height of the [Layout] used by [JetsnackBottomNavLayout] and thus of [JetsnackBottomBar].
  */
 private val BottomNavHeight = 56.dp
 
 /**
- *
+ * Offset percentage along the `x` and `y` axis for which contents are rotated and scaled by the
+ * [Modifier.graphicsLayer] used to animate the [Text] in the [JetsnackBottomNavItemLayout].
  */
 private val BottomNavLabelTransformOrigin = TransformOrigin(
     pivotFractionX = 0f,
@@ -829,12 +846,14 @@ private val BottomNavLabelTransformOrigin = TransformOrigin(
 )
 
 /**
- *
+ * [Shape] used to draw the border around the [JetsnackBottomNavIndicator], and to clip the
+ * [JetsnackBottomNavigationItem]
  */
 private val BottomNavIndicatorShape = RoundedCornerShape(percent = 50)
 
 /**
- *
+ * The [Modifier.padding] used for the [JetsnackBottomNavigationItem] and for the
+ * [JetsnackBottomNavIndicator].
  */
 private val BottomNavigationItemPadding = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
 
