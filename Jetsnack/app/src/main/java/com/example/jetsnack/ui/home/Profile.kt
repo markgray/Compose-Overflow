@@ -30,11 +30,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,7 +59,19 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  *  the `R.drawable.empty_state_search` drawable resource (which is a flashlight shining on an
  *  android cap with a question mark on it), and whose `contentDescription` argument is `null`.
  *  - a [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of 24.dp.
- *  - a [Text]
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.work_in_progress`
+ *  ("This is currently work in progress"), whose [TextStyle] `style` argument is the
+ *  [Typography.titleMedium] of our custom [MaterialTheme.typography], whose [TextAlign] `textAlign`
+ *  argument is [TextAlign.Center] (aligns the text in the center of the container), and its
+ *  [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] which has it occupy its entire
+ *  incoming width constraint.
+ *  -  [Spacer] whose `modifier` argument is a [Modifier.height] with a `height` of `16.dp`.
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.grab_beverage`
+ *  ("Grab a beverage and check back later!"), whose [TextStyle] `style` argument is the
+ *  [Typography.bodyMedium] of our custom [MaterialTheme.typography], whose [TextAlign] `textAlign`
+ *  argument is [TextAlign.Center] (aligns the text in the center of the container), and its
+ *  [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] which has it occupy its entire
+ *  incoming width constraint.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller passes us one that traces back to [MainContainer] where a [Modifier.padding]

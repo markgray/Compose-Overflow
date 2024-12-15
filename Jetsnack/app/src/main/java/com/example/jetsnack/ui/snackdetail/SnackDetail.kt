@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class,
+@file:OptIn(
+    ExperimentalSharedTransitionApi::class, ExperimentalAnimationApi::class,
     ExperimentalSharedTransitionApi::class
 )
 
@@ -170,30 +171,29 @@ fun SnackDetail(
             Modifier
                 .clip(RoundedCornerShape(roundedCornerAnim))
                 .sharedBounds(
-                    rememberSharedContentState(
+                    sharedContentState = rememberSharedContentState(
                         key = SnackSharedElementKey(
                             snackId = snack.id,
                             origin = origin,
                             type = SnackSharedElementType.Bounds
                         )
                     ),
-                    animatedVisibilityScope,
-                    clipInOverlayDuringTransition =
-                    OverlayClip(RoundedCornerShape(roundedCornerAnim)),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(roundedCornerAnim)),
                     boundsTransform = snackDetailBoundsTransform,
-                    exit = fadeOut(nonSpatialExpressiveSpring()),
-                    enter = fadeIn(nonSpatialExpressiveSpring()),
+                    exit = fadeOut(animationSpec = nonSpatialExpressiveSpring()),
+                    enter = fadeIn(animationSpec = nonSpatialExpressiveSpring()),
                 )
                 .fillMaxSize()
                 .background(color = JetsnackTheme.colors.uiBackground)
         ) {
-            val scroll = rememberScrollState(0)
-            Header(snack.id, origin = origin)
-            Body(related, scroll)
-            Title(snack, origin) { scroll.value }
-            Image(snackId, origin, snack.imageRes) { scroll.value }
-            Up(upPress)
-            CartBottomBar(modifier = Modifier.align(Alignment.BottomCenter))
+            val scroll: ScrollState = rememberScrollState(initial = 0)
+            Header(snackId = snack.id, origin = origin)
+            Body(related = related, scroll = scroll)
+            Title(snack = snack, origin = origin) { scroll.value }
+            Image(snackId = snackId, origin = origin, imageRes = snack.imageRes) { scroll.value }
+            Up(upPress = upPress)
+            CartBottomBar(modifier = Modifier.align(alignment = Alignment.BottomCenter))
         }
     }
 }

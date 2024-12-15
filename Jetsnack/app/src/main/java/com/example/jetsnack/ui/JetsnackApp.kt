@@ -20,6 +20,7 @@
 
 package com.example.jetsnack.ui
 
+import android.os.Bundle
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -86,17 +87,17 @@ fun JetsnackApp() {
                             "{${MainDestinations.SNACK_ID_KEY}}" +
                             "?origin={${MainDestinations.ORIGIN}}",
                         arguments = listOf(
-                            navArgument(MainDestinations.SNACK_ID_KEY) {
+                            navArgument(name = MainDestinations.SNACK_ID_KEY) {
                                 type = NavType.LongType
                             }
                         ),
 
                     ) { backStackEntry: NavBackStackEntry ->
-                        val arguments = requireNotNull(backStackEntry.arguments)
-                        val snackId = arguments.getLong(MainDestinations.SNACK_ID_KEY)
-                        val origin = arguments.getString(MainDestinations.ORIGIN)
+                        val arguments: Bundle = requireNotNull(backStackEntry.arguments)
+                        val snackId: Long = arguments.getLong(MainDestinations.SNACK_ID_KEY)
+                        val origin: String? = arguments.getString(MainDestinations.ORIGIN)
                         SnackDetail(
-                            snackId,
+                            snackId = snackId,
                             origin = origin ?: "",
                             upPress = jetsnackNavController::upPress
                         )

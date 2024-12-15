@@ -16,6 +16,7 @@
 
 package com.example.jetsnack.ui.navigation
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -24,26 +25,54 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.jetsnack.model.Snack
+import com.example.jetsnack.ui.JetsnackApp
+import com.example.jetsnack.ui.MainContainer
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 
 /**
- * Destinations used in the [JetsnackApp].
+ * Destinations used in the [JetsnackApp] Composable.
  */
 object MainDestinations {
-    const val HOME_ROUTE = "home"
-    const val SNACK_DETAIL_ROUTE = "snack"
-    const val SNACK_ID_KEY = "snackId"
-    const val ORIGIN = "origin"
+    /**
+     * This route opens the [MainContainer] screen, which is also the `startDestination` of the
+     * [NavHost] used by [JetsnackApp].
+     */
+    const val HOME_ROUTE: String = "home"
+
+    /**
+     * This route opens the [SnackDetail] screen to display details about a [Snack] that the user
+     * has selected.
+     */
+    const val SNACK_DETAIL_ROUTE: String = "snack"
+
+    /**
+     * The key under which the [Snack.id] of the [Snack] that [SnackDetail] is to display is stored
+     * in the [Bundle] passed as arguments when the [NavHost] navigates to [SnackDetail].
+     */
+    const val SNACK_ID_KEY: String = "snackId"
+
+    /**
+     * The key under which a [String] identifying the orgin of a Shared element transition is stored
+     * in the [Bundle] passed as arguments when the [NavHost] navigates to [SnackDetail].
+     * (I think?) TODO: Figure out how this works for sure
+     */
+    const val ORIGIN: String = "origin"
 }
 
 /**
- * Remembers and creates an instance of [JetsnackNavController]
+ * Remembers and creates an instance of [JetsnackNavController]. Called by [MainContainer].
+ *
+ * @param navController the [NavHostController] that the [NavHost] of [JetsnackNavController]
+ * should use.
  */
 @Composable
 fun rememberJetsnackNavController(
     navController: NavHostController = rememberNavController()
-): JetsnackNavController = remember(navController) {
-    JetsnackNavController(navController)
+): JetsnackNavController = remember(key1 = navController) {
+    JetsnackNavController(navController = navController)
 }
 
 /**
@@ -51,6 +80,9 @@ fun rememberJetsnackNavController(
  */
 @Stable
 class JetsnackNavController(
+    /**
+     *
+     */
     val navController: NavHostController,
 ) {
 
@@ -58,10 +90,16 @@ class JetsnackNavController(
     // Navigation state source of truth
     // ----------------------------------------------------------
 
+    /**
+     *
+     */
     fun upPress() {
         navController.navigateUp()
     }
 
+    /**
+     *
+     */
     fun navigateToBottomBarRoute(route: String) {
         if (route != navController.currentDestination?.route) {
             navController.navigate(route = route) {
@@ -76,6 +114,9 @@ class JetsnackNavController(
         }
     }
 
+    /**
+     *
+     */
     fun navigateToSnackDetail(snackId: Long, origin: String, from: NavBackStackEntry) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
