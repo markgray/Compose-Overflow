@@ -24,12 +24,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.ui.JetsnackApp
 import com.example.jetsnack.ui.MainContainer
+import com.example.jetsnack.ui.home.addHomeGraph
+import com.example.jetsnack.ui.home.HomeSections
+import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.home.JetsnackBottomNavigationItem
 import com.example.jetsnack.ui.snackdetail.SnackDetail
 
 /**
@@ -81,7 +87,7 @@ fun rememberJetsnackNavController(
 @Stable
 class JetsnackNavController(
     /**
-     *
+     * the [NavHostController] that our [NavHost] should use.
      */
     val navController: NavHostController,
 ) {
@@ -91,14 +97,28 @@ class JetsnackNavController(
     // ----------------------------------------------------------
 
     /**
-     *
+     * This is called from [SnackDetail] to navigate back to the [MainContainer]. We just call the
+     * [NavHostController.navigateUp] method of our [NavHostController] field [navController] to
+     * have it navigate up in the navigation hierarchy.
      */
     fun upPress() {
         navController.navigateUp()
     }
 
     /**
+     * This is called in [JetsnackBottomBar] to navigate to the [HomeSections.route] of one of the
+     * [HomeSections] whose [JetsnackBottomNavigationItem] has been clicked. First we check to make
+     * sure that our [String] parameter [route] is not the same as the current [NavDestination.route]
+     * doing nothing if they are the same. If they are not the same we call [NavHostController.navigate]
+     * method of our [NavHostController] field [navController] to navigate to the [route] parameter.
+     * In its `builder` [NavOptionsBuilder] lambda argument we set the [NavOptionsBuilder.launchSingleTop]
+     * property to `true` and its [NavOptionsBuilder.restoreState] property to `true`, then call the
+     * [NavOptionsBuilder.popUpTo] method of the [NavOptionsBuilder] receiver to pop up the backstack
+     * to the first destination of the graph and save state (this makes us go back to the start
+     * destination when the user presses back in any other bottom tab instead of to this one).
      *
+     * @param route the [String] route of the [HomeSections] whose [JetsnackBottomNavigationItem]
+     * has been clicked.
      */
     fun navigateToBottomBarRoute(route: String) {
         if (route != navController.currentDestination?.route) {
@@ -115,7 +135,13 @@ class JetsnackNavController(
     }
 
     /**
+     * This is called when a [Snack] is clicked to navigate to the [SnackDetail] screen to display
+     * that [Snack].
      *
+     * @param snackId the [Snack.id] of the [Snack] that was clicked.
+     * @param origin a [String] identifying the Shared element transition that should be used.
+     * @param from the [NavBackStackEntry] that the `composable` extension function of
+     * [NavGraphBuilder] passes to its `content` lambda argument. (See our [addHomeGraph] method).
      */
     fun navigateToSnackDetail(snackId: Long, origin: String, from: NavBackStackEntry) {
         // In order to discard duplicated navigation events, we check the Lifecycle
