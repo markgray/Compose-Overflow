@@ -119,6 +119,7 @@ import com.example.jetsnack.ui.components.JetsnackSurface
 import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
+import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
@@ -126,17 +127,18 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- *
+ * The height of the [CartBottomBar] (the [JetsnackBottomBar] uses `BottomNavHeight` which is equal
+ * as it needs to be for the shared transition to work properly).
  */
 private val BottomBarHeight = 56.dp
 
 /**
- *
+ * The height of the [Title] Composable.
  */
 private val TitleHeight = 128.dp
 
 /**
- *
+ * The height of a [Spacer] in the [Body] Composable that compensates for part of the [Header] (I think?)
  */
 private val GradientScroll = 180.dp
 
