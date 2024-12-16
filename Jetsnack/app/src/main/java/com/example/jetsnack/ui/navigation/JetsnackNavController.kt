@@ -136,7 +136,15 @@ class JetsnackNavController(
 
     /**
      * This is called when a [Snack] is clicked to navigate to the [SnackDetail] screen to display
-     * that [Snack].
+     * that [Snack]. First we call our [NavBackStackEntry.lifecycleIsResumed] extension property to
+     * make sure that the [NavBackStackEntry.lifecycle] of our [NavBackStackEntry] parameter [from]
+     * is [Lifecycle.State.RESUMED] doing nothing if it is not (if the lifecycle is not resumed it
+     * means this NavBackStackEntry already processed a nav event, so we ignore the call to avoid
+     * duplicated navigation events). If it is [Lifecycle.State.RESUMED] we call the
+     * [NavHostController.navigate] method of our [NavHostController] field [navController] with its
+     * `route` argument the [String] formed by concatenating [MainDestinations.SNACK_DETAIL_ROUTE]
+     * with a "/" followed by the [String] value of our [Long] parameter [snackId] followed by the
+     * [String] "?orgin=" followed by our [String] parameter [origin]
      *
      * @param snackId the [Snack.id] of the [Snack] that was clicked.
      * @param origin a [String] identifying the Shared element transition that should be used.
@@ -146,24 +154,39 @@ class JetsnackNavController(
     fun navigateToSnackDetail(snackId: Long, origin: String, from: NavBackStackEntry) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
-            navController.navigate("${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId?origin=$origin")
+            navController.navigate(route = "${MainDestinations.SNACK_DETAIL_ROUTE}/$snackId?origin=$origin")
         }
     }
 }
 
 /**
- * If the lifecycle is not resumed it means this NavBackStackEntry already processed a nav event.
- *
- * This is used to de-duplicate navigation events.
+ * Convenience extension property to check that the `currentState` of the [NavBackStackEntry.lifecycle]
+ * of our receiver is [Lifecycle.State.RESUMED]. If the lifecycle is not resumed it means this
+ * [NavBackStackEntry] already processed a nav event. This is used to de-duplicate navigation events.
  */
 private fun NavBackStackEntry.lifecycleIsResumed() =
     this.lifecycle.currentState == Lifecycle.State.RESUMED
 
+/**
+ * Convenience extension property to find the starting [NavDestination] for this [NavGraph]. To do
+ * this it just returns the value returned by [NavGraph.findNode] for the `resId` argument
+ * [NavGraph.startDestinationId] (starting destination id for this NavGraph).
+ */
 private val NavGraph.startDestination: NavDestination?
-    get() = findNode(startDestinationId)
+    get() = findNode(resId = startDestinationId)
 
 /**
- * Copied from similar function in NavigationUI.kt
+ * Copied from similar function in `NavigationUI.kt`. It is used by the method
+ * [JetsnackNavController.navigateToBottomBarRoute] to find the [NavDestination] that
+ * is the start destination of its [NavDestination] parameter [graph] in order to use
+ * its [NavDestination.id] in a call to [NavOptionsBuilder.popUpTo]. We mark this function
+ * with `tailrec` to mark as tail-recursive, allowing the compiler to replace recursion with
+ * iteration. Then if our [NavDestination] parameter [graph] is a [NavGraph] we return the
+ * result of calling ourselves with the [NavGraph.startDestination] of [graph], otherwise we
+ * are done iterating so we return [graph].
+ *
+ * @param graph the [NavDestination] of the [NavGraph] whose start [NavDestination] we are to find
+ * (or a [NavDestination] in the [NavGraph]).
  *
  * https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:navigation/navigation-ui/src/main/java/androidx/navigation/ui/NavigationUI.kt
  */
