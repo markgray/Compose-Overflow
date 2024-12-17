@@ -28,6 +28,7 @@ import androidx.compose.animation.BoundsTransform
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -99,11 +100,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import androidx.navigation.NavHostController
 import com.example.jetsnack.R
 import com.example.jetsnack.model.Snack
 import com.example.jetsnack.model.SnackCollection
@@ -120,6 +123,7 @@ import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import com.example.jetsnack.ui.theme.Neutral8
 import com.example.jetsnack.ui.utils.formatPrice
@@ -138,47 +142,53 @@ private val BottomBarHeight = 56.dp
 private val TitleHeight = 128.dp
 
 /**
- * The height of a [Spacer] in the [Body] Composable that compensates for part of the [Header] (I think?)
+ * The height of a [Spacer] in the [Body] Composable that compensates for part of the Gradient in
+ * [Spacer] at the top of the [Header] (I think?)
  */
 private val GradientScroll = 180.dp
 
 /**
- *
+ * The height of a [Spacer] in the [Body] Composable that compensates for the [Image] (I think?)
  */
 private val ImageOverlap = 115.dp
 
 /**
- *
+ * The minimum offset from the top of the screen of the [Title] Composable when the
+ * [CollapsingImageLayout] is collapsed (I think?)
  */
 private val MinTitleOffset = 56.dp
 
 /**
- *
+ * The minimum offset from the top of the screen of the [Image] Composable when the
+ * [CollapsingImageLayout] is collapsed (I think?)
  */
 private val MinImageOffset = 12.dp
 
 /**
- *
+ * The maximum offset from the top of the screen of the [Title] Composable when the
+ * [CollapsingImageLayout] is expanded (`351.dp`) (I think?)
  */
 private val MaxTitleOffset = ImageOverlap + MinTitleOffset + GradientScroll
 
 /**
- *
+ * The maximum size of the [Image] Composable when the [CollapsingImageLayout] is expanded.
  */
 private val ExpandedImageSize = 300.dp
 
 /**
- *
+ * The minimum size of the [Image] Composable when the [CollapsingImageLayout] is collapsed.
  */
 private val CollapsedImageSize = 150.dp
 
 /**
- *
+ * The [Modifier.padding] for the `horizontal` edges of the many of our composables.
  */
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
 /**
- *
+ * The [FiniteAnimationSpec] that is used for animations throughout the app for the animation of
+ * coordinate values. It is a [SpringSpec] whose `dampingRatio` is set to 0.8f, and whose `stiffness`
+ * is set to 380f.
  */
 fun <T> spatialExpressiveSpring(): SpringSpec<T> = spring(
     dampingRatio = 0.8f,
@@ -186,7 +196,9 @@ fun <T> spatialExpressiveSpring(): SpringSpec<T> = spring(
 )
 
 /**
- *
+ * The [FiniteAnimationSpec] that is used for animations throughout the app for the animation of
+ * non-spatial values (such as [fadeIn] and [fadeOut]). It is a [SpringSpec] whose `dampingRatio`
+ * is set to 1f, and `stiffness` is set to 1600f.
  */
 fun <T> nonSpatialExpressiveSpring(): SpringSpec<T> = spring(
     dampingRatio = 1f,
@@ -194,7 +206,11 @@ fun <T> nonSpatialExpressiveSpring(): SpringSpec<T> = spring(
 )
 
 /**
- *
+ * This is used as the `boundsTransform` argument of the [Modifier] extension function
+ * [SharedTransitionScope.sharedBounds] that is used for shared element transitions for
+ * composables throughout the app. It defines the animation spec used to animate from
+ * initial bounds to the target bounds to be our global [SpringSpec] property
+ * [spatialExpressiveSpring]
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
@@ -202,7 +218,18 @@ val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
 }
 
 /**
+ * This screen is navigated to when the user clicks on a [Snack] that is displayed in one of the
+ * other screens. Our route is [MainDestinations.SNACK_DETAIL_ROUTE], and the method
+ * [com.example.jetsnack.ui.navigation.JetsnackNavController.navigateToSnackDetail] is used to form
+ * the URL from the [Snack.id] it is passed in its `snackId` parameter and the `orgin` [String]
+ * identifying the shared transition to be used, these then become our [snackId] and [origin]
+ * parameters respectively after it calls the [NavHostController.navigate] method with the URL as
+ * its `route` argument.
  *
+ * @param snackId the [Snack.id] of the [Snack] that should be displayed on the screen.
+ * @param origin a [String] that is used to idenify the shared transition that is to be used to
+ * transition to this screen.
+ * @param upPress a lambda that should be called when the user presses the "Up" button.
  */
 @Composable
 fun SnackDetail(
@@ -210,13 +237,13 @@ fun SnackDetail(
     origin: String,
     upPress: () -> Unit
 ) {
-    val snack = remember(snackId) { SnackRepo.getSnack(snackId) }
-    val related = remember(snackId) { SnackRepo.getRelated(snackId) }
-    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val snack: Snack = remember(snackId) { SnackRepo.getSnack(snackId) }
+    val related: List<SnackCollection> = remember(snackId) { SnackRepo.getRelated(snackId) }
+    val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
-    val animatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
+    val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
         ?: throw IllegalStateException("No Scope found")
-    val roundedCornerAnim by animatedVisibilityScope.transition
+    val roundedCornerAnim: Dp by animatedVisibilityScope.transition
         .animateDp(label = "rounded corner") { enterExit: EnterExitState ->
             when (enterExit) {
                 EnterExitState.PreEnter -> 20.dp
@@ -227,7 +254,7 @@ fun SnackDetail(
     with(sharedTransitionScope) {
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(roundedCornerAnim))
+                .clip(shape = RoundedCornerShape(size = roundedCornerAnim))
                 .sharedBounds(
                     sharedContentState = rememberSharedContentState(
                         key = SnackSharedElementKey(
