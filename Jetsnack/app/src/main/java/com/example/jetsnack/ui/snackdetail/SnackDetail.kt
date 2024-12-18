@@ -33,6 +33,7 @@ import androidx.compose.animation.core.InfiniteTransition
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -198,7 +199,7 @@ fun <T> spatialExpressiveSpring(): SpringSpec<T> = spring(
 /**
  * The [FiniteAnimationSpec] that is used for animations throughout the app for the animation of
  * non-spatial values (such as [fadeIn] and [fadeOut]). It is a [SpringSpec] whose `dampingRatio`
- * is set to 1f, and `stiffness` is set to 1600f.
+ * is set to `1f`, and `stiffness` is set to `1600f`.
  */
 fun <T> nonSpatialExpressiveSpring(): SpringSpec<T> = spring(
     dampingRatio = 1f,
@@ -226,6 +227,28 @@ val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
  * parameters respectively after it calls the [NavHostController.navigate] method with the URL as
  * its `route` argument.
  *
+ * We start by initialize and remembering our [Snack] variable `val snack` to the [Snack] that the
+ * [SnackRepo.getSnack] method returns when it searches for the [Snack] whose [Snack.id] is equal to
+ * our [Long] parameter [snackId] (the `key1` argument of the [remember] is [snackId] which will
+ * cause the `snack` variable to be refreshed if [snackId] changes value). Next we initialize and
+ * remember our [List] of [SnackCollection] variable `val related` to the [List] of [SnackCollection]
+ * that the [SnackRepo.getRelated] method returns for our [Long] parameter [snackId] (also using
+ * [snackId] as its `key1` argument).
+ *
+ * We initialize our [SharedTransitionScope] variable `val sharedTransitionScope` to the `current`
+ * [LocalSharedTransitionScope] (or throw [IllegalStateException] if that is `null`), and we
+ * initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the `current`
+ * [LocalNavAnimatedVisibilityScope] (or throw [IllegalStateException] if that is `null`). We use
+ * our [AnimatedVisibilityScope] variable `animatedVisibilityScope` to create a [Transition] whose
+ * [Transition.animateDp] method we use to initialize our animated [Dp] variable `val roundedCornerAnim`
+ * to an instance whose size for the different [EnterExitState] `targetValueByState` are:
+ *  - [EnterExitState.PreEnter] -> `20.dp`
+ *  - [EnterExitState.Visible] -> `0.dp`
+ *  - [EnterExitState.PostExit] -> `20.dp`
+ *
+ * Then `with` [SharedTransitionScope] variable `sharedTransitionScope` as the receiver we execute
+ * a `block` containing a [Box] whose `modifier` argument is a [Modifier.clip]
+ *
  * @param snackId the [Snack.id] of the [Snack] that should be displayed on the screen.
  * @param origin a [String] that is used to idenify the shared transition that is to be used to
  * transition to this screen.
@@ -237,8 +260,8 @@ fun SnackDetail(
     origin: String,
     upPress: () -> Unit
 ) {
-    val snack: Snack = remember(snackId) { SnackRepo.getSnack(snackId) }
-    val related: List<SnackCollection> = remember(snackId) { SnackRepo.getRelated(snackId) }
+    val snack: Snack = remember(key1 = snackId) { SnackRepo.getSnack(snackId = snackId) }
+    val related: List<SnackCollection> = remember(key1 = snackId) { SnackRepo.getRelated(snackId) }
     val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No Scope found")
     val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
@@ -251,6 +274,7 @@ fun SnackDetail(
                 EnterExitState.PostExit -> 20.dp
             }
         }
+
     with(sharedTransitionScope) {
         Box(
             modifier = Modifier
