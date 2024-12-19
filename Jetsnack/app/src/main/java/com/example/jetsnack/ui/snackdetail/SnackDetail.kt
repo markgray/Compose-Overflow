@@ -57,6 +57,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -145,56 +146,56 @@ import kotlin.math.min
 
 /**
  * The height of the [CartBottomBar] (the [JetsnackBottomBar] uses `BottomNavHeight` which is equal
- * as it needs to be for the shared transition to work properly).
+ * as it needs to be for the shared transition to work properly). (`56.dp`)
  */
 private val BottomBarHeight = 56.dp
 
 /**
- * The height of the [Title] Composable.
+ * The height of the [Title] Composable. (`128.dp`)
  */
 private val TitleHeight = 128.dp
 
 /**
  * The height of a [Spacer] in the [Body] Composable that compensates for part of the Gradient in
- * [Spacer] at the top of the [Header] (I think?)
+ * [Spacer] at the top of the [Header] (I think?) (`180.dp`)
  */
 private val GradientScroll = 180.dp
 
 /**
- * The height of a [Spacer] in the [Body] Composable that compensates for the [Image] (I think?)
+ * The height of a [Spacer] in the [Body] Composable that compensates for the [Image] (`115.dp`)
  */
 private val ImageOverlap = 115.dp
 
 /**
  * The minimum offset from the top of the screen of the [Title] Composable when the
- * [CollapsingImageLayout] is collapsed (I think?)
+ * [CollapsingImageLayout] is collapsed (I think?) (`56.dp`)
  */
 private val MinTitleOffset = 56.dp
 
 /**
  * The minimum offset from the top of the screen of the [Image] Composable when the
- * [CollapsingImageLayout] is collapsed (I think?)
+ * [CollapsingImageLayout] is collapsed (I think?) (`12.dp`)
  */
 private val MinImageOffset = 12.dp
 
 /**
  * The maximum offset from the top of the screen of the [Title] Composable when the
- * [CollapsingImageLayout] is expanded (`351.dp`) (I think?)
+ * [CollapsingImageLayout] is expanded (`351.dp`)
  */
 private val MaxTitleOffset = ImageOverlap + MinTitleOffset + GradientScroll
 
 /**
- * The maximum size of the [Image] Composable when the [CollapsingImageLayout] is expanded.
+ * The maximum size of the [Image] Composable when the [CollapsingImageLayout] is expanded. (`351.dp`)
  */
 private val ExpandedImageSize = 300.dp
 
 /**
- * The minimum size of the [Image] Composable when the [CollapsingImageLayout] is collapsed.
+ * The minimum size of the [Image] Composable when the [CollapsingImageLayout] is collapsed. (`150.dp`)
  */
 private val CollapsedImageSize = 150.dp
 
 /**
- * The [Modifier.padding] for the `horizontal` edges of the many of our composables.
+ * The [Modifier.padding] for the `horizontal` edges of the many of our composables. (`24.dp`)
  */
 private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
@@ -481,7 +482,7 @@ private fun Header(snackId: Long, origin: String) {
  * [IconButton] whose `onClick` lambda argument is a lambda that calls our [upPress] lambda
  * parameter. We start by initializing our [AnimatedVisibilityScope] variable
  * `val animatedVisibilityScope`  to the `current` [LocalNavAnimatedVisibilityScope] (or throw
- * [IllegalArgumentException] if it is `null`). Then with [AnimatedVisibilityScope] variable
+ * [IllegalArgumentException] if it is `null`). Then `with` [AnimatedVisibilityScope] variable
  * `animatedVisibilityScope` as the receiver we execute a `block` in which we compose an [IconButton]
  * whose `onClick` argument is our lambda parameter [upPress], whose [Modifier] `modifier` argument
  * is a [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose `zIndexInOverlay` argument
@@ -536,7 +537,37 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
 }
 
 /**
+ * This Composable is responsible for displaying all the information "known" about the [Snack] that
+ * the [SnackDetail] is displaying. We start by initializing our [SharedTransitionScope] variable
+ * `val sharedTransitionScope` to the `current` [LocalSharedTransitionScope] (or throw
+ * [IllegalStateException] if it is `null`). Then `with` [SharedTransitionScope] variable
+ * `sharedTransitionScope` as the receiver we execute a `block` which composes our root Composable
+ * [Column] whose [Modifier] `modifier` argument is a [SharedTransitionScope.skipToLookaheadSize]
+ * (enables it to measure its children with the lookahead constraints as if the transition has
+ * finished). In the [ColumnScope] `content` Composable lambda argument we compose:
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.fillMaxWidth] that causes the [Column] to
+ *  occupy its entire incoming width constraint, followed by a [Modifier.statusBarsPadding] that
+ *  adds padding to accommodate the status bars insets, with a [Modifier.height] at the end of the
+ *  [Modifier] chain whose `height` argument is our [Dp] property [MinTitleOffset] (`56.dp`) which
+ *  is the minimum offset of the title when we are scrolled to the top of the screen.
+ *  - a [Column] whose `modifier` argument is a [Modifier.verticalScroll] whose `state` argument is
+ *  our [ScrollState] parameter [scroll], and whose [ColumnScope] `content` Composable lambda argument
+ *  contains:
  *
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is our [Dp]
+ *  property [GradientScroll] (`180.dp`)
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is our [Dp]
+ *  property [ImageOverlap] (`115.dp`)
+ *  - a [JetsnackSurface] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] which
+ *  causes it to occupy its entire incoming width constraint, followed by a [Modifier.padding] that
+ *  that set the padding on its `top` to `16.dp`.
+ *
+ * @param related a [List] of [SnackCollection] that are "thought to be related" to the [Snack] that
+ * our [SnackDetail] is displaying. (This is always the [List] of [SnackCollection] returned by the
+ * [SnackRepo.getRelated] method).
+ * @param scroll the [ScrollState] to use in the [Modifier.verticalScroll] of our scrollable inner
+ * [Column]. The [ScrollState.value] is also used by a lambda passed to the [Title] and [Image]
+ * Composables to coordinate changes they need to make when the user scrolls our [Column].
  */
 @Composable
 private fun Body(
@@ -585,7 +616,7 @@ private fun Body(
 
                             )
                         }
-                        val textButton = if (seeMore) {
+                        val textButton: String = if (seeMore) {
                             stringResource(id = R.string.see_more)
                         } else {
                             stringResource(id = R.string.see_less)
@@ -667,7 +698,7 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
                 .heightIn(min = TitleHeight)
                 .statusBarsPadding()
                 .offset {
-                    val scroll = scrollProvider()
+                    val scroll: Int = scrollProvider()
                     val offset: Float = (maxOffset - scroll).coerceAtLeast(minOffset)
                     IntOffset(x = 0, y = offset.toInt())
                 }
