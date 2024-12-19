@@ -53,6 +53,7 @@ import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.home.JetsnackBottomBar
 import com.example.jetsnack.ui.home.addHomeGraph
 import com.example.jetsnack.ui.home.composableWithCompositionLocal
+import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.navigation.rememberJetsnackNavController
 import com.example.jetsnack.ui.snackdetail.SnackDetail
@@ -115,7 +116,7 @@ fun MainContainer(
     onSnackSelected: (Long, String, NavBackStackEntry) -> Unit
 ) {
     val jetsnackScaffoldState = rememberJetsnackScaffoldState()
-    val nestedNavController = rememberJetsnackNavController()
+    val nestedNavController: JetsnackNavController = rememberJetsnackNavController()
     val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current

@@ -96,8 +96,10 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
@@ -132,6 +134,7 @@ import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.components.SnackImage
 import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.navigation.MainDestinations
 import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
@@ -292,14 +295,17 @@ val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
  *  of our [Snack] variable `snack`, and whose `scrollProvider` lambda argument is a lambda that
  *  returns the [ScrollState.value] of our [ScrollState] variable `scroll`.
  *  - an [Up] Composable whose `upPress` argument is our lambda parameter [upPress] (which traces
- *  back to a lambda that calls the [NavHostController.navigateUp] method of our [NavHostController]).
+ *  back to a lambda that calls the [NavHostController.navigateUp] method of the [NavHostController]
+ *  used in [JetsnackNavController]).
  *  - a [CartBottomBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` argument
  *  is [Alignment.BottomCenter] to align it to the bottom center of the [Box].
  *
  * @param snackId the [Snack.id] of the [Snack] that should be displayed on the screen.
- * @param origin a [String] that is used to idenify the shared transition that is to be used to
+ * @param origin a [String] that is used to identify the shared transition that will be used to
  * transition to this screen.
- * @param upPress a lambda that should be called when the user presses the "Up" button.
+ * @param upPress a lambda that should be called when the user presses the "Up" button. Our caller
+ * passes us a lambda that traces back to a lambda that calls the [NavHostController.navigateUp]
+ * method of the [NavHostController] used in [JetsnackNavController].
  */
 @Composable
 fun SnackDetail(
@@ -380,7 +386,7 @@ fun SnackDetail(
  * whose `sharedContentState` argument is the remembered [SharedContentState] returned by a call to
  * the [SharedTransitionScope.rememberSharedContentState] method with the `key` argument a
  * [SnackSharedElementKey] constructed from our [Long] parameter [snackId] as its `snackId` argument
- * our [String] parameter [origin] as its `origin` argument, and whose `type` argument is
+ * our [String] parameter [origin] as its `origin` argument, and its `type` argument is
  * [SnackSharedElementType.Background]. The `animatedVisibilityScope` argument of the
  * [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
  * the `boundsTransform` argument is our [BoundsTransform] property [snackDetailBoundsTransform],
@@ -473,9 +479,31 @@ private fun Header(snackId: Long, origin: String) {
 /**
  * This Composable appears at the very top left of the [SnackDetail] screen and consists of just an
  * [IconButton] whose `onClick` lambda argument is a lambda that calls our [upPress] lambda
- * parameter.
+ * parameter. We start by initializing our [AnimatedVisibilityScope] variable
+ * `val animatedVisibilityScope`  to the `current` [LocalNavAnimatedVisibilityScope] (or throw
+ * [IllegalArgumentException] if it is `null`). Then with [AnimatedVisibilityScope] variable
+ * `animatedVisibilityScope` as the receiver we execute a `block` in which we compose an [IconButton]
+ * whose `onClick` argument is our lambda parameter [upPress], whose [Modifier] `modifier` argument
+ * is a [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose `zIndexInOverlay` argument
+ * is `3f` (Renders the content in the [SharedTransitionScope]'s overlay with the `3f` value for
+ * `zIndexInOverlay` ensuring that it is rendered on top of the other shared elements), to which a
+ * [Modifier.statusBarsPadding] is chained to add padding to accommodate the status bars insets,
+ * followed by a [Modifier.padding] that adds `16.dp` to each `horizontal` side and `10.dp` to each
+ * `vertical` side, followed by a [Modifier.size] that sets its `size` to `36.dp`. Next in the
+ * [Modifier] chain is an [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a
+ * [scaleIn] whose `animationSpec` argument is a [tween] whose `durationMillis` is `300` and whose
+ * `delayMillis` is `300`, and whose `exit` argument is a [scaleOut] whose `animationSpec` argument
+ * is a [tween] whose `durationMillis` is `20`. Last in the chain is a [Modifier.background] whose
+ * [Color] `color` argument is a copy of [Neutral8] with an `alpha` of `0.32f`, and whose [Shape]
+ * `shape` argument is [CircleShape]. The `content` Composable lambda argument of the [IconButton]
+ * composes an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by
+ * [Icons.AutoMirrored.Outlined.ArrowBack] ("<-"), whose [Color] `tint` argument is the
+ * [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors], and whose `contentDescription`
+ * argument is the [String] with resource ID `R.string.label_back` ("Back")
  *
- * @param upPress a lambda to call when our [IconButton] is clicked.
+ * @param upPress a lambda to call when our [IconButton] is clicked. Our caller passes us a lambda
+ * that traces back to a lambda that calls the [NavHostController.navigateUp] method of the
+ * [NavHostController] used in [JetsnackNavController].
  */
 @Composable
 private fun SharedTransitionScope.Up(upPress: () -> Unit) {
@@ -488,7 +516,7 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
                 .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 3f)
                 .statusBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 10.dp)
-                .size(36.dp)
+                .size(size = 36.dp)
                 .animateEnterExit(
                     enter = scaleIn(animationSpec = tween(durationMillis = 300, delayMillis = 300)),
                     exit = scaleOut(animationSpec = tween(durationMillis = 20))
@@ -507,6 +535,9 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
     }
 }
 
+/**
+ *
+ */
 @Composable
 private fun Body(
     related: List<SnackCollection>,
