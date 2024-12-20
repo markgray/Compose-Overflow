@@ -77,11 +77,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -107,6 +110,7 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -560,14 +564,65 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
  *  property [ImageOverlap] (`115.dp`)
  *  - a [JetsnackSurface] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] which
  *  causes it to occupy its entire incoming width constraint, followed by a [Modifier.padding] that
- *  that set the padding on its `top` to `16.dp`.
+ *  that sets the padding on its `top` to `16.dp`. In the `content` Composable lambda argument of the
+ *  [JetsnackSurface] we have a [Column] in whose [ColumnScope] `content` Composable lambda argument
+ *  we compose:
+ *
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.detail_header`
+ *  ("Details"), whose [TextStyle] `style` argument is the [Typography.labelSmall] of our custom
+ *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textHelp] of
+ *  our custom [JetsnackTheme.colors], and whose `modifier` argument is our [HzPadding] (which is
+ *  a [Modifier.padding] that adds `24.dp` to each `horizontal` side).
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
+ *  - we initilize and remember our [MutableState] wrapped [Boolean] variable `var seeMore` to a
+ *  the instance returned by [mutableStateOf] for the initial `value` of `true`, then with our
+ *  [SharedTransitionScope] variable `sharedTransitionScope` as the receiver we execute a `block`
+ *  in which we compos a [Text] whose `text` is the nonsense [String] with resource ID
+ *  `R.string.detail_placeholder`, whose [TextStyle] `style` argument is the [Typography.labelSmall]
+ *  of our custom [MaterialTheme.typography], whose [Color] `color` argument is the
+ *  [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], whose `maxLines` argument is `5`
+ *  if our [Boolean] variable `seeMore` is `true` or [Int.MAX_VALUE] if it is `false`, whose `overflow`
+ *  argument is [TextOverflow.Ellipsis], and whose [Modifier] `modifier` argument is [HzPadding] with
+ *  a [SharedTransitionScope.skipToLookaheadSize] chained to that to enable it to measure itself with
+ *  the lookahead constraints.
+ *  - we initialize our [String] variable `val textButton` to the [String] with resource ID
+ *  `R.string.see_more` ("SEE MORE") if our [MutableState] wrapped [Boolean] variable `seeMore` is
+ *  `true` or to the [String] with resource ID `R.string.see_less` ("SEE LESS") if it is `false`
+ *  then we compose a [Text] whose `text` argument is our [String] variable `textButton`, whose
+ *  [TextStyle] `style` argument is the [Typography.labelLarge], whose `textAlign` argument is
+ *  [TextAlign.Center], whose [Color] `color` argument is the [JetsnackColors.textLink] of our
+ *  custom [JetsnackTheme.colors], and whose [Modifier] `modifier` argument is a [Modifier.heightIn]
+ *  with a `min` of `20.dp`, to which is chained a [Modifier.fillMaxWidth] to have it occupy its
+ *  entire incoming width constraint, chained to a [Modifier.padding] that adds `15.dp` to the `top`,
+ *  chained to a [Modifier.clickable] in whose `onClick` lambda argument we set [MutableState] wrapped
+ *  [Boolean] variable `seeMore` to its inverse, and at the end of the [Modifier] chain is a
+ *  [SharedTransitionScope.skipToLookaheadSize] that allows it to measure itself at its final size.
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `40.dp`.
+ *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.ingredients_list`
+ *  (a list of ingredients), whose [TextStyle] `style` argument is the [Typography.bodyLarge] of
+ *  our custom [MaterialTheme.typography], whose [Color] `color` argument is the
+ *  [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier`
+ *  argument is our [HzPadding].
+ *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
+ *  - a [JetsnackDivider] (which is a custom [HorizontalDivider])
+ *  - we use the [List.forEach] method of our [List] of [SnackCollection] parameter [related] to
+ *  loop through its contents passing each [SnackCollection] to its `action` lambda argument in
+ *  the variable `snackCollection` where we use [key] with the [SnackCollection.id] of `snackCollection`
+ *  as its `keys` and in its `block` lambda argument we compose a [SnackCollection] whose
+ *  `snackCollection` argument is our current `snackCollection` variable, whose `onSnackClick`
+ *  argument is a do-nothing lambda, and whose `highlight` argument is `false`
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.padding] whose `bottom` padding
+ *  is [BottomBarHeight], chained to a [Modifier.navigationBarsPadding] (padding to accommodate the
+ *  navigation bars insets), and at the end of the chain a [Modifier.height] whose `height` is `8.dp`.
  *
  * @param related a [List] of [SnackCollection] that are "thought to be related" to the [Snack] that
  * our [SnackDetail] is displaying. (This is always the [List] of [SnackCollection] returned by the
  * [SnackRepo.getRelated] method).
  * @param scroll the [ScrollState] to use in the [Modifier.verticalScroll] of our scrollable inner
- * [Column]. The [ScrollState.value] is also used by a lambda passed to the [Title] and [Image]
- * Composables to coordinate changes they need to make when the user scrolls our [Column].
+ * [Column]. The [ScrollState.value] of this [ScrollState] is also used by a lambda passed to the
+ * [Title] and [Image] Composables to coordinate changes they need to make when the user scrolls
+ * our inner [Column].
  */
 @Composable
 private fun Body(
@@ -613,7 +668,6 @@ private fun Body(
                                 maxLines = if (seeMore) 5 else Int.MAX_VALUE,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = HzPadding.skipToLookaheadSize()
-
                             )
                         }
                         val textButton: String = if (seeMore) {
