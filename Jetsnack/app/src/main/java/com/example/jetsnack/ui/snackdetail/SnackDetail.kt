@@ -612,7 +612,7 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
  *  [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier`
  *  argument is our [HzPadding].
  *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
- *  - a [JetsnackDivider] (which is a custom [HorizontalDivider]).
+ *  - a [JetsnackDivider] (which is our custom [HorizontalDivider]).
  *  - we use the [List.forEach] method of our [List] of [SnackCollection] parameter [related] to
  *  loop through its contents passing each [SnackCollection] to its `action` lambda argument in
  *  the variable `snackCollection` where we use [key] with the [SnackCollection.id] of `snackCollection`
@@ -769,7 +769,7 @@ private fun Body(
  *  argument is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors], and whose
  *  [Modifier] `modifier` argument chains to our [HzPadding] horizonal padding [Modifier] a
  *  [SharedTransitionScope.sharedBounds] whose [SharedContentState] argument `sharedContentState`
- *  is that created and remebered by a call to [SharedTransitionScope.rememberSharedContentState]
+ *  is that created and remembered by a call to [SharedTransitionScope.rememberSharedContentState]
  *  with its `key` argument an instance of [SnackSharedElementKey] with `snackId` the [Snack.id] of
  *  of our [Snack] parameter [snack], `origin` our [String] parameter [origin], and `type`
  *  [SnackSharedElementType.Title]. The `animatedVisibilityScope` argument is our [AnimatedVisibilityScope]
@@ -777,7 +777,34 @@ private fun Body(
  *  field [snackDetailBoundsTransform]. At the end of the [Modifier] chain is a [Modifier.wrapContentWidth].
  *  that allows it to measure at its desired width without regard for the incoming measurement
  *  minimum width.
- *  - a [Text]
+ *  - a [Text] whose `text` argument is the [Snack.tagline] of our [Snack] parameter [snack], whose
+ *  [FontStyle] `fontStyle` argument is [FontStyle.Italic], whose [TextStyle] `style` argument is
+ *  the [Typography.titleSmall] of our custom [MaterialTheme.typography], whose [Color] `color`
+ *  argument is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], and whose
+ *  [Modifier] `modifier` argument chains to our [HzPadding] horizonal padding [Modifier] a
+ *  [SharedTransitionScope.sharedBounds] whose [SharedContentState] argument `sharedContentState`
+ *  is that created and remembered by a call to [SharedTransitionScope.rememberSharedContentState]
+ *  with its `key` argument an instance of [SnackSharedElementKey] with `snackId` the [Snack.id] of
+ *  of our [Snack] parameter [snack], `origin` our [String] parameter [origin], and `type`
+ *  [SnackSharedElementType.Tagline]. The `animatedVisibilityScope` argument is our [AnimatedVisibilityScope]
+ *  variable `animatedVisibilityScope` and the `boundsTransform` argument is our [BoundsTransform]
+ *  field [snackDetailBoundsTransform]. At the end of the [Modifier] chain is a [Modifier.wrapContentWidth].
+ *  that allows it to measure at its desired width without regard for the incoming measurement
+ *  minimum width.
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is `4.dp`.
+ *  - Then with our [AnimatedVisibilityScope] variable `animatedVisibilityScope` as the receiver we
+ *  compose a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for
+ *  the `price` [Snack.price] or our [Snack] parameter [snack], whose [TextStyle] `style` argument is
+ *  the [Typography.titleLarge] of our custom [MaterialTheme.typography], whose [Color] `color`
+ *  argument is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors], and whose
+ *  [Modifier] `modifier` argument chains to our [HzPadding] horizonal padding [Modifier] an
+ *  [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a [fadeIn] plus a
+ *  [slideInVertically], and `exit` argument is a [fadeOut] plus a [slideOutVertically]. At the
+ *  end of the [Modifier] chain is a [SharedTransitionScope.skipToLookaheadSize]j to allow it to
+ *  measure its child with the lookahead constraints.
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is `8.dp`.
+ *  - a [JetsnackDivider] (which is our custom [HorizontalDivider]) whose [Modifier] `modifier`
+ *  argument is a [Modifier] instance (no idea why, since the default as usual is also a [Modifier])
  *
  * @param snack the [Snack] that the [SnackDetail] is displaying.
  * @param origin a [String] to use to identify the shared transition that got us here.
@@ -868,7 +895,17 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
 }
 
 /**
+ * This Composable is used to display the jpg whose resource ID is our [Int] parameter [imageRes].
+ * We start by initializing our [Float] variable `val collapseRange` to the pixel value of
+ * [MaxTitleOffset] minus [MinTitleOffset] given the `current` [LocalDensity].
  *
+ * @param snackId the [Snack.id] of the [Snack] being displayed by [SnackDetail].
+ * @param origin a [String] used to identify the shared transition that gets us here.
+ * @param imageRes the resource ID of the jpg that we are to display.
+ * @param scrollProvider a lambda that returns the [ScrollState.value] of the [ScrollState] used to
+ * scroll the screen. It is used by our [CollapsingImageLayout] Composable to animate the Collapsing
+ * of the [SnackImage] we compose in its `content` Composable lambda argument as the user scrolls
+ * the screen up and down.
  */
 @Composable
 private fun Image(
