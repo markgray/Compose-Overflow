@@ -107,6 +107,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -794,7 +796,7 @@ private fun Body(
  *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is `4.dp`.
  *  - Then with our [AnimatedVisibilityScope] variable `animatedVisibilityScope` as the receiver we
  *  compose a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for
- *  the `price` [Snack.price] or our [Snack] parameter [snack], whose [TextStyle] `style` argument is
+ *  the `price` [Snack.price] of our [Snack] parameter [snack], whose [TextStyle] `style` argument is
  *  the [Typography.titleLarge] of our custom [MaterialTheme.typography], whose [Color] `color`
  *  argument is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors], and whose
  *  [Modifier] `modifier` argument chains to our [HzPadding] horizonal padding [Modifier] an
@@ -897,7 +899,31 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
 /**
  * This Composable is used to display the jpg whose resource ID is our [Int] parameter [imageRes].
  * We start by initializing our [Float] variable `val collapseRange` to the pixel value of
- * [MaxTitleOffset] minus [MinTitleOffset] given the `current` [LocalDensity].
+ * [MaxTitleOffset] minus [MinTitleOffset] given the `current` [LocalDensity]. Then we initialize
+ * our lambda returning [Float] variable `val collapseFractionProvider` to a lambda which returns
+ * the value returned by our [scrollProvider] lambda parameter divided by `collapseRange` coerced
+ * to be between `0f` and `1f`. We then compose a [CollapsingImageLayout] whose `collapseFractionProvider`
+ * argument is our lambda variable `collapseFractionProvider` and whose [Modifier] `modifier` argument
+ * chains to our [HzPadding] horizontal padding [Modifier] a [Modifier.statusBarsPadding] to add
+ * padding to accommodate the status bars insets. In the [CollapsingImageLayout]'s `content` Composable
+ * lambda argument we initialize our [SharedTransitionScope] variable `val sharedTransitionScope` to
+ * the `current` [LocalSharedTransitionScope] (or throw [IllegalStateException]), and initialize our
+ * [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the `current`
+ * [LocalNavAnimatedVisibilityScope] (or throw [IllegalStateException]). Then `with` our
+ * [SharedTransitionScope] variable `sharedTranitionScope` as the receiver we compose a [SnackImage]
+ * whose `imageRes` argument is our [Int] parameter [imageRes], whose `contentDescription` argument
+ * is `null`, and whose [Modifier] `modifier` argument is a [SharedTransitionScope.sharedBounds]
+ * whose `sharedContentState` argument is the remembered [SharedContentState] returned by a call to
+ * the [SharedTransitionScope.rememberSharedContentState] method with the `key` argument a
+ * [SnackSharedElementKey] constructed from our [Long] parameter [snackId] as its `snackId` argument
+ * our [String] parameter [origin] as its `origin` argument, and its `type` argument is
+ * [SnackSharedElementType.Image]. The `animatedVisibilityScope` argument of the
+ * [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable
+ * `animatedVisibilityScope`, the `exit` argument of the [SharedTransitionScope.sharedBounds]
+ * is a [fadeOut], the `enter` argument of the [SharedTransitionScope.sharedBounds] is a
+ * [fadeIn], and the `boundsTransform` argument of the [SharedTransitionScope.sharedBounds] is
+ * our [BoundsTransform] field [snackDetailBoundsTransform]. At the end of the [Modifier] chain is
+ * a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraint.
  *
  * @param snackId the [Snack.id] of the [Snack] being displayed by [SnackDetail].
  * @param origin a [String] used to identify the shared transition that gets us here.
@@ -948,14 +974,54 @@ private fun Image(
                         boundsTransform = snackDetailBoundsTransform
                     )
                     .fillMaxSize()
-
             )
         }
     }
 }
 
 /**
+ * This Composable is used to animate the "Collapsing" of the [SnackImage] that is composed in our
+ * `content` Composable lambda argument based on the value returned by our [collapseFractionProvider]
+ * lambda parameter. Our root Composable is a [Layout] whose [Modifier] `modifier` argument is our
+ * [Modifier] parameter [modifier] and whose `content` lambda argument is our [content] Composable
+ * lambda parameter. In the [MeasurePolicy] `measurePolicy` [MeasureScope] lambda argument we accept
+ * the [List] of [Measurable] passed the lambda in our variable `measurables` and the [Constraints]
+ * passed the lambda in our variable `constraints`. We use [check] to make sure that the [List.size]
+ * of `measurables` is `1` (throwing [IllegalStateException] if it is not). Then we initialize our
+ * [Float] variable `val collapseFraction` to the value returned by our [collapseFractionProvider]
+ * lambda parameter. Then we initialize our [Int] varaible `val imageMaxSize` to the minimum of
+ * the pixel value of [ExpandedImageSize] and the [Constraints.maxWidth] of our [Constraints] variable
+ * `constraints`. We initialize our [Int] variable `val imageMinSize` to the maximum of the pixel
+ * value of [CollapsedImageSize] and the [Constraints.minWidth] of our [Constraints] variable
+ * `constraints`. Then we initialize our [Int] variable `val imageWidth` to the value returned by
+ * [lerp] whose `start` argument is `imageMaxSize`, whose `stop` argument is `imageMinSize` with the
+ * `fraction` argument our [Float] variable `collapseFraction` linearly interpolating between them.
  *
+ * We initialize our [Placeable] variable `val imagePlaceable` to the value returned by the
+ * [Measurable.measure] method of the [Measurable] in the `0` index of our [List] of [Measurable]
+ * variable `measurables` with its [Constraints] `constraints` argument a [Constraints.fixed] whose
+ * `width` and `height` arguments are `imageWidth`. We initialize our [Int] variable `val imageY` to
+ * the value returned by [lerp] whose `start` argument is [MinTitleOffset] and whose `stop` argument
+ * is [MinTitleOffset] with the `fraction` argument our [Float] variable `collapseFraction` linearly
+ * interpolating between them. We initialize our [Int] variable `val imageX` to the value returned by
+ * [lerp] for the `start` argument the [Constraints.maxWidth] of our [Constraints] variable `constraints`
+ * minus `imageWidth` all divided by `2` (this centers our [Placeable] when expanded), for the `stop`
+ * argument of the [Constraints.maxWidth] of our [Constraints] variable `constraints` minus `imageWidth`
+ * (right aligns when collapsed), and the `fraction` argument our [Float] variable `collapseFraction`
+ * interpolating between them.
+ *
+ * Finally we call the [MeasureScope.layout] method with its `width` argument set to the
+ * [Constraints.maxWidth] of our [Constraints] variable `constraints` and the `height` argument
+ * `imageY` plus `imageWidth`. In the [Placeable.PlacementScope] `placementBlock` lambda argument
+ * we use the [Placeable.PlacementScope.placeRelative] extension method of the [Placeable] variable
+ * `imagePlaceable` to place it at `x` argument the `imageX` and `y` argument the `imageY`.
+ *
+ * @param collapseFractionProvider a lambda that returns a [Float] value between `0f` and `1f` that
+ * represents where we currently are in the collapsing animation.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [Image] passes us the [HzPadding] horizontal padding [Modifier] with a
+ * [Modifier.statusBarsPadding] chained to that to add padding to accommodate the status bars insets.
+ * @param content the Composable lambda whose size we are to animate.
  */
 @Composable
 private fun CollapsingImageLayout(
@@ -974,6 +1040,7 @@ private fun CollapsingImageLayout(
         val imageMaxSize: Int = min(ExpandedImageSize.roundToPx(), constraints.maxWidth)
         val imageMinSize: Int = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
         val imageWidth: Int = lerp(imageMaxSize, imageMinSize, collapseFraction)
+
         val imagePlaceable: Placeable = measurables[0].measure(Constraints.fixed(imageWidth, imageWidth))
 
         val imageY: Int = lerp(
@@ -996,7 +1063,7 @@ private fun CollapsingImageLayout(
 }
 
 /**
- *
+ * This Composable composes the bottom bar of our [SnackDetail].
  */
 @Composable
 private fun CartBottomBar(modifier: Modifier = Modifier) {
