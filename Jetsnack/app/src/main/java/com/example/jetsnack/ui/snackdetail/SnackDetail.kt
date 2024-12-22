@@ -59,6 +59,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -1083,7 +1084,27 @@ private fun CollapsingImageLayout(
  * a [tween] of `durationMillis` = `50` plus a [fadeOut] whose `animationSpec` is a [tween] of
  * `durationMillis` = `50`.
  *
- * In the `content` Composable lambda argument of the [JetsnackSurface]
+ * In the `content` Composable lambda argument of the [JetsnackSurface] we have a [Column] in whose
+ * [ColumnScope] `content` Composable lambda argument we compose a [JetsnackDivider] followed by a
+ * [Row]. The `verticalAlignment` argument of the [Row] is [Alignment.CenterVertically] (centers its
+ * children vertically), the [Modifier] `modifier` argument is a [Modifier.navigationBarsPadding]
+ * to add padding to accommodate the navigation bars insets, to which is chained our [HzPadding]
+ * horizontal padding [Modifier] and a [Modifier.heightIn] whose `min` argument is [BottomBarHeight].
+ * In the [RowScope] `content` Composable lambda argument we compose a [QuantitySelector] whose
+ * `count` argument is our [MutableState] wrapped [Int] variable `count`, whose `decreaseItemCount`
+ * is if `count` is greater than `0` a call to our lambda variable `updateCount` with our
+ * [MutableState] wrapped [Int] variable `count`'s `value` minus `1`, and whose `increaseItemCount`
+ * argument is a call to our lambda variable `updateCount` with our [MutableState] wrapped [Int]
+ * variable `count`'s `value` plus `1`. Next in the [Row] is a [Spacer] whose [Modifier] `modifier`
+ * argument is a [Modifier.width] that sets its `width` to be `16.dp`. At the end of the [Row] is a
+ * [JetsnackButton] whose `onClick` argument is a lambda that does nothing, and whose [Modifier]
+ * `modifier` argument is a [RowScope.weight] whose `weight` is `1f` causing it to take all remaining
+ * space once its siblings are measured and placed. In the [RowScope] `content` Composable lambda
+ * argument of the [JetsnackButton] we compose a [Text] whose `text` argument is the [String] with
+ * resource ID `R.string.add_to_cart` ("ADD TO CART"), whose [Modifier] `modifier` argument is a
+ * [Modifier.fillMaxWidth] to have it occupy its entire incoming width constraint, whose `textAlign`
+ * argument is [TextAlign.Center] to center the `text` in the [Text], and whose `maxLines` argument
+ * is `1`.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [SnackDetail] passes us a [BoxScope.align] whose `alignment` argument is

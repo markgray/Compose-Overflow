@@ -14,76 +14,356 @@
  * limitations under the License.
  */
 
+@file:Suppress("unused")
+
 package com.example.jetsnack.ui.theme
 
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 
-val Shadow11 = Color(0xff001787)
-val Shadow10 = Color(0xff00119e)
-val Shadow9 = Color(0xff0009b3)
-val Shadow8 = Color(0xff0200c7)
-val Shadow7 = Color(0xff0e00d7)
-val Shadow6 = Color(0xff2a13e4)
-val Shadow5 = Color(0xff4b30ed)
-val Shadow4 = Color(0xff7057f5)
-val Shadow3 = Color(0xff9b86fa)
-val Shadow2 = Color(0xffc8bbfd)
-val Shadow1 = Color(0xffded6fe)
-val Shadow0 = Color(0xfff4f2ff)
+/**
+ * This is used in the [List] of [Color] of [JetsnackColors.gradient2_1] in the `LightColorPalette`
+ * and [JetsnackColors.gradient2_1] is used as the [JetsnackColors.interactivePrimary]
+ */
+val Shadow11: Color = Color(0xff001787)
 
-val Ocean11 = Color(0xff005687)
-val Ocean10 = Color(0xff006d9e)
-val Ocean9 = Color(0xff0087b3)
-val Ocean8 = Color(0xff00a1c7)
-val Ocean7 = Color(0xff00b9d7)
-val Ocean6 = Color(0xff13d0e4)
-val Ocean5 = Color(0xff30e2ed)
-val Ocean4 = Color(0xff57eff5)
-val Ocean3 = Color(0xff86f7fa)
-val Ocean2 = Color(0xffbbfdfd)
-val Ocean1 = Color(0xffd6fefe)
-val Ocean0 = Color(0xfff2ffff)
+/**
+ * Unused
+ */
+val Shadow10: Color = Color(0xff00119e)
 
-val Lavender11 = Color(0xff170085)
-val Lavender10 = Color(0xff23009e)
-val Lavender9 = Color(0xff3300b3)
-val Lavender8 = Color(0xff4400c7)
-val Lavender7 = Color(0xff5500d7)
-val Lavender6 = Color(0xff6f13e4)
-val Lavender5 = Color(0xff8a30ed)
-val Lavender4 = Color(0xffa557f5)
-val Lavender3 = Color(0xffc186fa)
-val Lavender2 = Color(0xffdebbfd)
-val Lavender1 = Color(0xffebd6fe)
-val Lavender0 = Color(0xfff9f2ff)
+/**
+ * This is used in the [List] of [Color] of [JetsnackColors.gradient6_1] in the `DarkColorPalette`
+ * and the [List] of [Color] of [JetsnackColors.gradient3_1] in the `DarkColorPalette`
+ */
+val Shadow9: Color = Color(0xff0009b3)
 
-val Rose11 = Color(0xff7f0054)
-val Rose10 = Color(0xff97005c)
-val Rose9 = Color(0xffaf0060)
-val Rose8 = Color(0xffc30060)
-val Rose7 = Color(0xffd4005d)
-val Rose6 = Color(0xffe21365)
-val Rose5 = Color(0xffec3074)
-val Rose4 = Color(0xfff4568b)
-val Rose3 = Color(0xfff985aa)
-val Rose2 = Color(0xfffdbbcf)
-val Rose1 = Color(0xfffed6e2)
-val Rose0 = Color(0xfffff2f6)
+/**
+ * Unused
+ */
+val Shadow8: Color = Color(0xff0200c7)
 
-val Neutral8 = Color(0xff121212)
-val Neutral7 = Color(0xde000000)
-val Neutral6 = Color(0x99000000)
-val Neutral5 = Color(0x61000000)
-val Neutral4 = Color(0x1f000000)
-val Neutral3 = Color(0x1fffffff)
-val Neutral2 = Color(0x61ffffff)
-val Neutral1 = Color(0xbdffffff)
-val Neutral0 = Color(0xffffffff)
+/**
+ * Unused
+ */
+val Shadow7: Color = Color(0xff0e00d7)
 
-val FunctionalRed = Color(0xffd00036)
-val FunctionalRedDark = Color(0xffea6d7e)
-val FunctionalGreen = Color(0xff52c41a)
-val FunctionalGrey = Color(0xfff6f6f6)
-val FunctionalDarkGrey = Color(0xff2e2e2e)
+/**
+ * Unused
+ */
+val Shadow6: Color = Color(0xff2a13e4)
 
-const val AlphaNearOpaque = 0.95f
+/**
+ * This is used in the [List] of [Color] of [JetsnackColors.gradient6_1] in the `DarkColorPalette`,
+ * the [List] of [Color] of [JetsnackColors.gradient3_1] in the `DarkColorPalette`,` and as the
+ * [JetsnackColors.brand] in the `LightColorPalette`.
+ */
+val Shadow5: Color = Color(0xff4b30ed)
+
+/**
+ * This is used in the [List] of [Color] of [JetsnackColors.tornado1] in the `DarkColorPalette` and
+ * in the `LightColorPalette` in the [List] of [Color] of [JetsnackColors.gradient6_1], in the [List]
+ * of [Color] of [JetsnackColors.gradient3_1], in the [List] of [Color] of [JetsnackColors.gradient2_1],
+ * and in the [List] of [Color] of [JetsnackColors.tornado1].
+ */
+val Shadow4: Color = Color(0xff7057f5)
+
+/**
+ * This is used in the [List] of [Color] of [JetsnackColors.gradient2_1] for `DarkColorPalette`
+ * and in the [List] of [Color] of [JetsnackColors.gradient2_2] for `LightColorPalette`.
+ */
+val Shadow3: Color = Color(0xff9b86fa)
+
+/**
+ * This is used in the [List] of [Color] of [JetsnackColors.gradient2_2] for `DarkColorPalette`, and
+ * in the `LightColorPalette` in the [List] of [Color] of [JetsnackColors.gradient6_1], and in the
+ * [List] of [Color] of [JetsnackColors.gradient3_1].
+ */
+val Shadow2: Color = Color(0xffc8bbfd)
+
+/**
+ * This is used as the [JetsnackColors.brand], as the [JetsnackColors.textPrimary], and as the
+ * [JetsnackColors.iconPrimary] in the `DarkColorPalette`.
+ */
+val Shadow1: Color = Color(0xffded6fe)
+
+/**
+ * Unused
+ */
+val Shadow0: Color = Color(0xfff4f2ff)
+
+/**
+ * Used as the [JetsnackColors.textLink] in the `LightColorPalette`.
+ */
+val Ocean11: Color = Color(0xff005687)
+
+/**
+ * Unused
+ */
+val Ocean10: Color = Color(0xff006d9e)
+
+/**
+ * Unused
+ */
+val Ocean9: Color = Color(0xff0087b3)
+
+/**
+ *
+ */
+val Ocean8: Color = Color(0xff00a1c7)
+
+/**
+ * Unused
+ */
+val Ocean7: Color = Color(0xff00b9d7)
+
+/**
+ * Unused
+ */
+val Ocean6: Color = Color(0xff13d0e4)
+
+/**
+ * Unused
+ */
+val Ocean5: Color = Color(0xff30e2ed)
+
+/**
+ * Used in the [List] of [Color] of [JetsnackColors.gradient2_2] in the `DarkColorPalette`
+ */
+val Ocean4: Color = Color(0xff57eff5)
+
+/**
+ * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient2_1],
+ * and in the [List] of [Color] of [JetsnackColors.tornado1]. In the `LightColorPalette` it is used
+ * as the [JetsnackColors.brandSecondary], in the [List] of [Color] of [JetsnackColors.gradient6_1],
+ * in the [List] of [Color] of [JetsnackColors.gradient3_1], in the [List] of [Color] of
+ * [JetsnackColors.gradient2_2], and in the [List] of [Color] of [JetsnackColors.tornado1].
+ */
+val Ocean3: Color = Color(0xff86f7fa)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.brandSecondary] and as the
+ * [JetsnackColors.textLink].
+ */
+val Ocean2: Color = Color(0xffbbfdfd)
+
+/**
+ * Unused
+ */
+val Ocean1: Color = Color(0xffd6fefe)
+
+/**
+ * Unused
+ */
+val Ocean0: Color = Color(0xfff2ffff)
+
+/**
+ * Unused
+ */
+val Lavender11: Color = Color(0xff170085)
+
+/**
+ * Unused
+ */
+val Lavender10: Color = Color(0xff23009e)
+
+/**
+ * Unused
+ */
+val Lavender9: Color = Color(0xff3300b3)
+
+/**
+ * Unused
+ */
+val Lavender8: Color = Color(0xff4400c7)
+
+/**
+ * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * and in the [List] of [Color] of [JetsnackColors.gradient3_2].
+ */
+val Lavender7: Color = Color(0xff5500d7)
+
+/**
+ * Unused
+ */
+val Lavender6: Color = Color(0xff6f13e4)
+
+/**
+ * Unused
+ */
+val Lavender5: Color = Color(0xff8a30ed)
+
+/**
+ *
+ */
+val Lavender4: Color = Color(0xffa557f5)
+
+/**
+ * Unused
+ */
+val Lavender3: Color = Color(0xffc186fa)
+
+/**
+ * Unused
+ */
+val Lavender2: Color = Color(0xffdebbfd)
+
+/**
+ * Unused
+ */
+val Lavender1: Color = Color(0xffebd6fe)
+
+/**
+ * Unused
+ */
+val Lavender0: Color = Color(0xfff9f2ff)
+
+/**
+ * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * and in the [List] of [Color] of [JetsnackColors.gradient3_2].
+ */
+val Rose11: Color = Color(0xff7f0054)
+
+/**
+ * Unused
+ */
+val Rose10: Color = Color(0xff97005c)
+
+/**
+ * Unused
+ */
+val Rose9: Color = Color(0xffaf0060)
+
+/**
+ * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * and in the [List] of [Color] of [JetsnackColors.gradient3_2].
+ */
+val Rose8: Color = Color(0xffc30060)
+
+/**
+ * Unused
+ */
+val Rose7: Color = Color(0xffd4005d)
+
+/**
+ * Unused
+ */
+val Rose6: Color = Color(0xffe21365)
+
+/**
+ * Unused
+ */
+val Rose5: Color = Color(0xffec3074)
+
+/**
+ * In the `LightColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * and in the [List] of [Color] of [JetsnackColors.gradient3_2].
+ */
+val Rose4: Color = Color(0xfff4568b)
+
+/**
+ * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient2_3].
+ */
+val Rose3: Color = Color(0xfff985aa)
+
+/**
+ * In the `LightColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * in the [List] of [Color] of [JetsnackColors.gradient3_2], and in the [List] of [Color] of
+ * [JetsnackColors.gradient2_3].
+ */
+val Rose2: Color = Color(0xfffdbbcf)
+
+/**
+ * Unused
+ */
+val Rose1: Color = Color(0xfffed6e2)
+
+/**
+ * Unused
+ */
+val Rose0: Color = Color(0xfffff2f6)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.uiBackground], and a copy of it is
+ * used as the background of the [IconButton] that is used for the `Up` button in [SnackDetail].
+ */
+val Neutral8: Color = Color(0xff121212)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.textInteractive], and as the
+ * [JetsnackColors.iconInteractive], in the `LightColorPalette` it is used as the
+ * [JetsnackColors.textSecondary] and the [JetsnackColors.iconSecondary].
+ */
+val Neutral7: Color = Color(0xde000000)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.iconInteractiveInactive] and in the
+ * `LightColorPalette` it is used as the [JetsnackColors.textHelp].
+ */
+val Neutral6: Color = Color(0x99000000)
+
+/**
+ * Unused
+ */
+val Neutral5: Color = Color(0x61000000)
+
+/**
+ * In the `LightColorPalette` it is used as the [JetsnackColors.uiBorder].
+ */
+val Neutral4: Color = Color(0x1f000000)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.uiBorder].
+ */
+val Neutral3: Color = Color(0x1fffffff)
+
+/**
+ * Unused
+ */
+val Neutral2: Color = Color(0x61ffffff)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.textHelp], and in the `LightColorPalette`
+ * it is used as the [JetsnackColors.iconInteractiveInactive]
+ */
+val Neutral1: Color = Color(0xbdffffff)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.textSecondary] and as the
+ * [JetsnackColors.iconSecondary], in the `LightColorPalette` it is used as the
+ * [JetsnackColors.uiBackground], as the [JetsnackColors.textInteractive], and as the
+ * [JetsnackColors.iconInteractive].
+ */
+val Neutral0: Color = Color(0xffffffff)
+
+/**
+ * In the `LightColorPalette` it is used as the [JetsnackColors.error].
+ */
+val FunctionalRed: Color = Color(0xffd00036)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.error].
+ */
+val FunctionalRedDark: Color = Color(0xffea6d7e)
+
+/**
+ * Unused
+ */
+val FunctionalGreen: Color = Color(0xff52c41a)
+
+/**
+ * In the `LightColorPalette` it is used as the [JetsnackColors.uiFloated].
+ */
+val FunctionalGrey: Color = Color(0xfff6f6f6)
+
+/**
+ * In the `DarkColorPalette` it is used as the [JetsnackColors.uiFloated].
+ */
+val FunctionalDarkGrey: Color = Color(0xff2e2e2e)
+
+/**
+ * This is used as the `alpha` of the background of the `CheckoutBar` and the `alpha` of the
+ * `containerColor` of the `DestinationBar`.
+ */
+const val AlphaNearOpaque: Float = 0.95f
