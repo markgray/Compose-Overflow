@@ -1063,7 +1063,31 @@ private fun CollapsingImageLayout(
 }
 
 /**
- * This Composable composes the bottom bar of our [SnackDetail].
+ * This Composable composes the bottom bar of our [SnackDetail]. First we use destructuring to
+ * intialize and remember our [MutableState] wrapped [Int] variable `count` and its setter lambda
+ * taking [Int] function `updateCount` to the values returned by [mutableIntStateOf] for the initial
+ * value of `1`. Next we initialize our [SharedTransitionScope] variable `val sharedTransitionScope`
+ * to the `current` [LocalSharedTransitionScope] (or throw [IllegalStateException] if it is `null`),
+ * and initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the
+ * `current` [LocalNavAnimatedVisibilityScope] (or throw [IllegalStateException] if it is `null`).
+ * Then `with` [SharedTransitionScope] variable `sharedTransitionScope` as the receiver we execute
+ * another `with` for [AnimatedVisibilityScope] variable `animatedVisibilityScope` as the receiver,
+ * in the `block` lambda argument of the inner `with` we compose a [JetsnackSurface] whose [Modifier]
+ * `modifier` argument starts with our [Modifier] parameter [modifier] to which it chains a
+ * [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose `zIndexInOverlay` of `4f`
+ * causes it to be rendered on top of all other composables in the shared transition overlay.
+ * Chain to that is a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a
+ * [slideInVertically] whose `animationSpec` is a [tween] of `durationMillis` = `300` and `delayMillis`
+ * = `300` plus a [fadeIn] whose `animationSpec` is a [tween] of `durationMillis` = `300` and
+ * `delayMillis` = `300`, and the `exit` argument is a [slideOutVertically] whose `animationSpec` is
+ * a [tween] of `durationMillis` = `50` plus a [fadeOut] whose `animationSpec` is a [tween] of
+ * `durationMillis` = `50`.
+ *
+ * In the `content` Composable lambda argument of the [JetsnackSurface]
+ *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [SnackDetail] passes us a [BoxScope.align] whose `alignment` argument is
+ * [Alignment.BottomCenter] which causes us to align with the bottom center of our parent [Box].
  */
 @Composable
 private fun CartBottomBar(modifier: Modifier = Modifier) {
@@ -1079,7 +1103,7 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                     .renderInSharedTransitionScopeOverlay(zIndexInOverlay = 4f)
                     .animateEnterExit(
                         enter = slideInVertically(
-                            tween(
+                            animationSpec = tween(
                                 durationMillis = 300,
                                 delayMillis = 300
                             )
