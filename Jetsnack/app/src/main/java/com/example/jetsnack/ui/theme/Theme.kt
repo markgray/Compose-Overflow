@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UNUSED_PARAMETER", "PropertyName")
+
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -77,6 +79,9 @@ private val DarkColorPalette = JetsnackColors(
     isDark = true
 )
 
+/**
+ * This is our custom [MaterialTheme].
+ */
 @Composable
 fun JetsnackTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -94,7 +99,13 @@ fun JetsnackTheme(
     }
 }
 
+/**
+ * This singleton object is used to retrieve the `current` [LocalJetsnackColors]
+ */
 object JetsnackTheme {
+    /**
+     * Used to retrieve the `current` [LocalJetsnackColors]
+     */
     val colors: JetsnackColors
         @Composable
         get() = LocalJetsnackColors.current
@@ -105,36 +116,123 @@ object JetsnackTheme {
  */
 @Immutable
 data class JetsnackColors(
+    /**
+     *
+     */
     val gradient6_1: List<Color>,
+    /**
+     *
+     */
     val gradient6_2: List<Color>,
+    /**
+     *
+     */
     val gradient3_1: List<Color>,
+    /**
+     *
+     */
     val gradient3_2: List<Color>,
+    /**
+     *
+     */
     val gradient2_1: List<Color>,
+    /**
+     *
+     */
     val gradient2_2: List<Color>,
+    /**
+     *
+     */
     val gradient2_3: List<Color>,
+    /**
+     *
+     */
     val brand: Color,
+    /**
+     *
+     */
     val brandSecondary: Color,
+    /**
+     *
+     */
     val uiBackground: Color,
+    /**
+     *
+     */
     val uiBorder: Color,
+    /**
+     *
+     */
     val uiFloated: Color,
+    /**
+     *
+     */
     val interactivePrimary: List<Color> = gradient2_1,
+    /**
+     *
+     */
     val interactiveSecondary: List<Color> = gradient2_2,
+    /**
+     *
+     */
     val interactiveMask: List<Color> = gradient6_1,
+    /**
+     *
+     */
     val textPrimary: Color = brand,
+    /**
+     *
+     */
     val textSecondary: Color,
+    /**
+     *
+     */
     val textHelp: Color,
+    /**
+     *
+     */
     val textInteractive: Color,
+    /**
+     *
+     */
     val textLink: Color,
+    /**
+     *
+     */
     val tornado1: List<Color>,
+    /**
+     *
+     */
     val iconPrimary: Color = brand,
+    /**
+     *
+     */
     val iconSecondary: Color,
+    /**
+     *
+     */
     val iconInteractive: Color,
+    /**
+     *
+     */
     val iconInteractiveInactive: Color,
+    /**
+     *
+     */
     val error: Color,
+    /**
+     *
+     */
     val notificationBadge: Color = error,
+    /**
+     *
+     */
     val isDark: Boolean
 )
 
+/**
+ *
+ */
 @Composable
 fun ProvideJetsnackColors(
     colors: JetsnackColors,
@@ -148,13 +246,13 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
 }
 
 /**
- * A Material [Colors] implementation which sets all colors to [debugColor] to discourage usage of
- * [MaterialTheme.colorScheme] in preference to [JetsnackTheme.colors].
+ * A Material [ColorScheme] implementation which sets all colors to [debugColor] to discourage usage
+ * of [MaterialTheme.colorScheme] in preference to [JetsnackTheme.colors].
  */
 fun debugColors(
     darkTheme: Boolean,
     debugColor: Color = Color.Magenta
-) = ColorScheme(
+): ColorScheme = ColorScheme(
     primary = debugColor,
     onPrimary = debugColor,
     primaryContainer = debugColor,

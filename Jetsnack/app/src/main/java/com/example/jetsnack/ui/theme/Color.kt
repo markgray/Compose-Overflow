@@ -109,12 +109,13 @@ val Ocean10: Color = Color(0xff006d9e)
 val Ocean9: Color = Color(0xff0087b3)
 
 /**
- *
+ * Unused
  */
 val Ocean8: Color = Color(0xff00a1c7)
 
 /**
- * Unused
+ * This is used in the [List] of [Color] of [JetsnackColors.gradient6_1] for `DarkColorPalette`, and
+ * in the [List] of [Color] of [JetsnackColors.gradient3_1] for `DarkColorPalette`.
  */
 val Ocean7: Color = Color(0xff00b9d7)
 
@@ -195,12 +196,15 @@ val Lavender6: Color = Color(0xff6f13e4)
 val Lavender5: Color = Color(0xff8a30ed)
 
 /**
- *
+ * Unused
  */
 val Lavender4: Color = Color(0xffa557f5)
 
 /**
- * Unused
+ * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2].
+ * In the `LightColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * in the [List] of [Color] of [JetsnackColors.gradient3_2], and in the [List] of [Color] of
+ * [JetsnackColors.gradient2_3],
  */
 val Lavender3: Color = Color(0xffc186fa)
 
@@ -220,7 +224,7 @@ val Lavender1: Color = Color(0xffebd6fe)
 val Lavender0: Color = Color(0xfff9f2ff)
 
 /**
- * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * In the `DarkColorPalette` this is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
  * and in the [List] of [Color] of [JetsnackColors.gradient3_2].
  */
 val Rose11: Color = Color(0xff7f0054)
@@ -236,7 +240,7 @@ val Rose10: Color = Color(0xff97005c)
 val Rose9: Color = Color(0xffaf0060)
 
 /**
- * In the `DarkColorPalette` it is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
+ * In the `DarkColorPalette` this is used in the [List] of [Color] of [JetsnackColors.gradient6_2],
  * and in the [List] of [Color] of [JetsnackColors.gradient3_2].
  */
 val Rose8: Color = Color(0xffc30060)

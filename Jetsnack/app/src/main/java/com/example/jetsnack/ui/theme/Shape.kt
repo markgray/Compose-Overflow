@@ -22,7 +22,7 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 /**
- * This is used as the [Shapes] of our [JetsnackTheme] custom [MaterialTheme].
+ * This is used as the [Shapes] of the [MaterialTheme.shapes] of our [JetsnackTheme] custom [MaterialTheme].
  */
 val Shapes: Shapes = Shapes(
     small = RoundedCornerShape(percent = 50),
