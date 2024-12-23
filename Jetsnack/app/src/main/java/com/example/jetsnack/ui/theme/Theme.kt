@@ -19,13 +19,32 @@
 package com.example.jetsnack.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.example.jetsnack.model.Snack
+import com.example.jetsnack.ui.components.FilterBar
+import com.example.jetsnack.ui.components.FilterChip
+import com.example.jetsnack.ui.components.JetsnackButton
+import com.example.jetsnack.ui.components.JetsnackCard
+import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.SnackCollection
+import com.example.jetsnack.ui.home.FilterScreen
+import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.home.search.Search
+import com.example.jetsnack.ui.home.search.SearchCategories
+import com.example.jetsnack.ui.snackdetail.SnackDetail
 
 private val LightColorPalette = JetsnackColors(
     brand = Shadow5,
@@ -80,7 +99,12 @@ private val DarkColorPalette = JetsnackColors(
 )
 
 /**
- * This is our custom [MaterialTheme].
+ * This is our custom [MaterialTheme]. The [MaterialTheme] construtctor is wrapped in our
+ * [ProvideJetsnackColors] Composable function to provide the [JetsnackColors] from the
+ * [LocalJetsnackColors] provides `colors` [CompositionLocalProvider]
+ *
+ * @param darkTheme Whether we are in dark theme or not.
+ * @param content The Composable lambda that we are to provide [MaterialTheme] values to.
  */
 @Composable
 fun JetsnackTheme(
@@ -117,91 +141,103 @@ object JetsnackTheme {
 @Immutable
 data class JetsnackColors(
     /**
-     *
+     * Used as the `gradient` of even numbered [Snack] items in the `HighlightedSnacks` composable
+     * used by [SnackCollection]
      */
     val gradient6_1: List<Color>,
     /**
-     *
+     * Used as the `gradient` of odd numbered [Snack] items in the `HighlightedSnacks` composable
+     * used by [SnackCollection]
      */
     val gradient6_2: List<Color>,
     /**
-     *
+     * Unused
      */
     val gradient3_1: List<Color>,
     /**
-     *
+     * Used only in the `Preview` of the `SearchCategory` composable as the `gradient` argument.
      */
     val gradient3_2: List<Color>,
     /**
-     *
+     * Used as the [JetsnackColors.interactivePrimary]
      */
     val gradient2_1: List<Color>,
     /**
-     *
+     * Used for even numbered `SearchCategory` items in the [SearchCategories] composable, and as
+     * the [interactiveSecondary].
      */
     val gradient2_2: List<Color>,
     /**
-     *
+     * Used for odd numbered `SearchCategory` items in the [SearchCategories] composable.
      */
     val gradient2_3: List<Color>,
     /**
-     *
+     * Used as the app `brand` color in lots of places. It is [Shadow1] for the `DarkColorPalette`
+     * and [Shadow5] for the `LightColorPalette`.
      */
     val brand: Color,
     /**
-     *
+     * It is used as the `targetValue` of the animated background color of `selected` [FilterChip]s
+     * in the [FilterBar] composable.
      */
     val brandSecondary: Color,
     /**
-     *
+     * Used as the background color in many places.
      */
     val uiBackground: Color,
     /**
-     *
+     * A copy of [uiBorder] is used by [JetsnackDivider] as the `color` of its [HorizontalDivider]
+     * and also as the `border` of the [JetsnackCard] composable in `HighlightSnackItem` of [Snack]
      */
     val uiBorder: Color,
     /**
-     *
+     * This is used as the `background` of the [FilterScreen] composable, and as the `background` of
+     * the [JetsnackSurface] in the `SearchBar` composable of [Search].
      */
     val uiFloated: Color,
     /**
-     *
+     * This is used as the `backgroundGradient` of [JetsnackButton]
      */
     val interactivePrimary: List<Color> = gradient2_1,
     /**
-     *
+     * This is used as the `disabledBackgroundGradient` of [JetsnackButton] and in several other places.
      */
     val interactiveSecondary: List<Color> = gradient2_2,
     /**
-     *
+     * Unused
      */
     val interactiveMask: List<Color> = gradient6_1,
     /**
-     *
+     * This is used as the `color` of the `text` of [Text] in several places.
      */
     val textPrimary: Color = brand,
     /**
-     *
+     * This is used as the `color` of the `text` of [Text] in several places.
      */
     val textSecondary: Color,
     /**
-     *
+     * This is used as the `color` of the `text` of [Text] in several places.
      */
     val textHelp: Color,
     /**
-     *
+     * This is used as the `contentColor` of [JetsnackButton].
      */
     val textInteractive: Color,
     /**
-     *
+     * This is used as the `color` of the `text` of the [Text] used by the "SEE MORE" button in
+     * the [SnackDetail] composable. It is [Ocean2] in the `DarkPallete` and [Ocean11] in the
+     * `LightPalette`.
      */
     val textLink: Color,
     /**
-     *
+     * This is used as the brush colors of the [Brush.linearGradient] of the `Header` composable
+     * used by the [SnackDetail] composable.
      */
     val tornado1: List<Color>,
     /**
-     *
+     * Used as the `Color` of the [JetsnackBottomBar], as the `tint` of the [Icon] of the [IconButton]
+     * in the `SearchBar` of [Search], and as the `color` of the [CircularProgressIndicator] in the
+     * `SearchBar` of [Search].
      */
     val iconPrimary: Color = brand,
     /**
@@ -231,7 +267,8 @@ data class JetsnackColors(
 )
 
 /**
- *
+ * This wraps its [content] in a [CompositionLocalProvider] that provides the [JetsnackColors] when
+ * its [content] requests them.
  */
 @Composable
 fun ProvideJetsnackColors(
