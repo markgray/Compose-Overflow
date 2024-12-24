@@ -260,7 +260,7 @@ data class JetsnackColors(
     /**
      * This is used as the `inactiveTrackColor` in the [Slider] in the [MaxCalories] composabe of
      * the [FilterScreen] screen, the `contentColor` of the [JetsnackBottomBar] that is used as
-     * the `bottomBar` argument of the [JetsnackScaffold] or the [MainContainer] screen, as the
+     * the `bottomBar` argument of the [JetsnackScaffold] of the [MainContainer] screen, as the
      * `color` of the `text` in the [Text] and the `tint` of the [Icon] of the selected
      * [JetsnackBottomNavigationItem] in the [JetsnackBottomBar], and in the `tint` of the
      * [Icon] of the "Back" [IconButton] of the [SnackDetail] screen.
@@ -282,8 +282,8 @@ data class JetsnackColors(
      */
     val notificationBadge: Color = error,
     /**
-     * If `true` we are using the [DarkColorPalette], if `false` we are using the [LightColorPalette],
-     * if is used to choose between [BlendMode.Darken] (if `true`) and [BlendMode.Plus] (if `false`)
+     * If `true` we are using the [DarkColorPalette], if `false` we are using the [LightColorPalette].
+     * It is used to choose between [BlendMode.Darken] (if `true`) and [BlendMode.Plus] (if `false`)
      * to use as the `blendMode` argument of the `.diagonalGradientTint` [Modifier] extension function
      * used for the [JetsnackGradientTintedIconButton]s of the [QuantitySelector] composable.
      */
@@ -294,7 +294,7 @@ data class JetsnackColors(
  * This wraps its [content] in a [CompositionLocalProvider] that provides the [JetsnackColors] when
  * its [content] requests them.
  *
- * @param colors the [JetsnackColors] we should use, either [DarkColorPalette] of [LightColorPalette]
+ * @param colors the [JetsnackColors] we should use, either [DarkColorPalette] or [LightColorPalette]
  * depending on whether the "dark theme" of "light theme" is in use.
  * @param content the Composable lambda we should provide [colors] thru the [LocalJetsnackColors]
  * custom [CompositionLocalProvider]
@@ -319,6 +319,7 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
  * of [MaterialTheme.colorScheme] in preference to [JetsnackTheme.colors].
  *
  * @param darkTheme if `true` the system is in "dark theme" mode.
+ * @param debugColor the debug color to apply to all the [ColorScheme].
  */
 fun debugColors(
     darkTheme: Boolean,

@@ -18,7 +18,18 @@ package com.example.jetsnack.ui.utils
 
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.util.Locale
 
+/**
+ * Converts a long to a price string. We call [NumberFormat.getCurrencyInstance] to get a currency
+ * format for the current `Category.FORMAT` of the default [Locale]. Then we call its
+ * [NumberFormat.format] method for the [BigDecimal] of our [Long] parameter [price], and call
+ * its [BigDecimal.movePointLeft] to move the decimal point `2` places to the left, returing the
+ * [String] produced by [NumberFormat.format] to the caller.
+ *
+ * @param price the price in cents.
+ * @return the formatted price.
+ */
 fun formatPrice(price: Long): String {
     return NumberFormat.getCurrencyInstance().format(
         BigDecimal(price).movePointLeft(2)

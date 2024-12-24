@@ -17,6 +17,7 @@
 @file:OptIn(
     ExperimentalSharedTransitionApi::class
 )
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
 
 package com.example.jetsnack.ui
 
@@ -33,20 +34,24 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.jetsnack.ui.components.JetsnackScaffold
+import com.example.jetsnack.ui.components.JetsnackScaffoldState
 import com.example.jetsnack.ui.components.JetsnackSnackbar
 import com.example.jetsnack.ui.components.rememberJetsnackScaffoldState
 import com.example.jetsnack.ui.home.HomeSections
@@ -61,15 +66,31 @@ import com.example.jetsnack.ui.snackdetail.nonSpatialExpressiveSpring
 import com.example.jetsnack.ui.snackdetail.spatialExpressiveSpring
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
+/**
+ * This is the root view of our app. It starts by wrapping all of its content in [JetsnackTheme] to
+ * have it supply all of the [MaterialTheme.colorScheme] and [MaterialTheme.typography] values to
+ * the Composable hierarchy. We initialize and remember our [JetsnackNavController] variable
+ * `val jetsnackNavController` to the instance returned by [rememberJetsnackNavController]. Then our
+ * root composable is a [SharedTransitionLayout] in whose [SharedTransitionScope] `content` Composable
+ * lambda argument we compose a [CompositionLocalProvider] to bind [LocalSharedTransitionScope] key
+ * to `this` [SharedTransitionScope]. Inside the `content` Composable lambda argument we of the
+ * [CompositionLocalProvider] we compose a [NavHost] whose `navController` argument is the
+ * [JetsnackNavController.navController] of our `jetsnackNavController` variable, and whose
+ * `startDestination` argument is [MainDestinations.HOME_ROUTE]. Inside [NavGraphBuilder] `builder`
+ * Composable lambda argument of the [NavHost] we call our [NavGraphBuilder.composableWithCompositionLocal]
+ * method with its `route` argument [MainDestinations.HOME_ROUTE] to add a [MainContainer] Composable
+ * whose `onSnackSelected` argument is the [JetsnackNavController.navigateToSnackDetail] method of
+ * our [JetsnackNavController] variable `jetsnackNavController` to the [NavGraphBuilder].
+ */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 fun JetsnackApp() {
     JetsnackTheme {
-        val jetsnackNavController = rememberJetsnackNavController()
+        val jetsnackNavController: JetsnackNavController = rememberJetsnackNavController()
         SharedTransitionLayout {
             CompositionLocalProvider(
-                LocalSharedTransitionScope provides this
+                value = LocalSharedTransitionScope provides this
             ) {
                 NavHost(
                     navController = jetsnackNavController.navController,
@@ -93,7 +114,7 @@ fun JetsnackApp() {
                             }
                         ),
 
-                    ) { backStackEntry: NavBackStackEntry ->
+                        ) { backStackEntry: NavBackStackEntry ->
                         val arguments: Bundle = requireNotNull(backStackEntry.arguments)
                         val snackId: Long = arguments.getLong(MainDestinations.SNACK_ID_KEY)
                         val origin: String? = arguments.getString(MainDestinations.ORIGIN)
@@ -109,16 +130,21 @@ fun JetsnackApp() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainContainer(
     modifier: Modifier = Modifier,
     onSnackSelected: (Long, String, NavBackStackEntry) -> Unit
 ) {
-    val jetsnackScaffoldState = rememberJetsnackScaffoldState()
+    val jetsnackScaffoldState: JetsnackScaffoldState = rememberJetsnackScaffoldState()
     val nestedNavController: JetsnackNavController = rememberJetsnackNavController()
-    val navBackStackEntry by nestedNavController.navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val navBackStackEntry: NavBackStackEntry? by nestedNavController
+        .navController
+        .currentBackStackEntryAsState()
+    val currentRoute: String? = navBackStackEntry?.destination?.route
     val sharedTransitionScope: SharedTransitionScope = LocalSharedTransitionScope.current
         ?: throw IllegalStateException("No SharedElementScope found")
     val animatedVisibilityScope: AnimatedVisibilityScope = LocalNavAnimatedVisibilityScope.current
@@ -136,16 +162,18 @@ fun MainContainer(
                                 zIndexInOverlay = 1f,
                             )
                             .animateEnterExit(
-                                enter = fadeIn(nonSpatialExpressiveSpring()) +
-                                    slideInVertically(spatialExpressiveSpring()
-                                ) {
-                                    it
-                                },
-                                exit = fadeOut(nonSpatialExpressiveSpring()) +
-                                    slideOutVertically(spatialExpressiveSpring()
-                                ) {
-                                    it
-                                }
+                                enter = fadeIn(animationSpec = nonSpatialExpressiveSpring()) +
+                                    slideInVertically(
+                                        animationSpec = spatialExpressiveSpring()
+                                    ) {
+                                        it
+                                    },
+                                exit = fadeOut(animationSpec = nonSpatialExpressiveSpring()) +
+                                    slideOutVertically(
+                                        animationSpec = spatialExpressiveSpring()
+                                    ) {
+                                        it
+                                    }
                             )
                     )
                 }
@@ -175,6 +203,15 @@ fun MainContainer(
     }
 }
 
-val LocalNavAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
+/**
+ *
+ */
+val LocalNavAnimatedVisibilityScope: ProvidableCompositionLocal<AnimatedVisibilityScope?> =
+    compositionLocalOf { null }
+
+/**
+ *
+ */
 @OptIn(ExperimentalSharedTransitionApi::class)
-val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { null }
+val LocalSharedTransitionScope: ProvidableCompositionLocal<SharedTransitionScope?> =
+    compositionLocalOf { null }
