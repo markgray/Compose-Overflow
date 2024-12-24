@@ -25,23 +25,36 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.example.jetsnack.model.Snack
+import com.example.jetsnack.ui.MainContainer
 import com.example.jetsnack.ui.components.FilterBar
 import com.example.jetsnack.ui.components.FilterChip
 import com.example.jetsnack.ui.components.JetsnackButton
 import com.example.jetsnack.ui.components.JetsnackCard
 import com.example.jetsnack.ui.components.JetsnackDivider
+import com.example.jetsnack.ui.components.JetsnackGradientTintedIconButton
+import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
+import com.example.jetsnack.ui.components.QuantitySelector
 import com.example.jetsnack.ui.components.SnackCollection
 import com.example.jetsnack.ui.home.FilterScreen
 import com.example.jetsnack.ui.home.JetsnackBottomBar
+import com.example.jetsnack.ui.home.JetsnackBottomNavigationItem
+import com.example.jetsnack.ui.home.MaxCalories
+import com.example.jetsnack.ui.home.cart.Cart
+import com.example.jetsnack.ui.home.cart.CartItem
+import com.example.jetsnack.ui.home.cart.SwipeDismissItem
 import com.example.jetsnack.ui.home.search.Search
 import com.example.jetsnack.ui.home.search.SearchCategories
 import com.example.jetsnack.ui.snackdetail.SnackDetail
@@ -113,7 +126,7 @@ fun JetsnackTheme(
 ) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
-    ProvideJetsnackColors(colors) {
+    ProvideJetsnackColors(colors = colors) {
         MaterialTheme(
             colorScheme = debugColors(darkTheme),
             typography = Typography,
@@ -235,33 +248,44 @@ data class JetsnackColors(
      */
     val tornado1: List<Color>,
     /**
-     * Used as the `Color` of the [JetsnackBottomBar], as the `tint` of the [Icon] of the [IconButton]
+     * Used as the `color` of the [JetsnackBottomBar], as the `tint` of the [Icon] of the [IconButton]
      * in the `SearchBar` of [Search], and as the `color` of the [CircularProgressIndicator] in the
      * `SearchBar` of [Search].
      */
     val iconPrimary: Color = brand,
     /**
-     *
+     * This is used as the `tint` of the "Remove item" [Icon] in the [CartItem] of the [Cart] screen.
      */
     val iconSecondary: Color,
     /**
-     *
+     * This is used as the `inactiveTrackColor` in the [Slider] in the [MaxCalories] composabe of
+     * the [FilterScreen] screen, the `contentColor` of the [JetsnackBottomBar] that is used as
+     * the `bottomBar` argument of the [JetsnackScaffold] or the [MainContainer] screen, as the
+     * `color` of the `text` in the [Text] and the `tint` of the [Icon] of the selected
+     * [JetsnackBottomNavigationItem] in the [JetsnackBottomBar], and in the `tint` of the
+     * [Icon] of the "Back" [IconButton] of the [SnackDetail] screen.
      */
     val iconInteractive: Color,
     /**
-     *
+     * This is used as the `color` of the `text` in the [Text] and the `tint` of the [Icon] of the
+     * unselected [JetsnackBottomNavigationItem] in the [JetsnackBottomBar]
      */
     val iconInteractiveInactive: Color,
     /**
-     *
+     * This is used as the [notificationBadge], and as the `color` of the [Surface] behind the
+     * `SwipeDismissItemBackground` used as the background behind the  "Swipe to dismiss"
+     * [SwipeDismissItem]s of the [Cart] screen.
      */
     val error: Color,
     /**
-     *
+     * Unused
      */
     val notificationBadge: Color = error,
     /**
-     *
+     * If `true` we are using the [DarkColorPalette], if `false` we are using the [LightColorPalette],
+     * if is used to choose between [BlendMode.Darken] (if `true`) and [BlendMode.Plus] (if `false`)
+     * to use as the `blendMode` argument of the `.diagonalGradientTint` [Modifier] extension function
+     * used for the [JetsnackGradientTintedIconButton]s of the [QuantitySelector] composable.
      */
     val isDark: Boolean
 )
@@ -269,6 +293,11 @@ data class JetsnackColors(
 /**
  * This wraps its [content] in a [CompositionLocalProvider] that provides the [JetsnackColors] when
  * its [content] requests them.
+ *
+ * @param colors the [JetsnackColors] we should use, either [DarkColorPalette] of [LightColorPalette]
+ * depending on whether the "dark theme" of "light theme" is in use.
+ * @param content the Composable lambda we should provide [colors] thru the [LocalJetsnackColors]
+ * custom [CompositionLocalProvider]
  */
 @Composable
 fun ProvideJetsnackColors(
@@ -278,6 +307,9 @@ fun ProvideJetsnackColors(
     CompositionLocalProvider(LocalJetsnackColors provides colors, content = content)
 }
 
+/**
+ * This is to prevent use of [LocalJetsnackColors] without being wrapped by [ProvideJetsnackColors].
+ */
 private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
     error("No JetsnackColorPalette provided")
 }
@@ -285,6 +317,8 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
 /**
  * A Material [ColorScheme] implementation which sets all colors to [debugColor] to discourage usage
  * of [MaterialTheme.colorScheme] in preference to [JetsnackTheme.colors].
+ *
+ * @param darkTheme if `true` the system is in "dark theme" mode.
  */
 fun debugColors(
     darkTheme: Boolean,

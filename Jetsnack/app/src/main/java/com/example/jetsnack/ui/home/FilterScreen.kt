@@ -190,6 +190,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * animations.
  * @param onDismiss a lambda we should call when the user indicates we should be dismissed.
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun FilterScreen(
     sharedTransitionScope: SharedTransitionScope,
