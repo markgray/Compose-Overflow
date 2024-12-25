@@ -36,10 +36,13 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarData
 import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
@@ -47,7 +50,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavArgumentBuilder
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -92,7 +98,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * an url created by combining the [String] destination [MainDestinations.SNACK_DETAIL_ROUTE] to the
  * character "/" followed by [String] key [MainDestinations.SNACK_ID_KEY], followed by the [String]
  * "?origin=" followed by the [String] key [MainDestinations.ORIGIN]. Its `arguments` argument is
- * a [List] of [navArgument] containing the one entry is a [navArgument] whose `name` is
+ * a [List] of [navArgument] whose one entry is a [navArgument] whose `name` is
  * [MainDestinations.SNACK_ID_KEY] and in whose [NavArgumentBuilder] `builder` lambda argument
  * we set the [NavArgumentBuilder.type] to [NavType.LongType]. In the [AnimatedContentScope]
  * `content` Composable lambda argument of the [NavGraphBuilder.composableWithCompositionLocal]
@@ -154,8 +160,62 @@ fun JetsnackApp() {
 }
 
 /**
- * This is the screen that is used for the destination [MainDestinations.HOME_ROUTE], and it is
- * `startDestination` of the [NavHost] of the app.
+ * This is the screen that is used for the destination [MainDestinations.HOME_ROUTE], and it is the
+ * `startDestination` of the [NavHost] of the app. We start by initializing and remembering our
+ * [JetsnackScaffoldState] variable `val jetsnackScaffoldState` to the instance returned by the
+ * [rememberJetsnackScaffoldState] method. We initialize and remember our [JetsnackNavController]
+ * variable `val nestedNavController` to the instance returned by the [rememberJetsnackNavController]
+ * method. We initialize our [NavBackStackEntry] variable `val navBackStackEntry` to the
+ * [MutableState] wrapped [NavBackStackEntry] returned by the [NavController.currentBackStackEntryAsState]
+ * method of the [NavHostController] returned by the [JetsnackNavController.navController] property
+ * of our [JetsnackNavController] variable `nestedNavController`. We initialize our [String] variable
+ * `val currentRoute` to the [NavDestination.route] of the [NavBackStackEntry.destination] of our
+ * [NavBackStackEntry] variable `navBackStackEntry`. We initialize our [SharedTransitionScope]
+ * variable `val sharedTransitionScope` to the `current` [LocalSharedTransitionScope] or throw
+ * [IllegalStateException] if it is `null`. We initialize our [AnimatedVisibilityScope] variable
+ * `val animatedVisibilityScope` to the `current` [LocalNavAnimatedVisibilityScope] or throw
+ * [IllegalStateException] if it is `null`.
+ *
+ * We compose a [JetsnackScaffold] whose `bottomBar` argument is a Composable lambda that uses the
+ * `with` extension function to wrap its contents in our [AnimatedVisibilityScope] receiver variable
+ * `animatedVisibilityScope` and another `with` to wrap its contents in our [SharedTransitionScope]
+ * receiver variable `sharedTransitionScope`. Then it composes a [JetsnackBottomBar] whose arguments
+ * are:
+ *  - `tabs` is the [Array] of [HomeSections] of all the [HomeSections.entries].
+ *  - `curentRoute` is our [String] variable `currentRoute` or if that is `null` it is the
+ *  [HomeSections.route] of [HomeSections.FEED].
+ *  - `navigateToRoute` is the [JetsnackNavController.navigateToBottomBarRoute] method of our
+ *  [JetsnackNavController] variable `nestedNavController`.
+ *  - `modifier` is a [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose `zIndexInOverlay`
+ *  argument is `1f` causing it to render above other composables in the shared transition. To this
+ *  is chained a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a [fadeIn] whose
+ *  `animationSpec` is an [nonSpatialExpressiveSpring] plus a [slideInVertically] whose `animationSpec`
+ *  is a [spatialExpressiveSpring], its `exit` argument is a [fadeOut] whose `animationSpec` is an
+ *  [nonSpatialExpressiveSpring] plus a [slideOutVertically] whose `animationSpec` is a
+ *  [spatialExpressiveSpring].
+ *
+ * The `modifier` argument of the [JetsnackScaffold] is our [Modifier] parameter [modifier], its
+ * `snackBarHost` argument is a lambda composing a [SnackbarHost] whose `hostState` argument is the
+ * [SnackbarHostState] that is passed to the lambda (as `it`) by [JetsnackScaffold] when it composes
+ * its [Scaffold], its `modifier` argument is a [Modifier.systemBarsPadding] to add padding to
+ * accommodate the system bars insets, and its `snackbar` argument is a lambda which accepts the
+ * [SnackbarData] passed it in the variable `snackbarData` and composes a [JetsnackSnackbar] whose
+ * `snackbarData` argument is that [SnackbarData] variable `snackbarData`. The `snackbarHostState`
+ * argument is the [JetsnackScaffoldState.snackBarHostState] of our [JetsnackScaffoldState] variable
+ * `snackBarHostState` (this is passed to the `snackBarHost` lambda by [JetsnackScaffold] when it
+ * composes its [Scaffold]).
+ *
+ * In the `content` Composable lambda argument of the [JetsnackScaffold] we accept the [PaddingValues]
+ * passed the lambda in our [PaddingValues] variable `padding`, and then we we compose a [NavHost]
+ * whose `navController` argument is the [JetsnackNavController.navController] of our
+ * [JetsnackNavController] variable `nestedNavController`, and whose `startDestination` argument is
+ * the [HomeSections.route] of [HomeSections.FEED]. In the [NavGraphBuilder] `builder` Composable
+ * lambda argument we call our [NavGraphBuilder.addHomeGraph] extension method with its `onSnackSelected`
+ * argument our [onSnackSelected] lambda parameter (this will use the [composable] method to add routes
+ * for all the [HomeSections]). The `modifier` argument of [NavGraphBuilder.addHomeGraph] is a
+ * [Modifier.padding] whose `paddingValues` argument is our [PaddingValues] variable `padding`, to
+ * which is chained a [Modifier.consumeWindowInsets] whose `paddingValues` argument is that same
+ * [PaddingValues] variable `padding`.
  *
  * @param modifier  a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller does not pass us any so the empty, default, or starter [Modifier] that
@@ -163,10 +223,10 @@ fun JetsnackApp() {
  * @param onSnackSelected a lambda that can be called when the user wants to view the [SnackDetail]
  * of one of the [Snack]s. It should be passed the [Long] value of the [Snack.id] of the [Snack],
  * the [String] `orgin` identifying the shared transition to be used, and the [NavBackStackEntry]
- * that the [composable] method call that created the route we are coming from passed passed to its
- * [AnimatedContentScope] `content` lambda argument (this is added by the [composable] `content`
- * lambda, so the `onSnackClick` lambda passed the screen we are coming from has only a [Long] and
- * a [String] parameter).
+ * that the [composable] method call that created the route we are coming from passed to its
+ * [AnimatedContentScope] `content` lambda argument (this is added by the [composable]'s `content`
+ * lambda argument, so the `onSnackClick` lambda passed the screen we are coming from had only a
+ * [Long] and a [String] parameter to worry about).
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -239,13 +299,15 @@ fun MainContainer(
 }
 
 /**
- *
+ * This is defined to be `null` to make sure that when it is used the Composable using it is wrapped
+ * in a [CompositionLocalProvider] that `provides` a `value` for [AnimatedVisibilityScope].
  */
 val LocalNavAnimatedVisibilityScope: ProvidableCompositionLocal<AnimatedVisibilityScope?> =
     compositionLocalOf { null }
 
 /**
- *
+ * This is defined to be `null` to make sure that when it is used the Composable using it is wrapped
+ * in a [CompositionLocalProvider] that `provides` a `value` for [SharedTransitionScope].
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 val LocalSharedTransitionScope: ProvidableCompositionLocal<SharedTransitionScope?> =
