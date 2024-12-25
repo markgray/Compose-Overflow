@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.example.jetsnack.R
 
 /**
- * This [FontFamily] is used for the [Typography.displayLarge], [Typography.displayMedium],
+ * This [FontFamily] is used by the [Typography.displayLarge], [Typography.displayMedium],
  * [Typography.displaySmall], [Typography.headlineMedium], [Typography.headlineSmall],
- * [Typography.titleLarge], [Typography.titleMedium], [Typography.titleSmall],
+ * [Typography.titleLarge], [Typography.titleMedium], [Typography.bodyMedium],
  * [Typography.labelLarge], and [Typography.labelSmall]  as the `fontFamily` of their [TextStyle].
  */
 private val Montserrat = FontFamily(
@@ -39,7 +39,7 @@ private val Montserrat = FontFamily(
 )
 
 /**
- * This [FontFamily] is used for the [Typography.titleSmall] [Typography.bodyLarge], and
+ * This [FontFamily] is used by the [Typography.titleSmall] [Typography.bodyLarge], and
  * [Typography.bodySmall] as the `fontFamily` of their [TextStyle].
  */
 private val Karla = FontFamily(

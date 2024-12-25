@@ -22,6 +22,7 @@
 package com.example.jetsnack.ui
 
 import android.os.Bundle
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
@@ -44,12 +45,15 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavArgumentBuilder
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.jetsnack.model.Snack
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackScaffoldState
 import com.example.jetsnack.ui.components.JetsnackSnackbar
@@ -73,14 +77,34 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * `val jetsnackNavController` to the instance returned by [rememberJetsnackNavController]. Then our
  * root composable is a [SharedTransitionLayout] in whose [SharedTransitionScope] `content` Composable
  * lambda argument we compose a [CompositionLocalProvider] to bind [LocalSharedTransitionScope] key
- * to `this` [SharedTransitionScope]. Inside the `content` Composable lambda argument we of the
+ * to `this` [SharedTransitionScope]. Inside the `content` Composable lambda argument of the
  * [CompositionLocalProvider] we compose a [NavHost] whose `navController` argument is the
  * [JetsnackNavController.navController] of our `jetsnackNavController` variable, and whose
- * `startDestination` argument is [MainDestinations.HOME_ROUTE]. Inside [NavGraphBuilder] `builder`
- * Composable lambda argument of the [NavHost] we call our [NavGraphBuilder.composableWithCompositionLocal]
- * method with its `route` argument [MainDestinations.HOME_ROUTE] to add a [MainContainer] Composable
- * whose `onSnackSelected` argument is the [JetsnackNavController.navigateToSnackDetail] method of
- * our [JetsnackNavController] variable `jetsnackNavController` to the [NavGraphBuilder].
+ * `startDestination` argument is [MainDestinations.HOME_ROUTE].
+ *
+ * Inside the [NavGraphBuilder] `builder` Composable lambda argument of the [NavHost] we first call
+ * our [NavGraphBuilder.composableWithCompositionLocal] method with its `route` argument
+ * [MainDestinations.HOME_ROUTE] to add a [MainContainer] Composable whose `onSnackSelected`
+ * argument is the [JetsnackNavController.navigateToSnackDetail] method of our [JetsnackNavController]
+ * variable `jetsnackNavController` to the [NavGraphBuilder].
+ *
+ * Next we call our [NavGraphBuilder.composableWithCompositionLocal] method with its `route` argument
+ * an url created by combining the [String] destination [MainDestinations.SNACK_DETAIL_ROUTE] to the
+ * character "/" followed by [String] key [MainDestinations.SNACK_ID_KEY], followed by the [String]
+ * "?origin=" followed by the [String] key [MainDestinations.ORIGIN]. Its `arguments` argument is
+ * a [List] of [navArgument] containing the one entry is a [navArgument] whose `name` is
+ * [MainDestinations.SNACK_ID_KEY] and in whose [NavArgumentBuilder] `builder` lambda argument
+ * we set the [NavArgumentBuilder.type] to [NavType.LongType]. In the [AnimatedContentScope]
+ * `content` Composable lambda argument of the [NavGraphBuilder.composableWithCompositionLocal]
+ * we accept the [NavBackStackEntry] passed the lambda in our `backStackEntry` variable, then we
+ * initialize our [Bundle] variable `val arguments` to the [NavBackStackEntry.arguments] of our
+ * variable `backStackEntry` thowing [IllegalArgumentException] if that is `null`. We initialize our
+ * [Long] variable `val snackId` to the [Long] stored in [Bundle] `arguments` under the key
+ * [MainDestinations.SNACK_ID_KEY], and initialize our [String] variable `val origin` to the [String]
+ * stored in `arguments` under the key [MainDestinations.ORIGIN]. Finally we compose a [SnackDetail]
+ * whose `snackId` argument is our `snackId` variable, whose `origin` argument is our `origin`
+ * variable (or the empty [String] if that is `null`), and whose `upPress` argument is the
+ * [JetsnackNavController.upPress] method of our `jetsnackNavController` variable.
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
@@ -112,9 +136,8 @@ fun JetsnackApp() {
                             navArgument(name = MainDestinations.SNACK_ID_KEY) {
                                 type = NavType.LongType
                             }
-                        ),
-
-                        ) { backStackEntry: NavBackStackEntry ->
+                        )
+                    ) { backStackEntry: NavBackStackEntry ->
                         val arguments: Bundle = requireNotNull(backStackEntry.arguments)
                         val snackId: Long = arguments.getLong(MainDestinations.SNACK_ID_KEY)
                         val origin: String? = arguments.getString(MainDestinations.ORIGIN)
@@ -131,7 +154,19 @@ fun JetsnackApp() {
 }
 
 /**
+ * This is the screen that is used for the destination [MainDestinations.HOME_ROUTE], and it is
+ * `startDestination` of the [NavHost] of the app.
  *
+ * @param modifier  a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ * @param onSnackSelected a lambda that can be called when the user wants to view the [SnackDetail]
+ * of one of the [Snack]s. It should be passed the [Long] value of the [Snack.id] of the [Snack],
+ * the [String] `orgin` identifying the shared transition to be used, and the [NavBackStackEntry]
+ * that the [composable] method call that created the route we are coming from passed passed to its
+ * [AnimatedContentScope] `content` lambda argument (this is added by the [composable] `content`
+ * lambda, so the `onSnackClick` lambda passed the screen we are coming from has only a [Long] and
+ * a [String] parameter).
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
