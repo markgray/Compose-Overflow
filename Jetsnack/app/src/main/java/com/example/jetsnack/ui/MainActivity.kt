@@ -22,9 +22,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 
 /**
- *
+ * This is the main activity of our Jetsnack app.
  */
 class MainActivity : ComponentActivity() {
+    /**
+     * Called when the activity is starting. First we call the [enableEdgeToEdge] extension function
+     * to enable edge-to-edge display, then we all our super's implementation of [onCreate]. Finally
+     * we call [setContent] with its `content` Composable lambda argument a lambda which composes
+     * our [JetsnackApp] composable into our activity.
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)

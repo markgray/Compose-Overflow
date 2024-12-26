@@ -190,15 +190,17 @@ fun JetsnackApp() {
  *  argument is `1f` causing it to render above other composables in the shared transition. To this
  *  is chained a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a [fadeIn] whose
  *  `animationSpec` is an [nonSpatialExpressiveSpring] plus a [slideInVertically] whose `animationSpec`
- *  is a [spatialExpressiveSpring], its `exit` argument is a [fadeOut] whose `animationSpec` is an
- *  [nonSpatialExpressiveSpring] plus a [slideOutVertically] whose `animationSpec` is a
- *  [spatialExpressiveSpring].
+ *  is a [spatialExpressiveSpring] and whose `targetOffsetY` lambda argument returns the `fullHeight`
+ *  passed the lambda as the initialial offset, its `exit` argument is a [fadeOut] whose `animationSpec`
+ *  is an [nonSpatialExpressiveSpring] plus a [slideOutVertically] whose `animationSpec` is a
+ *  [spatialExpressiveSpring] and whose `targetOffsetY` lambda argument returns the `fullHeight`
+ *  passed the lambda as the initialial offset.
  *
  * The `modifier` argument of the [JetsnackScaffold] is our [Modifier] parameter [modifier], its
- * `snackBarHost` argument is a lambda composing a [SnackbarHost] whose `hostState` argument is the
- * [SnackbarHostState] that is passed to the lambda (as `it`) by [JetsnackScaffold] when it composes
- * its [Scaffold], its `modifier` argument is a [Modifier.systemBarsPadding] to add padding to
- * accommodate the system bars insets, and its `snackbar` argument is a lambda which accepts the
+ * `snackBarHost` lambda argument is a lambda composing a [SnackbarHost] whose `hostState` argument
+ * is the [SnackbarHostState] that is passed to the lambda (as `it`) by [JetsnackScaffold] when it
+ * composes its [Scaffold], its `modifier` argument is a [Modifier.systemBarsPadding] to add padding
+ * to accommodate the system bars insets, and its `snackbar` argument is a lambda which accepts the
  * [SnackbarData] passed it in the variable `snackbarData` and composes a [JetsnackSnackbar] whose
  * `snackbarData` argument is that [SnackbarData] variable `snackbarData`. The `snackbarHostState`
  * argument is the [JetsnackScaffoldState.snackBarHostState] of our [JetsnackScaffoldState] variable
@@ -260,14 +262,14 @@ fun MainContainer(
                                 enter = fadeIn(animationSpec = nonSpatialExpressiveSpring()) +
                                     slideInVertically(
                                         animationSpec = spatialExpressiveSpring()
-                                    ) {
-                                        it
+                                    ) { fullHeight ->
+                                        fullHeight
                                     },
                                 exit = fadeOut(animationSpec = nonSpatialExpressiveSpring()) +
                                     slideOutVertically(
                                         animationSpec = spatialExpressiveSpring()
-                                    ) {
-                                        it
+                                    ) { fullHeight ->
+                                        fullHeight
                                     }
                             )
                     )
@@ -300,14 +302,16 @@ fun MainContainer(
 
 /**
  * This is defined to be `null` to make sure that when it is used the Composable using it is wrapped
- * in a [CompositionLocalProvider] that `provides` a `value` for [AnimatedVisibilityScope].
+ * in a [CompositionLocalProvider] that `provides` a `value` for [AnimatedVisibilityScope] for the
+ * key [LocalNavAnimatedVisibilityScope].
  */
 val LocalNavAnimatedVisibilityScope: ProvidableCompositionLocal<AnimatedVisibilityScope?> =
     compositionLocalOf { null }
 
 /**
  * This is defined to be `null` to make sure that when it is used the Composable using it is wrapped
- * in a [CompositionLocalProvider] that `provides` a `value` for [SharedTransitionScope].
+ * in a [CompositionLocalProvider] that `provides` a `value` for [SharedTransitionScope] for the
+ * key [LocalSharedTransitionScope].
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 val LocalSharedTransitionScope: ProvidableCompositionLocal<SharedTransitionScope?> =

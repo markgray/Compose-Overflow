@@ -16,18 +16,56 @@
 
 package com.example.jetsnack.ui
 
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionScope.SharedContentState
+import androidx.compose.ui.Modifier
+
+/**
+ * This is used to create a `key` to the [SharedContentState] that governs the use of the [Modifier]
+ * created by the [SharedTransitionScope.sharedBounds] extension function in multiple places.
+ */
 data class SnackSharedElementKey(
+    /**
+     *
+     */
     val snackId: Long,
+    /**
+     *
+     */
     val origin: String,
+    /**
+     *
+     */
     val type: SnackSharedElementType
 )
 
+/**
+ *
+ */
 enum class SnackSharedElementType {
+    /**
+     *
+     */
     Bounds,
+    /**
+     *
+     */
     Image,
+    /**
+     *
+     */
     Title,
+    /**
+     *
+     */
     Tagline,
+    /**
+     *
+     */
     Background
 }
 
+/**
+ *
+ */
 object FilterSharedElementKey
