@@ -234,7 +234,7 @@ private fun SnackCollectionList(
         item {
             Spacer(
                 modifier = Modifier.windowInsetsTopHeight(
-                    WindowInsets.statusBars.add(insets = WindowInsets(top = 56.dp))
+                    insets = WindowInsets.statusBars.add(insets = WindowInsets(top = 56.dp))
                 )
             )
             FilterBar(

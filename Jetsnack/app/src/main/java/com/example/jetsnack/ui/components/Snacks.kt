@@ -499,7 +499,7 @@ fun SnackItem(
 
 /**
  * This is used by [HighlightedSnacks] to display each of the [Snack] in its [List] of [Snack]
- * parameter. We start by initialize our [SharedTransitionScope] variable `val sharedTransitionScope`
+ * parameter. We start by initializing our [SharedTransitionScope] variable `val sharedTransitionScope`
  * to the current [LocalSharedTransitionScope] or throw [IllegalStateException] ("No Scope found")
  * if it is `null`. We initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope`
  * to the current [LocalNavAnimatedVisibilityScope] or throw [IllegalStateException] ("No Scope found")

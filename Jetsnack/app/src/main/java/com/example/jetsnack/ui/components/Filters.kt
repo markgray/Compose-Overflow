@@ -15,15 +15,17 @@
  */
 
 @file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class,
-    ExperimentalSharedTransitionApi::class
+    ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class
 )
 
 package com.example.jetsnack.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionScope.SharedContentState
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.InteractionSource
@@ -34,6 +36,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
@@ -56,6 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,7 +75,34 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
  * Used by `SnackCollectionList` to hold a [LazyRow] of [FilterChip] to display the [List] of [Filter]
- * it is passed as its `filters` argument.
+ * it is passed as its `filters` argument. Using `with` [SharedTransitionScope] variable
+ * `sharedTransitionScope` as the receiver we compose a [LazyRow] whose `verticalAlignment` argument
+ * is [Alignment.CenterVertically] to center its children vertically, whose `horizontalArrangement`
+ * argument is [Arrangement.spacedBy] of `8.dp` space between the children, whose `contentPadding`
+ * is a [PaddingValues] whose `start` is `12.dp` and `end` is `8.dp`, and whose `modifier` argument
+ * is a [Modifier.heightIn] whose `min` is `56.dp`. In the [LazyListScope] `content` Composable lambda
+ * argument of the [LazyRow] we compose a [LazyListScope.item] which wraps an [IconButton] in an
+ * [AnimatedVisibility] whose `visible` argument is `!filterScreenVisible` (the [IconButton] is not
+ * displayed when the [FilterScreen] is being displayed). The `onClick` argument of the [IconButton]
+ * is our lambda parameter [onShowFilters], and its [Modifier] `modifier` argument is a
+ * [SharedTransitionScope.sharedBounds] whose `sharedContentState` argument is a remembered
+ * [SharedContentState] whose `key` is [FilterSharedElementKey], whose `animatedVisibilityScope`
+ * is the [AnimatedVisibilityScope] of the [AnimatedVisibility] wrapping us, and whose `resizeMode`
+ * is [SharedTransitionScope.ResizeMode.RemeasureToBounds] (remeasures and relayouts its child
+ * whenever bounds change during the bounds transform). The `content` Composable lambda argument of
+ * the [IconButton] composes an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector]
+ * drawn by [Icons.Rounded.FilterList] (three horizontal lines of decreasing length), whose [Color]
+ * `tint` argument is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors], whose
+ * `contentDescription` argument is the [String] whose resource ID is `R.string.label_filters`
+ * ("Filters"), and whose [Modifier] `modifier` argument is a [Modifier.diagonalGradientBorder] whose
+ * [List] of [Color] argument `colors` is the [JetsnackColors.interactiveSecondary] of our custom
+ * [JetsnackColors.interactiveSecondary], and whose [Shape] `shape` argument is [CircleShape].
+ *
+ * After the [IconButton] we compose a [LazyListScope.items] whose `items` argument is our [List] of
+ * [Filter] parameter [filters]. In the [LazyItemScope] `itemContent` Composable lambda argument we
+ * capture the [Filter] passed the lambda in our variable `filter` then compose a [FilterChip] for
+ * each [Filter] whose `filter` argument is our variable `filter`, and whose [Shape] `shape` argument
+ * is the [Shapes.small] of our custom [MaterialTheme.shapes].
  *
  * @param filters the [List] of [Filter] that we are to display in our [LazyRow] of [FilterChip].
  * `SnackCollectionList` passes us one that traces back to that returned by [SnackRepo.getPriceFilters].
@@ -105,7 +137,7 @@ fun FilterBar(
                         onClick = onShowFilters,
                         modifier = Modifier
                             .sharedBounds(
-                                rememberSharedContentState(FilterSharedElementKey),
+                                sharedContentState = rememberSharedContentState(FilterSharedElementKey),
                                 animatedVisibilityScope = this@AnimatedVisibility,
                                 resizeMode = SharedTransitionScope.ResizeMode.RemeasureToBounds
                             )
@@ -122,7 +154,7 @@ fun FilterBar(
                     }
                 }
             }
-            items(filters) { filter ->
+            items(items = filters) { filter: Filter ->
                 FilterChip(filter = filter, shape = MaterialTheme.shapes.small)
             }
         }

@@ -27,7 +27,7 @@ import androidx.activity.enableEdgeToEdge
 class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call the [enableEdgeToEdge] extension function
-     * to enable edge-to-edge display, then we all our super's implementation of [onCreate]. Finally
+     * to enable edge-to-edge display, then we call our super's implementation of [onCreate]. Finally
      * we call [setContent] with its `content` Composable lambda argument a lambda which composes
      * our [JetsnackApp] composable into our activity.
      *
