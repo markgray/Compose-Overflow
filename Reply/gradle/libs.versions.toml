@@ -4,6 +4,7 @@
 #####
 [versions]
 accompanist = "0.37.0"
+accompanistAdaptive = "0.26.2-beta"
 androidGradlePlugin = "8.7.3"
 androidx-activity-compose = "1.9.3"
 androidx-appcompat = "1.7.0"
@@ -31,13 +32,13 @@ coil = "2.7.0"
 # @keep
 compileSdk = "35"
 coroutines = "1.9.0"
-google-maps = "18.2.0"
+google-maps = "19.0.0"
 gradle-versions = "0.51.0"
 hilt = "2.53.1"
 hiltExt = "1.2.0"
 horologist = "0.6.22"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
-jdkDesugar = "1.2.2"
+jdkDesugar = "2.1.4"
 junit = "4.13.2"
 kotlin = "2.1.0"
 kotlinx-serialization-json = "1.7.3"
@@ -47,7 +48,7 @@ maps-compose = "3.1.1"
 # @keep
 minSdk = "21"
 okhttp = "4.12.0"
-play-services-wearable = "18.1.0"
+play-services-wearable = "19.0.0"
 robolectric = "4.14.1"
 roborazzi = "1.37.0"
 rome = "1.18.0"
@@ -94,7 +95,7 @@ androidx-glance = { module = "androidx.glance:glance", version.ref = "androidx-g
 androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "androidx-glance" }
 androidx-glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "androidx-glance" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
-androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-compose" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-compose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle-compose" }

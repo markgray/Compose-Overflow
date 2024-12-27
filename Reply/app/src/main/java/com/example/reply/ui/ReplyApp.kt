@@ -47,6 +47,9 @@ private fun NavigationSuiteType.toReplyNavType() = when (this) {
     else -> ReplyNavigationType.BOTTOM_NAVIGATION
 }
 
+/**
+ * TODO: Add kdoc
+ */
 @Composable
 fun ReplyApp(
     windowSize: WindowSizeClass,

@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * This environment variable allows you to select snapshot repositories
+ */
 val snapshotVersion : String? = System.getenv("COMPOSE_SNAPSHOT_ID")
 
 pluginManagement {
@@ -23,10 +27,13 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    @Suppress("UnstableApiUsage")
     repositories {
         snapshotVersion?.let {
-            println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") 
+            @Suppress("ReplacePrintlnWithLogging")
+            println("https://androidx.dev/snapshots/builds/$it/artifacts/repository/")
             maven { url = uri("https://androidx.dev/snapshots/builds/$it/artifacts/repository/") }
         }
 

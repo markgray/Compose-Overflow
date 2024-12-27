@@ -62,6 +62,7 @@ android {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests {
             isReturnDefaultValues = true
@@ -93,9 +94,6 @@ android {
         compose = true
     }
 }
-kotlin {
-    jvmToolchain(17)
-}
 
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
@@ -112,7 +110,7 @@ dependencies {
 
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.adaptive.navigationSuite)
-    implementation("com.google.accompanist:accompanist-adaptive:0.26.2-beta")
+    implementation(libs.accompanist.adaptive)
 
     implementation(libs.androidx.compose.materialWindow)
     implementation(libs.androidx.compose.material.iconsExtended)
