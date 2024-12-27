@@ -27,6 +27,9 @@ import com.example.reply.data.MailboxType
 
 object LocalEmailsDataProvider {
 
+    /**
+     * A [List] of [Email] instances which belong together as the `threads` of an [Email]
+     */
     private val threads = listOf(
         Email(
             id = 8L,
@@ -113,7 +116,10 @@ object LocalEmailsDataProvider {
         ),
     )
 
-    val allEmails = listOf(
+    /**
+     * The [List] of all of the [Email] instances in our database.
+     */
+    val allEmails: List<Email> = listOf(
         Email(
             id = 0L,
             sender = LocalAccountsDataProvider.getContactAccountByUid(9L),
@@ -286,14 +292,20 @@ object LocalEmailsDataProvider {
 
     /**
      * Get an [Email] with the given [id].
+     *
+     * @param id the [Email.id] of the [Email] to return
+     * @return the [Email] whose [Email.id] is our parameter [id]
      */
     fun get(id: Long): Email? {
         return allEmails.firstOrNull { it.id == id }
     }
 
     /**
-     * Create a new, blank [Email].
+     * Create a new, blank [Email]
+     *
+     * @return .a new, blank [Email]
      */
+    @Suppress("MemberVisibilityCanBePrivate") // I like to use kdoc [] references
     fun create(): Email {
         return Email(
             System.nanoTime(), // Unique ID generation.
@@ -306,7 +318,10 @@ object LocalEmailsDataProvider {
 
     /**
      * Create a new [Email] that is a reply to the email with the given [replyToId].
+     *
+     * @param replyToId the [Email.id] of the [Email] we are to reply to
      */
+    @Suppress("unused")
     fun createReplyTo(replyToId: Long): Email {
         val replyTo = get(replyToId) ?: return create()
         return Email(
@@ -323,9 +338,10 @@ object LocalEmailsDataProvider {
     }
 
     /**
-     * Get a list of [EmailFolder]s by which [Email]s can be categorized.
+     * Get a list of `EmailFolder` names by which [Email]s can be categorized.
      */
-    fun getAllFolders() = listOf(
+    @Suppress("unused")
+    fun getAllFolders(): List<String> = listOf(
         "Receipts",
         "Pine Elementary",
         "Taxes",
