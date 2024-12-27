@@ -35,9 +35,9 @@ import com.example.jetsnack.ui.home.SortOption
 /**
  * This class holds the state of the various [FilterChip] that are at the top of the home screen in
  * a [FilterBar] (our [List] of [Filter] property [filters]), in a [FilterChipSection] (our [List]
- * of [Filter] property [priceFilters]), in a [SortOption] displayed in a [SortFilters] (our our
- * [List] of [Filter] property [sortFilters]), in a [FilterChipSection] (our [List] of [Filter]
- * property [categoryFilters]), and in a [FilterChipSection] (our [List] of [Filter] property
+ * of [Filter] property [priceFilters]), in a [SortOption] displayed in a [SortFilters] (our [List]
+ * of [Filter] property [sortFilters]), in a [FilterChipSection] (our [List] of [Filter] property
+ * [categoryFilters]), and in a [FilterChipSection] (our [List] of [Filter] property
  * [lifeStyleFilters])
  *
  * @param name [String] describing the type of filtering that ths [FilterChip] will perform if it is
@@ -45,7 +45,7 @@ import com.example.jetsnack.ui.home.SortOption
  * @param enabled the initial state of the [MutableState] wrapped [Boolean] that is accessed via the
  * [Filter.enabled] property.
  * @param icon an [ImageVector] that will be displayed by the [SortFilters] in the [SortFiltersSection]
- * of the home screen (which is opened by clicking on the icon at the far left oa the [FilterScreen]
+ * of the [FilterScreen] (which is opened by clicking on the icon at the far left of the [FilterBar])
  */
 @Stable
 class Filter(
@@ -54,7 +54,7 @@ class Filter(
     val icon: ImageVector? = null
 ) {
     /**
-     * This is used to hold and set the selected state of the [FilterChip] using this [Filter]
+     * This is used to hold and set the selected state of the [FilterChip] displaying this [Filter]
      */
     val enabled: MutableState<Boolean> = mutableStateOf(value = enabled)
 }
@@ -73,7 +73,7 @@ val filters: List<Filter> = listOf(
 
 /**
  * These [Filter] are used for the state of the various [FilterChip] in the [FilterChipSection]
- * whose title is "Price".
+ * of the [FilterScreen] whose title is "Price".
  */
 val priceFilters: List<Filter> = listOf(
     Filter(name = "$"),
@@ -94,7 +94,7 @@ val sortFilters: List<Filter> = listOf(
 
 /**
  * These [Filter] are used for the state of the various [FilterChip] in the [FilterChipSection]
- * whose title is "Category".
+ * of the [FilterScreen] whose title is "Category".
  */
 val categoryFilters: List<Filter> = listOf(
     Filter(name = "Chips & crackers"),
@@ -105,7 +105,7 @@ val categoryFilters: List<Filter> = listOf(
 
 /**
  * These [Filter] are used for the state of the various [FilterChip] in the [FilterChipSection]
- * whose title is "LifeStyle".
+ * of the [FilterScreen] whose title is "LifeStyle".
  */
 val lifeStyleFilters: List<Filter> = listOf(
     Filter(name = "Organic"),

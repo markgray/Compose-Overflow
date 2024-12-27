@@ -41,15 +41,20 @@ object SearchRepo {
     fun getSuggestions(): List<SearchSuggestionGroup> = searchSuggestions
 
     /**
-     * Peforms a search of our [List] of [Snack] property [snacks] for entries whose [Snack.name]
+     * Peforms a search of our [List] of [Snack] field [snacks] for entries whose [Snack.name]
      * contains its [String] parameter [query], and returns the result as a [List] of [Snack].
+     * We call [withContext] with its coroutine `context` argument [Dispatchers.Default] which
+     * exectutes its `block` lambda argument suspending until it completes. In that lambda we
+     * [delay] for 200ms, then call the [List.filter] method of our [List] of [Snack] parameter
+     * [snacks] to build a [List] of [Snack] whose [Snack.name] constains our [String] parameter
+     * [query] and then [withContext] resume and returns this result.
      *
      * @param query The [String] to search [List] of [Snack] property [snacks] for.
      * @return a [List] of [Snack] whose [Snack.name] contains [String] parameter [query].
      */
-    suspend fun search(query: String): List<Snack> = withContext(Dispatchers.Default) {
-        delay(200L) // simulate an I/O delay
-        snacks.filter { it.name.contains(query, ignoreCase = true) }
+    suspend fun search(query: String): List<Snack> = withContext(context = Dispatchers.Default) {
+        delay(timeMillis = 200L) // simulate an I/O delay
+        snacks.filter { it.name.contains(other = query, ignoreCase = true) }
     }
 }
 
