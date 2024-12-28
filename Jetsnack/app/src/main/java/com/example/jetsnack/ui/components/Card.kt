@@ -42,10 +42,10 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * its arguments of the same name.
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
- * behavior. Our caller `HighlightSnackItem` calls us with its `modifier` parameter to which is chains
- * a [Modifier.padding] that adds 16.dp padding, followed by a [SharedTransitionScope.sharedBounds]
- * which defines the values controlling the shared element transition of our contents (too complex
- * to be worth time spent analyzing it IMO), followed by a [Modifier.size] that set our `width` to
+ * behavior. Our caller `HighlightSnackItem` calls us with its `modifier` parameter to which it chains
+ * a [Modifier.padding] that adds `16.dp` padding to our bottom, followed in the chain by a
+ * [SharedTransitionScope.sharedBounds] which defines the values controlling the shared element
+ * transition of our contents, followed by a [Modifier.size] that set our `width` to
  * `HighlightCardWidth` (170.dp) and our `height` to 250.dp, and at the end of the chain is a
  * [Modifier.border] whose `width` is 1.dp, whose `color` is a copy of the [JetsnackColors.uiBorder]
  * from our [JetsnackTheme] custom [MaterialTheme] whose `alpha` is 0.12f, and the `shape` of the

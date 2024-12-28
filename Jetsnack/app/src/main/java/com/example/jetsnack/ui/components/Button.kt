@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
@@ -54,14 +55,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.jetsnack.model.Snack
+import com.example.jetsnack.ui.home.cart.Cart
 import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- * This button is used in two places, as the "+" button on the result [Snack] of a search operation
- * and as the "ADD TO CART" button on the [Snack] detail screen. Our root Composable is a
- * [JetsnackSurface] whose `shape` argument is our [Shape] parameter [shape], whose `color` argument
- * is [Color.Transparent], whose `contentColor` argument is our [Color] parameter [contentColor] if
+ * This button is used in three places: as the "Checkout" button in the `CheckoutBar` of the [Cart]
+ * screen, as the "+" "Add to cart" button on the result [Snack] of a search operation and as the
+ * "ADD TO CART" button on the [Snack] detail screen. Our root Composable is a [JetsnackSurface]
+ * whose `shape` argument is our [Shape] parameter [shape], whose [Color] `color` argument is
+ * [Color.Transparent], whose `contentColor` argument is our [Color] parameter [contentColor] if
  * our [enabled] parameter is `true` or our [Color] parameter [disabledContentColor] if it is `false`,
  * whose `border`  argument is our [BorderStroke] parameter [border] (always `null`), whose `modifier`
  * argument chains to our [Modifier] parameter [modifier] a [Modifier.clip] that uses our [Shape]
@@ -71,9 +74,10 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * by a [Modifier.clickable] whose `onClick` argument is our lambda parameter [onClick], whose `enabled`
  * argument is our [Boolean] parameter [enabled], whose `role` argument is [Role.Button], whose
  * `interactionSource` argument is our [MutableInteractionSource] parameter [interactionSource], and
- * whose `indication` argument is `null`. The `content` of the [JetsnackSurface] uses a [ProvideTextStyle]
- * to produce a [CompositionLocalProvider] that provides as [TextStyle] the [Typography.labelLarge]
- * of the [MaterialTheme.typography] of our [JetsnackTheme] custom [MaterialTheme] (which is Montserrat`
+ * whose `indication` argument is `null`. The `content` Composable lambda argument of the
+ * [JetsnackSurface] uses [ProvideTextStyle] to produce a [CompositionLocalProvider] that provides
+ * (using the key [LocalTextStyle]) as [TextStyle] the [Typography.labelLarge] of the
+ * [MaterialTheme.typography] of our [JetsnackTheme] custom [MaterialTheme] (which is Montserrat`
  * `fontFamily`, `fontSize` = 14.sp, `fontWeight` = [FontWeight.SemiBold], `lineHeight` = 16.sp, and
  * `letterSpacing` = 1.25.sp). This wraps a [Row] whose `modifier` argument is a [Modifier.defaultMinSize]
  * with `minWidth` argument [ButtonDefaults.MinWidth] and `minHeight` argument [ButtonDefaults.MinHeight],
@@ -84,19 +88,23 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * argument is [Alignment.CenterVertically] and the `content` argument is our Composable lambda
  * parameter [content].
  *
- * @param onClick a lambda to call when the [JetsnackButton] is clicked. Both uses are no-ops at the
- * moment.
+ * @param onClick a lambda to call when the [JetsnackButton] is clicked. All three uses are no-ops
+ * at the moment.
  * @param modifier a [Modifier] instance that the use can use to modify our appearance and/or
- * behavior. The "ADD TO CART" button uses a [RowScope.weight] of 1f to have it take up all
- * the space left after its siblings have been measured and placed, and the "+" button uses a
- * [Modifier.size] of 36.dp with a [ConstraintLayout] modifier specifying its positioning.
+ * behavior. The "Checkout" button uses a [Modifier.padding] that adds `12.dp` padding to each
+ * `horizontal` side, and `8.dp` to each vertical side with a [RowScope.weight] of `1f` to have it
+ * take up all space remaining after its siblings are measured and place, the "ADD TO CART" button
+ * uses a [RowScope.weight] of `1f` to have it take up all the space left after its siblings have
+ * been measured and placed, and the "+" button uses a [Modifier.size] of 36.dp with a
+ * [ConstraintLayout] modifier specifying its positioning.
  * @param enabled determines whether the button is clickable, and changes the colors of the button
  * to indicate whether it is enabled or not. Our callers never override the default value `true`.
  * @param interactionSource is used as the `interactionSource` argument of a [Modifier.indication]
  * and a [Modifier.clickable] that are applied to the Composables making up the [JetsnackButton].
  * Our callers never override the default which is a remembered [MutableInteractionSource].
  * @param shape the [Shape] that the [JetsnackButton] is clipped to. We are called with a
- * [RectangleShape] by `CheckoutBar` and a [CircleShape] by `SearchResult`.
+ * [RectangleShape] by `CheckoutBar` and a [CircleShape] by `SearchResult`, with the "ADD TO CART"
+ * button defaulting to our [ButtonShape].
  * @param border this is the `border` argument of a [Modifier.border] that is used if it is not the
  * default of `null`. Our callers do not override the default so no border is drawn.
  * @param backgroundGradient this is used as the `colors` of a [Brush.horizontalGradient] that
@@ -107,7 +115,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * that are used as the `brush` argument of a [Modifier.background] if our [Boolean] parameter
  * [enabled] is `false`. Our callers do not override the default so the [List] of [Color] in the
  * [JetsnackColors.interactiveSecondary] of our [JetsnackTheme.colors] is used.
- * @param contentColor this is used as the `contentColor` argument od our [JetsnackSurface] Composable
+ * @param contentColor this is used as the `contentColor` argument of our [JetsnackSurface] Composable
  * if our [Boolean] parameter [enabled] is `true`. Our callers do not override the default so the
  * [Color] in the [JetsnackColors.textInteractive] of our [JetsnackTheme.colors] is used.
  * @param disabledContentColor this is used as the `contentColor` argument od our [JetsnackSurface]
