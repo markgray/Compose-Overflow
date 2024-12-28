@@ -24,7 +24,6 @@ import com.example.reply.data.MailboxType
 /**
  * A static data store of [Email]s.
  */
-
 object LocalEmailsDataProvider {
 
     /**

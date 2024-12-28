@@ -158,7 +158,7 @@ object LocalAccountsDataProvider {
     )
 
     /**
-     * Get the current user's default account.
+     * Get the current user's default [Account].
      */
     fun getDefaultUserAccount(): Account = allUserAccounts.first()
 
@@ -169,7 +169,10 @@ object LocalAccountsDataProvider {
     fun isUserAccount(uid: Long): Boolean = allUserAccounts.any { it.uid == uid }
 
     /**
-     * Get the contact of the current user with the given [accountId].
+     * Get the contact of the user whose [Account.id] is the [Long] parameter [accountId] among all
+     * of the current user's contacts.
+     *
+     * @param accountId the [Account.id] of the contact to fetch.
      */
     fun getContactAccountByUid(accountId: Long): Account {
         return allUserContactAccounts.first { it.id == accountId }

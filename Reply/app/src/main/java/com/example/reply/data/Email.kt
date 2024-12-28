@@ -18,6 +18,19 @@ package com.example.reply.data
 
 /**
  * A simple data class to represent an Email.
+ *
+ * @param id Unique ID of this [Email], no two [Email]'s will share the same [id]
+ * @param sender The [Account] that the [Email] was sent from.
+ * @param recipients The [List] of [Account]'s that the [Email] was sent to.
+ * @param subject The subject of the [Email].
+ * @param body The contents of the [Email].
+ * @param attachments A [List] of [EmailAttachment] attachments to the [Email].
+ * @param isImportant [Boolean] flag indicating somebody thought the [Email] important if `true`.
+ * @param isStarred The user? has "Starred" the [Email]?
+ * @param mailbox The [MailboxType] of the mail box that the [Email] is in, one of [MailboxType.INBOX],
+ * [MailboxType.DRAFTS], [MailboxType.SENT], [MailboxType.SPAM], or [MailboxType.TRASH].
+ * @param createdAt How long ago was the [Email] created.
+ * @param threads A [List] of [Email]'s constituting a "thread" that this [Email] belongs to.
  */
 data class Email(
     val id: Long,

@@ -20,16 +20,33 @@ import com.example.reply.data.local.LocalAccountsDataProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * This is apparently an unused stub for a future internet or database repository(?). All uses of
+ * the data in [LocalAccountsDataProvider] are direct rather than indirect calls to this class.
+ */
+@Suppress("unused")
 class AccountsRepositoryImpl : AccountsRepository {
 
+    /**
+     * Get the current user's default account as a [Flow] of [Account].
+     */
     override fun getDefaultUserAccount(): Flow<Account> = flow {
         emit(LocalAccountsDataProvider.getDefaultUserAccount())
     }
 
+    /**
+     * Get all of the accounts owned by the current user as a [Flow] of [List] of [Account].
+     */
     override fun getAllUserAccounts(): Flow<List<Account>> = flow {
         emit(LocalAccountsDataProvider.allUserAccounts)
     }
 
+    /**
+     * Get the contact of the user whose [Account.id] is the [Long] parameter [uid] as a
+     * [Flow] of [Account].
+     *
+     * @param uid The [Account.id] of the contact to fetch.
+     */
     override fun getContactAccountByUid(uid: Long): Flow<Account> = flow {
         emit(LocalAccountsDataProvider.getContactAccountByUid(uid))
     }

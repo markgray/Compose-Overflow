@@ -19,10 +19,22 @@ package com.example.reply.data
 import kotlinx.coroutines.flow.Flow
 
 /**
- * An Interface contract to get all accounts info for User.
+ * An Interface contract to get all accounts info for the current User.
  */
 interface AccountsRepository {
+    /**
+     * Get the current user's default account.
+     */
     fun getDefaultUserAccount(): Flow<Account>
+
+    /**
+     * Get all of the accounts owned by the current user.
+     */
     fun getAllUserAccounts(): Flow<List<Account>>
+
+    /**
+     * Get the contact of the user whose [Account.id] is the [Long] parameter [uid] among all of the
+     * current user's contacts.
+     */
     fun getContactAccountByUid(uid: Long): Flow<Account>
 }
