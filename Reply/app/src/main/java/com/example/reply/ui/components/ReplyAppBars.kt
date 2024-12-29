@@ -43,18 +43,51 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
+import com.example.reply.data.Account
 import com.example.reply.data.Email
+import com.example.reply.ui.ReplyEmailList
+import com.example.reply.ui.ReplyHomeViewModel
+import kotlinx.coroutines.CoroutineScope
 
+/**
+ * This Composable is displayed at the top of the [ReplyEmailList] Composable. We start by initializing
+ * and remembering our [MutableState] wrapped [String] variable `var query` to an empty string. We
+ * initialize and remember ouf [MutableState] wrapped [Boolean] variable `var expanded` to `false`.
+ * We initialize and remember our [SnapshotStateList] wrapped [MutableList] of [Email] variable
+ * `var searchResults` to an empty [MutableList]. We initialize our lambda taking [Boolean] variable
+ * `val onExpandedChange` to a lambda which sets `expanded` to its [Boolean] parameter.
+ *
+ * First we call [LaunchedEffect] with its `key1` argument set to `query`. In its [CoroutineScope]
+ * suspend `block` lambda argument we call the [SnapshotStateList.clear] method of `searchResults`
+ * to remove all its contents, then if [MutableState] wrapped [String] variable `query` is not empty
+ * we call the [SnapshotStateList.addAll] method of `searchResults` to add all [Email]s from `emails`
+ * whose [Email.subject] starts with the [MutableState] wrapped [String] variable `query` or whose
+ * [Account.fullName] of the [Email.sender] starts with the [MutableState] wrapped [String] variable
+ * `query` (this [LaunchedEffect] will be relaunched every time `query` changes).
+ *
+ * Our root Composable is a [DockedSearchBar]
+ *
+ * @param emails [List] of all emails.
+ * @param onSearchItemSelected callback to be invoked when a [Email] is selected. Our caller
+ * [ReplyEmailList] passes us a lambda that traces back to a call to [ReplyHomeViewModel.setOpenedEmail]
+ * with the [Email.id] of the [Email] that we pass to the lambda.
+ * @param modifier a [Modifier] instance which our caller can use to modify our behavior and/or
+ * appearance. Our caller [ReplyEmailList] calls us with a [Modifier.fillMaxWidth] to have us use
+ * all of our incoming horizontal constraint, to which it chains a [Modifier.padding] that adds
+ * `16.dp` to each horizontal side, and `16.dp` to each vertical side.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReplyDockedSearchBar(
@@ -62,14 +95,14 @@ fun ReplyDockedSearchBar(
     onSearchItemSelected: (Email) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var query by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
-    val searchResults = remember { mutableStateListOf<Email>() }
+    var query: String by remember { mutableStateOf(value = "") }
+    var expanded: Boolean by remember { mutableStateOf(value = false) }
+    val searchResults: SnapshotStateList<Email> = remember { mutableStateListOf() }
     val onExpandedChange: (Boolean) -> Unit = {
         expanded = it
     }
 
-    LaunchedEffect(query) {
+    LaunchedEffect(key1 = query) {
         searchResults.clear()
         if (query.isNotEmpty()) {
             searchResults.addAll(
@@ -78,8 +111,7 @@ fun ReplyDockedSearchBar(
                         prefix = query,
                         ignoreCase = true
                     ) || it.sender.fullName.startsWith(
-                        prefix =
-                        query,
+                        prefix = query,
                         ignoreCase = true
                     )
                 }
@@ -124,8 +156,8 @@ fun ReplyDockedSearchBar(
                         drawableResource = R.drawable.avatar_6,
                         description = stringResource(id = R.string.profile),
                         modifier = Modifier
-                            .padding(12.dp)
-                            .size(32.dp)
+                            .padding(all = 12.dp)
+                            .size(size = 32.dp)
                     )
                 },
             )
@@ -137,19 +169,19 @@ fun ReplyDockedSearchBar(
             if (searchResults.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                    contentPadding = PaddingValues(all = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(space = 4.dp)
                 ) {
-                    items(items = searchResults, key = { it.id }) { email ->
+                    items(items = searchResults, key = { it.id }) { email: Email ->
                         ListItem(
-                            headlineContent = { Text(email.subject) },
-                            supportingContent = { Text(email.sender.fullName) },
+                            headlineContent = { Text(text = email.subject) },
+                            supportingContent = { Text(text = email.sender.fullName) },
                             leadingContent = {
                                 ReplyProfileImage(
                                     drawableResource = email.sender.avatar,
                                     description = stringResource(id = R.string.profile),
                                     modifier = Modifier
-                                        .size(32.dp)
+                                        .size(size = 32.dp)
                                 )
                             },
                             modifier = Modifier.clickable {
@@ -163,17 +195,20 @@ fun ReplyDockedSearchBar(
             } else if (query.isNotEmpty()) {
                 Text(
                     text = stringResource(id = R.string.no_item_found),
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(all = 16.dp)
                 )
             } else
                 Text(
                     text = stringResource(id = R.string.no_search_history),
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(all = 16.dp)
                 )
         }
     )
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailDetailAppBar(
@@ -190,8 +225,11 @@ fun EmailDetailAppBar(
         title = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = if (isFullScreen) Alignment.CenterHorizontally
-                else Alignment.Start
+                horizontalAlignment = if (isFullScreen) {
+                    Alignment.CenterHorizontally
+                } else {
+                    Alignment.Start
+                }
             ) {
                 Text(
                     text = email.subject,
@@ -210,7 +248,7 @@ fun EmailDetailAppBar(
             if (isFullScreen) {
                 FilledIconButton(
                     onClick = onBackPressed,
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.padding(all = 8.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                         contentColor = MaterialTheme.colorScheme.onSurface
@@ -219,7 +257,7 @@ fun EmailDetailAppBar(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = R.string.back_button),
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(size = 14.dp)
                     )
                 }
             }

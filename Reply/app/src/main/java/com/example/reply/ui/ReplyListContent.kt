@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("Destructure")
+
 package com.example.reply.ui
 
 import androidx.activity.compose.BackHandler
@@ -56,6 +58,9 @@ import com.example.reply.ui.utils.ReplyNavigationType
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 
+/**
+ *
+ */
 @Composable
 fun ReplyInboxScreen(
     contentType: ReplyContentType,
@@ -130,6 +135,9 @@ fun ReplyInboxScreen(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplySinglePaneContent(
     replyHomeUIState: ReplyHomeUIState,
@@ -159,6 +167,9 @@ fun ReplySinglePaneContent(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyEmailList(
     emails: List<Email>,
@@ -172,7 +183,7 @@ fun ReplyEmailList(
     Box(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
         ReplyDockedSearchBar(
             emails = emails,
-            onSearchItemSelected = { searchedEmail ->
+            onSearchItemSelected = { searchedEmail: Email ->
                 navigateToDetail(searchedEmail.id, ReplyContentType.SINGLE_PANE)
             },
             modifier = Modifier
@@ -205,6 +216,9 @@ fun ReplyEmailList(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyEmailDetail(
     email: Email,

@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     closeDetailScreen = {
                         viewModel.closeDetailScreen()
                     },
-                    navigateToDetail = { emailId, pane ->
+                    navigateToDetail = { emailId: Long, pane ->
                         viewModel.setOpenedEmail(emailId, pane)
                     },
                     toggleSelectedEmail = { emailId ->
