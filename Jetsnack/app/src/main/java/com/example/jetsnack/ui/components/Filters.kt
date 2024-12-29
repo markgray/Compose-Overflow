@@ -75,10 +75,10 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
  * Used by `SnackCollectionList` to hold a [LazyRow] of [FilterChip] to display the [List] of [Filter]
- * it is passed as its `filters` argument. Using `with` [SharedTransitionScope] variable
- * `sharedTransitionScope` as the receiver we compose a [LazyRow] whose `verticalAlignment` argument
+ * it is passed as its `filters` argument. Using `with` [SharedTransitionScope] parameter
+ * [sharedTransitionScope] as the receiver we compose a [LazyRow] whose `verticalAlignment` argument
  * is [Alignment.CenterVertically] to center its children vertically, whose `horizontalArrangement`
- * argument is [Arrangement.spacedBy] of `8.dp` space between the children, whose `contentPadding`
+ * argument is [Arrangement.spacedBy] of `8.dp` `space` between the children, whose `contentPadding`
  * is a [PaddingValues] whose `start` is `12.dp` and `end` is `8.dp`, and whose `modifier` argument
  * is a [Modifier.heightIn] whose `min` is `56.dp`. In the [LazyListScope] `content` Composable lambda
  * argument of the [LazyRow] we compose a [LazyListScope.item] which wraps an [IconButton] in an
@@ -87,16 +87,17 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * is our lambda parameter [onShowFilters], and its [Modifier] `modifier` argument is a
  * [SharedTransitionScope.sharedBounds] whose `sharedContentState` argument is a remembered
  * [SharedContentState] whose `key` is [FilterSharedElementKey], whose `animatedVisibilityScope`
- * is the [AnimatedVisibilityScope] of the [AnimatedVisibility] wrapping us, and whose `resizeMode`
- * is [SharedTransitionScope.ResizeMode.RemeasureToBounds] (remeasures and relayouts its child
- * whenever bounds change during the bounds transform). The `content` Composable lambda argument of
- * the [IconButton] composes an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector]
- * drawn by [Icons.Rounded.FilterList] (three horizontal lines of decreasing length), whose [Color]
- * `tint` argument is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors], whose
- * `contentDescription` argument is the [String] whose resource ID is `R.string.label_filters`
- * ("Filters"), and whose [Modifier] `modifier` argument is a [Modifier.diagonalGradientBorder] whose
- * [List] of [Color] argument `colors` is the [JetsnackColors.interactiveSecondary] of our custom
- * [JetsnackColors.interactiveSecondary], and whose [Shape] `shape` argument is [CircleShape].
+ * argument is the [AnimatedVisibilityScope] of the [AnimatedVisibility] wrapping the [IconButton],
+ * and whose `resizeMode` is [SharedTransitionScope.ResizeMode.RemeasureToBounds] (remeasures and
+ * relayouts its child whenever bounds change during the bounds transform). The `content` Composable
+ * lambda argument of the [IconButton] composes an [Icon] whose [ImageVector] `imageVector` argument
+ * is the [ImageVector] drawn by [Icons.Rounded.FilterList] (three horizontal lines of decreasing
+ * length), whose [Color] `tint` argument is the [JetsnackColors.brand] of our custom
+ * [JetsnackTheme.colors], whose `contentDescription` argument is the [String] whose resource ID is
+ * `R.string.label_filters` ("Filters"), and whose [Modifier] `modifier` argument is a
+ * [Modifier.diagonalGradientBorder] whose [List] of [Color] argument `colors` is the
+ * [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors], and whose [Shape]
+ * `shape` argument is [CircleShape].
  *
  * After the [IconButton] we compose a [LazyListScope.items] whose `items` argument is our [List] of
  * [Filter] parameter [filters]. In the [LazyItemScope] `itemContent` Composable lambda argument we
@@ -127,7 +128,7 @@ fun FilterBar(
     with(sharedTransitionScope) {
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
             contentPadding = PaddingValues(start = 12.dp, end = 8.dp),
             modifier = Modifier.heightIn(min = 56.dp)
         ) {
@@ -165,7 +166,7 @@ fun FilterBar(
  * This used by [FilterBar] and [FilterScreen] to display a [Filter]. We start by using a destructuring
  * declaration to initialize our [Boolean] variable `val selected` and lambda taking a [Boolean]
  * argument `val setSelected` to the [MutableState] wrapped [Boolean] field [Filter.enabled] of our
- * [Filter] parameter [filter]. We initialize our [Color] variable `val backgroundColor` to an [State]
+ * [Filter] parameter [filter]. We initialize our [Color] variable `val backgroundColor` to a [State]
  * wrapped animated [Color] that animates between [JetsnackColors.brandSecondary] when `selected` is
  * `true` to [JetsnackColors.uiBackground] when it is `false`. We initialize our [Modifier] variable
  * `val border` to our [Modifier.fadeInDiagonalGradientBorder] which is configured to animate in
@@ -182,11 +183,12 @@ fun FilterBar(
  * `content` Compable lambda argument of the [JetsnackSurface] starts by initializing and remembering
  * its [MutableInteractionSource] variable `val interactionSource` to a new instance. It initializes
  * its [State] wrapped [Boolean] variable `val pressed` to the value returned by the
- * [InteractionSource.collectIsPressedAsState] method of method of `interactionSource`. It initializes
- * its [Modifier] variable `val backgroundPressed` to a [Modifier.offsetGradientBackground] which is
+ * [InteractionSource.collectIsPressedAsState] method of `interactionSource`. It initializes its
+ * [Modifier] variable `val backgroundPressed` to a [Modifier.offsetGradientBackground] which is
  * configured to animate in and out the background of the [Box] of our composable using the
- * [JetsnackColors.interactiveSecondary] [List] of [Color] as the [Brush.linearGradient] when `pressed`
- * is `true` or a [Modifier.background] whose `color` is [Color.Transparent].
+ * [JetsnackColors.interactiveSecondary] of our custom [JetsnackTheme.colors] as the [List] of [Color]
+ * used by [Brush.linearGradient] when `pressed` is `true` or a [Modifier.background] whose `color`
+ * is [Color.Transparent] when it is `false`.
  *
  * The root composable of the [JetsnackSurface] is a [Box] whose `modifier` argument is a
  * [Modifier.toggleable] whose `value` argument is our [Boolean] variable `selected`, whose
@@ -209,7 +211,7 @@ fun FilterBar(
  * @param shape the [Shape] we should use for our border and our [JetsnackSurface]. [FilterBar]
  * passes us the [Shapes.small] of our custom [MaterialTheme] (which is also our default?), but
  * [com.example.jetsnack.ui.home.FilterChipSection] passes us none so our default [Shapes.small] of
- * our custom [MaterialTheme] is used.
+ * our custom [MaterialTheme.shapes] is used.
  */
 @Composable
 fun FilterChip(

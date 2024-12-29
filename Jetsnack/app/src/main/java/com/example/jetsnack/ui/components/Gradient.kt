@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,11 @@ import androidx.compose.ui.unit.dp
  * Creates a [DrawModifier] that draws a restangle after the layout's contents. The rectangle uses
  * a [Brush.linearGradient] constructed from our [List] of [Color] parameter [colors] as its `brush`
  * argument, and our [BlendMode] parameter [blendMode] as its `blendMode` argument.
+ *
+ * @param colors the [List] of [Color] to use as the `color` argument of our [Brush.linearGradient].
+ * @param blendMode the [BlendMode] to use as the `blendMode` argument of our [DrawScope.drawRect]
+ * call. Our caller passes us [BlendMode.Darken] when the device is in "dark mode" or [BlendMode.Plus]
+ * when the device is not in "dark mode".
  */
 fun Modifier.diagonalGradientTint(
     colors: List<Color>,
@@ -44,7 +50,7 @@ fun Modifier.diagonalGradientTint(
 ): Modifier = drawWithContent {
     drawContent()
     drawRect(
-        brush = Brush.linearGradient(colors),
+        brush = Brush.linearGradient(colors = colors),
         blendMode = blendMode
     )
 }
@@ -54,6 +60,10 @@ fun Modifier.diagonalGradientTint(
  * `colors` argument is our [List] of [Color] parameter [colors], whose `startX` argument is minus
  * our [Float] parameter [offset], whose `endX` argument is our [Float] parameter [width] minus our
  * [Float] parameter [offset], and whose `tileMode` argument is [TileMode.Mirror].
+ *
+ * @param colors the [List] of [Color] to use as the `colors` argument of our [Brush.horizontalGradient]
+ * @param width the total width of oue [Brush.horizontalGradient]
+ * @param offset Starting x position of the horizontal gradient. Always `0f`.
  */
 fun Modifier.offsetGradientBackground(
     colors: List<Color>,
@@ -75,6 +85,12 @@ fun Modifier.offsetGradientBackground(
  * returns, whose `endX` argument is the [Float] returned by our lambda returning [Float] parameter
  * [width] minus the [Float] returned by our lambda returning [Float] parameter [offset], and whose
  * `tileMode` argument is [TileMode.Mirror].
+ *
+ * @param colors the [List] of [Color] to use as the `color` argument of our [Brush.horizontalGradient].
+ * @param width a [Density] extension function lambda which returns the [Float] width of our
+ * [Brush.horizontalGradient]
+ * @param offset a [Density] extension function lambda which returns the [Float] offset of our
+ * [Brush.horizontalGradient]
  */
 fun Modifier.offsetGradientBackground(
     colors: List<Color>,
@@ -97,6 +113,10 @@ fun Modifier.offsetGradientBackground(
  * Creates a [Modifier.border] whose `width` argument is our [Dp] parameter [borderSize], whose
  * `brush` argument is a [Brush.linearGradient] whose `colors` argument is our [List] of [Color]
  * parameter [colors], and whose `shape` argument is our [Shape] parameter [shape].
+ *
+ * @param colors the [List] of [Color] to use as the `color` argument of our [Brush.linearGradient].
+ * @param borderSize width of the border. Use [Dp.Hairline] for a hairline border.
+ * @param shape the [Shape] of the border.
  */
 fun Modifier.diagonalGradientBorder(
     colors: List<Color>,
@@ -118,7 +138,12 @@ fun Modifier.diagonalGradientBorder(
  * [showBorder] is `true` or a copy of that [Color] with an `alpha` of 0f if it is `false`. Then the
  * [Modifier] it returns is a [Modifier.diagonalGradientBorder] whose `colors` argument is our
  * animated [List] of [Color] variable `animatedColors`, whose `borderSize` argument is our [Dp]
- * parameter [borderSize], and whose `shape` argument is our [Shape] parameter [shape]
+ * parameter [borderSize], and whose `shape` argument is our [Shape] parameter [shape].
+ *
+ * @param showBorder if `false` the alpha of the all of the [Color]'s used to draw the border is set
+ * to `0f`.
+ * @param colors the [List] of [Color] to use as the `colors` argument of our [diagonalGradientBorder].
+ * @param shape the [Shape] to use as the `shape` argument of our [diagonalGradientBorder].
  */
 fun Modifier.fadeInDiagonalGradientBorder(
     showBorder: Boolean,
@@ -128,7 +153,7 @@ fun Modifier.fadeInDiagonalGradientBorder(
 ): Modifier = composed {
     val animatedColors: List<Color> = List(colors.size) { i: Int ->
         animateColorAsState(
-            if (showBorder) colors[i] else colors[i].copy(alpha = 0f),
+            targetValue = if (showBorder) colors[i] else colors[i].copy(alpha = 0f),
             label = "animated color"
         ).value
     }
