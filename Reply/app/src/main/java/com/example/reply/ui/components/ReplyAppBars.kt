@@ -19,11 +19,14 @@ package com.example.reply.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -52,12 +55,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Account
 import com.example.reply.data.Email
+import com.example.reply.ui.ReplyEmailDetail
 import com.example.reply.ui.ReplyEmailList
+import com.example.reply.ui.ReplyHomeUIState
 import com.example.reply.ui.ReplyHomeViewModel
 import kotlinx.coroutines.CoroutineScope
 
@@ -77,7 +83,59 @@ import kotlinx.coroutines.CoroutineScope
  * [Account.fullName] of the [Email.sender] starts with the [MutableState] wrapped [String] variable
  * `query` (this [LaunchedEffect] will be relaunched every time `query` changes).
  *
- * Our root Composable is a [DockedSearchBar]
+ * Our root Composable is a [DockedSearchBar] whose `inputField` argument is a lambda that composes
+ * a [SearchBarDefaults.InputField] whose `query` argument is our [MutableState] wrapped [String]
+ * variable `query`, whose `onQueryChange` argument is a lambda that sets `query` to the [String]
+ * passed the lambda, whose `onSearch` argument is a lambda that sets our [MutableState] wrapped
+ * variable `expanded` to `false`, whose `onExpandedChange` argument is our lambda variable
+ * `onExpandedChange`, whose `modifier` argument is a [Modifier.fillMaxWidth] to have us use all our
+ * incoming horizontal constraint, whose `placeholder` argument is a [Text] displaying the [String]
+ * with resource ID `R.string.search_emails` ("Search emails"), whose `leadingIcon` argument is an
+ * [Icon] displaying the [ImageVector] `imageVector` argument drawn by [Icons.AutoMirrored.Filled.ArrowBack]
+ * if [MutableState] wrapped [Boolean] variable `expanded` is `true`, with a [Modifier.padding]
+ * `modifier` argument that adds `16.dp` to the `start`, chained to a [Modifier.clickable] whose
+ * `onClick` lambda argument is a lambda that sets `expanded` to `false`, and `query` to an empty
+ * [String]. If [MutableState] wrapped [Boolean] variable `expanded` is `false` `leadingIcon` is
+ * an [Icon] displaying the [ImageVector] `imageVector` argument drawn by [Icons.Filled.Search] with
+ * a [Modifier.padding] `modifier` argument that adds `16.dp` to the `start`. The `trailingIcon`
+ * argument is a lambda composing a [ReplyProfileImage] whose `drawableResource` argument is the
+ * jpeg with resource ID `R.drawable.avatar_6`, whose `description` argument is the [String] with
+ * resource ID `R.string.profile` ("Profile"), and whose [Modifier] `modifier` argument is a
+ * [Modifier.padding] that adds `12.dp` to all sides, with a [Modifier.size] chained to that which
+ * sets its `size` to `32.dp`.
+ *
+ * The `expanded` argument of the [DockedSearchBar] is our [MutableState] wrapped [Boolean]
+ * variable `expanded`. The `onExpandedChange` argument is our lambda variable `onExpandedChange`.
+ * The [Modifier] `modifier` argument of the [DockedSearchBar] is our [Modifier] parameter [modifier].
+ *
+ * The `content` [ColumnScope] Composable lambda argument is a lambda that composes three different
+ * Composable elements depending on whether:
+ *  - [SnapshotStateList] of [Email] variable `searchResults` is _not_ empty: we compose a [LazyColumn]
+ *  whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth], whose `contentPadding` argument
+ *  is a [PaddingValues] of `16.dp` on all sides, and whose `verticalArrangement` argument is a
+ *  [Arrangement.spacedBy] whose `space` is `4.dp`. In the `content` [LazyListScope] Composable lambda
+ *  argument of the [LazyColumn] we call the [LazyListScope.items] method with its `items` argument
+ *  our [SnapshotStateList] of [Email] variable `searchResults`, and its `key` argument the [Email.id]
+ *  of the current [Email]. In the `itemContent` [LazyItemScope] composable lambda argument of the
+ *  [LazyListScope.items] we accept the [Email] passed the lambda in variable `email` and then
+ *  we compose a [ListItem] whose `headlineContent` Composable lambda argument is a lambda that
+ *  composes a [Text] whose `text` argument is the [Email.subject] of the [Email] passed the lambda.
+ *  The `supportingContent` Composable lambda argument is a lambda that composes a [Text] whose
+ *  `text` is the [Account.fullName] of the [Email.sender] of `email`. The `leadingContent` lambda
+ *  argument is a lambda that composes a [ReplyProfileImage] whose `drawableResource` argument is
+ *  the [Account.avatar] of the [Email.sender] of `email`, whose `description` argument is the
+ *  [String] with resource ID `R.string.profile` ("Profile"), and whose [Modifier] `modifier`
+ *  argument is a [Modifier.size] of `size` `32.dp`. The [Modifier] `modifier` argument of the
+ *  [ListItem] is a [Modifier.clickable] whose `onClick` lambda argument is a lambda that calls our
+ *  lambda parameter [onSearchItemSelected] with the [Email] `email`, sets `query` to an empty
+ *  [String], and sets `expanded` to `false`.
+ *  - [MutableState] wrapped [String] variable `query` is _not_ empty: we compose a [Text] whose
+ *  `text` argument is the [String] with resource ID `R.string.no_item_found` ("No item found"),
+ *  and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds `16.dp` to all
+ *  sides.
+ *  - [MutableState] wrapped [String] variable `query` is empty: we compose a [Text] whose `text`
+ *  argument is the [String] with resource ID `R.string.no_search_history` ("No search history"),
+ *  and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds `16.dp` to all sides.
  *
  * @param emails [List] of all emails.
  * @param onSearchItemSelected callback to be invoked when a [Email] is selected. Our caller
@@ -207,7 +265,21 @@ fun ReplyDockedSearchBar(
 }
 
 /**
+ * This is used by [ReplyEmailDetail] as the top [LazyListScope.item] in its [LazyColumn], where it
+ * functions as a [TopAppBar] that can be scrolled off the screen.
  *
+ * @param email [Email] that is being displayed in the [ReplyEmailDetail]. Our caller calls us
+ * with the [ReplyHomeUIState.openedEmail] that is passed to it in its `email` parameter.
+ * @param isFullScreen if `true` the [ReplyEmailDetail] is being displayed in full screen mode
+ * (the device is single pane), if `false` the [ReplyEmailDetail] is being displayed on a two pane
+ * device.
+ * @param modifier a [Modifier] instance which our caller can use to modify our behavior and/or
+ * behavior. Our caller [ReplyEmailDetail] does not pass one so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ * @param onBackPressed lambda to be called when the back button is pressed. Our caller
+ * [ReplyEmailDetail] passes us its `onBackPressed` lambda parameter which traces back to a
+ * call to [ReplyHomeViewModel.closeDetailScreen]. (Note that we only call it if the device is in
+ * single pane mode, ie. if [MutableState] wrapped [Boolean] variable `isFullScreen` is `true`.)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
