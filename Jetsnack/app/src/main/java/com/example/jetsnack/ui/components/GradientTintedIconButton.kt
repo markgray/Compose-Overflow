@@ -58,7 +58,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * wrapped [Boolean] variable `val pressed` to the value collected by the
  * [MutableInteractionSource.collectIsPressedAsState] method of our [MutableInteractionSource]
  * variable `interactionSource`. If `pressed` is `true` we initialize our [Modifier] variable
- * `val background` to a [Modifier.offsetGradientBackground] that whose `colors` argument is our
+ * `val background` to a [Modifier.offsetGradientBackground] whose `colors` argument is our
  * [List] of [Color] parameter [colors], whose `width` is 200f, and whose `offset` is 0f, or if
  * `pressed` is `false` to a  [Modifier.background] whose `color` is the [JetsnackColors.uiBackground]
  * of our custom [JetsnackTheme.colors]. If the [JetsnackColors.isDark] method of our custom
@@ -82,7 +82,7 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  *
  * The `content` lambda argument of the [Surface] is an [Icon] whose `imageVector` argument is our
  * [ImageVector] parameter [imageVector], whose `contentDescription` argument is our [String]
- * parameter [contentDescription], and whose `modifier` argument is our [Modifier] argument
+ * parameter [contentDescription], and whose `modifier` argument is our [Modifier] variable
  * `modifierColor`.
  *
  * @param imageVector the [ImageVector] we should draw in our [Icon]. One of our calls passes us the

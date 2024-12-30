@@ -47,10 +47,10 @@ import com.example.jetsnack.model.SearchCategoryCollection
  * method of `placeables` to loop over its contents accepting the index in [Int] variable `index`
  * and the [Placeable] in [Placeable] variable `placeable`. We initialize our [Int] variable
  * `val column` to `index` modulo our [Int] parameter [columns] and add the [Placeable.height] of
- * `placeable` to the `column` index of `columnHeights`. When done initialize our [Int] variable
+ * `placeable` to the `column` index of `columnHeights`. When done we initialize our [Int] variable
  * `val height` to the maximum value in `columnHeights` coerced to at most the [Constraints.maxHeight]
  * of `constraints`. Then we call the [MeasureScope.layout] method with its `width` argument the
- * [Constraints.minWidth] of `constraints` and its `height` argument our [Int] variable `height`.
+ * [Constraints.maxWidth] of `constraints` and its `height` argument our [Int] variable `height`.
  * In the `placementBlock` lambda we initialize our [Array] of [Int] variable `val columnY` to an
  * [Array] to an [Int] parameter [columns] sized array initialized to all zeros. Then we use the
  * [List.forEachIndexed] method of `placeables` to loop through all its entries accepting the
@@ -61,10 +61,10 @@ import com.example.jetsnack.model.SearchCategoryCollection
  * around for the next [Placeable].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
- * behavior. Our caller passes us a [Modifier.padding] that adds 16.dp to each of our horizontal
+ * behavior. Our caller passes us a [Modifier.padding] that adds `16.dp` to each of our horizontal
  * sides.
  * @param columns the number of columns we should use. Our caller does not pass us a value so our
- * default of 2 is used.
+ * default of `2` is used.
  * @param content the Composable lambda containing multiple Composables which we should display in
  * our grid.
  */
