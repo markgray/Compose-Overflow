@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,18 +33,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -55,8 +60,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Account
@@ -266,7 +273,43 @@ fun ReplyDockedSearchBar(
 
 /**
  * This is used by [ReplyEmailDetail] as the top [LazyListScope.item] in its [LazyColumn], where it
- * functions as a [TopAppBar] that can be scrolled off the screen.
+ * functions as a [TopAppBar] that can be scrolled off the screen. Our root Composable is a
+ * [TopAppBar] whose [Modifier] `modifier` argument is our [Modifier] parameter [modifier], whose
+ * [TopAppBarColors] `colors` argument is a [TopAppBarDefaults.topAppBarColors] whose
+ * [TopAppBarColors.containerColor] is overridden by the [ColorScheme.inverseOnSurface] of our
+ * custom [MaterialTheme.colorScheme], whose `title` Composable lambda argument is a lambda that
+ * composes a [Column] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth], whose
+ * `horizontalAlignment` argument is [Alignment.CenterHorizontally] if our [Boolean] parameter
+ * [isFullScreen] is `true`, or [Alignment.Start] if [Boolean] parameter [isFullScreen] is `false`.
+ * In the [ColumnScope] `content` Composable lambda argument of the [Column] we compose a [Text]
+ * whose `text` argument is the [Email.subject] of our [Email] parameter [email], whose [TextStyle]
+ * `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography], whose
+ * [Color] `color` argument is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
+ * This is followed by a [Text] whose [Modifier] `modifier` argument is a [Modifier.padding] that adds
+ * `4.dp` to the `top`, whose `text` argument is the string formed by concatenating the [String] value
+ * of the [List.size] of the [Email.threads] of our [Email] parameter [email] and the [String] with
+ * resource ID `R.string.messages` ("Messages"), whose [TextStyle] `style` argument is the
+ * [Typography.labelMedium] of our custom [MaterialTheme.typography], and whose [Color] `color`
+ * argument is the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme].
+ *
+ * The `navigationIcon` Composable lambda argument of the [TopAppBar] is a lambda that composes a
+ * [FilledIconButton] if our [Boolean] parameter [isFullScreen] is `true`, whose `onClick` lambda
+ * argument is a lambda that calls our lambda parameter [onBackPressed], whose [Modifier] `modifier`
+ * argument is a [Modifier.padding] that adds `8.dp` to all sides, whose [IconButtonColors] `colors`
+ * argument is a [IconButtonDefaults.filledIconButtonColors] whose `containerColor` is the
+ * [ColorScheme.surface] of our custom [MaterialTheme.colorScheme], and whose `contentColor` is the
+ * [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme]. The `content` Composable lambda
+ * argument of the [FilledIconButton] is a lambda that composes an [Icon] whose [ImageVector]
+ * `imageVector` argument is the [ImageVector] drawn by [Icons.AutoMirrored.Filled.ArrowBack], whose
+ * `contentDescription` argument is the [String] with resource ID `R.string.back_button` ("Back"),
+ * and whose [Modifier] `modifier` argument is a [Modifier.size] that sets its `size` to `14.dp`.
+ *
+ * The `actions` [RowScope] Composable lambda argument of the [TopAppBar] is a lambda that composes
+ * an [IconButton] whose `onClick` lambda argument is a lambda that does nothing. In the `content`
+ * Composable lambda argument of the [IconButton] we compose an [Icon] whose [ImageVector] `imageVector`
+ * argument is the [ImageVector] drawn by [Icons.Filled.MoreVert], whose `contentDescription` argument
+ * is the [String] with resource ID `R.string.more_options_button` ("More options"), and whose [Color]
+ * `tint` argument is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
  *
  * @param email [Email] that is being displayed in the [ReplyEmailDetail]. Our caller calls us
  * with the [ReplyHomeUIState.openedEmail] that is passed to it in its `email` parameter.
