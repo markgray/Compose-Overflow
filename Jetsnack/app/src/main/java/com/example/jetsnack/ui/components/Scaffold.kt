@@ -44,7 +44,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Wrap Material [androidx.compose.material3.Scaffold] and set [JetsnackTheme] colors. Our root
+ * Wraps Material [androidx.compose.material3.Scaffold] and sets [JetsnackTheme] colors. Our root
  * composable is a [Scaffold] whose `modifier` argument is our [Modifier] parameter [modifier],
  * whose `topBar` argument is our Composable lambda parameter [topBar], whose `bottomBar` argument
  * is our Composable lambda parameter [bottomBar], whose `snackbarHost` argument is a lambda that
@@ -62,7 +62,7 @@ import kotlinx.coroutines.launch
  * use as the `snackbarHost` argument of our [Scaffold]. Our caller [MainContainer] passes us the
  * [JetsnackScaffoldState.snackBarHostState] of a remembered default [JetsnackScaffoldState].
  * @param topBar a lambda to use as the `topBar` argument of our [Scaffold]. Our caller [MainContainer]
- * does not pass us one so our default do-nothing lambda.
+ * does not pass us one so our default do-nothing lambda is used.
  * @param bottomBar the Composable lambda that we should use as the `bottomBar` of our [Scaffold].
  * Our caller calls us with an animated shared transition [JetsnackBottomBar] that has a lot of
  * complex arguments passed it which need some careful study (when I get there).
@@ -122,7 +122,7 @@ fun JetsnackScaffold(
  * @param snackbarManager the [SnackbarManager] that is responsible for managing Snackbar messages
  * to show on the screen. This is our object [SnackbarManager] which we use as the `snackbarManager`
  * of the [JetsnackScaffoldState] we remember and return.
- * @param resources a [Resources] instance to us as the `resources` argument of the [JetsnackScaffoldState]
+ * @param resources a [Resources] instance to use as the `resources` argument of the [JetsnackScaffoldState]
  * we remember and return. We use the [Resources] returned by our [resources] function, which is the
  * Resources instance for the application's package according to the current [LocalContext].
  * @param coroutineScope a remembered [CoroutineScope] to use as the `coroutineScope` argument of the
@@ -152,7 +152,7 @@ fun rememberJetsnackScaffoldState(
  * parameter [snackbarManager] to collect and emit into the `collector` [FlowCollector] block the
  * current [List] of [Message] it contains which the block accepts as its `currentMessages` variable.
  * In the `collector` block we check if `currentMessages` is not empty and if so we set our [Message]
- * variable `val message` to the [Message] at index 0 in `currentMessages`, and set out [CharSequence]
+ * variable `val message` to the [Message] at index 0 in `currentMessages`, and set our [CharSequence]
  * variable `val text` to the [CharSequence] whose resource ID is the [Message.messageId] of our
  * `message` variable. We then call the [SnackbarManager.setMessageShown] method of our [SnackbarManager]
  * parameter [snackbarManager] to Notify the SnackbarManager that it can remove the current message

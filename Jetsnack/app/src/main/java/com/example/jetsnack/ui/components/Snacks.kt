@@ -111,18 +111,18 @@ import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- * Width of a [JetsnackCard]
+ * Width of the [JetsnackCard] used by [HighlightSnackItem]
  */
 private val HighlightCardWidth = 170.dp
 
 /**
- * Padding of a [JetsnackCard]
+ * Padding of the [JetsnackCard] used by [HighlightSnackItem]
  */
 private val HighlightCardPadding = 16.dp
 
 /**
- * Convenience extension property to obtain the sum of the width and padding of a [JetsnackCard]
- * from the `current` [LocalDensity].
+ * Convenience extension property to obtain the sum of the width and padding in pixels of the
+ * [JetsnackCard] used by [HighlightSnackItem] from the `current` [LocalDensity].
  */
 private val Density.cardWidthWithPaddingPx
     get() = (HighlightCardWidth + HighlightCardPadding).toPx()
@@ -144,7 +144,7 @@ private val Density.cardWidthWithPaddingPx
  *  overflowed the 1 line allowed it, and whose [Modifier] `modifier` argument is a [RowScope.weight]
  *  of 1f causing it to take up all the space left after its siblings have been measured and placed
  *  to which is chained a [Modifier.wrapContentWidth] whose `align` argument of [Alignment.Start]
- *  that allows it to occupy its desired width without regard to the incoming minimum width with it
+ *  that allows it to occupy its desired width without regard to the incoming minimum width with its
  *  alignment at the start of the [Row],
  *  - an [IconButton] whose `onClick` argument is a do-nothing lambda, and whose [Modifier] `modifier`
  *  argument is a [RowScope.align] whose `alignment` argument of [Alignment.CenterVertically] causes
