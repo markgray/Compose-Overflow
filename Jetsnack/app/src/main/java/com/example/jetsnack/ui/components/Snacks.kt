@@ -254,7 +254,7 @@ fun SnackCollection(
  * [JetsnackColors.gradient6_2] if it is odd.
  *
  * Our root composable is a [LazyRow] whose `state` argument is our [LazyListState] variable
- * `rowState`, its `modifier` argument is our [Modifier] parameter [modifier], whose
+ * `rowState`, whose `modifier` argument is our [Modifier] parameter [modifier], whose
  * `horizontalArrangement` argument is a [Arrangement.spacedBy] that places its children spaced by
  * 16.dp, and whose `contentPadding` argument is a [PaddingValues] whose `start` is 24.dp and whose
  * `end` is 24.dp.
@@ -377,7 +377,8 @@ private fun Snacks(
  * we initialize our [SharedTransitionScope] variable `val sharedTransitionScope` to the current
  * [LocalSharedTransitionScope] or throw an [IllegalStateException] ("No sharedTransitionScope found").
  * We initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the current
- * [LocalNavAnimatedVisibilityScope] or throw an [IllegalStateException] ("No animatedVisibilityScope found")
+ * [LocalNavAnimatedVisibilityScope] or throw an [IllegalStateException] ("No animatedVisibilityScope
+ * found")
  *
  * Then `with` the `receiver` [SharedTransitionScope] variable `sharedTransitionScope` we Compose a
  * [Column] whose `horizontalAlignment` argument is [Alignment.CenterHorizontally], and whose `modifier`
@@ -415,9 +416,10 @@ private fun Snacks(
  *  [BoundsTransform] property [snackDetailBoundsTransform].
  *
  * @param snack the [Snack] we are to display.
- * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by [Snacks]
- * @param onSnackClick the lambda that the Composable we compose should call with the [Snack.id] of the
- * [Snack] it is displaying and the [String] version of our [snackCollectionId] parameter.
+ * @param snackCollectionId the [SnackCollection.id] of the [SnackCollection] being displayed by
+ * [Snacks].
+ * @param onSnackClick the lambda that the Composable we compose should call with the [Snack.id] of
+ * the [Snack] it is displaying and the [String] version of our [snackCollectionId] parameter.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller does not pass us one so the empty, default, or starter [Modifier] that
  * contains no elements is used.
