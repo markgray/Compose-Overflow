@@ -40,7 +40,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.reply.R
 import com.example.reply.data.Email
+import com.example.reply.ui.ReplyEmailDetail
 
+/**
+ * This Composable is used by [ReplyEmailDetail] to display each of the [Email] in the [List] of
+ * [Email] property [Email.threads] of the [Email] it is displaying.
+ *
+ * @param email The [Email] to display.
+ * @param modifier A [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ReplyEmailDetail] does not pass us one so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
+ */
 @Composable
 fun ReplyEmailThreadItem(
     email: Email,
@@ -55,7 +65,7 @@ fun ReplyEmailThreadItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(all = 20.dp)
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 ReplyProfileImage(
@@ -64,7 +74,7 @@ fun ReplyEmailThreadItem(
                 )
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .padding(horizontal = 12.dp, vertical = 4.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -81,8 +91,8 @@ fun ReplyEmailThreadItem(
                 IconButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                        .clip(shape = CircleShape)
+                        .background(color = MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
@@ -108,11 +118,11 @@ fun ReplyEmailThreadItem(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, bottom = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(space = 12.dp),
             ) {
                 Button(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(weight = 1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright
                     )
@@ -124,7 +134,7 @@ fun ReplyEmailThreadItem(
                 }
                 Button(
                     onClick = { /*TODO*/ },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(weight = 1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceBright
                     )

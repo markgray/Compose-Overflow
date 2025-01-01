@@ -17,6 +17,7 @@
 package com.example.reply.ui.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,9 +25,11 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,17 +45,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.reply.data.Account
 import com.example.reply.data.Email
 import com.example.reply.ui.ReplyEmailList
 
@@ -76,7 +84,44 @@ import com.example.reply.ui.ReplyEmailList
  * [Modifier] `modifier` argument is a [Modifier.fillMaxWidth], followed by a [Modifier.padding] that
  * adds `20.dp` padding to all sides. In the [ColumnScope] `content` Composable lambda argument of the
  * [Column] we have:
- *  - a [Row] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth].
+ *  - a [Row] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] to have it take up
+ *  its entire incoming width constraint. In the [RowScope] `content` Composable lambda argument of
+ *  the [Row] we first initialize our [Modifier] variable `val clickModifier` to a [Modifier.clickable]
+ *  whose `interactionSource` argument is a [remember] of a [MutableInteractionSource], and whose
+ *  `indication` argument is `null`, and the `onClick` argument is a lambda that calls our lambda
+ *  parameter [toggleSelection] with the [Email.id] of our [Email] parameter [email]. Next we compose
+ *  an [AnimatedContent] whose `targetState` is our [Boolean] parameter [isSelected], and in its
+ *  [AnimatedContentScope] `content` Composable lambda argument we accept the [Boolean] parameter
+ *  passed the lambda in our variable `selected` and if `selected` is `true` we compose a
+ *  [SelectedProfileImage] whose `modifier` argument is our [Modifier] variable `clickModifier`, and
+ *  it `selected` is `false` we compose a [ReplyProfileImage] whose `drawableResource` argument is
+ *  the [Account.avatar] of the [Email.sender] of [email], whose `contentDescription` argument is
+ *  the [Account.fullName] of the [Email.sender] of [email], and whose `modifier` argument is our
+ *  [Modifier] variable `clickModifier`. Next in the [Row] is a [Column] whose `modifier` argument
+ *  is a [RowScope.weight] of `weight` `1f` causing it to take up all remaining space after its
+ *  unweighted siblings are measured and placed, chained to a [Modifier.padding] that adds `12.dp`
+ *  to each `horizontal` side and `4.dp` to each `vertical` side, and the `verticalArrangement`
+ *  argument of the [Column] is [Arrangement.Center]. In the [ColumnScope] `content` Composable lambda
+ *  argument of the [Column] we compose a [Text] whose `text` argument is the [Account.firstName] of
+ *  the [Email.sender] of [email], and whose [TextStyle] `style` argument is the [Typography.labelMedium]
+ *  of our custom [MaterialTheme.typography]. This is followed by another [Text] whose `text` argument
+ *  is the [Email.createdAt] of [email], and whose [TextStyle] `style` argument is the
+ *  [Typography.labelMedium] of our custom [MaterialTheme.typography].
+ *  Next in the [Row] is an [IconButton] whose `onCick` argument is a do-nothing lambda, and whose
+ *  [Modifier] `modifier` argument is a [Modifier.clip] whose [Shape] `shape` argument is [CircleShape],
+ *  chained to a [Modifier.background] whose [Color] `color` argument is the [ColorScheme.surfaceContainerHigh]
+ *  of our custom [MaterialTheme.colorScheme]. In the [IconButton] `content` Composable lambda argument
+ *  we compose an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by
+ *  [Icons.Filled.StarBorder],  whose `contentDescription` argument is "Favorite", and whose [Color]
+ *  `tint` argument is the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme].
+ *  - Next in the [Column] is a [Text] whose `text` argument is the [Email.subject] of [email], whose
+ *  [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom [MaterialTheme.typography],
+ *  and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds `12.dp` to the `top`,
+ *  and `8.dp` to the `bottom`.
+ *  - This is followed by another [Text] whose `text` argument is the [Email.body] of [email], whose
+ *  [TextStyle] `style` argument is the [Typography.bodyMedium] of our custom [MaterialTheme.typography],
+ *  whose `maxLines` argument is `2`, and whose [TextOverflow] `overflow` argument is
+ *  [TextOverflow.Ellipsis]
  *
  * @param email The [Email] to display.
  * @param navigateToDetail The function to call with the [Email.id] when the [email] is clicked.
@@ -120,25 +165,25 @@ fun ReplyEmailListItem(
                 .padding(all = 20.dp)
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                val clickModifier = Modifier.clickable(
+                val clickModifier: Modifier = Modifier.clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
                 ) { toggleSelection(email.id) }
-                AnimatedContent(targetState = isSelected, label = "avatar") { selected ->
+                AnimatedContent(targetState = isSelected, label = "avatar") { selected: Boolean ->
                     if (selected) {
-                        SelectedProfileImage(clickModifier)
+                        SelectedProfileImage(modifier = clickModifier)
                     } else {
                         ReplyProfileImage(
-                            email.sender.avatar,
-                            email.sender.fullName,
-                            clickModifier
+                            drawableResource = email.sender.avatar,
+                            description = email.sender.fullName,
+                            modifier = clickModifier
                         )
                     }
                 }
 
                 Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(weight = 1f)
                         .padding(horizontal = 12.dp, vertical = 4.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -154,8 +199,8 @@ fun ReplyEmailListItem(
                 IconButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .clip(shape = CircleShape)
+                        .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
                 ) {
                     Icon(
                         imageVector = Icons.Default.StarBorder,
@@ -181,22 +226,38 @@ fun ReplyEmailListItem(
 }
 
 /**
+ * This Composable is displayed by [ReplyEmailListItem] instead of [ReplyProfileImage] if the [Email]
+ * is the currently selected [Email] and consists of just a "check mark". Our root Composable is a
+ * [Box] whose [Modifier] `modifier` argument chains to our [Modifier] parameter [modifier] a
+ * [Modifier.size] that sets our `size` to `40.dp`, followed by a [Modifier.clip] that clips us to
+ * the [Shape] `shape` [CircleShape], with a [Modifier.background] at the end of the chain whose
+ * [Color] `color` argument is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we compose an [Icon] whose
+ * [ImageVector] `imageVector` argument is [Icons.Filled.Check], whose `contentDescription` argument
+ * is `null`, whose [Modifier] `modifier` argument is a [Modifier.size] that sets its `size` to
+ * `24.dp`, chained to a [BoxScope.align] that aligns its `alignment` to [Alignment.Center], and
+ * whose [Color] `tint` argument is the [ColorScheme.onPrimary] of our custom
+ * [MaterialTheme.colorScheme].
  *
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller passes us a [Modifier.clickable] that calls its `toggleSelection` lambda
+ * parameter which traces back to a lambda which toggles the selection state of the [Email] it is
+ * rendering (thus causing [ReplyEmailListItem] to display the [ReplyProfileImage] instead of us).
  */
 @Composable
 fun SelectedProfileImage(modifier: Modifier = Modifier) {
     Box(
         modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary)
+            .size(size = 40.dp)
+            .clip(shape = CircleShape)
+            .background(color = MaterialTheme.colorScheme.primary)
     ) {
         Icon(
-            Icons.Default.Check,
+            imageVector = Icons.Default.Check,
             contentDescription = null,
             modifier = Modifier
-                .size(24.dp)
-                .align(Alignment.Center),
+                .size(size = 24.dp)
+                .align(alignment = Alignment.Center),
             tint = MaterialTheme.colorScheme.onPrimary
         )
     }

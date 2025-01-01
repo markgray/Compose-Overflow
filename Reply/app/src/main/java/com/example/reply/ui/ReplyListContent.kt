@@ -228,10 +228,10 @@ fun ReplyEmailDetail(
 ) {
     LazyColumn(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
     ) {
         item {
-            EmailDetailAppBar(email, isFullScreen) {
+            EmailDetailAppBar(email = email, isFullScreen = isFullScreen) {
                 onBackPressed()
             }
         }
@@ -239,7 +239,7 @@ fun ReplyEmailDetail(
             ReplyEmailThreadItem(email = email)
         }
         item {
-            Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
+            Spacer(modifier = Modifier.windowInsetsBottomHeight(insets = WindowInsets.systemBars))
         }
     }
 }
