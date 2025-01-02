@@ -117,7 +117,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.roundToInt
 
 /**
- * Stateful override of our stateless `Cart` Composable. We start by initialize our [State] wrapped
+ * Stateful override of our stateless `Cart` Composable. We start by initializing our [State] wrapped
  * [List] of [OrderLine] variable `val orderLines` by using the [StateFlow.collectAsStateWithLifecycle]
  * method of the [StateFlow] wrapped [List] of [OrderLine] property [CartViewModel.orderLines] of our
  * [CartViewModel] parameter [viewModel]. Then we initialize and remember our [SnackCollection] variable
@@ -132,6 +132,7 @@ import kotlin.math.roundToInt
  *  our [CartViewModel] parameter [viewModel].
  *  - `inspiredByCart` our [SnackCollection] variable `inspiredByCart`.
  *  - `onSnackClick` our lambda taking a [Long] and a [String] parameter [onSnackClick].
+ *  - `modifier` our [Modifier] parameter [modifier]
  *
  * @param onSnackClick a lambda taking a [Long] and a [String] that a Composable holding a [Snack]
  * should call with the [Snack.id] of the [Snack] and a [String] identifying the [SnackCollection]
@@ -175,8 +176,8 @@ fun Cart(
  *  argument is our lambda taking [Long] and [String] parameter [onSnackClick], and whose `modifier`
  *  argument is a [BoxScope.align] whose `alignment` is a [Alignment.TopCenter] that aligns the root
  *  [LazyColumn] Composable of [CartContent] to the top center of the [Box] (note that the first
- *  `item` in the [LazyColumn] contains a [Spacer] which compensates for the fact that the [DestinationBar]
- *  is composed on top of the [CartContent]).
+ *  `item` in the [LazyColumn] contains a [Spacer] which compensates for the fact that the
+ *  [DestinationBar] is composed on top of the [CartContent]).
  *  - A [DestinationBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` is a
  *  [Alignment.TopCenter] that aligns it to the top center of the [Box] (on top of the [CartContent]).
  *  - A [CheckoutBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` is a
@@ -260,8 +261,8 @@ fun Cart(
  *  - Next in the [LazyColumn] is a [LazyListScope.items] whose `items` argument is our [List] of
  *  [OrderLine] parameter [orderLines], and whose `key` argument is the [Snack.id] of the
  *  [OrderLine.snack] that is currently being composed in its `itemContent` [LazyItemScope] composable
- *  lambda argument. In the `itemContent` [LazyItemScope] composable lambda argument accept the
- *  [OrderLine] passed the lambda in our `orderLine` variable. Our root Composable is a
+ *  lambda argument. In the `itemContent` [LazyItemScope] composable lambda argument we accept the
+ *  [OrderLine] passed the lambda in our `orderLine` variable. Its root Composable is a
  *  [SwipeDismissItem] (Holds the Swipe to dismiss composable, its animation and the current state)
  *  whose `modifier` argument is a [LazyItemScope.animateItem] whose `fadeInSpec` argument is our
  *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose `fadeOutSpec` argument is our
@@ -279,10 +280,10 @@ fun Cart(
  *
  *  - Next in the [LazyColumn] is a [LazyListScope.item] whose `key` argument is the constant [String]
  *  "summary", and in its [LazyItemScope] `content` lambda argument we have a [SummaryItem] whose
- *  `modifier` argument is a [LazyItemScope.animateItem] whose `fadeInSpec` argument is our
- *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose `fadeOutSpec` argument is our
- *  [SpringSpec] of [Float] variable `itemAnimationSpecFade`, and whose `placementSpec` argument is
- *  our [SpringSpec] of [IntOffset] variable `itemPlacementSpec`. The [Long] `subtotal` argument is
+ *  [Modifier] `modifier` argument is a [LazyItemScope.animateItem] whose `fadeInSpec` argument is
+ *  our [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose `fadeOutSpec` argument is
+ *  our [SpringSpec] of [Float] variable `itemAnimationSpecFade`, and whose `placementSpec` argument
+ *  is our [SpringSpec] of [IntOffset] variable `itemPlacementSpec`. The [Long] `subtotal` argument
  *  is the [List.sumOf] the [Snack.price] of the [OrderLine.snack]'s times the [OrderLine.count] of
  *  all of the [OrderLine] in our [List] of [OrderLine] parameter [orderLines], and the `shippingCosts`
  *  argument is the constant 369.

@@ -66,7 +66,7 @@ import kotlin.math.ln
  * @param border the [BorderStroke] we should use in the [Modifier.border] we apply to our root [Box]
  * Composable (if it is not `null`), default is `null`.
  * @param elevation the [Dp] value we use as the elevation of our root [Box] Composable, default is 0.dp
- * @param content the Composable lambda that we wrap in a [CompositionLocalProvider] that provide
+ * @param content the Composable lambda that we wrap in a [CompositionLocalProvider] that provides
  * our [Color] parameter [contentColor] as the [LocalContentColor].
  */
 @Composable
