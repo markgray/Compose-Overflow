@@ -25,6 +25,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
+/**
+ *
+ */
 @Composable
 fun ReplyProfileImage(
     drawableResource: Int,
@@ -33,8 +36,8 @@ fun ReplyProfileImage(
 ) {
     Image(
         modifier = modifier
-            .size(40.dp)
-            .clip(CircleShape),
+            .size(size = 40.dp)
+            .clip(shape = CircleShape),
         painter = painterResource(id = drawableResource),
         contentDescription = description,
     )
