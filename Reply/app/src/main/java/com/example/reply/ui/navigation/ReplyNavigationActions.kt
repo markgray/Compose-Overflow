@@ -25,24 +25,65 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.reply.R
+import com.example.reply.ui.EmptyComingSoon
+import com.example.reply.ui.ReplyInboxScreen
 import kotlinx.serialization.Serializable
 
+/**
+ * Subclasses of the sealed interface [Route] represent the possible destinations in the app.
+ */
 sealed interface Route {
+    /**
+     * This is the [Route] for the [ReplyInboxScreen] Composable, which is the `startDestination`.
+`     */
     @Serializable data object Inbox : Route
+    /**
+     * This is the [Route] for the (as yet unimplemented) "Articles" Composable (displays the
+     * [EmptyComingSoon] Composable)
+     */
     @Serializable data object Articles : Route
+    /**
+     * This is the [Route] for the (as yet unimplemented) "DirectMessages" Composable (displays the
+     * [EmptyComingSoon] Composable)
+     */
     @Serializable data object DirectMessages : Route
+    /**
+     * This is the [Route] for the (as yet unimplemented) "Groups" Composable (displays the
+     * [EmptyComingSoon] Composable)
+     */
     @Serializable data object Groups : Route
 }
 
+/**
+ * This class contains all the information needed to manage the top level destinations in the app.
+ */
 data class ReplyTopLevelDestination(
+    /**
+     *
+     */
     val route: Route,
+    /**
+     *
+     */
     val selectedIcon: ImageVector,
+    /**
+     *
+     */
     val unselectedIcon: ImageVector,
+    /**
+     *
+     */
     val iconTextId: Int
 )
 
+/**
+ *
+ */
 class ReplyNavigationActions(private val navController: NavHostController) {
 
+    /**
+     *
+     */
     fun navigateTo(destination: ReplyTopLevelDestination) {
         navController.navigate(destination.route) {
             // Pop up to the start destination of the graph to
@@ -60,7 +101,10 @@ class ReplyNavigationActions(private val navController: NavHostController) {
     }
 }
 
-val TOP_LEVEL_DESTINATIONS = listOf(
+/**
+ *
+ */
+val TOP_LEVEL_DESTINATIONS: List<ReplyTopLevelDestination> = listOf(
     ReplyTopLevelDestination(
         route = Route.Inbox,
         selectedIcon = Icons.Default.Inbox,

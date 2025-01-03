@@ -22,11 +22,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 /**
+ * This is just a convenience function for composing an [Image]. Our root Composable is an [Image]
+ * whose [Modifier] `modifier` argument chains to our [Modifier] parameter [modifier] a
+ * [Modifier.size] with a `size` of `40.dp`, followed by a [Modifier.clip] with its [Shape] `shape`
+ * argument a [CircleShape]. Its [Painter] `painter` argument is a [painterResource] with its `id`
+ * argument the jpg whose resource ID is our [Int] parameter [drawableResource], and its [String]
+ * `contentDescription` argument is our [String] parameter [description].
  *
+ * @param drawableResource the resource ID of the drawable to be used for the [Image]
+ * @param description the content description of the [Image]
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Note that two of our callers pass in a [Modifier.size] so the [Modifier.size] that
+ * we chain to it is ignored for those two.
  */
 @Composable
 fun ReplyProfileImage(
