@@ -405,18 +405,18 @@ private fun CartContent(
 
 /**
  * This is used as the `background` argument of the [SwipeDismissItem] used by [CartContent], which
- * uses it as the `backgroundContent` composable lambda argument of the [SwipeToDismissBox] it uses
- * (composable that is stacked behind the content and is exposed when the content is swiped). Our
- * root Composable is a [Column] whose `modifier` argument is a [Modifier.background] whose `color`
- * [Color] argument is the [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors] (draws
- * a default [RectangleShape] in the [Color] `color` behind the `content`), with a
+ * uses it as the `backgroundContent` composable lambda argument of the [SwipeToDismissBox] that it
+ * uses (composable that is stacked behind the content and is exposed when the content is swiped).
+ * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.background] whose
+ * [Color] `color` argument is the [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors]
+ * (draws a default [RectangleShape] in the [Color] `color` behind the `content`), with a
  * [Modifier.fillMaxWidth], and a [Modifier.fillMaxHeight] chained to that (which causes it to
  * occupy its entire incoming size constraints). The `horizontalAlignment` argument of the [Column]
  * is [Alignment.End] (aligns its children to its end), and the `verticalArrangement` is
  * [Arrangement.Center] (the children are vertically centered in their allotted spaces). In the
  * [ColumnScope] `content` Composable lambda argument we start by initializing our animated [Dp]
  * variable `val padding` using [animateDpAsState] with the [Dp] `targetValue` 4.dp for our [Float]
- * parameter [progress] less than 0.5f, and 0.dp if it is greater than or equal to 0.5f. The root
+ * parameter [progress] less than 0.5f, and 0.dp if it is greater than or equal to 0.5f. The outer
  * Composable is a [BoxWithConstraints] whose `modifier` argument is a [Modifier.fillMaxWidth] whose
  * `fraction` argument is our [Float] parameter [progress] (sets the minimum width and the maximum
  * width to be equal to the incoming maximum width constraint multiplied by [progress]). In the
@@ -428,8 +428,8 @@ private fun CartContent(
  * [BoxWithConstraintsScope.align] chained to that which aligns the [Surface] to the `alignment`
  * [Alignment.Center]. The `shape` argument of the [Surface] is a [RoundedCornerShape] whose `percent`
  * (Size in percents to apply) is 1 minus our [Float] parameter [progress] times 100 rounded to an
- * [Int], and its [Color] `color` argument is the [JetsnackColors.error] of our custom
- * [JetsnackTheme.colors].
+ * [Int], and its [Color] `color` argument (background color) is the [JetsnackColors.error] of our
+ * custom [JetsnackTheme.colors].
  *
  * The `content` Composable lambda argument of the [Surface] holds a [Box] whose `modifier` argument
  * is a [Modifier.fillMaxSize] that causes it to occupy its entire incoming size constraint, and its
@@ -451,7 +451,7 @@ private fun CartContent(
  * [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.uiBackground]
  * of our custom [JetsnackTheme.colors], its `textAlign` argument is [TextAlign.Center] (Aligns the
  * text in the center of the container), and its `modifier` argument is a [Modifier.graphicsLayer]
- * the sets its `alpha` to our [State] wrapped animated [Float] variable `textAlpha`.
+ * that sets its `alpha` to our [State] wrapped animated [Float] variable `textAlpha`.
  *
  * @param progress this is the [SwipeToDismissBoxState.progress] of the [SwipeToDismissBox] that is
  * being dismissed.
@@ -528,13 +528,13 @@ private fun SwipeDismissItemBackground(progress: Float) {
 /**
  * Displays the information stored in its [OrderLine] parameter [orderLine]. We start by initializing
  * our [Snack] variable `val snack` to the [OrderLine.snack] property of our [OrderLine] parameter
- * [orderLine]. The our root Composable is a [ConstraintLayout] whose `modifier` chains a
- * [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], followed by a [Modifier.clickable]
- * whose `onClick` lambda argument is a lambda that calls our [onSnackClick] lambda parameter with
- * the [Snack.id] of our [Snack] variable `snack` and the constant [String] "cart", this is followed
- * by a [Modifier.background] that sets the background [Color] of the [ConstraintLayout] to the
- * [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors], and that is followed by a
- * [Modifier.padding] that sets the padding of the `horizontal` sides to 24.dp.
+ * [orderLine]. Our root Composable is a [ConstraintLayout] whose [Modifier] `modifier` argument
+ * chains a [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], followed by a
+ * [Modifier.clickable] whose `onClick` lambda argument is a lambda that calls our [onSnackClick]
+ * lambda parameter with the [Snack.id] of our [Snack] variable `snack` and the constant [String]
+ * "cart", this is followed by a [Modifier.background] that sets the background [Color] of the
+ * [ConstraintLayout] to the [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors], and
+ * that is followed by a [Modifier.padding] that sets the padding of the `horizontal` sides to 24.dp.
  *
  * In the [ConstraintLayoutScope] `content` lambda argument of the [ConstraintLayout] we start by
  * initializing our [ConstrainedLayoutReference] variables `divider`, `image`, `name`, `tag`,
