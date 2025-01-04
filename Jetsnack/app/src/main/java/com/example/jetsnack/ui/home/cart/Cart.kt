@@ -559,8 +559,8 @@ private fun SwipeDismissItemBackground(progress: Float) {
  * is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors], and its `modifier`
  * argument is a [ConstraintLayoutScope.constrainAs] which constrains the [Text] as
  * [ConstrainedLayoutReference] `ref` argument `name`, and in its [ConstrainScope] `constrainBlock`
- * it uses the [ConstrainScope.linkTo] method to constain its `start` to the `image.end` of the
- * [SnackImage] with a `startMargin` of 16.dp, to constain its `end` to the `remove.start` (`remove`
+ * it uses the [ConstrainScope.linkTo] method to constrain its `start` to the `image.end` of the
+ * [SnackImage] with a `startMargin` of 16.dp, to constrain its `end` to the `remove.start` (`remove`
  * is used for the third child, an [IconButton]) with an `endMargin` of 16.dp, and the `bias`
  * argument of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias" horizontal bias of the
  * Constraint).
@@ -583,40 +583,41 @@ private fun SwipeDismissItemBackground(progress: Float) {
  * is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], and its `modifier` argument
  * is a [ConstraintLayoutScope.constrainAs] which constrains the [Text] as [ConstrainedLayoutReference]
  * `ref` argument `tag`, and in its [ConstrainScope] `constrainBlock` it uses the [ConstrainScope.linkTo]
- * method to constain its `start` to the `image.end` of the [SnackImage] with a `startMargin` of 16.dp,
- * to constain its `end` to its `parent.end`, with an `endMargin` of 16.dp, and the `bias` argument
+ * method to constrain its `start` to the `image.end` of the [SnackImage] with a `startMargin` of 16.dp,
+ * to constrain its `end` to its `parent.end`, with an `endMargin` of 16.dp, and the `bias` argument
  * of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias" horizontal bias of the Constraint).
  *
  * The fifth child of the [ConstraintLayout] is a [Spacer] whose `modifier` argument is a [Modifier.height]
- * that sets its `height` to 8.dp, with a [ConstraintLayoutScope.constrainAs] which constrains the [Spacer]
- * as [ConstrainedLayoutReference] `ref` argument `priceSpacer`, and in its [ConstrainScope] `constrainBlock`
- * it uses the [ConstrainScope.linkTo] to constrain its `top` to the `tag.bottom` of our, and its `bottom`
- * to the `price.top`.
+ * that sets its `height` to 8.dp, with a [ConstraintLayoutScope.constrainAs] which constrains the
+ * [Spacer] as [ConstrainedLayoutReference] `ref` argument `priceSpacer`, and in its [ConstrainScope]
+ * `constrainBlock` it uses the [ConstrainScope.linkTo] to constrain its `top` to the `tag.bottom`,
+ * and its `bottom` to the `price.top`.
  *
  * The sixth child of the [ConstraintLayout] is a [Text] whose `text` argument is the [String] returned
  * by the [formatPrice] method when its argument is the [Snack.price] of our [Snack] variable `snack`,
  * whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography],
  * whose [Color] `color` argument is the [JetsnackColors.textPrimary] of our custom [JetsnackTheme.colors],
  * and whose `modifier` argument is a [ConstraintLayoutScope.constrainAs] which constrains the [Text] as
- * [ConstrainedLayoutReference] `ref` argument `price`, and in its [ConstrainScope] `constrainBlock` it uses
- * the [ConstrainScope.linkTo] method to constain its `start` to the `image.end` of the [SnackImage],
- * to constrain its `end` to the `quantity.start`, with a `startMargin` of 16.dp and an `endMargin`
- * of 16.dp, and the `bias` argument of the [ConstrainScope.linkTo] is 0f (this is the "hRtlBias"
- * horizontal bias of the Constraint).
+ * [ConstrainedLayoutReference] `ref` argument `price`, and in its [ConstrainScope] `constrainBlock` it
+ * uses the [ConstrainScope.linkTo] method to constrain its `start` to the `image.end` of the
+ * [SnackImage], to constrain its `end` to the `quantity.start`, with a `startMargin` of 16.dp and an
+ * `endMargin` of 16.dp, and the `bias` argument of the [ConstrainScope.linkTo] is 0f (this is the
+ * "hRtlBias" horizontal bias of the Constraint).
  *
  * The seventh child of the [ConstraintLayout] is a [QuantitySelector] whose `count` argument is the
- * [OrderLine.count] of our [OrderLine] parameter [orderLine], the `decreaseItemCount` argument is a
- * lambda that calls our lambda parameter [decreaseItemCount] with the [Snack.id] of our [Snack]
+ * [OrderLine.count] of our [OrderLine] parameter [orderLine], whose `decreaseItemCount` argument is
+ * a lambda that calls our lambda parameter [decreaseItemCount] with the [Snack.id] of our [Snack]
  * variable `snack`, the `increaseItemCount` argument is a lambda that calls our lambda parameter
  * [increaseItemCount] with the [Snack.id] of our [Snack], and the `modifier` argument is a
  * [ConstraintLayoutScope.constrainAs] which constrains the [QuantitySelector] as [ConstrainedLayoutReference]
- * `ref` argument `quantity`, and in its [ConstrainScope] `constrainBlock` it constrains its `baseline.linkTo`
- * to the `anchor` of the `price.baseline`, and its constrains its `end.linkTo` to the `anchor` of
- * its `parent.end``ref` argument `divider`, and in its [ConstrainScope] `constrainBlock`
+ * `ref` argument `quantity`, and in its [ConstrainScope] `constrainBlock` it constrains its
+ * `baseline.linkTo` to the `anchor` of the `price.baseline`, and it constrains its `end.linkTo` to
+ * the `anchor` of its `parent.end`.
  *
  * The eighth child of the [ConstraintLayout] is a [JetsnackDivider] whose `modifier` argument is a
- * [ConstraintLayoutScope.constrainAs] which constrains the [JetsnackDivider] as [ConstrainedLayoutReference]
- * it uses the [ConstrainScope.linkTo] method to constain its `start` to the `parent.start` and its
+ * [ConstraintLayoutScope.constrainAs] which constrains the [JetsnackDivider] as
+ * [ConstrainedLayoutReference] `ref` argument `divider`, and in its [ConstrainScope] `constrainBlock`
+ * it uses the [ConstrainScope.linkTo] method to constrain its `start` to the `parent.start` and its
  * `end` to the `parent.end`, then constrains its `top.linkTo` to the `anchor` of its `parent.bottom`.
  *
  * @param orderLine the [OrderLine] whose information we are to display.
@@ -768,7 +769,7 @@ fun CartItem(
  *
  *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
  *  side of the [Row]. In its [RowScope] `content` lambda argument we have:
- *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_subtotal_label`
+ *  1. a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_subtotal_label`
  *  ("Subtotal") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
  *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with its `weight`
  *  argument 1f (causes the [Text] to occupy all remaining incoming width constraint after its siblings
@@ -776,7 +777,7 @@ fun CartItem(
  *  [Alignment.Start] causing it to align to the start, and with an [RowScope.alignBy] whose
  *  `alignmentLine` argument is [LastBaseline] (Positions the element vertically such that its
  *  alignmentLine aligns with sibling elements aligned to the the baseline of their last line).
- *  - a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
+ *  2. a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
  *  `price` argument of our [Long] parameter [subtotal], whose [TextStyle] `style` argument is the
  *  [Typography.bodyLarge] of our custom [MaterialTheme.typography], and whose `modifier` argument
  *  is a [RowScope.alignBy] whose `alignmentLine` argument is [LastBaseline] (Positions the element
@@ -785,7 +786,7 @@ fun CartItem(
  *
  *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
  *  and 8.dp to each `vertical` side. In its [RowScope] `content` lambda argument we have:
- *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_shipping_label`
+ *  1. a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_shipping_label`
  *  ("Shipping &amp; Handling") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of
  *  our custom [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with
  *  its `weight` argument 1f (causes the [Text] to occupy all remaining incoming width constraint
@@ -793,7 +794,7 @@ fun CartItem(
  *  `align` argument is [Alignment.Start] causing it to align to the start, and with an [RowScope.alignBy]
  *  whose `alignmentLine` argument is [LastBaseline] (Positions the element vertically such that its
  *  alignmentLine aligns with sibling elements aligned to the the baseline of their last line).
- *  - a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
+ *  2. a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
  *  `price` argument of our [Long] parameter [shippingCosts], whose [TextStyle] `style` argument is
  *  the [Typography.bodyLarge] of our custom [MaterialTheme.typography], and whose `modifier` argument
  *  is a [RowScope.alignBy] whose `alignmentLine` argument is [LastBaseline] (Positions the element
@@ -806,7 +807,7 @@ fun CartItem(
  *
  *  - a [Row] whose `modifier` argument is a [Modifier.padding] that adds 24.dp to each `horizontal`
  *  and 8.dp to each `vertical` side. In its [RowScope] `content` lambda argument we have:
- *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_total_label`
+ *  1. a [Text] whose `text` argument is the [String] with resource ID `R.string.cart_total_label`
  *  ("Total") whose [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom
  *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.weight] with its `weight`
  *  argument 1f (causes the [Text] to occupy all remaining incoming width constraint after its
@@ -815,7 +816,7 @@ fun CartItem(
  *  it to align to the end, and with an [RowScope.alignBy] whose `alignmentLine` argument is
  *  [LastBaseline] (Positions the element vertically such that its alignmentLine aligns with sibling
  *  elements aligned to the the baseline of their last line).
- *  - a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
+ *  2. a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for the
  *  `price` argument of our [Long] parameter [subtotal] plus our [Long] parameter [shippingCosts],
  *  whose [TextStyle] `style` argument is the [Typography.titleMedium] of our custom
  *  [MaterialTheme.typography], and whose `modifier` argument is a [RowScope.alignBy] whose
@@ -912,11 +913,11 @@ fun SummaryItem(
  *  - a [JetsnackDivider] (our custom [HorizontalDivider])
  *
  *  - a [Row] which has in its `content` [RowScope] Composable lambda argument:
- *  - a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` argument of 1f causes
+ *  1. a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` argument of 1f causes
  *  it to take up all remaining width of the incoming constraints after its unweighted siblings are
  *  measured and placed (since its [JetsnackButton] sibling has a `weight` of 1f also, they share
  *  the [Row] width equally).
- *  - a [JetsnackButton] whose `onClick` argument is a do-nothing lambda, whose `shape` argument is
+ *  2. a [JetsnackButton] whose `onClick` argument is a do-nothing lambda, whose `shape` argument is
  *  a [RectangleShape] and whose `modifier` argument is a [Modifier.padding] that adds 12.dp padding
  *  to each of its `horizontal` sides and 8.dp to its `vertical` sides, chained to a [RowScope.weight]
  *  of `weight` 1f that will cause it to share the horizontal size of the [Row] with the [Spacer].
