@@ -24,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -87,12 +89,12 @@ fun ReplyApp(
         else -> ReplyContentType.SINGLE_PANE
     }
 
-    val navController = rememberNavController()
-    val navigationActions = remember(navController) {
-        ReplyNavigationActions(navController)
+    val navController: NavHostController = rememberNavController()
+    val navigationActions: ReplyNavigationActions = remember(navController) {
+        ReplyNavigationActions(navController = navController)
     }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
+    val navBackStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
+    val currentDestination: NavDestination? = navBackStackEntry?.destination
 
     Surface {
         ReplyNavigationWrapper(

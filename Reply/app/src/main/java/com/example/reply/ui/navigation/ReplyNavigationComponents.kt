@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UNUSED_PARAMETER")
+
 package com.example.reply.ui.navigation
 
 import androidx.activity.compose.BackHandler
@@ -79,14 +81,28 @@ import com.example.reply.R
 import com.example.reply.ui.utils.ReplyNavigationContentPosition
 import kotlinx.coroutines.launch
 
+/**
+ * Convenience method to check if the current window size is compact. Returns `true` if the
+ * [WindowWidthSizeClass] is [WindowWidthSizeClass.COMPACT] or [WindowHeightSizeClass] is
+ * [WindowHeightSizeClass.COMPACT]
+ */
 private fun WindowSizeClass.isCompact() =
     windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
         windowHeightSizeClass == WindowHeightSizeClass.COMPACT
 
+/**
+ *
+ */
 class ReplyNavSuiteScope(
+    /**
+     *
+     */
     val navSuiteType: NavigationSuiteType
 )
 
+/**
+ *
+ */
 @Composable
 fun ReplyNavigationWrapper(
     currentDestination: NavDestination?,
@@ -167,11 +183,14 @@ fun ReplyNavigationWrapper(
                 }
             }
         ) {
-            ReplyNavSuiteScope(navLayoutType).content()
+            ReplyNavSuiteScope(navSuiteType = navLayoutType).content()
         }
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyNavigationRail(
     currentDestination: NavDestination?,
@@ -224,7 +243,7 @@ fun ReplyNavigationRail(
                     selected = currentDestination.hasRoute(replyDestination),
                     onClick = { navigateToTopLevelDestination(replyDestination) },
                     icon = {
-                        Icon(
+                         Icon(
                             imageVector = replyDestination.selectedIcon,
                             contentDescription = stringResource(
                                 id = replyDestination.iconTextId
@@ -237,6 +256,9 @@ fun ReplyNavigationRail(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ReplyBottomNavigationBar(
     currentDestination: NavDestination?,
@@ -258,6 +280,9 @@ fun ReplyBottomNavigationBar(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun PermanentNavigationDrawerContent(
     currentDestination: NavDestination?,
@@ -343,6 +368,9 @@ fun PermanentNavigationDrawerContent(
     }
 }
 
+/**
+ *
+ */
 @Composable
 fun ModalNavigationDrawerContent(
     currentDestination: NavDestination?,
@@ -409,9 +437,9 @@ fun ModalNavigationDrawerContent(
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    TOP_LEVEL_DESTINATIONS.forEach { replyDestination ->
+                    TOP_LEVEL_DESTINATIONS.forEach { replyDestination: ReplyTopLevelDestination ->
                         NavigationDrawerItem(
-                            selected = currentDestination.hasRoute(replyDestination),
+                            selected = currentDestination.hasRoute(destination = replyDestination),
                             label = {
                                 Text(
                                     text = stringResource(id = replyDestination.iconTextId),
@@ -439,6 +467,9 @@ fun ModalNavigationDrawerContent(
     }
 }
 
+/**
+ *
+ */
 fun navigationMeasurePolicy(
     navigationContentPosition: ReplyNavigationContentPosition,
 ): MeasurePolicy {
@@ -478,9 +509,22 @@ fun navigationMeasurePolicy(
     }
 }
 
+/**
+ *
+ */
 enum class LayoutType {
-    HEADER, CONTENT
+    /**
+     *
+     */
+    HEADER,
+    /**
+     *
+     */
+    CONTENT
 }
 
+/**
+ *
+ */
 fun NavDestination?.hasRoute(destination: ReplyTopLevelDestination): Boolean =
     this?.hasRoute(destination.route::class) ?: false
