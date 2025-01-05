@@ -61,14 +61,15 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlin.math.max
 
 /**
- * Displays a [List] of [SearchCategoryCollection]. Our root Composable is a [LazyColumn], and in its
- * [LazyListScope] `content` composable lambda argument we have a [LazyListScope.itemsIndexed] whose
- * `items` argument is our [List] of [SearchCategoryCollection]s, and in its `itemContent` [LazyItemScope]
- * Composable lambda argument it passes the index of the current [SearchCategoryCollection] in the
- * variable `index` and the [SearchCategoryCollection] in the variable `collection` to the lambda
- * where we compose a [SearchCategoryCollection] Composable whose`collection` argument is the
- * `collection` variable and `index` argument is the `index` variable. We also add a [Spacer] after
- * the [LazyColumn] whose `modifier` argument is a [Modifier.height] of 8.dp.
+ * Displays a [List] of [SearchCategoryCollection]. Our first Composable is a [LazyColumn], and in
+ * its [LazyListScope] `content` composable lambda argument we have a [LazyListScope.itemsIndexed]
+ * whose `items` argument is our [List] of [SearchCategoryCollection]s, and in its `itemContent`
+ * [LazyItemScope] Composable lambda argument it passes the index of the current
+ * [SearchCategoryCollection] in the variable `index` and the [SearchCategoryCollection] in the
+ * variable `collection` to the lambda where we compose a [SearchCategoryCollection] Composable
+ * whose`collection` argument is the `collection` variable and `index` argument is the `index`
+ * variable. We add a [Spacer] after the [LazyColumn] whose `modifier` argument is a
+ * [Modifier.height] of 8.dp.
  *
  * @param categories The [List] of [SearchCategoryCollection] to display.
  */
