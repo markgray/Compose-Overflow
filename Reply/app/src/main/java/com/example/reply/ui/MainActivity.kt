@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.layout.DisplayFeature
 import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ContrastAwareReplyTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
@@ -45,9 +46,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ContrastAwareReplyTheme {
-                val windowSize = calculateWindowSizeClass(this)
-                val displayFeatures = calculateDisplayFeatures(this)
-                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                val windowSize: WindowSizeClass = calculateWindowSizeClass(this)
+                val displayFeatures: List<DisplayFeature> = calculateDisplayFeatures(this)
+                val uiState: ReplyHomeUIState by viewModel.uiState.collectAsStateWithLifecycle()
 
                 ReplyApp(
                     windowSize = windowSize,
