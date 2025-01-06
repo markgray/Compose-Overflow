@@ -128,8 +128,8 @@ class ReplyNavSuiteScope(
  * [currentWindowSize] method for the current [LocalDensity] (by using the [IntSize.toSize] extension
  * method followed by the [Density.toDpSize] extension method).
  *
- * Next we initialize our [NavigationSuiteType] variable `val navLayoutType` to a [NavigationSuiteType]
- * using a when expression:
+ * Next we initialize our [NavigationSuiteType] variable `val navLayoutType` to a
+ * [NavigationSuiteType] using a when expression:
  *  - when the [WindowAdaptiveInfo.windowPosture] of `adaptiveInfo` is [Posture.isTabletop] we set
  *  it to [NavigationSuiteType.NavigationBar]
  *  - when the [WindowAdaptiveInfo.windowSizeClass] of `adaptiveInfo` is [WindowSizeClass.isCompact]
@@ -146,6 +146,54 @@ class ReplyNavSuiteScope(
  *  - [WindowHeightSizeClass.MEDIUM] or [WindowHeightSizeClass.EXPANDED] ->
  *  [ReplyNavigationContentPosition.CENTER]
  *  - otherwise -> [ReplyNavigationContentPosition.TOP]
+ *
+ * We initialize and remember our [DrawerState] variable `val drawerState` to a new instance with an
+ * `initialValue` of [DrawerValue.Closed]. We initialize and remember our [CoroutineScope] variable
+ * `val coroutineScope` to a new instance using the [rememberCoroutineScope] method. We initialize
+ * our [Boolean] variable `val gesturesEnabled` to `true` if the [DrawerState.isOpen] method of
+ * `drawerState` is `true` or if [NavigationSuiteType] variable `navLayoutType` is
+ * [NavigationSuiteType.NavigationRail].
+ *
+ * We compose a [BackHandler] whose `enabled` property is `true` if the [DrawerState.isOpen] method
+ * of [DrawerState] variable `drawerState` is `true`. Inside the `onBack` lambda argument of the
+ * [BackHandler] we use [CoroutineScope] variable `coroutine` to launch a [CoroutineScope] lambda
+ * `block` wherein we call the [DrawerState.close] method of the [DrawerState] variable `drawerState`.
+ *
+ * Our root composable is a [ModalNavigationDrawer] whose `drawerState` property is our [DrawerState]
+ * variable `drawerState`, whose `gesturesEnabled` property is our [Boolean] `gesturesEnabled`
+ * variable, and whose `drawerContent` argument is a lambda in which we compose a
+ * [ModalNavigationDrawerContent] whose `currentDestination` argument is our [NavDestination]
+ * parameter [currentDestination], whose `navigationContentPosition` argument is our
+ * [ReplyNavigationContentPosition] variable `navContentPosition`, whose `navigateToTopLevelDestination`
+ * lambda taking a [ReplyTopLevelDestination] argument is our [navigateToTopLevelDestination] lambda
+ * parameter, and whose `onDrawerClicked` lambda argument is a lambda in which we use the
+ * [CoroutineScope.launch] method of our [CoroutineScope] variable `coroutineScope` to launch a
+ * coroutine which calls the [DrawerState.close] method of our [DrawerState] variable `drawerState`.
+ *
+ * In the `content` Composabe lambda argument of the [ModalNavigationDrawer] we compose a
+ * [NavigationSuiteScaffoldLayout] whose `layoutType` argument is our [NavigationSuiteType] variable
+ * `navLayoutType`, whose `navigationSuite` argument is a lambda in which we use a `when` statement
+ * to chose depending on the value of our [NavigationSuiteType] variable `navLayoutType` between:
+ *  - [NavigationSuiteType.NavigationBar] we compose a [ReplyBottomNavigationBar] whose
+ *  `currentDestination` arguement is our [NavDestination] parameter [currentDestination] and whose
+ *  `navigateToTopLevelDestination` argument is our [navigateToTopLevelDestination] lambda parameter.
+ *  - [NavigationSuiteType.NavigationRail] we compose a [ReplyNavigationRail] whose `currentDestination`
+ *  argument is our [NavDestination] parameter [currentDestination], whose `navigationContentPosition`
+ *  argument is our [ReplyNavigationContentPosition] variable `navContentPosition`, whose
+ *  `navigateToTopLevelDestination` argument is our [navigateToTopLevelDestination] lambda parameter,
+ *  and whose `onDrawerClicked` lambda argument is a lambda in which we use the [CoroutineScope.launch]
+ *  method of our [CoroutineScope] variable `coroutineScope` to launch a coroutine which calls the
+ *  [DrawerState.open] method of our [DrawerState] variable `drawerState`.
+ *  - [NavigationSuiteType.NavigationDrawer] we compose a [PermanentNavigationDrawerContent] whose
+ *  `currentDestination` argument is our [NavDestination] parameter [currentDestination], whose
+ *  `navigationContentPosition` argument is our [ReplyNavigationContentPosition] variable
+ *  `navContentPosition`, and whose `navigateToTopLevelDestination` argument is our lambda parameter
+ *  [navigateToTopLevelDestination]
+ *
+ * In the `content` composable lambda argument of the [NavigationSuiteScaffoldLayout] we construct
+ * a [ReplyNavSuiteScope] whose `navSuiteType` argument is our [NavigationSuiteType] variable
+ * `navLayoutType` and use it as the receiver to compose our [ReplyNavSuiteScope] composable lambda
+ * parameter [content].
  *
  * @param currentDestination The current [NavDestination] of the [ReplyApp] that it has retrieved
  * from the [NavBackStackEntry] of its [NavHostController].
@@ -245,7 +293,19 @@ fun ReplyNavigationWrapper(
 }
 
 /**
+ * This is composed as the `navigationSuite` argument of the [NavigationSuiteScaffoldLayout] when
+ * the [NavigationSuiteType] variable `navLayoutType` in [ReplyNavigationWrapper] is
+ * [NavigationSuiteType.NavigationRail].
  *
+ * @param currentDestination The current [NavDestination] of the [ReplyApp] that it has retrieved
+ * from the [NavBackStackEntry] of its [NavHostController].
+ * @param navigationContentPosition The current [ReplyNavigationContentPosition] of the [ReplyApp]
+ * either [ReplyNavigationContentPosition.TOP] or [ReplyNavigationContentPosition.CENTER] depending
+ * on the [WindowHeightSizeClass] of the current [WindowAdaptiveInfo].
+ * @param navigateToTopLevelDestination A callback that is invoked with a [ReplyTopLevelDestination]
+ * when the user indicates that he wishes to navigate to a different screen.
+ * @param onDrawerClicked A callback that should be invoked when the user indicates that he wishes
+ * to open the drawer of the [ModalNavigationDrawer].
  */
 @Composable
 fun ReplyNavigationRail(
