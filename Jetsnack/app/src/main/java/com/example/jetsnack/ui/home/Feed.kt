@@ -100,15 +100,15 @@ fun Feed(
 }
 
 /**
- * Private override of the [Feed] Composable that is called by the public [Feed] Composable (since
+ * Private overload of the [Feed] Composable that is called by the public [Feed] Composable (since
  * it also contains state I am not sure why it is needed, if it were stateless it would make more
  * sense). Our root Composable is a [JetsnackSurface] whose [Modifier] `modifier` argument uses our
  * [Modifier] parameter [modifier] with a [Modifier.fillMaxSize] chained to that that causess it to
  * occupy its entire incoming size constraints. In its `content` Composable lambda argument we
  * initialize and remember our [MutableState] wrapped [Boolean] variable `var filtersVisible` to
  * an initial value of `false`. Then we Compose a [SharedTransitionLayout] (creates a layout and a
- * SharedTransitionScope for the child layouts in its `content` argument. Any child (direct or
- * indirect) of the SharedTransitionLayout can use the receiver scope SharedTransitionScope to
+ * [SharedTransitionScope] for the child layouts in its `content` argument. Any child (direct or
+ * indirect) of the [SharedTransitionLayout] can use the receiver scope [SharedTransitionScope] to
  * create shared element or shared bounds transitions). In its [SharedTransitionScope] `content`
  * composable lambda we have [Box] in whose [BoxScope] `content` Composable lambda argument we have:
  *  - a [SnackCollectionList] whose [List] of [SnackCollection] argument `snackCollections` is our
@@ -126,10 +126,10 @@ fun Feed(
  *  `visible` argument is our [MutableState] wrapped [Boolean] variable `filtersVisible`, its
  *  [EnterTransition] `enter` argument is a [fadeIn] animation, and its [ExitTransition] `exit`
  *  argument is a [fadeOut] animation. In its [AnimatedVisibilityScope] `content` Composable lambda
- *  we compose a [FilterScreen] whose [SharedTransitionScope] `sharedTransitionScope` argument is
- *  `this` [SharedTransitionLayout], whose `animatedVisibilityScope` argument is `this`
- *  [AnimatedVisibility]. Its `onDismiss` lambda argument is a lambda that sets `filtersVisible` to
- *  `false`.
+ *  we compose a [FilterScreen] whose `animatedVisibilityScope` argument is `this`
+ *  [AnimatedVisibility] and whose [SharedTransitionScope] `sharedTransitionScope` argument is
+ *  `this` [SharedTransitionLayout], . Its `onDismiss` lambda argument is a lambda that sets
+ *  `filtersVisible` to `false`.
  *
  * @param snackCollections the [List] of [SnackCollection] that we are supposed to display
  * @param filters the [List] of [Filter] that is displayed by the [FilterBar] in the
@@ -137,7 +137,7 @@ fun Feed(
  * @param onSnackClick a lambda that should be called with the [Snack.id] of the [Snack] and a
  * [String] when a composable displaying a [Snack] is clicked.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
- * behavior. Our caller (the other [Feed] override) passes us the [Modifier] passed it in its own
+ * behavior. Our caller (the other [Feed] overload) passes us the [Modifier] passed it in its own
  * `modifier` parameter and it traces back to a [Modifier.padding] that adds the [PaddingValues]
  * that the [JetsnackScaffold] in [MainContainer] passes to its `content`, with a
  * [Modifier.consumeWindowInsets] chained to that which consumes the same [PaddingValues].

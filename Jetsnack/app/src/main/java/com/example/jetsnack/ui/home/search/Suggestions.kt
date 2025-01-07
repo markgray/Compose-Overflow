@@ -45,14 +45,14 @@ import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- * A vertically scrolling list of [SearchSuggestionGroup]s that is displayed by the [Search] Composable
- * when the [SearchDisplay] of the [SearchState.searchDisplay] of the current [SearchState] is
- * [SearchDisplay.Suggestions] (this happens when the user has clicked the search bar but has not
- * entered any text yet). Our root Composable is a [LazyColumn] and in its [LazyListScope] `content`
- * Composable lambda argument we use the [List.forEach] method of [List] of [SearchSuggestionGroup]
- * parameter [suggestions] to loop through each [SearchSuggestionGroup] capturing the [SearchSuggestionGroup]
- * passed the lambda in variable `suggestionGroup`. For each [SearchSuggestionGroup] in `suggestionGroup`
- * we:
+ * A vertically scrolling list of [SearchSuggestionGroup]s that is displayed by the [Search]
+ * Composable when the [SearchDisplay] of the [SearchState.searchDisplay] of the current
+ * [SearchState] is [SearchDisplay.Suggestions] (this happens when the user has clicked the search
+ * bar but has not entered any text yet). Our root Composable is a [LazyColumn] and in its
+ * [LazyListScope] `content` Composable lambda argument we use the [List.forEach] method of [List]
+ * of [SearchSuggestionGroup] parameter [suggestions] to loop through each [SearchSuggestionGroup]
+ * capturing the [SearchSuggestionGroup] passed the lambda in variable `suggestionGroup`. For each
+ * [SearchSuggestionGroup] in `suggestionGroup` we:
  *  - use a [LazyListScope.item] in whose [LazyItemScope] Composable lambda argument we compose a
  *  [SuggestionHeader] passing the [SearchSuggestionGroup.name] of the current [SearchSuggestionGroup]
  *  captured in the `suggestionGroup` variable as its `name` argument.
@@ -107,7 +107,8 @@ fun SearchSuggestions(
  *
  * @param name the header title to display.
  * @param modifier a [Modifier] instance that our caller can use to modify the header's appearance
- * and/or behaviour. Our caller [SearchSuggestions] passed us none so the default [Modifier] is used.
+ * and/or behaviour. Our caller [SearchSuggestions] passes us none so the empty, default, or starter
+ * [Modifier] that contains no elements is used.
  */
 @Composable
 private fun SuggestionHeader(

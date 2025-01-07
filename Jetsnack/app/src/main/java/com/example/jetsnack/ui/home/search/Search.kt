@@ -103,15 +103,15 @@ import kotlinx.coroutines.CoroutineScope
  *  of [state] to `false` after the call to [SearchRepo.search] completes.
  *
  *  - When the [SearchState.searchDisplay] of [state] is:
- *  - [SearchDisplay.Categories] we call the [SearchCategories] Composable with the [SearchState.categories]
- *  of [state] as its [SearchCategories] `categories` argument.
- *  - [SearchDisplay.Suggestions] we call the [SearchSuggestions] Composable with its `suggestions`
+ *  1. [SearchDisplay.Categories] we call the [SearchCategories] Composable with the
+ *  [SearchState.categories] of [state] as its [SearchCategories] `categories` argument.
+ *  2. [SearchDisplay.Suggestions] we call the [SearchSuggestions] Composable with its `suggestions`
  *  argument the [SearchState.suggestions] of [state], and its `onSuggestionSelect` lambda argument
  *  a lambda that sets the [SearchState.query] of [state] to the [String] passed the lambda.
- *  - [SearchDisplay.Results] we call the [SearchResults] Composable with its `searchResults` argument
- *  the [SearchState.searchResults] of [state] and its `onSnackClick` lambda argument our lambda
- *  parameter [onSnackClick].
- *  - [SearchDisplay.NoResults] we call the [NoResults] Composable with the [String] `query` argument
+ *  3. [SearchDisplay.Results] we call the [SearchResults] Composable with its `searchResults`
+ *  argument the [SearchState.searchResults] of [state] and its `onSnackClick` lambda argument our
+ *  lambda parameter [onSnackClick].
+ *  4. [SearchDisplay.NoResults] we call the [NoResults] Composable with the [String] `query` argument
  *  passed to it the [TextFieldValue.text] of the [SearchState.query] of [state].
  *
  * @param onSnackClick a lambda that should be called when Camposable displaying a [Snack] is clicked
@@ -335,29 +335,31 @@ class SearchState(
  * a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints, and in its
  * [BoxScope] `content` Composable lambda argument if the [TextFieldValue.text]  of our
  * [TextFieldValue] parameter [query] is empty we compose a [SearchHint] Composable to provide the
- * user with a hint in any case we Compose a [Row] whose `verticalAlignment` argument is set to
+ * user with a hint, and in any case we Compose a [Row] whose `verticalAlignment` argument is set to
  * [Alignment.CenterVertically] to center its children vertically, and whose `modifier` argument
  * is a [Modifier.fillMaxSize] to have it occupy its entire incoming size constraints, with a
- * [Modifier.wrapContentHeight] to have it occupy its entire incoming height constraints. In its
- * [RowScope] `content` Composable lambda argument we have:
+ * [Modifier.wrapContentHeight] to allow it to measure at its desired height without regard for the
+ * incoming measurement minimum height constraint. In its [RowScope] `content` Composable lambda
+ * argument we have:
  *  - if our [Boolean] parameter [searchFocused] is `true` we compose an [IconButton] whose `onClick`
- *  argument our lambda parameter [onClearQuery], and whose `content` Composable lambda argument is
- *  an [Icon] whose [ImageVector] `imageVector` argument is the [Icons.AutoMirrored.Outlined.ArrowBack]
- *  (an arrow pointing to the left), whose [Color] `tint` argument is the [JetsnackColors.iconPrimary]
- *  of our custom [JetsnackTheme.colors], and whose `contentDescription` argument is the string
- *  whose resource ID is `R.string.label_back` ("Back").
+ *  argument is our lambda parameter [onClearQuery], and whose `content` Composable lambda argument
+ *  is an [Icon] whose [ImageVector] `imageVector` argument is the
+ *  [Icons.AutoMirrored.Outlined.ArrowBack] (an arrow pointing to the left), whose [Color] `tint`
+ *  argument is the [JetsnackColors.iconPrimary] of our custom [JetsnackTheme.colors], and whose
+ *  `contentDescription` argument is the string whose resource ID is `R.string.label_back` ("Back").
  *  - a [BasicTextField] whose [TextFieldValue] `value` argument is our [TextFieldValue] parameter
  *  [query], whose `onValueChange` lambda argument is our lambda parameter [onQueryChange], and whose
  *  [Modifier] `modifier` argument is a [RowScope.weight] which sets its `weight` to `1f` to have it
  *  take up all horizontal space after its unweighted siblings have been measured and placed, and
- *  whose `onFocusChanged` lambda argument is a lambda that calls our lambda parameter [onSearchFocusChange]
- *  with the [FocusState.isFocused] property of the [FocusState] parameter the lambda.
+ *  whose `onFocusChanged` lambda argument is a lambda that calls our lambda parameter
+ *  [onSearchFocusChange] with the [FocusState.isFocused] property of the [FocusState] argument
+ *  passed to the lambda.
  *  - if our [Boolean] parameter [searching] is `true` we compose a [CircularProgressIndicator]
- *  whose [Color] `color` argument is the [JetsnackColors.iconPrimary] of our custom [JetsnackTheme.colors]
- *  and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds 6.dp to each `horizontal`
- *  side with a [Modifier.size] that sets its `size` to 36.dp. If our [Boolean] parameter [searching]
- *  is `false` we compose a [Spacer] whose `modifier` argument is a [Modifier.width] that sets its
- *  `width` to [IconSize] to balance the arrow icon.
+ *  whose [Color] `color` argument is the [JetsnackColors.iconPrimary] of our custom
+ *  [JetsnackTheme.colors] and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds
+ *  6.dp to each `horizontal` side with a [Modifier.size] that sets its `size` to 36.dp. If our
+ *  [Boolean] parameter [searching] is `false` we compose a [Spacer] whose `modifier` argument is a
+ *  [Modifier.width] that sets its `width` to [IconSize] to balance the arrow icon.
  *
  * @param query the current [TextFieldValue] that the user has entered. Our caller [Search] passes
  * us the value of the [SearchState.query] of the latest [SearchState].
@@ -455,16 +457,16 @@ private val IconSize = 48.dp
  * a [Modifier.wrapContentSize] chained to that to allow it to measure at its desired size without
  * regard for the incoming measurement minimum width or minimum height constraints. In its [RowScope]
  * `content` Composable lambda argument we have:
- *  - an [Icon] whose [ImageVector] `imageVector` argument is thean [Icon] whose [ImageVector]
+ *  - an [Icon] whose [ImageVector] `imageVector` argument is an [Icon] whose [ImageVector]
  *  `imageVector` argument is the [ImageVector] drawn by [Icons.Outlined.Search] (a magnifying glass),
- *  whose [Color] `tint` argument is the [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors],
- *  and whose `contentDescription` argument is the string whose resource ID is `R.string.label_search`
- *  ("Perform Search").
+ *  whose [Color] `tint` argument is the [JetsnackColors.textHelp] of our custom
+ *  [JetsnackTheme.colors], and whose `contentDescription` argument is the string whose resource ID
+ *  is `R.string.label_search` ("Perform Search").
  *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.width] that sets its `width` to
  *  `8.dp`.
- *  - a [Text] whose [String] `text` argument is the string whose resource ID is `R.string.search_jetsnack`
- *  ("Search Jetsnack"), and whose [Color] `color` argument is the [JetsnackColors.textHelp] of our
- *  custom [JetsnackTheme.colors].
+ *  - a [Text] whose [String] `text` argument is the string whose resource ID is
+ *  `R.string.search_jetsnack` ("Search Jetsnack"), and whose [Color] `color` argument is the
+ *  [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors].
  */
 @Composable
 private fun SearchHint() {

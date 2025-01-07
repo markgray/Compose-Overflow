@@ -65,29 +65,31 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * Displayed at the top of the [Feed] and [Cart] screens, it just shows a [TopAppBar] containing
  * a [Text] displaying the constant [String] "Delivery to 1600 Amphitheater Way". We start by
  * initializing our [SharedTransitionScope] variable `val sharedElementScope` with the current
- * [LocalSharedTransitionScope] (or throw [IllegalStateException] if none is available) and initialize
- * our [AnimatedVisibilityScope] variable `val navAnimatedScope` with the current
+ * [LocalSharedTransitionScope] (or throw [IllegalStateException] if none is available) and
+ * initialize our [AnimatedVisibilityScope] variable `val navAnimatedScope` with the current
  * [LocalNavAnimatedVisibilityScope] (or throw [IllegalStateException] if none is available).
- * Then `with` our [SharedTransitionScope] variable `sharedElementScope` we compose a [Column]
- * whose [Modifier] `modifier` argument chains to our [Modifier] parameter [modifier] a
+ * Then `with` our [SharedTransitionScope] variable `sharedElementScope` as a receiver, and
+ * `with` our [AnimatedVisibilityScope] variable `navAnimatedScope` as a receiver we compose
+ * a [Column] whose [Modifier] `modifier` argument chains to our [Modifier] parameter [modifier] a
  * [SharedTransitionScope.renderInSharedTransitionScopeOverlay] to have it render its content in the
  * [SharedTransitionScope]'s overlay, and then a [AnimatedVisibilityScope.animateEnterExit] that
- * uses as its `enter` and `exit` parameters [slideInVertically] and [slideOutVertically] with the
- * `animationSpec` parameter set to [spatialExpressiveSpring] and its `initialOffsetY` parameter
- * a lambda that multiplies the `fullHeight` [Int] passed the lambda by `-it * 2`. In the [ColumnScope]
- * `content` Composable lambda we compose a [TopAppBar] whose `windowInsets` parameter is a [WindowInsets]
- * whose `left` = 0, `top` = 0, `right` = 0, and `bottom` = 0, the `title` parameter is a [Row] in whose
- * [RowScope] `content` Composable lambda we compose:
+ * uses as its `enter` and `exit` parameters [slideInVertically] and [slideOutVertically] respectively
+ * with both their `animationSpec` argument set to [spatialExpressiveSpring] and with their
+ * `initialOffsetY` parameter a lambda that multiplies the `fullHeight` [Int] passed the lambda by
+ * `-it * 2`. In the [ColumnScope] `content` Composable lambda we compose a [TopAppBar] whose
+ * `windowInsets` parameter is a [WindowInsets] whose `left` = 0, `top` = 0, `right` = 0, and
+ * `bottom` = 0, the `title` argument is a [Row] in whose [RowScope] `content` Composable lambda we
+ * compose:
  *  - a [Text] whose `text` parameter is "Delivery to 1600 Amphitheater Way", its [TextStyle] `style`
  *  argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography], its [Color]
  *  `color` argument is the [JetsnackColors.textSecondary] of our custom [JetsnackTheme.colors], its
  *  [TextAlign] `textAlign` argument is [TextAlign.Center] to center the text, its `maxLines` argument
- *  is `1`, its [TextOverflow] `overflow` argument is [TextOverflow.Ellipsis] to Use an ellipsis to
+ *  is `1`, its [TextOverflow] `overflow` argument is [TextOverflow.Ellipsis] to use an ellipsis to
  *  indicate that the text has overflowed, and its [Modifier] `modifier` argument is a [RowScope.weight]
  *  whose `weight` argument of `1f` causes it to occupy all of the [Row]'s incoming width constraint
- *  after its unweighted siblings have been measured and placed, and chained to that is a [RowScope.align]
- *  whose `alignment` argument is [Alignment.CenterVertically] to align the [Text] to the vertical
- *  center of the [Row].
+ *  after its unweighted siblings have been measured and placed, and chained to that is a
+ *  [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically] to align the [Text]
+ *  to the vertical center of the [Row].
  *  - an [IconButton] whose `onClick` argument is a do-nothing lambda, and its [Modifier] `modifier`
  *  argument is a [RowScope.align] whose `alignment` argument is [Alignment.CenterVertically] to
  *  align the [IconButton] to the vertical center of the [Row]. In the [IconButton] `content`
