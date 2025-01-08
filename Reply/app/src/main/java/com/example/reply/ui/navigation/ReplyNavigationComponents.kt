@@ -19,11 +19,13 @@
 package com.example.reply.ui.navigation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,11 +52,13 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.material3.adaptive.Posture
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -76,6 +80,7 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
@@ -416,7 +421,29 @@ fun ReplyNavigationRail(
 }
 
 /**
+ * This is used as the `navigationSuite` argument of the [NavigationSuiteScaffoldLayout] when the
+ * [NavigationSuiteType] is [NavigationSuiteType.NavigationBar] which happens when the device's
+ * [WindowAdaptiveInfo.windowSizeClass] is [WindowWidthSizeClass.COMPACT] or
+ * [WindowHeightSizeClass.COMPACT]. Our root composable is a [NavigationBar] whose [Modifier]
+ * `modifier` argument is a [Modifier.fillMaxWidth] to have it occupy its entire incoming width
+ * constraint. In its `content` [RowScope] Composable lambda argument we use the [List.forEach]
+ * method of the [List] of [ReplyTopLevelDestination] field [TOP_LEVEL_DESTINATIONS] accepting each
+ * [ReplyTopLevelDestination] passed its `action` lambda argument in variable `replyDestination`
+ * then we compose a [NavigationBarItem] whose `selected` argument is `true` if our [NavDestination]
+ * parameter [currentDestination] has the same route as the current [ReplyTopLevelDestination] in
+ * variable `replyDestination`, whose `onClick` lambda argument is a lambda that calls our lambda
+ * parameter [navigateToTopLevelDestination] with the current [ReplyTopLevelDestination] in
+ * variable `replyDestination`, and whose `icon` Composable lambda argument is a lambda that
+ * composes an [Icon] whose [ImageVector] `imageVector` argument is the
+ * [ReplyTopLevelDestination.selectedIcon] of the current [ReplyTopLevelDestination] in variable
+ * `replyDestination`, and whose [String] `contentDescription` argument is the [String] whose
+ * resource ID is the [ReplyTopLevelDestination.iconTextId] of the current [ReplyTopLevelDestination]
+ * in variable `replyDestination`.
  *
+ * @param currentDestination the current [NavDestination] of the [ReplyApp] that it has retrieved
+ * from the [NavBackStackEntry] of its [NavHostController].
+ * @param navigateToTopLevelDestination A callback that is invoked with a [ReplyTopLevelDestination]
+ * in order to navigate to a different top level screen.
  */
 @Composable
 fun ReplyBottomNavigationBar(
@@ -440,7 +467,77 @@ fun ReplyBottomNavigationBar(
 }
 
 /**
+ * This is used as the `navigationSuite` argument of the [NavigationSuiteScaffoldLayout] when the
+ * [NavigationSuiteType] is [NavigationSuiteType.NavigationDrawer] which happens when the device's
+ * [WindowAdaptiveInfo.windowSizeClass] is [WindowWidthSizeClass.EXPANDED] and the device's width
+ * is greater than 1200.dp. Our root composable is a [PermanentDrawerSheet] whose [Modifier] `modifier`
+ * argument is a [Modifier.sizeIn] whose `minWidth` argument is `200.dp` and whose `maxWidth` argument
+ * is `300.dp`. In its [ColumnScope] `content` Composable lambda argument we compose a [Layout]
+ * whose [Modifier] `modifier` argument is a [Modifier.background] whose [Color] `color` argument is
+ * the [ColorScheme.surfaceContainerHigh] of our custom [MaterialTheme.colorScheme], with a
+ * [Modifier.padding] chained to that adds `16.dp` to all sides. In the `content` Composable lambda
+ * argument we compose:
+ *  - a [Column] whose [Modifier] `modifier` argument is a [Modifier.layoutId] with `layoutId` of
+ *  [LayoutType.HEADER], whose `horizontalAlignment` argument is [Alignment.Start], and whose
+ *  `verticalArrangement` argument is [Arrangement.spacedBy] with `space` of `4.dp`. In the
+ *  [ColumnScope] `content` Composable lambda argument of the [Column] we compose:
+ *  1. a [Text] whose [Modifier] `modifier` argument is a [Modifier.padding] that adds `16.dp`
+ *  padding to all sides, whose [String] `text` argument is the [String] with resource ID
+ *  `R.string.app_name` ("Reply") in uppercase, whose [TextStyle] `style` argument is the
+ *  [Typography.titleMedium] of our custom [MaterialTheme.typography], and whose [Color] `color`
+ *  argument is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
+ *  2. an [ExtendedFloatingActionButton] whose `onClick` lambda argument is a do-nothing lambda,
+ *  whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth], with a [Modifier.padding]
+ *  chained to that which adds `8.dp` to the `top` and `40.dp` to the `bottom`, whose [Color]
+ *  `containerColor` argument is the [ColorScheme.tertiaryContainer] of our custom
+ *  [MaterialTheme.colorScheme], and whose [Color] `contentColor` argument is the
+ *  [ColorScheme.onTertiaryContainer] of our custom [MaterialTheme.colorScheme]. In the [RowScope]
+ *  `content` Composable lambda argument of the [ExtendedFloatingActionButton] we compose an [Icon]
+ *  whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Edit],
+ *  whose [String] `contentDescription` argument is the [String] with resource ID `R.string.compose`
+ *  ("Compose"), and whose [Modifier] `modifier` argument is a [Modifier.size] whose `size` is `24.dp`.
+ *  Next to that in the [RowScope] `content` Composable lambda argument of the
+ *  [ExtendedFloatingActionButton] is a [Text] whose [String] `text` argument is the [String] with
+ *  resource ID `R.string.compose` ("Compose"), whose [Modifier] `modifier` argument is a
+ *  [RowScope.weight] of `weight` of `1f` (causes it to take up all the incoming width constraint
+ *  once its sidlings are measured and placed), and whose [TextAlign] `textAlign` argument is
+ *  [TextAlign.Center].
+ *  - a second [Column] whose [Modifier] `modifier` argument is a [Modifier.layoutId] with `layoutId`
+ *  of [LayoutType.CONTENT], with a [Modifier.verticalScroll] chained to that whose [ScrollState]
+ *  `state` argument is a remembered [ScrollState] returned by [rememberScrollState] (this makes the
+ *  [Column] scrollable), and whose `horizontalAlignment` argument is [Alignment.CenterHorizontally]
+ *  to center its children horizontally.
+ *  1. In the [ColumnScope] `content` Composable lambda argument of the [Column] we use the
+ *  [List.forEach] method of the [List] of [ReplyTopLevelDestination] field [TOP_LEVEL_DESTINATIONS]
+ *  accepting each [ReplyTopLevelDestination] passed its `action` lambda argument in variable
+ *  `replyDestination` then we compose a [NavigationDrawerItem] whose `selected` argument is `true`
+ *  if our [NavDestination] parameter [currentDestination] has the same route as the current
+ *  [ReplyTopLevelDestination] in variable `replyDestination`, whose `label` Composable lambda
+ *  argument is a lambda that composes a [Text] whose [String] `text` argument is the [String]
+ *  whose resource ID is the [ReplyTopLevelDestination.iconTextId] of the current
+ *  [ReplyTopLevelDestination] in variable `replyDestination`, and whose [Modifier] `modifier`
+ *  argument is a [Modifier.padding] that adds `16.dp` to both horizontal sides. The `icon`
+ *  Composable lambda argument is a lambda that composes an [Icon] whose [ImageVector] `imageVector`
+ *  argument is the [ReplyTopLevelDestination.selectedIcon] of the current [ReplyTopLevelDestination]
+ *  in variable `replyDestination`, and whose [String] `contentDescription` argument is the [String]
+ *  with resrource ID [ReplyTopLevelDestination.iconTextId] of the current [ReplyTopLevelDestination]
+ *  in variable `replyDestination`. The [NavigationDrawerItemColors] `colors` argument of the
+ *  [NavigationDrawerItem] is the [NavigationDrawerItemDefaults.colors] with the
+ *  `unselectedContainerColor` overridden to be [Color.Transparent] (the color to use for the icon
+ *  when the item is unselected). The `onClick` lambda argument is a lambda that calls our lambda
+ *  parameter [navigateToTopLevelDestination] with the current [ReplyTopLevelDestination] in variable
+ *  `replyDestination`.
+ *  - the [MeasurePolicy] `measurePolicy` argument is a call to [navigationMeasurePolicy] with its
+ *  [ReplyNavigationContentPosition] `navigationContentPosition` argument our
+ *  [ReplyNavigationContentPosition] parameter [navigationContentPosition].
  *
+ * @param currentDestination the current [NavDestination] of the [ReplyApp] that it has retrieved
+ * from the [NavBackStackEntry] of its [NavHostController].
+ * @param navigationContentPosition The [ReplyNavigationContentPosition] to use when positioning the
+ * [PermanentNavigationDrawerContent], one of [ReplyNavigationContentPosition.TOP] or
+ * [ReplyNavigationContentPosition.CENTER].
+ * @param navigateToTopLevelDestination A callback that is invoked with a [ReplyTopLevelDestination]
+ * in order to navigate to a different top level screen.
  */
 @Composable
 fun PermanentNavigationDrawerContent(
