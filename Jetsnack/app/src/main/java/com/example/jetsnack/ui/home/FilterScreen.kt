@@ -73,6 +73,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -93,11 +94,11 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
 /**
  * This is a pop-up which is launched when the "Filters" [IconButton] in the [FilterBar] Composable
  * is clicked. Its appearance and disappearance is animated using a shared transition that also
- * animates the synchronized disappearance and appearance of the [IconButton]. We start by initializing
- * and remembering our [MutableState] wrapped [String] variable `val sortState` with the value returned
- * by the [SnackRepo.getSortDefault] method, and our [MutableFloatState] wrapped [Float] variable
- * `var maxCalories` with the value of `0f`. We initialize our [String] variable `val defaultFilter`
- * with the [String] returned by the [SnackRepo.getSortDefault] method.
+ * animates the synchronized disappearance and appearance of the [IconButton]. We start by
+ * initializing and remembering our [MutableState] wrapped [String] variable `val sortState` with
+ * the value returned by the [SnackRepo.getSortDefault] method, and our [MutableFloatState] wrapped
+ * [Float] variable `var maxCalories` with the value of `0f`. We initialize our [String] variable
+ * `val defaultFilter` with the [String] returned by the [SnackRepo.getSortDefault] method.
  *
  * Our root Composable is a [Box] whose [Modifier] `modifier` argument is a [Modifier.fillMaxSize],
  * to which it chains a [Modifier.clickable] whose `indication` argument is `null`, and whose
@@ -105,19 +106,19 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * lambda argument is a do-nothing lambda. In the [BoxScope] `content` Composable lambda argument of
  * the [Box] we initialize and remember our [List] of [Filter] variable `val priceFilters` to the
  * [List] of [Filter] returned by the [SnackRepo.getPriceFilters] method, our [List] of [Filter]
- * variable `val categoryFilters` to the [List] of [Filter] returned by the [SnackRepo.getCategoryFilters],
+ * variable `val categoryFilters` to the [List] of [Filter] returned by [SnackRepo.getCategoryFilters],
  * and our [List] of [Filter] variable `val lifeStyleFilters` to the [List] of [Filter] returned by
- * the [SnackRepo.getLifeStyleFilters] method. Then we compose a [Spacer] whose `modifier` argument
- * is a [Modifier.fillMaxSize] to have it fill the entire [Box], with [Modifier.background] whose
- * [Color] `color` argument is a copy of [Color.Black] with its `alpha` argument set to `0.5f`, and
- * chained to that is a [Modifier.clickable] whose `indication` argument is `null`, and whose
- * `interactionSource` argument is a [remember] of a [MutableInteractionSource]. In its `onClick`
- * lambda argument it calls our lambda parameter [onDismiss] (rather neat, it occupies the background
- * behind the actual filters displayed when they are animated in turning the background behind them
- * a translucent gray (the content underneath still visible) and allowing you to dismiss by clicking
- * on the [Spacer]).
+ * [SnackRepo.getLifeStyleFilters]. Then we compose a [Spacer] whose `modifier` argument is a
+ * [Modifier.fillMaxSize] to have it fill the entire [Box], followed by a chain to a
+ * [Modifier.background] whose [Color] `color` argument is a copy of [Color.Black] with its `alpha`
+ * argument set to `0.5f`, and chained to that is a [Modifier.clickable] whose `indication` argument
+ * is `null`, and whose `interactionSource` argument is a [remember] of a [MutableInteractionSource].
+ * In its `onClick` lambda argument it calls our lambda parameter [onDismiss] (rather neat, it
+ * occupies the background behind the actual filters displayed when they are animated in turning the
+ * background behind them a translucent gray (the content underneath still visible) and allowing you
+ * to dismiss by clicking on the [Spacer]).
  *
- * Composed on top of the [Spacer] in the [Box] we use `with` to set the receiver of a block to our
+ * Composed on top of the [Spacer] in the [Box] we use `with` to set the `receiver` of a block to our
  * [SharedTransitionScope] parameter [sharedTransitionScope]. In its [SharedTransitionScope] `block`
  * we compose a [Column] (it will be animated in and out using the [SharedTransitionScope]) whose
  * [Modifier] argument `modifier` is a [Modifier.padding] that sets the padding on `all` sides to
@@ -125,22 +126,23 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * followed by a [Modifier.clip] whose `shape` argument is the [Shapes.medium] of our custom
  * [MaterialTheme.shapes], with a [SharedTransitionScope.sharedBounds] chained to that whose
  * `sharedContentState` argument is a [SharedTransitionScope.rememberSharedContentState] whose `key`
- * argument is [FilterSharedElementKey], and whose `animatedVisibilityScope` argument is our
+ * argument is [FilterSharedElementKey], whose `animatedVisibilityScope` argument is our
  * [AnimatedVisibilityScope]`parameter [animatedVisibilityScope], whose `resizeMode` argument is
  * [SharedTransitionScope.ResizeMode.RemeasureToBounds] (remeasures and relayouts its child whenever
  * bounds change during the bounds transform), and whose `clipInOverlayDuringTransition` argument is
- * an [SharedTransitionScope.OverlayClip] whose `shape` argument is the [Shapes.medium] of our custom
- * [MaterialTheme.shapes]. This is followed by [Modifier.wrapContentSize] to have it measure at its
- * desired size without regard to incoming minimum size constraints, with a [Modifier.heightIn] whose
- * maximum is 450.dp, followed by [Modifier.verticalScroll] whose `state` argument is a [rememberScrollState],
- * followed by a [Modifier.clickable] whose `indication` argument is `null`, and whose
- * `interactionSource` argument is a [remember] of a [MutableInteractionSource], its `onClick`
- * lambda argument is a do-nothing lambda. This is followed by a [Modifier.background] whose [Color]
- * `color` argument is the [JetsnackColors.uiFloated] of our custom [JetsnackTheme.colors], followed
- * by a [Modifier.padding] that sets the padding on `horizontal` sides to 24.dp, and the padding on
- * vertical sides to 16.dp, with a [SharedTransitionScope.skipToLookaheadSize] at the end of the chain
- * which enables a layout to measure its children with the lookahead constraints, therefore laying
- * out the children as if the transition has finished.
+ * an [SharedTransitionScope.OverlayClip] whose [Shape] `shape` argument is the [Shapes.medium] of
+ * our custom [MaterialTheme.shapes]. This is followed by [Modifier.wrapContentSize] to have it
+ * measure at its desired size without regard to incoming minimum size constraints, with a
+ * [Modifier.heightIn] whose maximum is 450.dp, followed by [Modifier.verticalScroll] whose `state`
+ * argument is a [rememberScrollState], followed by a [Modifier.clickable] whose `indication` argument
+ * is `null`, and whose `interactionSource` argument is a [remember] of a [MutableInteractionSource],
+ * its `onClick` lambda argument is a do-nothing lambda. This is followed by a [Modifier.background]
+ * whose [Color] `color` argument is the [JetsnackColors.uiFloated] of our custom
+ * [JetsnackTheme.colors], followed by a [Modifier.padding] that sets the padding on `horizontal`
+ * sides to `24.dp`, and the padding on vertical sides to `16.dp`, with a
+ * [SharedTransitionScope.skipToLookaheadSize] at the end of the chain which enables a layout to
+ * measure its children with the lookahead constraints, therefore laying out the children as if the
+ * transition has finished.
  *
  * In the [ColumnScope] `content` Composable lambda argument of the [Column] we compose:
  *  - a [Row] whose `modifier` argument is a [Modifier.height] whose `intrinsicSize` argument is
@@ -163,9 +165,9 @@ import com.example.jetsnack.ui.theme.JetsnackTheme
  * compose a [Text] as the label whose `text` argument is the [String] with resource ID
  * `R.string.reset` ("Reset"), whose [TextStyle] `style` argument is the [Typography.bodyMedium] of
  * our custom [MaterialTheme.typography], whose [FontWeight] `fontWeight` argument is our [FontWeight]
- * variable `fontWeight` and whose [Color] `color` argument is a copy of the [JetsnackColors.uiBackground]
- * of our custom [JetsnackTheme.colors] with the `alpha` set to `0.38f` if `resetEnabled` is `false`
- * or to `1f` if it is `true`.
+ * variable `fontWeight` and whose [Color] `color` argument is a copy of the
+ * [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors] with the `alpha` set to `0.38f`
+ * if `resetEnabled` is `false` or to `1f` if it is `true`.
  *
  *  - Below the [Row] in the [Column] is a [SortFiltersSection] whose `sortState` argument is our
  *  [MutableState] wrapped [String] variable `sortState`, and whose lambda argument `onFilterChange`

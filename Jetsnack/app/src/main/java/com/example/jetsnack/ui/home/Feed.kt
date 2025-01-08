@@ -178,10 +178,10 @@ private fun Feed(
 }
 
 /**
- * Composable that is called by the [Feed] Composable to display its [List] of [SnackCollection]
- * parameter. Our root Composable is a [LazyColumn] whose [Modifier] `modifier` argument is our
- * [Modifier] parameter [modifier]. In the [LazyListScope] `content` Composable lambda argument we
- * have:
+ * Composable that is called by the [Feed] Composable to display the [List] of [SnackCollection]
+ * parameter [snackCollections]. Our root Composable is a [LazyColumn] whose [Modifier] `modifier`
+ * argument is our [Modifier] parameter [modifier]. In the [LazyListScope] `content` Composable
+ * lambda argument we have:
  *  - a [LazyListScope.item] whose [LazyItemScope] `content` Composable lambda argument holds a
  *  [Spacer] whose `modifier` argument is a [Modifier.windowInsetsTopHeight] which adds a
  *  [WindowInsets] whose `top` is 56.dp to the [WindowInsets.Companion.statusBars] (this compensates
@@ -189,15 +189,16 @@ private fun Feed(
  *  [LazyListScope.item] is a [FilterBar] whose `filters` argument is our [List] of [Filter] parameter
  *  [filters], whose `sharedTransitionScope` argument is our [SharedTransitionScope] parameter
  *  [sharedTransitionScope], whose `filterScreenVisible` argument is our [Boolean] parameter
- *  [filtersVisible], and whose `onShowFilters` lambda argument our lambda parameter [onFiltersSelected].
- *  - a [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [SnackCollection] parameter
- *  [snackCollections]. In its [LazyItemScope] `itemContent` Composable lambda it passes the index of
- *  the current [SnackCollection] in [Int] variable `index` and the  [SnackCollection] in the variable
- *  `snackCollection`. Then for each element in the [List] of [SnackCollection] parameter [snackCollections]
- *  if its `index` is greater than 0 we compose a [JetsnackDivider] whose `thickness` is 2.dp, then
- *  for all values of `index` we compose a [SnackCollection] whose `snackCollection` argument is the
- *  variable `snackCollection`, whose `onSnackClick` argument is our lambda parameter [onSnackClick],
- *  and whose `index` argument is our `[Int] variable `index`.
+ *  [filtersVisible], and whose `onShowFilters` lambda argument is our lambda parameter
+ *  [onFiltersSelected].
+ *  - a [LazyListScope.itemsIndexed] whose `items` argument is our [List] of [SnackCollection]
+ *  parameter [snackCollections]. In its [LazyItemScope] `itemContent` Composable lambda it passes
+ *  the index of the current [SnackCollection] in [Int] variable `index` and the  [SnackCollection]
+ *  in the variable `snackCollection`. Then for each element in the [List] of [SnackCollection]
+ *  parameter [snackCollections] if its `index` is greater than 0 we compose a [JetsnackDivider]
+ *  whose `thickness` is 2.dp, then for all values of `index` we compose a [SnackCollection] whose
+ *  `snackCollection` argument is the variable `snackCollection`, whose `onSnackClick` argument is
+ *  our lambda parameter [onSnackClick], and whose `index` argument is our `[Int] variable `index`.
  *
  * @param snackCollections the [List] of [SnackCollection] that we are supposed to display.
  * @param filters the [List] of [Filter] that is displayed by our [FilterBar] Composable
