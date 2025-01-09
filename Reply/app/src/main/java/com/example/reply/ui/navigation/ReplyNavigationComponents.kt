@@ -545,7 +545,7 @@ fun PermanentNavigationDrawerContent(
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
 ) {
-    PermanentDrawerSheet(
+        PermanentDrawerSheet(
         modifier = Modifier.sizeIn(minWidth = 200.dp, maxWidth = 300.dp),
         drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
@@ -625,7 +625,85 @@ fun PermanentNavigationDrawerContent(
 }
 
 /**
+ * This is used as the `drawerContent` argument of the [ModalNavigationDrawer] that is used by
+ * [ReplyNavigationWrapper]. Our root composable is a [ModalDrawerSheet]. In its [ColumnScope]
+ * `content` Composable lambda argument we compose a [Layout] whose [Modifier] `modifier` argument
+ * is a [Modifier.background] whose [Color] `color` argument is the [ColorScheme.inverseOnSurface]
+ * of our custom [MaterialTheme.colorScheme], with a [Modifier.padding] chained to that that adds
+ * `16.dp` to all sides. In the `content` Composable lambda argument we compose:
  *
+ *  - a [Column] whose [Modifier] `modifier` argument is a [Modifier.layoutId] with `layoutId` of
+ *  [LayoutType.HEADER], whose `horizontalAlignment` argument is [Alignment.CenterHorizontally],
+ *  and whose `verticalArrangement` argument is [Arrangement.spacedBy] with `space` of `4.dp`. In
+ *  its [ColumnScope] `content` Composable lambda argument we compose:
+ *  1. a [Row] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] that has it take up
+ *  all of its incoming width constraint, with a [Modifier.padding] chained to that which adds `16.dp`
+ *  padding to all side, whose `horizontalArrangement` argument is [Arrangement.SpaceBetween], and
+ *  whose `verticalAlignment` argument is [Alignment.CenterVertically]. In the [RowScope] `content`
+ *  Composable lambda argument we compose a [Text] whose `text` argument is the [String] with resource
+ *  ID `R.string.app_name` ("Reply"), whose [TextStyle] `style` argument is the [Typography.titleMedium]
+ *  of our custom [MaterialTheme.typography], and whose [Color] `color` argument is the
+ *  [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. Next in the [Row] is an
+ *  [IconButton] whose `onClick` lambda argument is a lambda that calls our lambda parameter
+ *  [onDrawerClicked], and whose `content` Composable lambda argument is a lambda that composes an
+ *  [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by
+ *  [Icons.AutoMirrored.Filled.MenuOpen], and whose [String] `contentDescription` argument is the
+ *  [String] with resource ID `R.string.close_drawer` ("Close drawer").
+ *  2. Next in the [Column] is an [ExtendedFloatingActionButton] whose `onClick` lambda argument is
+ *  a do-nothing lambda, whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth], with a
+ *  [Modifier.padding] chained to that which adds `8.dp` to its `top`, and `4.dp` to its `bottom`,
+ *  whose [Color] `containerColor` argument is the [ColorScheme.tertiaryContainer] of our custom
+ *  [MaterialTheme.colorScheme], and whose [Color] `contentColor` argument is the
+ *  [ColorScheme.onTertiaryContainer] of our custom [MaterialTheme.colorScheme]. In the [RowScope]
+ *  `content` Composable lambda argument of the [IconButton] we compose an [Icon] whose [ImageVector]
+ *  `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Edit], whose [String]
+ *  `contentDescription` argument is the [String] with resource ID `R.string.compose` ("Compose"),
+ *  and whose [Modifier] `modifier` argument is a [Modifier.size] whose `size` is `18.dp`. Next to
+ *  that in the [RowScope] `content` Composable lambda argument of the [ExtendedFloatingActionButton]
+ *  we have a [Text] whose [String] `text` argument is the [String] with resource ID `R.string.compose`
+ *  ("Compose"), whose [Modifier] `modifier` argument is a [RowScope.weight] of `weight` of `1f` to
+ *  have it take up all of the incoming width constraint once its sidlings are measured and placed,
+ *  and whose [TextAlign] `textAlign` argument is [TextAlign.Center] to align its `text` at its
+ *  center.
+ *
+ *  - Below the [Column] is another [Column] wwhose [Modifier] `modifier` argument is a
+ *  [Modifier.layoutId] whose `layoutId` is [LayoutType.CONTENT], with a [Modifier.verticalScroll]
+ *  chained to that which allows the [Column] to be scrollable, and whose `horizontalAlignment`
+ *  argument is [Alignment.CenterHorizontally]. In the [ColumnScope] `content` Composable lambda
+ *  argument we use the [List.forEach] method of the [List] of [ReplyTopLevelDestination] field
+ *  [TOP_LEVEL_DESTINATIONS] capturing each [ReplyTopLevelDestination] in variable `replyDestination`
+ *  and in the `action` lambda argument we compose a [NavigationDrawerItem] whose `selected` argument
+ *  is `true` if our [NavDestination] parameter [currentDestination] has the same route as the current
+ *  [ReplyTopLevelDestination] in variable `replyDestination`, whose `label` Composable lambda
+ *  argument is a lambda that composes a [Text] whose `text` argument is the [String] with resource
+ *  ID [ReplyTopLevelDestination.iconTextId] of the current [ReplyTopLevelDestination] in variable
+ *  `replyDestination`, and whose [Modifier] `modifier` argument is a [Modifier.padding] that adds
+ *  `16.dp` to each `horizontal` side, whose `icon` Composable lambda argument is a lambda that
+ *  composes an [Icon] whose [ImageVector] `imageVector` argument is the
+ *  [ReplyTopLevelDestination.selectedIcon] of the current [ReplyTopLevelDestination] in variable
+ *  `replyDestination`, and whose [String] `contentDescription` argument is the [String] with
+ *  resource ID [ReplyTopLevelDestination.iconTextId] of the current [ReplyTopLevelDestination] in
+ *  variable `replyDestination`. The [NavigationDrawerItemColors] `colors` argument of the
+ *  [NavigationDrawerItem] is [NavigationDrawerItemDefaults.colors] with the `unselectedContainerColor`
+ *  overridden to be [Color.Transparent] (the color to use for the icon when the item is unselected).
+ *  The `onClick` lambda argument is a lambda that calls our lambda parameter
+ *  [navigateToTopLevelDestination] with the current [ReplyTopLevelDestination] in variable
+ *  `replyDestination`.
+ *
+ * The [MeasurePolicy] `measurePolicy` argument of the [Layout] is a call to [navigationMeasurePolicy]
+ * with its [ReplyNavigationContentPosition] `navigationContentPosition` argument our
+ * [ReplyNavigationContentPosition] parameter [navigationContentPosition].
+ *
+ * @param currentDestination the current [NavDestination] of the [ReplyApp] that it has retrieved
+ * from the [NavBackStackEntry] of its [NavHostController].
+ * @param navigationContentPosition The [ReplyNavigationContentPosition] to use when positioning the
+ * nav drawer, one of [ReplyNavigationContentPosition.TOP] or [ReplyNavigationContentPosition.CENTER].
+ * It is passed as the `navigationContentPosition` argument of the [navigationMeasurePolicy] method
+ * that creates the [MeasurePolicy] of the [ModalDrawerSheet].
+ * @param navigateToTopLevelDestination A callback that is invoked with a [ReplyTopLevelDestination]
+ * when the user indicates that they wish to navigate to a different [ReplyTopLevelDestination].
+ * @param onDrawerClicked a lambda that should be called when the user indicates that they wish to
+ * close the [ModalNavigationDrawer].
  */
 @Composable
 fun ModalNavigationDrawerContent(
@@ -724,7 +802,13 @@ fun ModalNavigationDrawerContent(
 }
 
 /**
+ * This is used as the `measurePolicy` argument of the [Layout] that is used by the [ModalDrawerSheet]
+ * that is used by [ModalNavigationDrawerContent] and by the [PermanentDrawerSheet] that is used by
+ * [PermanentNavigationDrawerContent].
  *
+ * @param navigationContentPosition The [ReplyNavigationContentPosition] to use when positioning the
+ * [Measurable] in the [List] of [Measurable] whose [Measurable.layoutId] is [LayoutType.CONTENT],
+ * one of [ReplyNavigationContentPosition.TOP] or [ReplyNavigationContentPosition.CENTER].
  */
 fun navigationMeasurePolicy(
     navigationContentPosition: ReplyNavigationContentPosition,
