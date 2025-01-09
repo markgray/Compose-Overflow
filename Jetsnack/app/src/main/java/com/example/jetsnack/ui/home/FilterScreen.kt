@@ -382,15 +382,15 @@ fun SortFiltersSection(sortState: String, onFilterChange: (Filter) -> Unit) {
 /**
  * This is used by the [SortFiltersSection] Composable to display the different [Filter]s that are
  * available from the [SnackRepo.getSortFilters] method. We use the [forEach] extension function of
- * [List] to loop through each [Filter] in the [List] capturing the [Filter] in variable `filter`.
- * Then in the `action` lambda argument of the [forEach] we compose a [SortOption] whose `text`
- * argument is the [Filter.name] of `filter`, whose `icon` argument is the [Filter.icon] of `filter`,
- * whose `selected` argument is `true` if `sortState` is equal to the [Filter.name] of `filter`, and
- * whose `onClickOption` lambda argument is a lambda that calls our lambda parameter [onChanged] with
- * [Filter] variable `filter`.
+ * our [List] of [Filter] parameter [sortFilters] to loop through each [Filter] in the [List]
+ * capturing the [Filter] in variable `filter`. Then in the `action` lambda argument of the [forEach]
+ * we compose a [SortOption] whose `text` argument is the [Filter.name] of `filter`, whose `icon`
+ * argument is the [Filter.icon] of `filter`, whose `selected` argument is `true` if our [String]
+ * parameter [sortState] is equal to the [Filter.name] of `filter`, and whose `onClickOption` lambda
+ * argument is a lambda that calls our lambda parameter [onChanged] with [Filter] variable `filter`.
  *
- * @param sortFilters the [List] of [Filter] to be displayed, each [Filter] in a [SortOption]. Our
- * caller [SortFiltersSection] doesn't pass us any so we use the default which is the [List] of
+ * @param sortFilters the [List] of [Filter] to be displayed, each [Filter] in its own [SortOption].
+ * Our caller [SortFiltersSection] doesn't pass us any so we use the default which is the [List] of
  * [Filter] returned by the [SnackRepo.getSortFilters] method.
  * @param sortState the [Filter.name] of the currently selected sort [Filter].
  * @param onChanged a lambda which can be called with a [Filter] to change the currently selected
@@ -428,8 +428,8 @@ fun SortFilters(
  * The second composable is a [Slider] whose [Float] `value` argument is our [Float] parameter
  * [sliderPosition], whose `onValueChange` lambda argument is a lambda which accepts the [Float]
  * passed the lambda in variable `newValue` then calls our lambda taking [Float] parameter
- * [onValueChanged] with `newValue`, whose [ClosedFloatingPointRange] `valueRange` is the closed
- * range of 0f..300f, whose [Int] `steps` argument is 5, whose `modifier` argument is a
+ * [onValueChanged] with `newValue`, whose [ClosedFloatingPointRange] `valueRange` argument is the
+ * closed range of 0f..300f, whose [Int] `steps` argument is 5, whose `modifier` argument is a
  * [Modifier.fillMaxWidth], and whose [SliderColors] `colors` argument is [SliderDefaults.colors]
  * with its [SliderColors.thumbColor] the [JetsnackColors.brand] of our custom [JetsnackTheme.colors],
  * with its [SliderColors.activeTrackColor] the [JetsnackColors.brand] of our custom
@@ -492,18 +492,18 @@ fun FilterTitle(text: String) {
  * [Filter] it retrieves from the [SnackRepo.getSortFilters] method. Our root Composable is a [Row]
  * whose `modifier` argument is a [Modifier.padding] that adds 14.dp to the `top`, with a
  * [Modifier.selectable] chained to that whose `selected` argument our [Boolean] parameter [selected],
- * and the `onClick` lambda argument lambda that calls our lambda parameter [onClickOption]. In the
+ * and a `onClick` lambda argument lambda that calls our lambda parameter [onClickOption]. In the
  * [RowScope] `content` Composable lambda argument of the [Row] if our [ImageVector] parameter [icon]
- * is not `null` we compose an [Icon] whose `imageVector` argument is our [ImageVector] parameter
- * [icon], and whose `contentDescription` argument is `null`. Next in the [Row] we compose a [Text]
- * whose `text` argument is our [String] parameter [text], whose [TextStyle] `style` argument is the
- * [Typography.titleMedium] of our custom [MaterialTheme.typography], and whose [Modifier] `modifier`
- * argument is a [Modifier.padding] that adds 10.dp to the `start`, with a [RowScope.weight] chained
- * to that with a `weight` of `1f` to have it fill the remaining space after its unweighted siblings
- * are measured and placed. If our [Boolean] parameter [selected] is `true` we compose an [Icon] whose
- * [ImageVector] `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Done] (a "checkmark"),
- * whose `contentDescription` argument is `null`, and whose [Color] `tint` argument is the
- * [JetsnackColors.brand] of our custom [JetsnackTheme.colors].
+ * is not `null` we compose an [Icon] whose [ImageVector] `imageVector` argument is our [ImageVector]
+ * parameter [icon], and whose `contentDescription` argument is `null`. Next in the [Row] we compose
+ * a [Text] whose `text` argument is our [String] parameter [text], whose [TextStyle] `style` argument
+ * is the [Typography.titleMedium] of our custom [MaterialTheme.typography], and whose [Modifier]
+ * `modifier` argument is a [Modifier.padding] that adds 10.dp to the `start`, with a [RowScope.weight]
+ * chained to that with a `weight` of `1f` to have it fill the remaining space after its unweighted
+ * siblings are measured and placed. If our [Boolean] parameter [selected] is `true` we compose an
+ * [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Done]
+ * (a "checkmark"), whose `contentDescription` argument is `null`, and whose [Color] `tint` argument
+ * is the [JetsnackColors.brand] of our custom [JetsnackTheme.colors].
  *
  * @param text the [Filter.name] of the [Filter]
  * @param icon the [Filter.icon] of the [Filter]

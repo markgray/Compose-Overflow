@@ -209,7 +209,8 @@ fun NavGraphBuilder.composableWithCompositionLocal(
  *  argument is our [Modifier] parameter [modifier].
  *
  * @param onSnackSelected a lambda that can be called with the [Snack.id] of a [Snack] that is
- * clicked, a [String] identifying the "orgin" and a [NavBackStackEntry].
+ * clicked, a [String] identifying the "orgin" and the [NavBackStackEntry] that is passed to the
+ * `content` Composable lambda argument.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [MainContainer] passes us a [Modifier.padding] that adds the [PaddingValues]
  * that [JetsnackScaffold] passes its `content` Composable lambda parameter, followed by a chain
@@ -301,7 +302,7 @@ enum class HomeSections(
  * [List] of [String] variable `routes`, whose `indicator` argument is a [BoxScope] Composable
  * lambda that composes our [JetsnackBottomNavIndicator], whose `animSpec` argument is our
  * [SpringSpec] of [Float] variable `springSpec`, and whose `modifier` argument is a
- * [Modifier.navigationBarsPadding].
+ * [Modifier.navigationBarsPadding] that adds padding to accommodate the navigation bars insets.
  *
  * In the `content` Composable lambda argument of the [JetsnackBottomNavLayout] we initialize our
  * [Configuration] variable `val configuration` to the `current` [LocalConfiguration], and initialize
@@ -311,9 +312,9 @@ enum class HomeSections(
  * all of its members and in its `action` lambda argument we capture each [HomeSections] in the
  * variable `section` then we set [Boolean] variable `val selected` to `true` if this `section` is
  * equal to `currentSection`, and initialize our animated [Color] variable `val tint` to the value
- * that [animateColorAsState] returns when its [Color] `targetValue` argument when `selected` is
- * `true` is the [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors], or when it
- * is `false` is the [JetsnackColors.iconInteractiveInactive]. Next we initialize our [String]
+ * that [animateColorAsState] returns when its [Color] `targetValue` argument is when `selected` is
+ * `true` the [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors], or when it
+ * is `false` the [JetsnackColors.iconInteractiveInactive]. Next we initialize our [String]
  * variable `val text` to the string whose resource ID is the [HomeSections.title] of `section`
  * using the [String.uppercase] method to convert it to uppercase for the [Locale] `currentLocale`.
  *
@@ -321,7 +322,7 @@ enum class HomeSections(
  *  - `icon` a [BoxScope] Composable lambda: we pass an [Icon] whose [ImageVector] `imageVector`
  *  argument is the [ImageVector] drawn by the [HomeSections.icon] of `section`, whose [Color]
  *  `tint` argument is our `tint` variable, and whose [String] `contentDescription` argument is our
- *  `text` variable.
+ *  `text` variable (which is the [String] with resource ID [HomeSections.title] of `section`).
  *  - `text` a [BoxScope] Composable lambda: we pass a lambda which composes a [Text] whose [String]
  *  `text` argument is our `text` variable, whose [Color] `color` argument is our animated `tint`
  *  variable, whose [TextStyle] `style` argument is the [Typography.labelLarge] of our custom
@@ -383,7 +384,7 @@ fun JetsnackBottomBar(
             tabs.forEach { section: HomeSections ->
                 val selected: Boolean = section == currentSection
                 val tint: Color by animateColorAsState(
-                    if (selected) {
+                    targetValue = if (selected) {
                         JetsnackTheme.colors.iconInteractive
                     } else {
                         JetsnackTheme.colors.iconInteractiveInactive
@@ -477,18 +478,19 @@ fun JetsnackBottomBar(
  * [Measurable] variable `indicatorMeasurable` with its `constraints` argument set to a copy of our
  * [Constraints] variable `constraints` with its `minWidth` and `maxWidth` set to `selectedWidth`.
  *
- * Finally we call the [MeasureScope.layout] method with its `width` argument set to the [Constraints.maxWidth]
- * and its `height` argument set to the maximum [Placeable.height] of all of the [Placeable]s in
- * `itemPlaceables` (or `0` if the [List] is empty). In the [Placeable.PlacementScope] lambda argument
- * `placementBlock` we initialize our [Float] variable `val indicatorLeft` to the value of the
- * [Animatable] of [Float] variable `indicatorIndex` multiplied by `unselectedWidth`. Then we use the
- * [Placeable.PlacementScope.placeRelative] extension method of the [Placeable] variable
- * `indicatorPlaceable` to place it at the `x` position of `indicatorLeft` and a `y` position of `0`.
- * Next we initialize our [Int] variable `var x` to `0`. Then we use the [List.forEach] method of
- * `itemPlaceables` to loop over all of its [Placeable]s capturing them in the `placeable` variable
- * and then call the [Placeable.PlacementScope.placeRelative] extension method of the [Placeable]
- * `placeable` to place it at the `x` position of `x` and a `y` position of `0`. Then we add the
- * [Placeable.width] of `placeable` to `x` and loop back for the next [Placeable] in `itemPlaceables`.
+ * Finally we call the [MeasureScope.layout] method with its `width` argument set to the
+ * [Constraints.maxWidth] and its `height` argument set to the maximum [Placeable.height] of all of
+ * the [Placeable]s in `itemPlaceables` (or `0` if the [List] is empty). In the
+ * [Placeable.PlacementScope] `placementBlock` lambda argument we initialize our [Float] variable
+ * `val indicatorLeft` to the value of the [Animatable] of [Float] variable `indicatorIndex`
+ * multiplied by `unselectedWidth`. Then we use the [Placeable.PlacementScope.placeRelative]
+ * extension method of the [Placeable] variable `indicatorPlaceable` to place it at the `x` position
+ * of `indicatorLeft` and a `y` position of `0`. Next we initialize our [Int] variable `var x` to `0`.
+ * Then we use the [List.forEach] method of `itemPlaceables` to loop over all of its [Placeable]s
+ * capturing them in the `placeable` variable and then call the [Placeable.PlacementScope.placeRelative]
+ * extension method of the [Placeable] `placeable` to place it at the `x` position of `x` and a `y`
+ * position of `0`. Then we add the [Placeable.width] of `placeable` to `x` and loop back for the
+ * next [Placeable] in `itemPlaceables`.
  *
  * @param selectedIndex the index of the item that is currently selected. Our caller [JetsnackBottomBar]
  * passes us the [HomeSections.ordinal] of the [HomeSections] currently selected.
@@ -588,9 +590,9 @@ private fun JetsnackBottomNavLayout(
 /**
  * This Composable is used for each of the [HomeSections] tabs in our [JetsnackBottomBar]. We start
  * by initializing and remembering our [Animatable] of [Float] variable `val animationProgress` to a
- * new instance with its `targetValue` set to `1f` is our [Boolean] parameter `selected` is `true`,
- * or to `0f` if it is `false`, its `animationSpec` argument is our [AnimationSpec] parameter [animSpec],
- * and its `label` argument is the [String] "animation progress".
+ * new instance with its `targetValue` set to `1f` if our [Boolean] parameter `selected` is `true`,
+ * or to `0f` if it is `false`, its `animationSpec` argument is our [AnimationSpec] parameter
+ * [animSpec], and its `label` argument is the [String] "animation progress".
  *
  * Our root Composable is a [JetsnackBottomNavItemLayout] whose `icon` [BoxScope] Composable lambda
  * argument is our [Composable] parameter [icon], whose `text` [BoxScope] Composable lambda argument
@@ -668,12 +670,12 @@ fun JetsnackBottomNavigationItem(
  * We initialize our [Placeable] variable `val textPlaceable` to the [Measurable.measure] of the
  * first [Measurable] in `measurables` whose [Measurable.layoutId] is the [String] "text", with the
  * `constraints` argument our [Constraints] variable `constraints`. Then we call our
- * [MeasureScope.placeTextAndIcon] with its `textPlaceable` argument set to our [Placeable] variable
- * `textPlaceable`, its `iconPlaceable` argument set to our [Placeable] variable `iconPlaceable`,
- * with its `width` argument set to the [Constraints.maxWidth] of our [Constraints] variable
- * `constraints`, and its `height` argument set to the [Constraints.maxHeight] of our [Constraints]
- * variable `constraints`, and its `animationProgress` argument set to our animated [Float] parameter
- * [animationProgress].
+ * [MeasureScope.placeTextAndIcon] extension function with its `textPlaceable` argument set to our
+ * [Placeable] variable `textPlaceable`, its `iconPlaceable` argument set to our [Placeable] variable
+ * `iconPlaceable`, with its `width` argument set to the [Constraints.maxWidth] of our [Constraints]
+ * variable `constraints`, and its `height` argument set to the [Constraints.maxHeight] of our
+ * [Constraints] variable `constraints`, and its `animationProgress` argument set to our animated
+ * [Float] parameter [animationProgress].
  *
  * @param icon a [BoxScope] Composable lambda. Our caller [JetsnackBottomNavigationItem] passes us
  * its [BoxScope] Composable lambda parameter `icon`, which traces back to an [Icon] whose
@@ -684,9 +686,9 @@ fun JetsnackBottomNavigationItem(
  * argument is the [String] whose resource ID is the [HomeSections.title] of the [HomeSections] it
  * represents.
  * @param animationProgress an animated [Float] between `0f` and `1f` that represents the progress
- * of the animation of the selected [JetsnackBottomNavigationItem]. Our caller [JetsnackBottomNavigationItem]
- * an [animateFloatAsState] whose `targetValue` is `1f` if its [Boolean] parameter `selected` is `true`
- * or `0f` if it is `false`.
+ * of the animation of the selected [JetsnackBottomNavigationItem]. Our caller
+ * [JetsnackBottomNavigationItem] passes us an [animateFloatAsState] whose `targetValue` is `1f` if
+ * its [Boolean] parameter `selected` is `true` or `0f` if it is `false`.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [JetsnackBottomNavigationItem] passes us a [Modifier.selectable] whose
  * `selected` argument is `true` if the [JetsnackBottomNavigationItem] is selected, and whose
