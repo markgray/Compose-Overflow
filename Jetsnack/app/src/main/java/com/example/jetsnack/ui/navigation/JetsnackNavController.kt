@@ -139,7 +139,7 @@ class JetsnackNavController(
      * that [Snack]. First we call our [NavBackStackEntry.lifecycleIsResumed] extension property to
      * make sure that the [NavBackStackEntry.lifecycle] of our [NavBackStackEntry] parameter [from]
      * is [Lifecycle.State.RESUMED] doing nothing if it is not (if the lifecycle is not resumed it
-     * means this NavBackStackEntry already processed a nav event, so we ignore the call to avoid
+     * means this [NavBackStackEntry] already processed a nav event, so we ignore the call to avoid
      * duplicated navigation events). If it is [Lifecycle.State.RESUMED] we call the
      * [NavHostController.navigate] method of our [NavHostController] field [navController] with its
      * `route` argument the [String] formed by concatenating [MainDestinations.SNACK_DETAIL_ROUTE]

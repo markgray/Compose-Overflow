@@ -15,7 +15,6 @@
  */
 
 @file:OptIn(
-    ExperimentalSharedTransitionApi::class,
     ExperimentalSharedTransitionApi::class
 )
 
@@ -208,8 +207,8 @@ private val HzPadding = Modifier.padding(horizontal = 24.dp)
 
 /**
  * The [FiniteAnimationSpec] that is used for animations throughout the app for the animation of
- * coordinate values. It is a [SpringSpec] whose `dampingRatio` is set to 0.8f, and whose `stiffness`
- * is set to 380f.
+ * coordinate values. It is a [SpringSpec] whose [SpringSpec.dampingRatio] is set to `0.8f`, and
+ * whose [SpringSpec.stiffness] is set to `380f`.
  */
 fun <T> spatialExpressiveSpring(): SpringSpec<T> = spring(
     dampingRatio = 0.8f,
@@ -218,8 +217,8 @@ fun <T> spatialExpressiveSpring(): SpringSpec<T> = spring(
 
 /**
  * The [FiniteAnimationSpec] that is used for animations throughout the app for the animation of
- * non-spatial values (such as [fadeIn] and [fadeOut]). It is a [SpringSpec] whose `dampingRatio`
- * is set to `1f`, and `stiffness` is set to `1600f`.
+ * non-spatial values (such as [fadeIn] and [fadeOut]). It is a [SpringSpec] whose
+ * [SpringSpec.dampingRatio] is set to `1f`, and [SpringSpec.stiffness] is set to `1600f`.
  */
 fun <T> nonSpatialExpressiveSpring(): SpringSpec<T> = spring(
     dampingRatio = 1f,
@@ -260,8 +259,9 @@ val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
  * initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the `current`
  * [LocalNavAnimatedVisibilityScope] (or throw [IllegalStateException] if that is `null`). We use
  * our [AnimatedVisibilityScope] variable `animatedVisibilityScope` to create a [Transition] whose
- * [Transition.animateDp] method we use to initialize our animated [Dp] variable `val roundedCornerAnim`
- * to an instance whose size for the different [EnterExitState] `targetValueByState` are:
+ * [Transition.animateDp] method we use to initialize our animated [Dp] variable
+ * `val roundedCornerAnim` to an instance whose size for the different [EnterExitState]
+ * `targetValueByState` are:
  *  - [EnterExitState.PreEnter] -> `20.dp` The initial state of a custom enter animation in
  *  [AnimatedVisibility]
  *  - [EnterExitState.Visible] -> `0.dp` The Visible state is the target state of a custom enter
@@ -275,22 +275,22 @@ val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
  * to this is chained a [SharedTransitionScope.sharedBounds] whose `sharedContentState` argument is
  * a remembered [SharedContentState] whose `key` argument is a [SnackSharedElementKey] whose `snackId`
  * argument is our [Long] parameter [snackId] and whose `origin` argument is our [String] parameter
- * [origin], and whose `type` argument is [SnackSharedElementType.Bounds], the `animatedVisibilityScope`
- * argument of the [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable
- * `animatedVisibilityScope`, the `clipInOverlayDuringTransition` argument is an [OverlayClip] whose
- * `clipShape` argument is a [RoundedCornerShape] whose `size` argument is our animated [Dp] variable
- * `roundedCornerAnim`, the `boundsTransform` argument is our [BoundsTransform] property
- * [snackDetailBoundsTransform], its `exit` argument is a [fadeOut] whose `animationSpec` argument
- * is our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring], and its `enter` argument is a
- * [fadeIn] whose `animationSpec` argument is our [FiniteAnimationSpec] property
- * [nonSpatialExpressiveSpring]. Next in the [Modifier] chain is a [Modifier.fillMaxSize] that causes
- * the [Box] to occupy its entire incoming size constraints, with [Modifier.background] at the end
- * of the chain that sets the [Color] `color` of the background to the [JetsnackColors.uiBackground]
- * of our custom [JetsnackTheme.colors].
+ * [origin], and whose `type` argument is [SnackSharedElementType.Bounds], the
+ * `animatedVisibilityScope` argument of the [SharedTransitionScope.sharedBounds] is our
+ * [AnimatedVisibilityScope] variable `animatedVisibilityScope`, the `clipInOverlayDuringTransition`
+ * argument is an [OverlayClip] whose `clipShape` argument is a [RoundedCornerShape] whose `size
+ * ` argument is our animated [Dp] variable `roundedCornerAnim`, the `boundsTransform` argument is
+ * our [BoundsTransform] property [snackDetailBoundsTransform], its `exit` argument is a [fadeOut]
+ * whose `animationSpec` argument is our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring],
+ * and its `enter` argument is a [fadeIn] whose `animationSpec` argument is our [FiniteAnimationSpec]
+ * property [nonSpatialExpressiveSpring]. Next in the [Modifier] chain is a [Modifier.fillMaxSize]
+ * that causes the [Box] to occupy its entire incoming size constraints, with [Modifier.background]
+ * at the end of the chain that sets the [Color] `color` of the background to the
+ * [JetsnackColors.uiBackground] of our custom [JetsnackTheme.colors].
  *
- * In the [BoxScope] `content` lambda argument of the [Box] we initialize and remember our [ScrollState]
- * variable `val scroll` to a [rememberScrollState] whose `initial` argument is `0` (the initial
- * position to start with), then we compose:
+ * In the [BoxScope] `content` lambda argument of the [Box] we initialize and remember our
+ * [ScrollState] variable `val scroll` to a [rememberScrollState] whose `initial` argument is `0`
+ * (the initial position to start with), then we compose:
  *  - a [Header] Composable whose `snackId` argument is our [Long] parameter [snackId], and whose
  *  `origin` argument is our [String] parameter [origin].
  *  - a [Body] Composable whose `related` argument is our [List] of [SnackCollection] variable
@@ -305,8 +305,8 @@ val snackDetailBoundsTransform: BoundsTransform = BoundsTransform { _, _ ->
  *  - an [Up] Composable whose `upPress` argument is our lambda parameter [upPress] (which traces
  *  back to a lambda that calls the [NavHostController.navigateUp] method of the [NavHostController]
  *  used in [JetsnackNavController]).
- *  - a [CartBottomBar] whose `modifier` argument is a [BoxScope.align] whose `alignment` argument
- *  is [Alignment.BottomCenter] to align it to the bottom center of the [Box].
+ *  - a [CartBottomBar] whose [Modifier] `modifier` argument is a [BoxScope.align] whose `alignment`
+ *  argument is [Alignment.BottomCenter] to align it to the bottom center of the [Box].
  *
  * @param snackId the [Snack.id] of the [Snack] that should be displayed on the screen.
  * @param origin a [String] that is used to identify the shared transition that will be used to
@@ -390,37 +390,37 @@ fun SnackDetail(
  * is a [tween] whose `durationMillis` argument is `50,000`, and whose `easing` argument is a
  * [LinearEasing]. The `repeatMode` argument of the [InfiniteRepeatableSpec] is a [RepeatMode.Reverse].
  *
- * Our root Composable is a [Spacer] whose `modifier` argument is a [SharedTransitionScope.sharedBounds]
- * whose `sharedContentState` argument is the remembered [SharedContentState] returned by a call to
- * the [SharedTransitionScope.rememberSharedContentState] method with the `key` argument a
- * [SnackSharedElementKey] constructed from our [Long] parameter [snackId] as its `snackId` argument
- * our [String] parameter [origin] as its `origin` argument, and its `type` argument is
- * [SnackSharedElementType.Background]. The `animatedVisibilityScope` argument of the
- * [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable `animatedVisibilityScope`,
- * the `boundsTransform` argument is our [BoundsTransform] property [snackDetailBoundsTransform],
- * the `enter` argument is a [fadeIn] whose `animationSpec` argument is our [FiniteAnimationSpec]
- * property [nonSpatialExpressiveSpring], the `exit` argument is a [fadeOut] whose `animationSpec`
- * is our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring], and the `resizeMode` argument
- * is [SharedTransitionScope.ResizeMode.ScaleToBounds] (will measure the child layout with lookahead
- * constraints to obtain the size of the stable layout. This stable layout is the post-animation
- * layout of the child. The default [ContentScale] of [ContentScale.FillWidth] will be used to
- * calculate a scale for both width and height. The resulting effect is that the child layout does
- * not re-layout during the bounds transform, contrary to RemeasureToBounds mode. Instead, it will
- * scale the stable layout based on the animated size of the sharedBounds). Next in the [Modifier]
- * chain is a [Modifier.height] whose `height` is `280.dp`, followed by a [Modifier.fillMaxWidth]
- * to have it occupy its entire incoming width constraint, followed by a [Modifier.blur] whose
- * `radius` argument is `40.dp` to blur the background, followed by a [Modifier.drawWithCache]
- * in whose [CacheDrawScope] `onBuildDrawCache` lambda argument we initialize our [Float] variable
- * `val brushSize` to `400f`, initialize our [Brush] variable `val brush` to a [Brush.linearGradient]
- * whose `colors` argument is our [List] of [Color] variable `brushColors`, whose `start` argument
- * is an [Offset] whose `x` coordinate is our animated [Float] variable `offset`, whose `y` argument
- * is our animated [Float] variable `offset`. The `end` argument of the [Brush.linearGradient] is an
- * [Offset] whose `x` coordinate is our animated [Float] variable `offset` plus our [Float] variable
- * `brushSize`, whose `y` argument is our animated [Float] variable `offset` plus our [Float] variable
- * `brushSize`. The `tileMode` argument of the [Brush.linearGradient] is a [TileMode.Mirror].
- * Then we call the [CacheDrawScope.onDrawBehind] method with its [DrawScope] `block` lambda argument
- * a lambda that calls the [DrawScope.drawRect] method with its `brush` argument our [Brush] variable
- * `brush`.
+ * Our root Composable is a [Spacer] whose [Modifier] `modifier` argument is a
+ * [SharedTransitionScope.sharedBounds] whose `sharedContentState` argument is the remembered
+ * [SharedContentState] returned by a call to the [SharedTransitionScope.rememberSharedContentState]
+ * method with the `key` argument a [SnackSharedElementKey] constructed from our [Long] parameter
+ * [snackId] as its `snackId` argument our [String] parameter [origin] as its `origin` argument, and
+ * its `type` argument is [SnackSharedElementType.Background]. The `animatedVisibilityScope` argument
+ * of the [SharedTransitionScope.sharedBounds] is our [AnimatedVisibilityScope] variable
+ * `animatedVisibilityScope`, the `boundsTransform` argument is our [BoundsTransform] property
+ * [snackDetailBoundsTransform], the `enter` argument is a [fadeIn] whose `animationSpec` argument is
+ * our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring], the `exit` argument is a [fadeOut]
+ * whose `animationSpec` is our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring], and the
+ * `resizeMode` argument is [SharedTransitionScope.ResizeMode.ScaleToBounds] (will measure the child
+ * layout with lookahead constraints to obtain the size of the stable layout. This stable layout is
+ * the post-animation layout of the child. The default [ContentScale] of [ContentScale.FillWidth] will
+ * be used to calculate a scale for both width and height. The resulting effect is that the child
+ * layout does not re-layout during the bounds transform, contrary to RemeasureToBounds mode. Instead,
+ * it will scale the stable layout based on the animated size of the sharedBounds). Next in the
+ * [Modifier] chain is a [Modifier.height] whose `height` is `280.dp`, followed by a
+ * [Modifier.fillMaxWidth] to have it occupy its entire incoming width constraint, followed by a
+ * [Modifier.blur] whose `radius` argument is `40.dp` to blur the background, followed by a
+ * [Modifier.drawWithCache] in whose [CacheDrawScope] `onBuildDrawCache` lambda argument we initialize
+ * our [Float] variable `val brushSize` to `400f`, initialize our [Brush] variable `val brush` to a
+ * [Brush.linearGradient] whose `colors` argument is our [List] of [Color] variable `brushColors`,
+ * whose `start` argument is an [Offset] whose `x` coordinate is our animated [Float] variable
+ * `offset`, whose `y` argument is our animated [Float] variable `offset`. The `end` argument of the
+ * [Brush.linearGradient] is an [Offset] whose `x` coordinate is our animated [Float] variable
+ * `offset` plus our [Float] variable `brushSize`, whose `y` argument is our animated [Float] variable
+ * `offset` plus our [Float] variable `brushSize`. The `tileMode` argument of the
+ * [Brush.linearGradient] is a [TileMode.Mirror]. Then we call the [CacheDrawScope.onDrawBehind]
+ * method with its [DrawScope] `block` lambda argument a lambda that calls the [DrawScope.drawRect]
+ * method with its `brush` argument our [Brush] variable `brush`.
  *
  * @param snackId the [Snack.id] of the [Snack] that our [SnackDetail] is displaying. It is used just
  * to construct a [SnackSharedElementKey] linking our shared transition to the originating screen.
