@@ -76,6 +76,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
@@ -804,7 +805,35 @@ fun ModalNavigationDrawerContent(
 /**
  * This is used as the `measurePolicy` argument of the [Layout] that is used by the [ModalDrawerSheet]
  * that is used by [ModalNavigationDrawerContent] and by the [PermanentDrawerSheet] that is used by
- * [PermanentNavigationDrawerContent].
+ * [PermanentNavigationDrawerContent]. The [Layout] that we are the `measurePolicy` argument passes
+ * the [MeasureScope] Composable lambda argument of [MeasurePolicy] a [List]] of [Measurable] which
+ * we accept in variable `measurables`, and [Constraints] which we accept in variable `constraints`.
+ * These are derived from the Composables in its `content` Composable lambda argument. Each [Measurable]
+ * is created from one of the Composables and the [Constraints] are the incoming constraints for the
+ * [Layout] Composable.
+ *
+ * In the [MeasureScope] lambda of the [MeasurePolicy] we first declare our lateinit [Measurable]
+ * variable `var headerMeasurable`, and our lateinit [Measurable] variable `var contentMeasurable`.
+ * We then use the [List.forEach] method of the [List] of [Measurable] in variable `measurables`
+ * to loop throught the [List] and when the [Measurable.layoutId] is [LayoutType.HEADER] we set
+ * `headerMeasurable` to the current [Measurable], and when the [Measurable.layoutId] is
+ * [LayoutType.CONTENT] we set `contentMeasurable` to the current [Measurable]. We initialize our
+ * [Placeable] variables `val headerPlaceable` to the [Placeable] returned by the [Measurable.measure]
+ * method of `headerMeasurable` with its [Constraints] `constraints` argument our [Constraints]
+ * variable `constraints`, and our [Placeable] variable `val contentPlaceable` to the [Placeable]
+ * returned by the [Measurable.measure] method of `contentMeasurable` with its [Constraints]
+ * `constraints` argument the [Constraints.offset] of our [Constraints] variable `constraints` by
+ * the `vertical` offset of minus the [Placeable.height] of `headerPlaceable`.
+ *
+ * Then we call the [MeasureScope.layout] method with its `width` argument the [Constraints.maxWidth]
+ * of `constraints`, and its `height` argument the [Constraints.maxHeight] of `constraints`. In the
+ * [Placeable.PlacementScope] `placementBlock` lambda argument we place the [Placeable] variable
+ * `headerPlaceable` at `x` = 0, `y` = 0 using the [Placeable.PlacementScope.placeRelative] extension
+ * function of `headerPlaceable`.
+ *
+ * We initialize our [Int] variable `val contentPlaceableY` to the [Constraints.maxHeight] of
+ * `constraints` minus the [Placeable.height] of `contentPlaceable`. We initialize our [Int] variable
+ *
  *
  * @param navigationContentPosition The [ReplyNavigationContentPosition] to use when positioning the
  * [Measurable] in the [List] of [Measurable] whose [Measurable.layoutId] is [LayoutType.CONTENT],
@@ -824,9 +853,9 @@ fun navigationMeasurePolicy(
             }
         }
 
-        val headerPlaceable: Placeable = headerMeasurable.measure(constraints)
+        val headerPlaceable: Placeable = headerMeasurable.measure(constraints = constraints)
         val contentPlaceable: Placeable = contentMeasurable.measure(
-            constraints.offset(vertical = -headerPlaceable.height)
+            constraints = constraints.offset(vertical = -headerPlaceable.height)
         )
         layout(width = constraints.maxWidth, height = constraints.maxHeight) {
             // Place the header, this goes at the top
