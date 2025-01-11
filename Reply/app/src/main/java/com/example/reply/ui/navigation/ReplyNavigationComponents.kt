@@ -76,6 +76,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.layoutId
@@ -831,9 +832,18 @@ fun ModalNavigationDrawerContent(
  * `headerPlaceable` at `x` = 0, `y` = 0 using the [Placeable.PlacementScope.placeRelative] extension
  * function of `headerPlaceable`.
  *
- * We initialize our [Int] variable `val contentPlaceableY` to the [Constraints.maxHeight] of
+ * We initialize our [Int] variable `val nonContentVerticalSpace` to the [Constraints.maxHeight] of
  * `constraints` minus the [Placeable.height] of `contentPlaceable`. We initialize our [Int] variable
+ * `val contentPlaceableY` based on the value of our [ReplyNavigationContentPosition] parameter
+ * [navigationContentPosition]:
+ *  - [ReplyNavigationContentPosition.TOP] -> `0`
+ *  - [ReplyNavigationContentPosition.CENTER] -> `nonContentVerticalSpace` / `2`
+ * then use the [Int.coerceAtLeast] method to coerce its `minimumValue` to be at least the
+ * [Placeable.height] of `headerPlaceable`.
  *
+ * Finally we call the [Placeable.PlacementScope.placeRelative] extension method of `contentPlaceable`
+ * to place it at `x` = `0`, `y` = `contentPlaceableY` and return the [MeasureResult] to the caller
+ * of our [MeasurePolicy]. (at least i think that's how it works).
  *
  * @param navigationContentPosition The [ReplyNavigationContentPosition] to use when positioning the
  * [Measurable] in the [List] of [Measurable] whose [Measurable.layoutId] is [LayoutType.CONTENT],
@@ -879,22 +889,24 @@ fun navigationMeasurePolicy(
 }
 
 /**
- *
+ * This enum is used to determine which [Measurable] corresponds to the header Composable and which
+ * corresponds to the content Composable of the [Layout].
  */
 enum class LayoutType {
     /**
-     *
+     * The header Composable of the [Layout].
      */
     HEADER,
 
     /**
-     *
+     * The content Composable of the [Layout].
      */
     CONTENT
 }
 
 /**
- *
+ * Convenience function to determine if the [ReplyTopLevelDestination] parameter [destination] has
+ * the same route as the receiver [NavDestination].
  */
 fun NavDestination?.hasRoute(destination: ReplyTopLevelDestination): Boolean =
     this?.hasRoute(destination.route::class) ?: false

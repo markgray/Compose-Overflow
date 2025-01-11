@@ -262,12 +262,18 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
+/**
+ *
+ */
 fun isContrastAvailable(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 }
 
+/**
+ *
+ */
 @Composable
-fun selectSchemeForContrast(isDark: Boolean,): ColorScheme {
+fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
     val context = LocalContext.current
     var colorScheme = if (isDark) darkScheme else lightScheme
     val isPreview = LocalInspectionMode.current
@@ -291,12 +297,15 @@ fun selectSchemeForContrast(isDark: Boolean,): ColorScheme {
         return colorScheme
     } else return colorScheme
 }
+/**
+ *
+ */
 @Composable
 fun ContrastAwareReplyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val replyColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -310,6 +319,7 @@ fun ContrastAwareReplyTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
+            @Suppress("DEPRECATION") // TODO: Draw proper background behind statusBars instead.
             window.statusBarColor = replyColorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
