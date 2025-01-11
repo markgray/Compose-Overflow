@@ -488,7 +488,7 @@ private fun Header(snackId: Long, origin: String) {
  * This Composable appears at the very top left of the [SnackDetail] screen and consists of just an
  * [IconButton] whose `onClick` lambda argument is a lambda that calls our [upPress] lambda
  * parameter. We start by initializing our [AnimatedVisibilityScope] variable
- * `val animatedVisibilityScope`  to the `current` [LocalNavAnimatedVisibilityScope] (or throw
+ * `val animatedVisibilityScope`  to the `current` [LocalNavAnimatedVisibilityScope] (or throw an
  * [IllegalArgumentException] if it is `null`). Then `with` [AnimatedVisibilityScope] variable
  * `animatedVisibilityScope` as the receiver we execute a `block` in which we compose an [IconButton]
  * whose `onClick` argument is our lambda parameter [upPress], whose [Modifier] `modifier` argument
@@ -506,8 +506,8 @@ private fun Header(snackId: Long, origin: String) {
  * `shape` argument is [CircleShape]. The `content` Composable lambda argument of the [IconButton]
  * composes an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by
  * [Icons.AutoMirrored.Outlined.ArrowBack] ("<-"), whose [Color] `tint` argument is the
- * [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors], and whose `contentDescription`
- * argument is the [String] with resource ID `R.string.label_back` ("Back")
+ * [JetsnackColors.iconInteractive] of our custom [JetsnackTheme.colors], and whose
+ * `contentDescription` argument is the [String] with resource ID `R.string.label_back` ("Back")
  *
  * @param upPress a lambda to call when our [IconButton] is clicked. Our caller passes us a lambda
  * that traces back to a lambda that calls the [NavHostController.navigateUp] method of the
@@ -558,27 +558,27 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
  *  [Modifier] chain whose `height` argument is our [Dp] property [MinTitleOffset] (`56.dp`) which
  *  is the minimum offset of the title when we are scrolled to the top of the screen.
  *  - a [Column] whose `modifier` argument is a [Modifier.verticalScroll] whose `state` argument is
- *  our [ScrollState] parameter [scroll], and whose [ColumnScope] `content` Composable lambda argument
- *  contains:
+ *  our [ScrollState] parameter [scroll], and whose [ColumnScope] `content` Composable lambda
+ *  argument contains:
  *
- *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is our [Dp]
+ *  1. a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is our [Dp]
  *  property [GradientScroll] (`180.dp`)
- *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is our [Dp]
+ *  2. a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is our [Dp]
  *  property [ImageOverlap] (`115.dp`)
- *  - a [JetsnackSurface] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] which
+ *  3. a [JetsnackSurface] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] which
  *  causes it to occupy its entire incoming width constraint, followed by a [Modifier.padding] that
  *  that sets the padding on its `top` to `16.dp`. In the `content` Composable lambda argument of the
- *  [JetsnackSurface] we have a [Column] in whose [ColumnScope] `content` Composable lambda argument
- *  we compose:
+ *  [JetsnackSurface] we have:
  *
- *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is [TitleHeight]
- *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.detail_header`
+ *  - a [Column] in whose [ColumnScope] `content` Composable lambda argument we compose: *
+ *  1. a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is [TitleHeight]
+ *  2. a [Text] whose `text` argument is the [String] with resource ID `R.string.detail_header`
  *  ("Details"), whose [TextStyle] `style` argument is the [Typography.labelSmall] of our custom
  *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textHelp] of
  *  our custom [JetsnackTheme.colors], and whose `modifier` argument is our [HzPadding] (which is
  *  a [Modifier.padding] that adds `24.dp` to each `horizontal` side).
- *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
- *  - we initilize and remember our [MutableState] wrapped [Boolean] variable `var seeMore` to a
+ *  3. a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
+ *  4. we initilize and remember our [MutableState] wrapped [Boolean] variable `var seeMore` to
  *  the instance returned by [mutableStateOf] for the initial `value` of `true`, then with our
  *  [SharedTransitionScope] variable `sharedTransitionScope` as the receiver we execute a `block`
  *  in which we compose a [Text] whose `text` is the nonsense [String] with resource ID
@@ -589,40 +589,40 @@ private fun SharedTransitionScope.Up(upPress: () -> Unit) {
  *  argument is [TextOverflow.Ellipsis], and whose [Modifier] `modifier` argument is [HzPadding] with
  *  a [SharedTransitionScope.skipToLookaheadSize] chained to that to enable it to measure itself with
  *  the lookahead constraints.
- *  - we initialize our [String] variable `val textButton` to the [String] with resource ID
+ *  4. we initialize our [String] variable `val textButton` to the [String] with resource ID
  *  `R.string.see_more` ("SEE MORE") if our [MutableState] wrapped [Boolean] variable `seeMore` is
  *  `true` or to the [String] with resource ID `R.string.see_less` ("SEE LESS") if it is `false`
  *  then we compose a [Text] whose `text` argument is our [String] variable `textButton`, whose
- *  [TextStyle] `style` argument is the [Typography.labelLarge] of our custom [MaterialTheme.typography],
- *  whose `textAlign` argument is [TextAlign.Center], whose [Color] `color` argument is the
- *  [JetsnackColors.textLink] of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier`
- *  argument is a [Modifier.heightIn] with a `min` of `20.dp`, to which is chained a [Modifier.fillMaxWidth]
- *  to have it occupy its entire incoming width constraint, chained to a [Modifier.padding] that adds
- *  `15.dp` to the `top`, chained to a [Modifier.clickable] in whose `onClick` lambda argument we set
- *  [MutableState] wrapped [Boolean] variable `seeMore` to its inverse, and at the end of the [Modifier]
- *  chain is a [SharedTransitionScope.skipToLookaheadSize] that allows it to measure itself at its
- *  final size.
- *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `40.dp`.
- *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.ingredients`
+ *  [TextStyle] `style` argument is the [Typography.labelLarge] of our custom
+ *  [MaterialTheme.typography], whose `textAlign` argument is [TextAlign.Center], whose [Color]
+ *  `color` argument is the [JetsnackColors.textLink] of our custom [JetsnackTheme.colors], and whose
+ *  [Modifier] `modifier` argument is a [Modifier.heightIn] with a `min` of `20.dp`, to which is
+ *  chained a [Modifier.fillMaxWidth] to have it occupy its entire incoming width constraint, chained
+ *  to a [Modifier.padding] that adds `15.dp` to the `top`, chained to a [Modifier.clickable] in
+ *  whose `onClick` lambda argument we set [MutableState] wrapped [Boolean] variable `seeMore` to
+ *  its inverse, and at the end of the [Modifier] chain is a
+ *  [SharedTransitionScope.skipToLookaheadSize] that allows it to measure itself at its final size.
+ *  5. a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `40.dp`.
+ *  6. a [Text] whose `text` argument is the [String] with resource ID `R.string.ingredients`
  *  ("Ingredients"), whose [TextStyle] `style` argument is the [Typography.labelSmall] of our custom
  *  [MaterialTheme.typography], whose [Color] `color` argument is the [JetsnackColors.textHelp] of
  *  custom [JetsnackTheme.colors], and whose `modifier` argument is our [HzPadding]. (which is a
  *  [Modifier.padding] that adds `24.dp` to each `horizontal` side).
- *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is `4.dp`.
- *  - a [Text] whose `text` argument is the [String] with resource ID `R.string.ingredients_list`
+ *  7. a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is `4.dp`.
+ *  8. a [Text] whose `text` argument is the [String] with resource ID `R.string.ingredients_list`
  *  (a list of ingredients), whose [TextStyle] `style` argument is the [Typography.bodyLarge] of
  *  our custom [MaterialTheme.typography], whose [Color] `color` argument is the
  *  [JetsnackColors.textHelp] of our custom [JetsnackTheme.colors], and whose [Modifier] `modifier`
  *  argument is our [HzPadding].
- *  - a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
- *  - a [JetsnackDivider] (which is our custom [HorizontalDivider]).
- *  - we use the [List.forEach] method of our [List] of [SnackCollection] parameter [related] to
+ *  9. a [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` is `16.dp`.
+ *  10. a [JetsnackDivider] (which is our custom [HorizontalDivider]).
+ *  11. we use the [List.forEach] method of our [List] of [SnackCollection] parameter [related] to
  *  loop through its contents passing each [SnackCollection] to its `action` lambda argument in
  *  the variable `snackCollection` where we use [key] with the [SnackCollection.id] of `snackCollection`
  *  as its `keys` and in its `block` lambda argument we compose a [SnackCollection] whose
  *  `snackCollection` argument is our current `snackCollection` variable, whose `onSnackClick`
  *  argument is a do-nothing lambda, and whose `highlight` argument is `false`
- *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.padding] whose `bottom` padding
+ *  12. a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.padding] whose `bottom` padding
  *  is [BottomBarHeight], chained to a [Modifier.navigationBarsPadding] (padding to accommodate the
  *  navigation bars insets), and at the end of the chain a [Modifier.height] whose `height` is `8.dp`.
  *
@@ -753,7 +753,8 @@ private fun Body(
  * [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the `current`
  * [LocalNavAnimatedVisibilityScope]. Then `with` our [SharedTransitionScope] variable
  * `sharedTransitionScope` as the receiver we execute a `block` which composes our root Composable
- * [Column] whose `verticalArrangement` argument is [Arrangement.Bottom] and whose [Modifier]
+ * [Column] whose `verticalArrangement` argument is [Arrangement.Bottom] (Place children vertically
+ * such that they are as close as possible to the bottom of the main axis) and whose [Modifier]
  * `modifier` argument is a [Modifier.fillMaxWidth] to which is chained a [Modifier.heightIn] whose
  * `min` is [TitleHeight] (`128.dp`), followed by [Modifier.statusBarsPadding] (padding to accommodate
  * the status bars insets), followed by a [Modifier.offset] whose `offset` lambda argument is a
@@ -775,11 +776,11 @@ private fun Body(
  *  is that created and remembered by a call to [SharedTransitionScope.rememberSharedContentState]
  *  with its `key` argument an instance of [SnackSharedElementKey] with `snackId` the [Snack.id] of
  *  of our [Snack] parameter [snack], `origin` our [String] parameter [origin], and `type`
- *  [SnackSharedElementType.Title]. The `animatedVisibilityScope` argument is our [AnimatedVisibilityScope]
- *  variable `animatedVisibilityScope` and the `boundsTransform` argument is our [BoundsTransform]
- *  field [snackDetailBoundsTransform]. At the end of the [Modifier] chain is a [Modifier.wrapContentWidth].
- *  that allows it to measure at its desired width without regard for the incoming measurement
- *  minimum width.
+ *  [SnackSharedElementType.Title]. The `animatedVisibilityScope` argument is our
+ *  [AnimatedVisibilityScope] variable `animatedVisibilityScope` and the `boundsTransform` argument
+ *  is our [BoundsTransform] field [snackDetailBoundsTransform]. At the end of the [Modifier] chain
+ *  is a [Modifier.wrapContentWidth] that allows it to measure at its desired width without regard
+ *  for the incoming measurement minimum width.
  *  - a [Text] whose `text` argument is the [Snack.tagline] of our [Snack] parameter [snack], whose
  *  [FontStyle] `fontStyle` argument is [FontStyle.Italic], whose [TextStyle] `style` argument is
  *  the [Typography.titleSmall] of our custom [MaterialTheme.typography], whose [Color] `color`
@@ -789,11 +790,11 @@ private fun Body(
  *  is that created and remembered by a call to [SharedTransitionScope.rememberSharedContentState]
  *  with its `key` argument an instance of [SnackSharedElementKey] with `snackId` the [Snack.id] of
  *  of our [Snack] parameter [snack], `origin` our [String] parameter [origin], and `type`
- *  [SnackSharedElementType.Tagline]. The `animatedVisibilityScope` argument is our [AnimatedVisibilityScope]
- *  variable `animatedVisibilityScope` and the `boundsTransform` argument is our [BoundsTransform]
- *  field [snackDetailBoundsTransform]. At the end of the [Modifier] chain is a [Modifier.wrapContentWidth].
- *  that allows it to measure at its desired width without regard for the incoming measurement
- *  minimum width.
+ *  [SnackSharedElementType.Tagline]. The `animatedVisibilityScope` argument is our
+ *  [AnimatedVisibilityScope] variable `animatedVisibilityScope` and the `boundsTransform` argument
+ *  is our [BoundsTransform] field [snackDetailBoundsTransform]. At the end of the [Modifier] chain
+ *  is a [Modifier.wrapContentWidth]. that allows it to measure at its desired width without regard
+ *  for the incoming measurement minimum width.
  *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is `4.dp`.
  *  - Then with our [AnimatedVisibilityScope] variable `animatedVisibilityScope` as the receiver we
  *  compose a [Text] whose `text` argument is the [String] returned by our [formatPrice] method for
@@ -903,12 +904,13 @@ private fun Title(snack: Snack, origin: String, scrollProvider: () -> Int) {
  * [MaxTitleOffset] minus [MinTitleOffset] given the `current` [LocalDensity]. Then we initialize
  * our lambda returning [Float] variable `val collapseFractionProvider` to a lambda which returns
  * the value returned by our [scrollProvider] lambda parameter divided by `collapseRange` coerced
- * to be between `0f` and `1f`. We then compose a [CollapsingImageLayout] whose `collapseFractionProvider`
- * argument is our lambda variable `collapseFractionProvider` and whose [Modifier] `modifier` argument
- * chains to our [HzPadding] horizontal padding [Modifier] a [Modifier.statusBarsPadding] to add
- * padding to accommodate the status bars insets. In the [CollapsingImageLayout]'s `content` Composable
- * lambda argument we initialize our [SharedTransitionScope] variable `val sharedTransitionScope` to
- * the `current` [LocalSharedTransitionScope] (or throw [IllegalStateException]), and initialize our
+ * to be between `0f` and `1f`. We then compose a [CollapsingImageLayout] whose
+ * `collapseFractionProvider` argument is our lambda variable `collapseFractionProvider` and whose
+ * [Modifier] `modifier` argument chains to our [HzPadding] horizontal padding [Modifier] a
+ * [Modifier.statusBarsPadding] to add padding to accommodate the status bars insets. In the
+ * [CollapsingImageLayout]'s `content` Composable lambda argument we initialize our
+ * [SharedTransitionScope] variable `val sharedTransitionScope` to the `current`
+ * [LocalSharedTransitionScope] (or throw [IllegalStateException]), and initialize our
  * [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the `current`
  * [LocalNavAnimatedVisibilityScope] (or throw [IllegalStateException]). Then `with` our
  * [SharedTransitionScope] variable `sharedTranitionScope` as the receiver we compose a [SnackImage]
@@ -1005,11 +1007,11 @@ private fun Image(
  * the value returned by [lerp] whose `start` argument is [MinTitleOffset] and whose `stop` argument
  * is [MinTitleOffset] with the `fraction` argument our [Float] variable `collapseFraction` linearly
  * interpolating between them. We initialize our [Int] variable `val imageX` to the value returned by
- * [lerp] for the `start` argument the [Constraints.maxWidth] of our [Constraints] variable `constraints`
- * minus `imageWidth` all divided by `2` (this centers our [Placeable] when expanded), for the `stop`
- * argument of the [Constraints.maxWidth] of our [Constraints] variable `constraints` minus `imageWidth`
- * (right aligns when collapsed), and the `fraction` argument our [Float] variable `collapseFraction`
- * interpolating between them.
+ * [lerp] for the `start` argument the [Constraints.maxWidth] of our [Constraints] variable
+ * `constraints` minus `imageWidth` all divided by `2` (this centers our [Placeable] when expanded),
+ * for the `stop` argument the [Constraints.maxWidth] of our [Constraints] variable `constraints`
+ * minus `imageWidth` (right aligns when collapsed), and the `fraction` argument our [Float] variable
+ * `collapseFraction` interpolating between them.
  *
  * Finally we call the [MeasureScope.layout] method with its `width` argument set to the
  * [Constraints.maxWidth] of our [Constraints] variable `constraints` and the `height` argument
@@ -1042,7 +1044,8 @@ private fun CollapsingImageLayout(
         val imageMinSize: Int = max(CollapsedImageSize.roundToPx(), constraints.minWidth)
         val imageWidth: Int = lerp(imageMaxSize, imageMinSize, collapseFraction)
 
-        val imagePlaceable: Placeable = measurables[0].measure(Constraints.fixed(imageWidth, imageWidth))
+        val imagePlaceable: Placeable = measurables[0]
+            .measure(Constraints.fixed(width = imageWidth, height = imageWidth))
 
         val imageY: Int = lerp(
             start = MinTitleOffset,
@@ -1077,12 +1080,12 @@ private fun CollapsingImageLayout(
  * `modifier` argument starts with our [Modifier] parameter [modifier] to which it chains a
  * [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose `zIndexInOverlay` of `4f`
  * causes it to be rendered on top of all other composables in the shared transition overlay.
- * Chain to that is a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a
- * [slideInVertically] whose `animationSpec` is a [tween] of `durationMillis` = `300` and `delayMillis`
- * = `300` plus a [fadeIn] whose `animationSpec` is a [tween] of `durationMillis` = `300` and
- * `delayMillis` = `300`, and the `exit` argument is a [slideOutVertically] whose `animationSpec` is
- * a [tween] of `durationMillis` = `50` plus a [fadeOut] whose `animationSpec` is a [tween] of
- * `durationMillis` = `50`.
+ * Chained to that is a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a
+ * [slideInVertically] whose `animationSpec` is a [tween] of `durationMillis` = `300` and
+ * `delayMillis` = `300` plus a [fadeIn] whose `animationSpec` is a [tween] of
+ * `durationMillis` = `300` and `delayMillis` = `300`, and the `exit` argument is a
+ * [slideOutVertically] whose `animationSpec` is a [tween] of `durationMillis` = `50` plus a
+ * [fadeOut] whose `animationSpec` is a [tween] of `durationMillis` = `50`.
  *
  * In the `content` Composable lambda argument of the [JetsnackSurface] we have a [Column] in whose
  * [ColumnScope] `content` Composable lambda argument we compose a [JetsnackDivider] followed by a
@@ -1128,9 +1131,14 @@ private fun CartBottomBar(modifier: Modifier = Modifier) {
                                 durationMillis = 300,
                                 delayMillis = 300
                             )
-                        ) { it } + fadeIn(animationSpec = tween(durationMillis = 300, delayMillis = 300)),
-                        exit = slideOutVertically(animationSpec = tween(durationMillis = 50)) { it } +
-                            fadeOut(animationSpec = tween(durationMillis = 50))
+                        ) { it } + fadeIn(
+                            animationSpec = tween(durationMillis = 300, delayMillis = 300)
+                        ),
+                        exit = slideOutVertically(
+                            animationSpec = tween(durationMillis = 50)
+                        ) { it } + fadeOut(
+                            animationSpec = tween(durationMillis = 50)
+                            )
                     )
             ) {
                 Column {
