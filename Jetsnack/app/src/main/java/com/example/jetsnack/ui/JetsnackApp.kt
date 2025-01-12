@@ -166,15 +166,15 @@ fun JetsnackApp() {
  * [rememberJetsnackScaffoldState] method. We initialize and remember our [JetsnackNavController]
  * variable `val nestedNavController` to the instance returned by the [rememberJetsnackNavController]
  * method. We initialize our [NavBackStackEntry] variable `val navBackStackEntry` to the
- * [MutableState] wrapped [NavBackStackEntry] returned by the [NavController.currentBackStackEntryAsState]
- * method of the [NavHostController] returned by the [JetsnackNavController.navController] property
- * of our [JetsnackNavController] variable `nestedNavController`. We initialize our [String] variable
- * `val currentRoute` to the [NavDestination.route] of the [NavBackStackEntry.destination] of our
- * [NavBackStackEntry] variable `navBackStackEntry`. We initialize our [SharedTransitionScope]
- * variable `val sharedTransitionScope` to the `current` [LocalSharedTransitionScope] or throw
- * [IllegalStateException] if it is `null`. We initialize our [AnimatedVisibilityScope] variable
- * `val animatedVisibilityScope` to the `current` [LocalNavAnimatedVisibilityScope] or throw
- * [IllegalStateException] if it is `null`.
+ * [MutableState] wrapped [NavBackStackEntry] returned by the
+ * [NavController.currentBackStackEntryAsState] method of the [NavHostController] returned by the
+ * [JetsnackNavController.navController] property of our [JetsnackNavController] variable
+ * `nestedNavController`. We initialize our [String] variable `val currentRoute` to the
+ * [NavDestination.route] of the [NavBackStackEntry.destination] of our [NavBackStackEntry] variable
+ * `navBackStackEntry`. We initialize our [SharedTransitionScope] variable `val sharedTransitionScope`
+ * to the `current` [LocalSharedTransitionScope] or throw [IllegalStateException] if it is `null`.
+ * We initialize our [AnimatedVisibilityScope] variable `val animatedVisibilityScope` to the `current`
+ * [LocalNavAnimatedVisibilityScope] or throw [IllegalStateException] if it is `null`.
  *
  * We compose a [JetsnackScaffold] whose `bottomBar` argument is a Composable lambda that uses the
  * `with` extension function to wrap its contents in our [AnimatedVisibilityScope] receiver variable
@@ -186,15 +186,15 @@ fun JetsnackApp() {
  *  [HomeSections.route] of [HomeSections.FEED].
  *  - `navigateToRoute` is the [JetsnackNavController.navigateToBottomBarRoute] method of our
  *  [JetsnackNavController] variable `nestedNavController`.
- *  - `modifier` is a [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose `zIndexInOverlay`
- *  argument is `1f` causing it to render above other composables in the shared transition. To this
- *  is chained a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument is a [fadeIn] whose
- *  `animationSpec` is an [nonSpatialExpressiveSpring] plus a [slideInVertically] whose `animationSpec`
- *  is a [spatialExpressiveSpring] and whose `targetOffsetY` lambda argument returns the `fullHeight`
- *  passed the lambda as the initialial offset, its `exit` argument is a [fadeOut] whose `animationSpec`
- *  is an [nonSpatialExpressiveSpring] plus a [slideOutVertically] whose `animationSpec` is a
- *  [spatialExpressiveSpring] and whose `targetOffsetY` lambda argument returns the `fullHeight`
- *  passed the lambda as the initialial offset.
+ *  - `modifier` is a [SharedTransitionScope.renderInSharedTransitionScopeOverlay] whose
+ *  `zIndexInOverlay` argument is `1f` causing it to render above other composables in the shared
+ *  transition. To this is chained a [AnimatedVisibilityScope.animateEnterExit] whose `enter` argument
+ *  is a [fadeIn] whose `animationSpec` is an [nonSpatialExpressiveSpring] plus a [slideInVertically]
+ *  whose `animationSpec` is a [spatialExpressiveSpring] and whose `targetOffsetY` lambda argument
+ *  returns the `fullHeight` passed the lambda as the initialial offset, its `exit` argument is a
+ *  [fadeOut] whose `animationSpec` is an [nonSpatialExpressiveSpring] plus a [slideOutVertically]
+ *  whose `animationSpec` is a [spatialExpressiveSpring] and whose `targetOffsetY` lambda argument
+ *  returns the `fullHeight` passed the lambda as the initialial offset.
  *
  * The `modifier` argument of the [JetsnackScaffold] is our [Modifier] parameter [modifier], its
  * `snackBarHost` lambda argument is a lambda composing a [SnackbarHost] whose `hostState` argument
@@ -212,14 +212,14 @@ fun JetsnackApp() {
  * whose `navController` argument is the [JetsnackNavController.navController] of our
  * [JetsnackNavController] variable `nestedNavController`, and whose `startDestination` argument is
  * the [HomeSections.route] of [HomeSections.FEED]. In the [NavGraphBuilder] `builder` Composable
- * lambda argument we call our [NavGraphBuilder.addHomeGraph] extension method with its `onSnackSelected`
- * argument our [onSnackSelected] lambda parameter (this will use the [composable] method to add routes
- * for all the [HomeSections]). The `modifier` argument of [NavGraphBuilder.addHomeGraph] is a
- * [Modifier.padding] whose `paddingValues` argument is our [PaddingValues] variable `padding`, to
- * which is chained a [Modifier.consumeWindowInsets] whose `paddingValues` argument is that same
- * [PaddingValues] variable `padding`.
+ * lambda argument we call our [NavGraphBuilder.addHomeGraph] extension method with its
+ * `onSnackSelected` argument our [onSnackSelected] lambda parameter (this will use the [composable]
+ * method to add routes for all the [HomeSections]). The [Modifier] `modifier` argument of
+ * [NavGraphBuilder.addHomeGraph] is a [Modifier.padding] whose `paddingValues` argument is our
+ * [PaddingValues] variable `padding`, to which is chained a [Modifier.consumeWindowInsets] whose
+ * `paddingValues` argument is that same [PaddingValues] variable `padding`.
  *
- * @param modifier  a [Modifier] instance that our caller can use to modify our appearance and/or
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller does not pass us any so the empty, default, or starter [Modifier] that
  * contains no elements is used.
  * @param onSnackSelected a lambda that can be called when the user wants to view the [SnackDetail]
@@ -262,13 +262,13 @@ fun MainContainer(
                                 enter = fadeIn(animationSpec = nonSpatialExpressiveSpring()) +
                                     slideInVertically(
                                         animationSpec = spatialExpressiveSpring()
-                                    ) { fullHeight ->
+                                    ) { fullHeight: Int ->
                                         fullHeight
                                     },
                                 exit = fadeOut(animationSpec = nonSpatialExpressiveSpring()) +
                                     slideOutVertically(
                                         animationSpec = spatialExpressiveSpring()
-                                    ) { fullHeight ->
+                                    ) { fullHeight: Int ->
                                         fullHeight
                                     }
                             )
@@ -281,7 +281,9 @@ fun MainContainer(
             SnackbarHost(
                 hostState = it,
                 modifier = Modifier.systemBarsPadding(),
-                snackbar = { snackbarData: SnackbarData -> JetsnackSnackbar(snackbarData = snackbarData) }
+                snackbar = { snackbarData: SnackbarData ->
+                    JetsnackSnackbar(snackbarData = snackbarData)
+                }
             )
         },
         snackBarHostState = jetsnackScaffoldState.snackBarHostState,
