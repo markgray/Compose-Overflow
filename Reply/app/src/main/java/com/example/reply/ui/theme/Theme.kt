@@ -15,10 +15,13 @@
  */
 
 package com.example.reply.ui.theme
+
 import android.app.Activity
 import android.app.UiModeManager
 import android.content.Context
 import android.os.Build
+import android.view.View
+import android.view.Window
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -263,14 +266,18 @@ private val highContrastDarkColorScheme = darkColorScheme(
 )
 
 /**
- *
+ * Checks if contrast is available on the device which is `true` iff the device we are running on
+ * is [Build.VERSION_CODES.UPSIDE_DOWN_CAKE] or newer.
  */
 fun isContrastAvailable(): Boolean {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 }
 
 /**
+ * This function determines which [ColorScheme] to use based on the contrast level, and whether or
+ * not we are in dark mode.
  *
+ * @param isDark Whether the current theme is dark.
  */
 @Composable
 fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
@@ -280,7 +287,7 @@ fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
     // TODO(b/336693596): UIModeManager is not yet supported in preview
     if (!isPreview && isContrastAvailable()) {
         val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        val contrastLevel = uiModeManager.contrast
+        val contrastLevel: Float = uiModeManager.contrast
 
         colorScheme = when (contrastLevel) {
             in 0.0f..0.33f -> if (isDark)
@@ -297,6 +304,7 @@ fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
         return colorScheme
     } else return colorScheme
 }
+
 /**
  *
  */
@@ -307,18 +315,18 @@ fun ContrastAwareReplyTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val replyColorScheme = when {
+    val replyColorScheme: ColorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
+            val context: Context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        else -> selectSchemeForContrast(darkTheme)
+        else -> selectSchemeForContrast(isDark = darkTheme)
     }
-    val view = LocalView.current
+    val view: View = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
+            val window: Window = (view.context as Activity).window
             @Suppress("DEPRECATION") // TODO: Draw proper background behind statusBars instead.
             window.statusBarColor = replyColorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme

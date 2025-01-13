@@ -718,356 +718,356 @@ val surfaceContainerDark: Color = Color(0xFF251F17)
 val surfaceContainerHighDark: Color = Color(0xFF2F2921)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerHighest] of the `darkScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerHighestDark: Color = Color(0xFF3B342B)
 
 /**
- *
+ * This is used as the [ColorScheme.primary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val primaryDarkMediumContrast: Color = Color(0xFFF9C172)
 
 /**
- *
+ * This is used as the [ColorScheme.onPrimary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onPrimaryDarkMediumContrast: Color = Color(0xFF221300)
 
 /**
- *
+ * This is used as the [ColorScheme.primaryContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val primaryContainerDarkMediumContrast: Color = Color(0xFFB9883F)
 
 /**
- *
+ * This is used as the [ColorScheme.onPrimaryContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onPrimaryContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.secondary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val secondaryDarkMediumContrast: Color = Color(0xFFE2C6A5)
 
 /**
- *
+ * This is used as the [ColorScheme.onSecondary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSecondaryDarkMediumContrast: Color = Color(0xFF211402)
 
 /**
- *
+ * This is used as the [ColorScheme.secondaryContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val secondaryContainerDarkMediumContrast: Color = Color(0xFFA58D6F)
 
 /**
- *
+ * This is used as the [ColorScheme.onSecondaryContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSecondaryContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.tertiary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val tertiaryDarkMediumContrast: Color = Color(0xFFBCD2A5)
 
 /**
- *
+ * This is used as the [ColorScheme.onTertiary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onTertiaryDarkMediumContrast: Color = Color(0xFF0B1A01)
 
 /**
- *
+ * This is used as the [ColorScheme.tertiaryContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val tertiaryContainerDarkMediumContrast: Color = Color(0xFF83976E)
 
 /**
- *
+ * This is used as the [ColorScheme.onTertiaryContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onTertiaryContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.error] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val errorDarkMediumContrast: Color = Color(0xFFFFBAB1)
 
 /**
- *
+ * This is used as the [ColorScheme.onError] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onErrorDarkMediumContrast: Color = Color(0xFF370001)
 
 /**
- *
+ * This is used as the [ColorScheme.errorContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val errorContainerDarkMediumContrast: Color = Color(0xFFFF5449)
 
 /**
- *
+ * This is used as the [ColorScheme.onErrorContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onErrorContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.background] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val backgroundDarkMediumContrast: Color = Color(0xFF18120B)
 
 /**
- *
+ * This is used as the [ColorScheme.onBackground] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onBackgroundDarkMediumContrast: Color = Color(0xFFEDE0D4)
 
 /**
- *
+ * This is used as the [ColorScheme.surface] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceDarkMediumContrast: Color = Color(0xFF18120B)
 
 /**
- *
+ * This is used as the [ColorScheme.onSurface] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSurfaceDarkMediumContrast: Color = Color(0xFFFFFAF7)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceVariant] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceVariantDarkMediumContrast: Color = Color(0xFF4F4539)
 
 /**
- *
+ * This is used as the [ColorScheme.onSurfaceVariant] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSurfaceVariantDarkMediumContrast: Color = Color(0xFFD7C8B8)
 
 /**
- *
+ * This is used as the [ColorScheme.outline] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val outlineDarkMediumContrast: Color = Color(0xFFAEA192)
 
 /**
- *
+ * This is used as the [ColorScheme.outlineVariant] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val outlineVariantDarkMediumContrast: Color = Color(0xFF8E8173)
 
 /**
- *
+ * This is used as the [ColorScheme.scrim] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val scrimDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.inverseSurface] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val inverseSurfaceDarkMediumContrast: Color = Color(0xFFEDE0D4)
 
 /**
- *
+ * This is used as the [ColorScheme.inverseOnSurface] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val inverseOnSurfaceDarkMediumContrast: Color = Color(0xFF302921)
 
 /**
- *
+ * This is used as the [ColorScheme.inversePrimary] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val inversePrimaryDarkMediumContrast: Color = Color(0xFF644100)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceDim] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceDimDarkMediumContrast: Color = Color(0xFF18120B)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceBright] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceBrightDarkMediumContrast: Color = Color(0xFF3F3830)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerLowest] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerLowestDarkMediumContrast: Color = Color(0xFF120D07)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerLow] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerLowDarkMediumContrast: Color = Color(0xFF201B13)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainer] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerDarkMediumContrast: Color = Color(0xFF251F17)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerHigh] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerHighDarkMediumContrast: Color = Color(0xFF2F2921)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerHighest] of the `mediumContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerHighestDarkMediumContrast: Color = Color(0xFF3B342B)
 
 /**
- *
+ * This is used as the [ColorScheme.primary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val primaryDarkHighContrast: Color = Color(0xFFFFFAF7)
 
 /**
- *
+ * This is used as the [ColorScheme.onPrimary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onPrimaryDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.primaryContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val primaryContainerDarkHighContrast: Color = Color(0xFFF9C172)
 
 /**
- *
+ * This is used as the [ColorScheme.onPrimaryContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onPrimaryContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.secondary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val secondaryDarkHighContrast: Color = Color(0xFFFFFAF7)
 
 /**
- *
+ * This is used as the [ColorScheme.onSecondary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSecondaryDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.secondaryContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val secondaryContainerDarkHighContrast: Color = Color(0xFFE2C6A5)
 
 /**
- *
+ * This is used as the [ColorScheme.onSecondaryContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSecondaryContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.tertiary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val tertiaryDarkHighContrast: Color = Color(0xFFF3FFE2)
 
 /**
- *
+ * This is used as the [ColorScheme.onTertiary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onTertiaryDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.tertiaryContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val tertiaryContainerDarkHighContrast: Color = Color(0xFFBCD2A5)
 
 /**
- *
+ * This is used as the [ColorScheme.onTertiaryContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onTertiaryContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.error] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val errorDarkHighContrast: Color = Color(0xFFFFF9F9)
 
 /**
- *
+ * This is used as the [ColorScheme.onError] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onErrorDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.errorContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val errorContainerDarkHighContrast: Color = Color(0xFFFFBAB1)
 
 /**
- *
+ * This is used as the [ColorScheme.onErrorContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onErrorContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.background] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val backgroundDarkHighContrast: Color = Color(0xFF18120B)
 
 /**
- *
+ * This is used as the [ColorScheme.onBackground] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onBackgroundDarkHighContrast: Color = Color(0xFFEDE0D4)
 
 /**
- *
+ * This is used as the [ColorScheme.surface] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceDarkHighContrast: Color = Color(0xFF18120B)
 
 /**
- *
+ * This is used as the [ColorScheme.onSurface] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSurfaceDarkHighContrast: Color = Color(0xFFFFFFFF)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceVariant] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceVariantDarkHighContrast: Color = Color(0xFF4F4539)
 
 /**
- *
+ * This is used as the [ColorScheme.onSurfaceVariant] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val onSurfaceVariantDarkHighContrast: Color = Color(0xFFFFFAF7)
 
 /**
- *
+ * This is used as the [ColorScheme.outline] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val outlineDarkHighContrast: Color = Color(0xFFD7C8B8)
 
 /**
- *
+ * This is used as the [ColorScheme.outlineVariant] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val outlineVariantDarkHighContrast: Color = Color(0xFFD7C8B8)
 
 /**
- *
+ * This is used as the [ColorScheme.scrim] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val scrimDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.inverseSurface] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val inverseSurfaceDarkHighContrast: Color = Color(0xFFEDE0D4)
 
 /**
- *
+ * This is used as the [ColorScheme.inverseOnSurface] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val inverseOnSurfaceDarkHighContrast: Color = Color(0xFF000000)
 
 /**
- *
+ * This is used as the [ColorScheme.inversePrimary] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val inversePrimaryDarkHighContrast: Color = Color(0xFF3C2500)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceDim] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceDimDarkHighContrast: Color = Color(0xFF18120B)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceBright] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceBrightDarkHighContrast: Color = Color(0xFF3F3830)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerLowest] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerLowestDarkHighContrast: Color = Color(0xFF120D07)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerLow] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerLowDarkHighContrast: Color = Color(0xFF201B13)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainer] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerDarkHighContrast: Color = Color(0xFF251F17)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerHigh] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerHighDarkHighContrast: Color = Color(0xFF2F2921)
 
 /**
- *
+ * This is used as the [ColorScheme.surfaceContainerHighest] of the `highContrastDarkColorScheme` of [ContrastAwareReplyTheme].
  */
 val surfaceContainerHighestDarkHighContrast: Color = Color(0xFF3B342B)
