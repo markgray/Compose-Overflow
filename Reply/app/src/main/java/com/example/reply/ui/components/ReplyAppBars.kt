@@ -98,18 +98,20 @@ import kotlinx.coroutines.CoroutineScope
  * `onExpandedChange`, whose `modifier` argument is a [Modifier.fillMaxWidth] to have us use all our
  * incoming horizontal constraint, whose `placeholder` argument is a [Text] displaying the [String]
  * with resource ID `R.string.search_emails` ("Search emails"), whose `leadingIcon` argument is an
- * [Icon] displaying the [ImageVector] `imageVector` argument drawn by [Icons.AutoMirrored.Filled.ArrowBack]
- * if [MutableState] wrapped [Boolean] variable `expanded` is `true`, with a [Modifier.padding]
- * `modifier` argument that adds `16.dp` to the `start`, chained to a [Modifier.clickable] whose
- * `onClick` lambda argument is a lambda that sets `expanded` to `false`, and `query` to an empty
- * [String]. If [MutableState] wrapped [Boolean] variable `expanded` is `false` `leadingIcon` is
- * an [Icon] displaying the [ImageVector] `imageVector` argument drawn by [Icons.Filled.Search] with
- * a [Modifier.padding] `modifier` argument that adds `16.dp` to the `start`. The `trailingIcon`
- * argument is a lambda composing a [ReplyProfileImage] whose `drawableResource` argument is the
- * jpeg with resource ID `R.drawable.avatar_6`, whose `description` argument is the [String] with
- * resource ID `R.string.profile` ("Profile"), and whose [Modifier] `modifier` argument is a
- * [Modifier.padding] that adds `12.dp` to all sides, with a [Modifier.size] chained to that which
- * sets its `size` to `32.dp`.
+ * [Icon] displaying the [ImageVector] `imageVector` argument drawn by
+ * [Icons.AutoMirrored.Filled.ArrowBack] if [MutableState] wrapped [Boolean] variable `expanded` is
+ * `true`, with a [Modifier.padding] `modifier` argument that adds `16.dp` to the `start`, chained
+ * to a [Modifier.clickable] whose `onClick` lambda argument is a lambda that sets `expanded` to
+ * `false`, and `query` to an empty [String]. If [MutableState] wrapped [Boolean] variable `expanded`
+ * is `false` `leadingIcon` is an [Icon] displaying the [ImageVector] `imageVector` argument drawn
+ * by [Icons.Filled.Search], with its [String] `contentDescription` argument the [String] with resource
+ * ID `R.string.search` ("Search"), and with its [Modifier] `modifier` argument a [Modifier.padding]
+ * that adds `16.dp` to the `start`. The `trailingIcon` argument is a lambda composing a
+ * [ReplyProfileImage] whose `drawableResource` argument is the jpeg with resource ID
+ * `R.drawable.avatar_6`, whose `description` argument is the [String] with resource ID
+ * `R.string.profile` ("Profile"), and whose [Modifier] `modifier` argument is a [Modifier.padding]
+ * that adds `12.dp` to all sides, with a [Modifier.size] chained to that which sets its `size` to
+ * `32.dp`.
  *
  * The `expanded` argument of the [DockedSearchBar] is our [MutableState] wrapped [Boolean]
  * variable `expanded`. The `onExpandedChange` argument is our lambda variable `onExpandedChange`.
@@ -284,13 +286,14 @@ fun ReplyDockedSearchBar(
  * In the [ColumnScope] `content` Composable lambda argument of the [Column] we compose a [Text]
  * whose `text` argument is the [Email.subject] of our [Email] parameter [email], whose [TextStyle]
  * `style` argument is the [Typography.titleMedium] of our custom [MaterialTheme.typography], whose
- * [Color] `color` argument is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
- * This is followed by a [Text] whose [Modifier] `modifier` argument is a [Modifier.padding] that adds
- * `4.dp` to the `top`, whose `text` argument is the string formed by concatenating the [String] value
- * of the [List.size] of the [Email.threads] of our [Email] parameter [email] and the [String] with
- * resource ID `R.string.messages` ("Messages"), whose [TextStyle] `style` argument is the
- * [Typography.labelMedium] of our custom [MaterialTheme.typography], and whose [Color] `color`
- * argument is the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme].
+ * [Color] `color` argument is the [ColorScheme.onSurfaceVariant] of our custom
+ * [MaterialTheme.colorScheme]. This is followed by a [Text] whose [Modifier] `modifier` argument is
+ * a [Modifier.padding] that adds `4.dp` to the `top`, whose `text` argument is the string formed by
+ * concatenating the [String] value of the [List.size] of the [Email.threads] of our [Email] parameter
+ * [email] and the [String] with resource ID `R.string.messages` ("Messages"), whose [TextStyle]
+ * `style` argument is the [Typography.labelMedium] of our custom [MaterialTheme.typography], and
+ * whose [Color] `color` argument is the [ColorScheme.outline] of our custom
+ * [MaterialTheme.colorScheme].
  *
  * The `navigationIcon` Composable lambda argument of the [TopAppBar] is a lambda that composes a
  * [FilledIconButton] if our [Boolean] parameter [isFullScreen] is `true`, whose `onClick` lambda
@@ -306,10 +309,11 @@ fun ReplyDockedSearchBar(
  *
  * The `actions` [RowScope] Composable lambda argument of the [TopAppBar] is a lambda that composes
  * an [IconButton] whose `onClick` lambda argument is a lambda that does nothing. In the `content`
- * Composable lambda argument of the [IconButton] we compose an [Icon] whose [ImageVector] `imageVector`
- * argument is the [ImageVector] drawn by [Icons.Filled.MoreVert], whose `contentDescription` argument
- * is the [String] with resource ID `R.string.more_options_button` ("More options"), and whose [Color]
- * `tint` argument is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
+ * Composable lambda argument of the [IconButton] we compose an [Icon] whose [ImageVector]
+ * `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.MoreVert], whose
+ * `contentDescription` argument is the [String] with resource ID `R.string.more_options_button`
+ * ("More options"), and whose [Color] `tint` argument is the [ColorScheme.onSurfaceVariant] of our
+ * custom [MaterialTheme.colorScheme].
  *
  * @param email [Email] that is being displayed in the [ReplyEmailDetail]. Our caller calls us
  * with the [ReplyHomeUIState.openedEmail] that is passed to it in its `email` parameter.

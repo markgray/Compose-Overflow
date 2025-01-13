@@ -30,8 +30,8 @@ import androidx.annotation.DrawableRes
  * @param altEmail An alternate email address associated with the [Account].
  * @param avatar The resource of a drawable that can be used to represent the [Account] or its user.
  * @param isCurrentAccount No idea what the intended use of this is, it defaults to `false` for all
- * execpt the [Account] whose [Account.id] is 1L which is the first of the three accounts owned by
- * [Account.uid] 0L, whose is the "current user" of the app (aka "Jeff Hansen")
+ * except the [Account] whose [Account.id] is `1L` which is the first of the three accounts owned by
+ * [Account.uid] `0L`, whose is the "current user" of the app (aka "Jeff Hansen")
  */
 data class Account(
     val id: Long,

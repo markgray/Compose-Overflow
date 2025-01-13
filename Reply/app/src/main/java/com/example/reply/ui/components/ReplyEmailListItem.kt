@@ -68,17 +68,18 @@ import com.example.reply.ui.ReplyEmailList
  * This composable displays a single [Email]. It is used by the [ReplyEmailList] composable. Our root
  * Composable is a [Card] whose [Modifier] `modifier` argument chains to our [Modifier] parameter
  * [modifier] a [Modifier.padding] that adds `16.dp` padding to the `horizontal` sides and `4.dp`
- * to the `vertical` sides, followed by a [Modifier.semantics] that sets [SemanticsPropertyReceiver.selected]
- * to our [Boolean] parameter [isSelected], followed by a [Modifier.clip] that clips the [Card] to
- * the [Shape] `shape` [CardDefaults.shape], followed by a [Modifier.combinedClickable] whose `onClick`
- * argument is a lambda that calls our [navigateToDetail] function with the [Email.id] of our [Email]
- * parameter [email], and whose `onLongClick` argument is a lambda that calls our [toggleSelection]
- * with the [Email.id] of our [Email] parameter [email], and at the end of the chain is yet another
- * [Modifier.clip] that clips the [Card] to the [Shape] `shape` [CardDefaults.shape] (for some reason).
- * The [CardColors] `colors` argument is a [CardDefaults.cardColors] with the [CardColors.containerColor]
- * overridden to be one of [ColorScheme.primaryContainer] if our [Boolean] parameter [isSelected] is
- * `true`, or [ColorScheme.secondaryContainer] if our [Boolean] parameter [isOpened] is `true`, or
- * else if neither are `true` [ColorScheme.surfaceVariant].
+ * to the `vertical` sides, followed by a [Modifier.semantics] that sets
+ * [SemanticsPropertyReceiver.selected] to our [Boolean] parameter [isSelected], followed by a
+ * [Modifier.clip] that clips the [Card] to the [Shape] `shape` [CardDefaults.shape], followed by a
+ * [Modifier.combinedClickable] whose `onClick` argument is a lambda that calls our [navigateToDetail]
+ * lambda parameter with the [Email.id] of our [Email] parameter [email], and whose `onLongClick`
+ * argument is a lambda that calls our [toggleSelection] lambda parameter with the [Email.id] of our
+ * [Email] parameter [email], and at the end of the chain is yet another [Modifier.clip] that clips
+ * the [Card] to the [Shape] `shape` [CardDefaults.shape] (for some reason). The [CardColors] `colors`
+ * argument is a [CardDefaults.cardColors] with the [CardColors.containerColor] overridden to be one
+ * of [ColorScheme.primaryContainer] if our [Boolean] parameter [isSelected] is `true`, or
+ * [ColorScheme.secondaryContainer] if our [Boolean] parameter [isOpened] is `true`, or else if neither
+ * are `true` [ColorScheme.surfaceVariant].
  *
  * In the [ColumnScope] `content` Composable lambda argument of the [Card] we have a [Column] whose
  * [Modifier] `modifier` argument is a [Modifier.fillMaxWidth], followed by a [Modifier.padding] that
@@ -103,13 +104,13 @@ import com.example.reply.ui.ReplyEmailList
  *  to each `horizontal` side and `4.dp` to each `vertical` side, and the `verticalArrangement`
  *  argument of the [Column] is [Arrangement.Center]. In the [ColumnScope] `content` Composable lambda
  *  argument of the [Column] we compose a [Text] whose `text` argument is the [Account.firstName] of
- *  the [Email.sender] of [email], and whose [TextStyle] `style` argument is the [Typography.labelMedium]
- *  of our custom [MaterialTheme.typography]. This is followed by another [Text] whose `text` argument
- *  is the [Email.createdAt] of [email], and whose [TextStyle] `style` argument is the
- *  [Typography.labelMedium] of our custom [MaterialTheme.typography].
- *  Next in the [Row] is an [IconButton] whose `onCick` argument is a do-nothing lambda, and whose
- *  [Modifier] `modifier` argument is a [Modifier.clip] whose [Shape] `shape` argument is [CircleShape],
- *  chained to a [Modifier.background] whose [Color] `color` argument is the [ColorScheme.surfaceContainerHigh]
+ *  the [Email.sender] of [email], and whose [TextStyle] `style` argument is the
+ *  [Typography.labelMedium] of our custom [MaterialTheme.typography]. This is followed by another
+ *  [Text] whose `text` argument is the [Email.createdAt] of [email], and whose [TextStyle] `style`
+ *  argument is the [Typography.labelMedium] of our custom [MaterialTheme.typography]. Next in the
+ *  [Row] is an [IconButton] whose `onCick` argument is a do-nothing lambda, and whose [Modifier]
+ *  `modifier` argument is a [Modifier.clip] whose [Shape] `shape` argument is [CircleShape], chained
+ *  to a [Modifier.background] whose [Color] `color` argument is the [ColorScheme.surfaceContainerHigh]
  *  of our custom [MaterialTheme.colorScheme]. In the [IconButton] `content` Composable lambda argument
  *  we compose an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawn by
  *  [Icons.Filled.StarBorder],  whose `contentDescription` argument is "Favorite", and whose [Color]
