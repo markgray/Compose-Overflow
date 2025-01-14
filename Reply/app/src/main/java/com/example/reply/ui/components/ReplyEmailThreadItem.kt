@@ -56,14 +56,16 @@ import com.example.reply.ui.ReplyEmailDetail
 /**
  * This Composable is used by [ReplyEmailDetail] to display each of the [Email] in the [List] of
  * [Email] property [Email.threads] of the [Email] it is displaying. Our root Composable is a [Card]
- * whose [Modifier] `modifier` argument chains to our [Modifier] paramater [modifier] a
+ * whose [Modifier] `modifier` argument chains to our [Modifier] parameter [modifier] a
  * [Modifier.padding] that adds `16.dp` padding to each `horizontal` side and `4.dp` padding to each
  * `vertical` side, and whose [CardColors] `colors` argument is a [CardDefaults.cardColors] with
  * the [CardColors.containerColor] overridden to be [ColorScheme.surfaceContainerHigh] of our custom
  * [MaterialTheme.colorScheme] (A surface variant for containers with higher emphasis than
  * `surfaceContainer`). In the [ColumnScope] `content` Composable lambda argument of the [Card] we
- * compose:
- *  - a [Row] whose [Modifier] `modifier` argumet is a [Modifier.fillMaxWidth] to have it take up the
+ * compose a [Column] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] with a
+ * [Modifier.padding] that adds `20.dp` to `all` sides chained to that. In the [ColumnScope] `content`
+ * Composable lambda argument of the [Column] we compose:
+ *  - a [Row] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] to have it take up the
  *  entire incoming width constraint. In the [RowScope] `content` Composable lambda argument of the
  *  [Row] we compose:
  *  1. a [ReplyProfileImage] whose [Int] `drawableResource` argument is the [Account.avatar] of the
@@ -80,12 +82,13 @@ import com.example.reply.ui.ReplyEmailDetail
  *  [MaterialTheme.typography], and with its [Color] `color` argument the [ColorScheme.outline]
  *  of our custom [MaterialTheme.colorScheme].
  *  3. an [IconButton] whose `onClick` lambda argument is an empty lambda, and whose [Modifier]
- *  `modifier` argument is a [Modifier.clip] with a [Shape] `shape` of [CircleShape], to which is
- *  chained a [Modifier.background] with its [Color] `color` argument the [ColorScheme.surfaceContainer]
- *  of our custom [MaterialTheme.colorScheme]. In the [IconButton] `content` Composable lambda argument
- *  we compose an [Icon] whose [ImageVector] `imageVector` argument is the [ImageVector] drawm bu
- *  [Icons.Filled.StarBorder], whose [String] `contentDescription` argument is the string "Favorite",
- *  and whose [Color] `tint` argument is the [ColorScheme.outline] of our custom [MaterialTheme.colorScheme].
+ *  `modifier` argument is a [Modifier.clip] with a [Shape] `shape` argument of [CircleShape], to which
+ *  is chained a [Modifier.background] with its [Color] `color` argument the
+ *  [ColorScheme.surfaceContainer] of our custom [MaterialTheme.colorScheme]. In the [IconButton]
+ *  `content` Composable lambda argument we compose an [Icon] whose [ImageVector] `imageVector`
+ *  argument is the [ImageVector] drawn by [Icons.Filled.StarBorder], whose [String]
+ *  `contentDescription` argument is the string "Favorite", and whose [Color] `tint` argument is the
+ *  [ColorScheme.outline] of our custom [MaterialTheme.colorScheme].
  *  - Next in the [Column] is a [Text] whose `text` argument is the [Email.subject] of our [Email]
  *  parameter [email], whose [TextStyle] `style` argument is the [Typography.bodyMedium] of our custom
  *  [MaterialTheme.typography], whose [Color] `color` argument is the [ColorScheme.outline] of our
