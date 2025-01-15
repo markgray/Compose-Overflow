@@ -22,6 +22,7 @@ import android.content.Context
 import android.os.Build
 import android.view.View
 import android.view.Window
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -275,15 +276,30 @@ fun isContrastAvailable(): Boolean {
 
 /**
  * This function determines which [ColorScheme] to use based on the contrast level, and whether or
- * not we are in dark mode.
+ * not we are in dark mode. First we initialize our [Context] variable `val context` to the `current
+ * [LocalContext]. Then we initialize our [Boolean] variable `val isPreview` to the ``current`
+ * [LocalInspectionMode]. If `isPreview` is `false` (we are not in preview mode), and if our
+ * [isContrastAvailable] function returns `true`, we initialize our [UiModeManager] variable
+ * `val uiModeManager` to the system level service [Context.UI_MODE_SERVICE] and initialize our
+ * [Float] variable `val contrastLevel` to the current contrast level returned by the
+ * [UiModeManager.getContrast] property of `uiModeManager`. Then we use a `when` expression to set
+ * [ColorScheme] variable `colorScheme` based on the value of `contrastLevel`:
+ *  - 0.0f to 0.33f -> if [isDark] is `true` [darkScheme] else [lightScheme]
+ *  - 0.34f to 0.66f -> if [isDark] is `true` [mediumContrastDarkColorScheme] else
+ *  [mediumContrastLightColorScheme].
+ *  - 0.67 to 1.0f -> if [isDark] is `true` [highContrastDarkColorScheme] else
+ *  [highContrastLightColorScheme].
+ *  - else -> if [isDark] is `true` [darkScheme] else [lightScheme].
+ *
+ * In either case we now return `colorScheme` to the caller
  *
  * @param isDark Whether the current theme is dark.
  */
 @Composable
 fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
-    val context = LocalContext.current
-    var colorScheme = if (isDark) darkScheme else lightScheme
-    val isPreview = LocalInspectionMode.current
+    val context: Context = LocalContext.current
+    var colorScheme: ColorScheme = if (isDark) darkScheme else lightScheme
+    val isPreview: Boolean = LocalInspectionMode.current
     // TODO(b/336693596): UIModeManager is not yet supported in preview
     if (!isPreview && isContrastAvailable()) {
         val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
@@ -306,7 +322,26 @@ fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
 }
 
 /**
+ * This is our custom "Contrast Aware" [MaterialTheme]. We start by initializing our [ColorScheme]
+ * variable `val replyColorScheme` to the value returned by the [selectSchemeForContrast] function
+ * for the `isDark` argument our [darkTheme] parameter (since [dynamicColor] is always `false`.
+ * Then we initialize our [View] variable `val view` to the current [LocalView]. If the
+ * [View.isInEditMode] method of `view` is `false` (we are not in edit mode), we initialize our
+ * [Window] variable `val window` to the [Activity.getWindow] of the [View.getContext] of `view`.
+ * We then call the [Window.setStatusBarColor] method of `window` to set the status bar color to
+ * the [ColorScheme.primary] color of `replyColorScheme`. We then call the
+ * [WindowCompat.getInsetsController] method of `window` to get the [WindowInsetsControllerCompat]
+ * for `window` and `view` and call its [WindowInsetsControllerCompat.setAppearanceLightStatusBars]
+ * method to set the appearance of the status bars to the value of `darkTheme`. Finally we construct
+ * a [MaterialTheme] whose [MaterialTheme.colorScheme] is `replyColorScheme`, [MaterialTheme.typography]
+ * is [replyTypography], whose [MaterialTheme.shapes] is [shapes], and whose `content` Composable
+ * lambda argument is our [content] Composable lambda parameter.
  *
+ * @param darkTheme Whether the current theme is dark. Our callers never specify this so we always
+ * use the default value returned by the [isSystemInDarkTheme] method (`true` if the system is
+ * considered to be in 'dark theme').
+ * @param dynamicColor Whether the dynamic color algorithm should be used. Always `false`.
+ * @param content The Composable which we should supply [MaterialTheme] values to.
  */
 @Composable
 fun ContrastAwareReplyTheme(
