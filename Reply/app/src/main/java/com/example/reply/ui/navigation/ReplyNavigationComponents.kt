@@ -428,7 +428,7 @@ fun ReplyNavigationRail(
  * [WindowAdaptiveInfo.windowSizeClass] is [WindowWidthSizeClass.COMPACT] or
  * [WindowHeightSizeClass.COMPACT]. Our root composable is a [NavigationBar] whose [Modifier]
  * `modifier` argument is a [Modifier.fillMaxWidth] to have it occupy its entire incoming width
- * constraint. In its `content` [RowScope] Composable lambda argument we use the [List.forEach]
+ * constraint. In its [RowScope] `content` Composable lambda argument we use the [List.forEach]
  * method of the [List] of [ReplyTopLevelDestination] field [TOP_LEVEL_DESTINATIONS] accepting each
  * [ReplyTopLevelDestination] passed its `action` lambda argument in variable `replyDestination`
  * then we compose a [NavigationBarItem] whose `selected` argument is `true` if our [NavDestination]
@@ -477,7 +477,7 @@ fun ReplyBottomNavigationBar(
  * is `300.dp`. In its [ColumnScope] `content` Composable lambda argument we compose a [Layout]
  * whose [Modifier] `modifier` argument is a [Modifier.background] whose [Color] `color` argument is
  * the [ColorScheme.surfaceContainerHigh] of our custom [MaterialTheme.colorScheme], with a
- * [Modifier.padding] chained to that adds `16.dp` to all sides. In the `content` Composable lambda
+ * [Modifier.padding] chained to it that adds `16.dp` to all sides. In the `content` Composable lambda
  * argument we compose:
  *  - a [Column] whose [Modifier] `modifier` argument is a [Modifier.layoutId] with `layoutId` of
  *  [LayoutType.HEADER], whose `horizontalAlignment` argument is [Alignment.Start], and whose
@@ -547,14 +547,14 @@ fun PermanentNavigationDrawerContent(
     navigationContentPosition: ReplyNavigationContentPosition,
     navigateToTopLevelDestination: (ReplyTopLevelDestination) -> Unit,
 ) {
-        PermanentDrawerSheet(
+    PermanentDrawerSheet(
         modifier = Modifier.sizeIn(minWidth = 200.dp, maxWidth = 300.dp),
         drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         // TODO remove custom nav drawer content positioning when NavDrawer component supports it. ticket : b/232495216
         Layout(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
                 .padding(all = 16.dp),
             content = {
                 Column(
@@ -621,7 +621,9 @@ fun PermanentNavigationDrawerContent(
                     }
                 }
             },
-            measurePolicy = navigationMeasurePolicy(navigationContentPosition = navigationContentPosition)
+            measurePolicy = navigationMeasurePolicy(
+                navigationContentPosition = navigationContentPosition
+            )
         )
     }
 }
@@ -640,7 +642,7 @@ fun PermanentNavigationDrawerContent(
  *  its [ColumnScope] `content` Composable lambda argument we compose:
  *  1. a [Row] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth] that has it take up
  *  all of its incoming width constraint, with a [Modifier.padding] chained to that which adds `16.dp`
- *  padding to all side, whose `horizontalArrangement` argument is [Arrangement.SpaceBetween], and
+ *  padding to all sides, whose `horizontalArrangement` argument is [Arrangement.SpaceBetween], and
  *  whose `verticalAlignment` argument is [Alignment.CenterVertically]. In the [RowScope] `content`
  *  Composable lambda argument we compose a [Text] whose `text` argument is the [String] with resource
  *  ID `R.string.app_name` ("Reply"), whose [TextStyle] `style` argument is the [Typography.titleMedium]
@@ -668,7 +670,7 @@ fun PermanentNavigationDrawerContent(
  *  and whose [TextAlign] `textAlign` argument is [TextAlign.Center] to align its `text` at its
  *  center.
  *
- *  - Below the [Column] is another [Column] wwhose [Modifier] `modifier` argument is a
+ *  - Below the [Column] is another [Column] whose [Modifier] `modifier` argument is a
  *  [Modifier.layoutId] whose `layoutId` is [LayoutType.CONTENT], with a [Modifier.verticalScroll]
  *  chained to that which allows the [Column] to be scrollable, and whose `horizontalAlignment`
  *  argument is [Alignment.CenterHorizontally]. In the [ColumnScope] `content` Composable lambda
@@ -686,10 +688,10 @@ fun PermanentNavigationDrawerContent(
  *  `replyDestination`, and whose [String] `contentDescription` argument is the [String] with
  *  resource ID [ReplyTopLevelDestination.iconTextId] of the current [ReplyTopLevelDestination] in
  *  variable `replyDestination`. The [NavigationDrawerItemColors] `colors` argument of the
- *  [NavigationDrawerItem] is [NavigationDrawerItemDefaults.colors] with the `unselectedContainerColor`
- *  overridden to be [Color.Transparent] (the color to use for the icon when the item is unselected).
- *  The `onClick` lambda argument is a lambda that calls our lambda parameter
- *  [navigateToTopLevelDestination] with the current [ReplyTopLevelDestination] in variable
+ *  [NavigationDrawerItem] is [NavigationDrawerItemDefaults.colors] with the
+ *  `unselectedContainerColor` overridden to be [Color.Transparent] (the color to use for the icon
+ *  when the item is unselected). The `onClick` lambda argument is a lambda that calls our lambda
+ *  parameter [navigateToTopLevelDestination] with the current [ReplyTopLevelDestination] in variable
  *  `replyDestination`.
  *
  * The [MeasurePolicy] `measurePolicy` argument of the [Layout] is a call to [navigationMeasurePolicy]
@@ -798,7 +800,9 @@ fun ModalNavigationDrawerContent(
                     }
                 }
             },
-            measurePolicy = navigationMeasurePolicy(navigationContentPosition = navigationContentPosition)
+            measurePolicy = navigationMeasurePolicy(
+                navigationContentPosition = navigationContentPosition
+            )
         )
     }
 }
@@ -806,7 +810,7 @@ fun ModalNavigationDrawerContent(
 /**
  * This is used as the `measurePolicy` argument of the [Layout] that is used by the [ModalDrawerSheet]
  * that is used by [ModalNavigationDrawerContent] and by the [PermanentDrawerSheet] that is used by
- * [PermanentNavigationDrawerContent]. The [Layout] that we are the `measurePolicy` argument passes
+ * [PermanentNavigationDrawerContent]. The [Layout] that we are the `measurePolicy` argument of passes
  * the [MeasureScope] Composable lambda argument of [MeasurePolicy] a [List]] of [Measurable] which
  * we accept in variable `measurables`, and [Constraints] which we accept in variable `constraints`.
  * These are derived from the Composables in its `content` Composable lambda argument. Each [Measurable]
@@ -823,8 +827,9 @@ fun ModalNavigationDrawerContent(
  * method of `headerMeasurable` with its [Constraints] `constraints` argument our [Constraints]
  * variable `constraints`, and our [Placeable] variable `val contentPlaceable` to the [Placeable]
  * returned by the [Measurable.measure] method of `contentMeasurable` with its [Constraints]
- * `constraints` argument the [Constraints.offset] of our [Constraints] variable `constraints` by
- * the `vertical` offset of minus the [Placeable.height] of `headerPlaceable`.
+ * `constraints` argument the [Constraints] returned by the [Constraints.offset] method of our
+ * [Constraints] variable `constraints` for the `vertical` offset argument of minus the
+ * [Placeable.height] of `headerPlaceable`.
  *
  * Then we call the [MeasureScope.layout] method with its `width` argument the [Constraints.maxWidth]
  * of `constraints`, and its `height` argument the [Constraints.maxHeight] of `constraints`. In the
@@ -842,8 +847,8 @@ fun ModalNavigationDrawerContent(
  * [Placeable.height] of `headerPlaceable`.
  *
  * Finally we call the [Placeable.PlacementScope.placeRelative] extension method of `contentPlaceable`
- * to place it at `x` = `0`, `y` = `contentPlaceableY` and return the [MeasureResult] to the caller
- * of our [MeasurePolicy]. (at least i think that's how it works).
+ * to place it at `x` = `0`, `y` = `contentPlaceableY` and return the [MeasureResult] returned by
+ * [MeasurePolicy] to the caller of [navigationMeasurePolicy]. (at least i think that's how it works).
  *
  * @param navigationContentPosition The [ReplyNavigationContentPosition] to use when positioning the
  * [Measurable] in the [List] of [Measurable] whose [Measurable.layoutId] is [LayoutType.CONTENT],
