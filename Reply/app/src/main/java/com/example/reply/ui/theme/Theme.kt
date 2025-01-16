@@ -324,7 +324,9 @@ fun selectSchemeForContrast(isDark: Boolean): ColorScheme {
 /**
  * This is our custom "Contrast Aware" [MaterialTheme]. We start by initializing our [ColorScheme]
  * variable `val replyColorScheme` to the value returned by the [selectSchemeForContrast] function
- * for the `isDark` argument our [darkTheme] parameter (since [dynamicColor] is always `false`.
+ * with its `isDark` argument our [Boolean] parameter [darkTheme] (since [dynamicColor] is always
+ * `false`, if it were `true` however we would set `replyColorScheme` to [dynamicDarkColorScheme]
+ * if [darkTheme] is `true` or to [dynamicLightColorScheme] if it [darkTheme] is `false`).
  * Then we initialize our [View] variable `val view` to the current [LocalView]. If the
  * [View.isInEditMode] method of `view` is `false` (we are not in edit mode), we initialize our
  * [Window] variable `val window` to the [Activity.getWindow] of the [View.getContext] of `view`.
