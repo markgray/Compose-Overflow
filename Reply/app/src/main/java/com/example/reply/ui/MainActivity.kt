@@ -35,6 +35,9 @@ import com.example.reply.data.local.LocalEmailsDataProvider
 import com.example.reply.ui.theme.ContrastAwareReplyTheme
 import com.google.accompanist.adaptive.calculateDisplayFeatures
 
+/**
+ *
+ */
 class MainActivity : ComponentActivity() {
 
     private val viewModel: ReplyHomeViewModel by viewModels()
@@ -69,6 +72,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true)
 @Composable
@@ -82,6 +88,9 @@ fun ReplyAppPreview() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 700, heightDp = 500)
 @Composable
@@ -95,6 +104,9 @@ fun ReplyAppPreviewTablet() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 500, heightDp = 700)
 @Composable
@@ -108,6 +120,9 @@ fun ReplyAppPreviewTabletPortrait() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 1100, heightDp = 600)
 @Composable
@@ -121,6 +136,9 @@ fun ReplyAppPreviewDesktop() {
     }
 }
 
+/**
+ *
+ */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 600, heightDp = 1100)
 @Composable
