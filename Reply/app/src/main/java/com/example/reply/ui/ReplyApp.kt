@@ -16,14 +16,18 @@
 
 package com.example.reply.ui
 
+import android.graphics.Rect
 import androidx.compose.material3.Surface
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
@@ -33,6 +37,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.window.layout.DisplayFeature
 import androidx.window.layout.FoldingFeature
+import com.example.reply.data.Email
+import com.example.reply.ui.navigation.ReplyNavSuiteScope
 import com.example.reply.ui.navigation.ReplyNavigationActions
 import com.example.reply.ui.navigation.ReplyNavigationWrapper
 import com.example.reply.ui.navigation.Route
@@ -41,7 +47,12 @@ import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import com.example.reply.ui.utils.isBookPosture
 import com.example.reply.ui.utils.isSeparating
+import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * This extension function is a convenience function that maps the [NavigationSuiteType] enum to the
+ * [ReplyNavigationType] enum
+ */
 private fun NavigationSuiteType.toReplyNavType() = when (this) {
     NavigationSuiteType.NavigationBar -> ReplyNavigationType.BOTTOM_NAVIGATION
     NavigationSuiteType.NavigationRail -> ReplyNavigationType.NAVIGATION_RAIL
@@ -50,7 +61,66 @@ private fun NavigationSuiteType.toReplyNavType() = when (this) {
 }
 
 /**
- * TODO: Add kdoc
+ * This is the root composable of our app. First we initialize our [FoldingFeature] variable
+ * `val foldingFeature` to the first [FoldingFeature] in our [List] of [DisplayFeature] parameter
+ * [displayFeatures] that is an instance of [FoldingFeature] (or to `null` if there are none). Then
+ * we initialize our [DevicePosture] variable `val foldingDevicePosture` using a when expression:
+ *  - If our [isBookPosture] method returns `true` for [FoldingFeature] variable `foldingFeature` we
+ *  set its value to a [DevicePosture.BookPosture] with its `hingePosition` bounding [Rect] the
+ *  [FoldingFeature.bounds] property of [FoldingFeature] variable `foldingFeature`.
+ *  - If our [isSeparating] method returns `true` for [FoldingFeature] variable `foldingFeature` we
+ *  set its value to a [DevicePosture.Separating] with its `hingePosition` bounding [Rect] the
+ *  [FoldingFeature.bounds] property of [FoldingFeature] variable `foldingFeature` and its `orientation`
+ *  the [FoldingFeature.orientation] property of [FoldingFeature] variable `foldingFeature`.
+ *  - If neither method returns `true` we set it to [DevicePosture.NormalPosture].
+ *
+ * We initialize our [ReplyContentType] variable `val contentType` using a when expression based on
+ * the value of the [WindowSizeClass.widthSizeClass] of [WindowSizeClass] parameter [windowSize]:
+ *  - [WindowWidthSizeClass.Compact] -> we set it to [ReplyContentType.SINGLE_PANE].
+ *  - [WindowWidthSizeClass.Medium] -> we set it to [ReplyContentType.DUAL_PANE] if our [DevicePosture]
+ *  variable `foldingDevicePosture` is not equal to [DevicePosture.NormalPosture] or we set it to
+ *  [ReplyContentType.SINGLE_PANE] if it is.
+ *  - [WindowWidthSizeClass.Expanded] -> we set it to [ReplyContentType.DUAL_PANE].
+ *  - Otherwise we set it to [ReplyContentType.SINGLE_PANE].
+ *
+ * We initialize and remember our [NavHostController] variable `val navController` to the instance
+ * returned by [rememberNavController]. We initialize and remember our [ReplyNavigationActions]
+ * variable `val navigationActions` to a new instance whose `navController` argument is `navController`.
+ * (which is also the `key1` argument of the call to [remember]). We initialize our [State] wrapped
+ * [NavBackStackEntry] variable `val navBackStackEntry` to the value returned by the
+ * [NavHostController.currentBackStackEntryAsState] method of `navController`. We initialize our
+ * [NavDestination] variable `val currentDestination` to the value of the
+ * [NavBackStackEntry.destination] property of `navBackStackEntry`.
+ *
+ * Then our root Composable is a [Surface] whose `content` Composable lambda argument composes a
+ * [ReplyNavigationWrapper] whose `currentDestination` argument is [NavDestination] variable
+ * `currentDestination` and whose `navigateToTopLevelDestination` argument is a reference to the
+ * [ReplyNavigationActions.navigateTo] method of `navigationActions`. The [ReplyNavSuiteScope]
+ * `content` Composable lambda argument of the [ReplyNavigationWrapper] is a lambda in which we
+ * compose a [ReplyNavHost] whose arguments are:
+ *  - `navController` -> our [NavHostController] variable `navController`
+ *  - `contentType` -> our [ReplyContentType] variable `contentType`
+ *  - `displayFeatures` -> our [List] of [DisplayFeature] parameter [displayFeatures]
+ *  - `replyHomeUIState` -> our [State] wrapped [ReplyHomeUIState] parameter [replyHomeUIState]
+ *  - `navigationType` -> the [ReplyNavigationType] that corresponds to the [NavigationSuiteType]
+ *  [ReplyNavSuiteScope.navSuiteType] that is being used for the [NavigationSuiteScaffoldLayout]
+ *  - `closeDetailScreen` -> our lambda parameter [closeDetailScreen]
+ *  - `navigateToDetail` -> our lambda parameter [navigateToDetail]
+ *  - `toggleSelectedEmail` -> our lambda parameter [toggleSelectedEmail].
+ *
+ * @param windowSize The [WindowSizeClass] of the device's window.
+ * @param displayFeatures The [List] of [DisplayFeature] of the device's display.
+ * @param replyHomeUIState The current state of the Reply app. This is the [State] wrapped
+ * [ReplyHomeUIState] returned by the [StateFlow.collectAsStateWithLifecycle] method of the
+ * [StateFlow] of [ReplyHomeUIState] field [ReplyHomeViewModel.uiState] of the [ReplyHomeViewModel].
+ * @param closeDetailScreen The lambda to be called when the detail screen is to be closed. We are
+ * passed a lambda that calls the [ReplyHomeViewModel.closeDetailScreen] method of the
+ * [ReplyHomeViewModel].
+ * @param navigateToDetail A lambda to be called with the [Email.id] of the [Email] to be displayed
+ * and the [ReplyContentType] appropriate for the device we are running on.
+ * @param toggleSelectedEmail A lambda to be called with the [Email.id] of the [Email] whose selected
+ * status the user wants to toggle. We are passed a lambda that calls the
+ * [ReplyHomeViewModel.toggleSelectedEmail] method of the [ReplyHomeViewModel]
  */
 @Composable
 fun ReplyApp(
@@ -66,19 +136,23 @@ fun ReplyApp(
      * In the state of folding device If it's half fold in BookPosture we want to avoid content
      * at the crease/hinge
      */
-    val foldingFeature = displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
+    val foldingFeature: FoldingFeature? =
+        displayFeatures.filterIsInstance<FoldingFeature>().firstOrNull()
 
-    val foldingDevicePosture = when {
-        isBookPosture(foldingFeature) ->
-            DevicePosture.BookPosture(foldingFeature.bounds)
+    val foldingDevicePosture: DevicePosture = when {
+        isBookPosture(foldFeature = foldingFeature) ->
+            DevicePosture.BookPosture(hingePosition = foldingFeature.bounds)
 
-        isSeparating(foldingFeature) ->
-            DevicePosture.Separating(foldingFeature.bounds, foldingFeature.orientation)
+        isSeparating(foldFeature = foldingFeature) ->
+            DevicePosture.Separating(
+                hingePosition = foldingFeature.bounds,
+                orientation = foldingFeature.orientation
+            )
 
         else -> DevicePosture.NormalPosture
     }
 
-    val contentType = when (windowSize.widthSizeClass) {
+    val contentType: ReplyContentType = when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> ReplyContentType.SINGLE_PANE
         WindowWidthSizeClass.Medium -> if (foldingDevicePosture != DevicePosture.NormalPosture) {
             ReplyContentType.DUAL_PANE
@@ -90,7 +164,7 @@ fun ReplyApp(
     }
 
     val navController: NavHostController = rememberNavController()
-    val navigationActions: ReplyNavigationActions = remember(navController) {
+    val navigationActions: ReplyNavigationActions = remember(key1 = navController) {
         ReplyNavigationActions(navController = navController)
     }
     val navBackStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
@@ -115,6 +189,9 @@ fun ReplyApp(
     }
 }
 
+/**
+ * This is the top level [NavHost] of the app.
+ */
 @Composable
 private fun ReplyNavHost(
     navController: NavHostController,
