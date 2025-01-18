@@ -17,6 +17,7 @@
 package com.example.reply.ui
 
 import android.graphics.Rect
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -103,7 +105,7 @@ private fun NavigationSuiteType.toReplyNavType() = when (this) {
  *  - `displayFeatures` -> our [List] of [DisplayFeature] parameter [displayFeatures]
  *  - `replyHomeUIState` -> our [State] wrapped [ReplyHomeUIState] parameter [replyHomeUIState]
  *  - `navigationType` -> the [ReplyNavigationType] that corresponds to the [NavigationSuiteType]
- *  [ReplyNavSuiteScope.navSuiteType] that is being used for the [NavigationSuiteScaffoldLayout]
+ *  that is being used for the [NavigationSuiteScaffoldLayout] in our app.
  *  - `closeDetailScreen` -> our lambda parameter [closeDetailScreen]
  *  - `navigateToDetail` -> our lambda parameter [navigateToDetail]
  *  - `toggleSelectedEmail` -> our lambda parameter [toggleSelectedEmail].
@@ -116,8 +118,8 @@ private fun NavigationSuiteType.toReplyNavType() = when (this) {
  * @param closeDetailScreen The lambda to be called when the detail screen is to be closed. We are
  * passed a lambda that calls the [ReplyHomeViewModel.closeDetailScreen] method of the
  * [ReplyHomeViewModel].
- * @param navigateToDetail A lambda to be called with the [Email.id] of the [Email] to be displayed
- * and the [ReplyContentType] appropriate for the device we are running on.
+ * @param navigateToDetail A lambda to be called with the [Email.id] of the [Email] to have its details
+ * displayed and the [ReplyContentType] appropriate for the device we are running on.
  * @param toggleSelectedEmail A lambda to be called with the [Email.id] of the [Email] whose selected
  * status the user wants to toggle. We are passed a lambda that calls the
  * [ReplyHomeViewModel.toggleSelectedEmail] method of the [ReplyHomeViewModel]
@@ -190,7 +192,45 @@ fun ReplyApp(
 }
 
 /**
- * This is the top level [NavHost] of the app.
+ * This is the top level [NavHost] of the app. Our root Composable is a [NavHost] whose `modifier`
+ * argument is our [Modifier] parameter [modifier] and whose `navController` argument is our
+ * [NavHostController] parameter [navController], and the `startDestination` argument is [Route.Inbox]
+ * (which is the route for the [ReplyInboxScreen] Composable). In the [NavGraphBuilder] `builder`
+ * Composable lambda argument we have:
+ *  - [NavGraphBuilder.composable] for the [Route.Inbox] route in whose [AnimatedContentScope] `content`
+ *  Composable lambda argument we compose a [ReplyInboxScreen] whose [ReplyContentType] `contentType`
+ *  argument is our [ReplyContentType] parameter [contentType], whose [ReplyHomeUIState] argument is
+ *  our [State] wrapped [ReplyHomeUIState] parameter [replyHomeUIState], whose [ReplyNavigationType]
+ *  argument `navigationType` is our [ReplyNavigationType] parameter [navigationType], whose [List]
+ *  of [DisplayFeature] argument `displayFeatures` is our [List] of [DisplayFeature] parameter
+ *  [displayFeatures], whose `closeDetailScreen` lambda argument is our lambda parameter
+ *  [closeDetailScreen], whose `navigateToDetail` lambda argument is our lambda parameter
+ *  [navigateToDetail], and whose `toggleSelectedEmail` lambda argument is our lambda parameter
+ *  [toggleSelectedEmail].
+ *  - [NavGraphBuilder.composable] for the [Route.DirectMessages] route in whose [AnimatedContentScope]
+ *  `content` Composable lambda argument we compose an [EmptyComingSoon].
+ *  - [NavGraphBuilder.composable] for the [Route.Articles] route in whose [AnimatedContentScope]
+ *  `content` Composable lambda argument we compose an [EmptyComingSoon].
+ *  - [NavGraphBuilder.composable] for the [Route.Groups] route in whose [AnimatedContentScope]
+ *  `content` Composable lambda argument we compose an [EmptyComingSoon].
+ *
+ * @param navController The [NavHostController] of the app.
+ * @param contentType The [ReplyContentType] to use for the device we are running on, either
+ * [ReplyContentType.SINGLE_PANE] or [ReplyContentType.DUAL_PANE].
+ * @param displayFeatures The [List] of [DisplayFeature] of the device's display.
+ * @param replyHomeUIState The current [State] wrapped [ReplyHomeUIState] state of the Reply app
+ * returned by the [StateFlow.collectAsStateWithLifecycle] method of the [StateFlow] of
+ * [ReplyHomeUIState] field [ReplyHomeViewModel.uiState] of the [ReplyHomeViewModel].
+ * @param navigationType The [ReplyNavigationType] that corresponds to the [NavigationSuiteType]
+ * that is being used for the [NavigationSuiteScaffoldLayout] in our app.
+ * @param closeDetailScreen The lambda to be called when the detail screen is to be closed.
+ * @param navigateToDetail A lambda to be called with the [Email.id] of the [Email] to have its details
+ * displayed and the [ReplyContentType] appropriate for the device we are running on.
+ * @param toggleSelectedEmail A lambda to be called with the [Email.id] of the [Email] whose selected
+ * status the user wants to toggle.
+ * @param modifier A [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller [ReplyApp] does not pass us one so the empty, default, or starter [Modifier]
+ * that contains no elements if used.
  */
 @Composable
 private fun ReplyNavHost(

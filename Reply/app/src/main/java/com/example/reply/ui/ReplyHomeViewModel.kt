@@ -22,29 +22,57 @@ import com.example.reply.data.Email
 import com.example.reply.data.EmailsRepository
 import com.example.reply.data.EmailsRepositoryImpl
 import com.example.reply.ui.utils.ReplyContentType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
+/**
+ * This is the [ViewModel] that is used to communicate between the UI and the business model
+ * throughout the app.
+ *
+ * @param emailsRepository the [EmailsRepository] used to retrieve the list of emails.
+ */
 class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = EmailsRepositoryImpl()) :
     ViewModel() {
 
-    // UI state exposed to the UI
+    /**
+     * UI state exposed to the UI by our [uiState] field.
+     */
     private val _uiState = MutableStateFlow(ReplyHomeUIState(loading = true))
+
+    /**
+     * Public read-only access to our [_uiState] field.
+     */
     val uiState: StateFlow<ReplyHomeUIState> = _uiState
 
     init {
         observeEmails()
     }
 
+    /**
+     * This function lauches a coroutine on the [CoroutineScope] tied to this [ViewModel] returned
+     * by the [viewModelScope] extension function whose `block` calls the [EmailsRepository.getAllEmails]
+     * method of our [EmailsRepository] field [emailsRepository] and processes the [Flow] of [List]
+     * of [Email] that it returns by using the [catch] extension function on it to catch any exceptions
+     * thrown in order to set the [MutableStateFlow.value] of [_uiState] to a new instance of
+     * [ReplyHomeUIState] whose [ReplyHomeUIState.error] field contains the contents of the
+     * [Throwable.message] field of the exception that was thrown (and then returning). If no exception
+     * is thrown the [Flow.collect] method "collects" the [List] of [Email] emitted by the
+     * [EmailsRepository.getAllEmails] method and sets the [MutableStateFlow.value] of [_uiState] to
+     * a new instance of [ReplyHomeUIState] whose [ReplyHomeUIState.emails] field is that [List] of
+     * [Email], and whose [ReplyHomeUIState.openedEmail] field is the first [Email] in
+     * the [List] of [Email]s.
+     */
     private fun observeEmails() {
         viewModelScope.launch {
             emailsRepository.getAllEmails()
-                .catch { ex ->
+                .catch { ex: Throwable ->
                     _uiState.value = ReplyHomeUIState(error = ex.message)
                 }
-                .collect { emails ->
+                .collect { emails: List<Email> ->
                     /**
                      * We set first email selected by default for first App launch in large-screens
                      */
@@ -56,17 +84,34 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         }
     }
 
+    /**
+     * This method sets the [Email] whose [Email.id] is our [Long] parameter [emailId] to be the
+     * opened email. We start by using the [List.find] method of the [List] of [Email]s in the
+     * [ReplyHomeUIState] of the [StateFlow.value] of our field [uiState] to find the [Email] whose
+     * [Email.id] matches our [Long] parameter [emailId] in order to initialize our [Email] variable
+     * `val email` to that [Email]. Then we set the [MutableStateFlow.value] of our field [_uiState]
+     * to a copy of itself with its [ReplyHomeUIState.openedEmail] set to [Email] variable `email`
+     * and its [ReplyHomeUIState.isDetailOnlyOpen] set to `true` if our [ReplyContentType] parameter
+     * is equal to [ReplyContentType.SINGLE_PANE].
+     *
+     * @param emailId the [Email.id] of the [Email] to be opened.
+     * @param contentType the [ReplyContentType] appropriate for the device we are running on, either
+     * [ReplyContentType.SINGLE_PANE] or [ReplyContentType.DUAL_PANE].
+     */
     fun setOpenedEmail(emailId: Long, contentType: ReplyContentType) {
         /**
          * We only set isDetailOnlyOpen to true when it's only single pane layout
          */
-        val email = uiState.value.emails.find { it.id == emailId }
+        val email: Email? = uiState.value.emails.find { it.id == emailId }
         _uiState.value = _uiState.value.copy(
             openedEmail = email,
             isDetailOnlyOpen = contentType == ReplyContentType.SINGLE_PANE
         )
     }
 
+    /**
+     *
+     */
     fun toggleSelectedEmail(emailId: Long) {
         val currentSelection = uiState.value.selectedEmails
         _uiState.value = _uiState.value.copy(
@@ -75,7 +120,11 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
         )
     }
 
+    /**
+     *
+     */
     fun closeDetailScreen() {
+        @Suppress("RedundantValueArgument")
         _uiState.value = _uiState
             .value.copy(
                 isDetailOnlyOpen = false,
@@ -84,11 +133,32 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     }
 }
 
+/**
+ *
+ */
 data class ReplyHomeUIState(
+    /**
+     *
+     */
     val emails: List<Email> = emptyList(),
+    /**
+     *
+     */
     val selectedEmails: Set<Long> = emptySet(),
+    /**
+     *
+     */
     val openedEmail: Email? = null,
+    /**
+     *
+     */
     val isDetailOnlyOpen: Boolean = false,
+    /**
+     *
+     */
     val loading: Boolean = false,
+    /**
+     *
+     */
     val error: String? = null
 )
