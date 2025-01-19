@@ -37,12 +37,12 @@ import com.example.reply.R
 
 /**
  * This Composable is displayed when the user tries to use a feature which has not been implemented.
- * It consists of a root [Column] holding two [Text] widgets. The `modifier` argument chains a
- * [Modifier.fillMaxSize] to our [Modifier] parameter [modifier] to have its `content` occupy the
- * entire incoming width constraints, its `verticalArrangement` argument is an [Arrangement.Center]
+ * It consists of a root [Column] holding two [Text] widgets. The `modifier` argument of the [Column]
+ * chains a [Modifier.fillMaxSize] to our [Modifier] parameter [modifier] to have its `content` occupy
+ * the entire incoming width constraints, its `verticalArrangement` argument is an [Arrangement.Center]
  * to center its children vertically, and its horizontalAlignment is [Alignment.CenterHorizontally]
  * to center the horizontal alignment of the layout's children. Its `content` is:
- *  - a [Text] displaying the `text` with resource ID [R.string.empty_screen_title] ("Screen under
+ *  - a [Text] displaying the `text` with resource ID `R.string.empty_screen_title` ("Screen under
  *  construction"), with a [Modifier.padding] that adds 8.dp to all its sides, its `style` uses the
  *  [TextStyle] that is defined for [Typography.titleLarge] by our custom [MaterialTheme], which is
  *  the [FontWeight.SemiBold] `fontWeight` with a `fontSize` of 18.sp, `lineHeight` of 32.sp, and
@@ -50,7 +50,7 @@ import com.example.reply.R
  *  the text within the lines of the paragraph is centered, and the `color` of the text is the
  *  [ColorScheme.primary] of our custom [MaterialTheme].
  *
- *  - The second [Text] displays the `text` with resource ID [R.string.empty_screen_subtitle] ("This
+ *  - The second [Text] displays the `text` with resource ID `R.string.empty_screen_subtitle` ("This
  *  screen is still under construction), with a [Modifier.padding] that adds 8.dp along the left and
  *  right edges of its content, its `style` uses the [TextStyle] that is defined for
  *  [Typography.bodySmall] by our custom [MaterialTheme], which is the default defined by the system

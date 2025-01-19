@@ -54,17 +54,17 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
 
     /**
      * This function lauches a coroutine on the [CoroutineScope] tied to this [ViewModel] returned
-     * by the [viewModelScope] extension function whose `block` calls the [EmailsRepository.getAllEmails]
-     * method of our [EmailsRepository] field [emailsRepository] and processes the [Flow] of [List]
-     * of [Email] that it returns by using the [catch] extension function on it to catch any exceptions
-     * thrown in order to set the [MutableStateFlow.value] of [_uiState] to a new instance of
-     * [ReplyHomeUIState] whose [ReplyHomeUIState.error] field contains the contents of the
-     * [Throwable.message] field of the exception that was thrown (and then returning). If no exception
-     * is thrown the [Flow.collect] method "collects" the [List] of [Email] emitted by the
-     * [EmailsRepository.getAllEmails] method and sets the [MutableStateFlow.value] of [_uiState] to
-     * a new instance of [ReplyHomeUIState] whose [ReplyHomeUIState.emails] field is that [List] of
-     * [Email], and whose [ReplyHomeUIState.openedEmail] field is the first [Email] in
-     * the [List] of [Email]s.
+     * by the [viewModelScope] extension function whose `block` calls the
+     * [EmailsRepository.getAllEmails] method of our [EmailsRepository] field [emailsRepository] and
+     * processes the [Flow] of [List] of [Email] that it returns by using the [catch] extension
+     * function on it to catch any exceptions thrown in order to set the [MutableStateFlow.value] of
+     * [_uiState] to a new instance of [ReplyHomeUIState] whose [ReplyHomeUIState.error] field
+     * contains the contents of the [Throwable.message] field of the exception that was thrown (and
+     * then returning). If no exception is thrown the [Flow.collect] method "collects" the [List] of
+     * [Email] emitted by the [EmailsRepository.getAllEmails] method and sets the
+     * [MutableStateFlow.value] of [_uiState] to a new instance of [ReplyHomeUIState] whose
+     * [ReplyHomeUIState.emails] field is that [List] of [Email], and whose
+     * [ReplyHomeUIState.openedEmail] field is the first [Email] in the [List] of [Email]s.
      */
     private fun observeEmails() {
         viewModelScope.launch {
@@ -87,12 +87,12 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     /**
      * This method sets the [Email] whose [Email.id] is our [Long] parameter [emailId] to be the
      * opened email. We start by using the [List.find] method of the [List] of [Email]s in the
-     * [ReplyHomeUIState] of the [StateFlow.value] of our field [uiState] to find the [Email] whose
-     * [Email.id] matches our [Long] parameter [emailId] in order to initialize our [Email] variable
-     * `val email` to that [Email]. Then we set the [MutableStateFlow.value] of our field [_uiState]
-     * to a copy of itself with its [ReplyHomeUIState.openedEmail] set to [Email] variable `email`
-     * and its [ReplyHomeUIState.isDetailOnlyOpen] set to `true` if our [ReplyContentType] parameter
-     * is equal to [ReplyContentType.SINGLE_PANE].
+     * [ReplyHomeUIState.emails] property of the [StateFlow.value] of our field [uiState] to find the
+     * [Email] whose [Email.id] matches our [Long] parameter [emailId] in order to initialize our
+     * [Email] variable `val email` to that [Email]. Then we set the [MutableStateFlow.value] of our
+     * field [_uiState] to a copy of itself with its [ReplyHomeUIState.openedEmail] property set to
+     * [Email] variable `email` and its [ReplyHomeUIState.isDetailOnlyOpen] set to `true` if our
+     * [ReplyContentType] parameter is equal to [ReplyContentType.SINGLE_PANE].
      *
      * @param emailId the [Email.id] of the [Email] to be opened.
      * @param contentType the [ReplyContentType] appropriate for the device we are running on, either

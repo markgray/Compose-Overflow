@@ -44,12 +44,12 @@ sealed interface DevicePosture {
 
     /**
      * To be this type of [DevicePosture] the [FoldingFeature] that is found in the [WindowLayoutInfo]
-     * that the [WindowInfoTracker] emits for the device we are running on has the [FoldingFeature.state]
-     * property [FoldingFeature.State.HALF_OPENED] and the [FoldingFeature.orientation] property
-     * [FoldingFeature.Orientation.VERTICAL] (The foldable device's hinge is in an intermediate
-     * position between opened and closed state, there is a non-flat angle between parts of the
-     * flexible screen or between physical screen panels, and the height of the [FoldingFeature] is
-     * greater than or equal to the width).
+     * that the [WindowInfoTracker] emits for the device we are running on has the
+     * [FoldingFeature.state] property [FoldingFeature.State.HALF_OPENED] and the
+     * [FoldingFeature.orientation] property [FoldingFeature.Orientation.VERTICAL] (The foldable
+     * device's hinge is in an intermediate position between opened and closed state, there is a
+     * non-flat angle between parts of the flexible screen or between physical screen panels, and
+     * the height of the [FoldingFeature] is greater than or equal to the width).
      */
     data class BookPosture(
         /**
@@ -61,11 +61,11 @@ sealed interface DevicePosture {
 
     /**
      * To be this type of [DevicePosture] the [FoldingFeature] that is found in the [WindowLayoutInfo]
-     * that the [WindowInfoTracker] emits for the device we are running on has the [FoldingFeature.state]
-     * [FoldingFeature.State.FLAT] and [FoldingFeature.isSeparating] is `true` (the foldable device
-     * is completely open, the screen space that is presented to the user is flat, and the [FoldingFeature]
-     * should be thought of as splitting the window into multiple physical areas that can be seen by
-     * users as logically separate).
+     * that the [WindowInfoTracker] emits for the device we are running on has the
+     * [FoldingFeature.state] of [FoldingFeature.State.FLAT] and [FoldingFeature.isSeparating] is
+     * `true` (the foldable device is completely open, the screen space that is presented to the
+     * user is flat, and the [FoldingFeature] should be thought of as splitting the window into
+     * multiple physical areas that can be seen by users as logically separate).
      */
     data class Separating(
         /**
@@ -87,9 +87,9 @@ sealed interface DevicePosture {
  * of the device is [DevicePosture.BookPosture]. This is so if the [FoldingFeature.state] property
  * of [foldFeature] is [FoldingFeature.State.HALF_OPENED] (The foldable device's hinge is in an
  * intermediate position between opened and closed state, there is a non-flat angle between parts of
- * the flexible screen or between physical screen panels) and its [FoldingFeature.orientation] property
- * is [FoldingFeature.Orientation.VERTICAL] (the height of the [FoldingFeature] is greater than or
- * equal to the width).
+ * the flexible screen or between physical screen panels) and its [FoldingFeature.orientation]
+ * property is [FoldingFeature.Orientation.VERTICAL] (the height of the [FoldingFeature] is greater
+ * than or equal to the width).
  */
 @OptIn(ExperimentalContracts::class)
 fun isBookPosture(foldFeature: FoldingFeature?): Boolean {
@@ -125,10 +125,10 @@ enum class ReplyNavigationType {
     BOTTOM_NAVIGATION,
 
     /**
-     * This type of navigation uses [ReplyNavigationRail] which uses the Material Design bottom
-     * navigation rail [NavigationRail] to navigate between screens. This type of navigation is
-     * chosen if [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Medium] (Represents
-     * the majority of tablets in portrait and large unfolded inner displays in portrait) or
+     * This type of navigation uses [ReplyNavigationRail] which uses the Material Design navigation
+     * rail [NavigationRail] to navigate between screens. This type of navigation is chosen if
+     * [WindowWidthSizeClass] of the device is [WindowWidthSizeClass.Medium] (Represents the
+     * majority of tablets in portrait and large unfolded inner displays in portrait) or
      * [WindowWidthSizeClass.Expanded] (Represents the majority of tablets in landscape and large
      * unfolded inner displays in landscape) and the [DevicePosture] of the device is
      * [DevicePosture.BookPosture] (The foldable device's hinge is in an intermediate position
@@ -174,16 +174,16 @@ enum class ReplyNavigationContentPosition {
  */
 enum class ReplyContentType {
     /**
-     * This [ReplyContentType] is chosen when the [WindowWidthSizeClass] is [WindowWidthSizeClass.Compact]
-     * or is an unknown [WindowWidthSizeClass]. It causes the app to use a single pane to display both
-     * the list of emails and the individual selected email.
+     * This [ReplyContentType] is chosen when the [WindowWidthSizeClass] is
+     * [WindowWidthSizeClass.Compact] or is an unknown [WindowWidthSizeClass]. It causes the app
+     * to use a single pane to display both the list of emails and the individual selected email.
      */
     SINGLE_PANE,
 
     /**
      * This [ReplyNavigationContentPosition] is chosen when the [WindowWidthSizeClass] is
      * [WindowWidthSizeClass.Medium] or [WindowWidthSizeClass.Expanded]. It causes the app to
-     * display both the list of email and the individual selected email at the same time.
+     * display both the list of email and the individual opened email at the same time.
      */
     DUAL_PANE
 }

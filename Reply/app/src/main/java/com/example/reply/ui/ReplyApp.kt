@@ -193,10 +193,10 @@ fun ReplyApp(
 
 /**
  * This is the top level [NavHost] of the app. Our root Composable is a [NavHost] whose `modifier`
- * argument is our [Modifier] parameter [modifier] and whose `navController` argument is our
- * [NavHostController] parameter [navController], and the `startDestination` argument is [Route.Inbox]
- * (which is the route for the [ReplyInboxScreen] Composable). In the [NavGraphBuilder] `builder`
- * Composable lambda argument we have:
+ * argument is our [Modifier] parameter [modifier], whose `navController` argument is our
+ * [NavHostController] parameter [navController], and whose `startDestination` argument is
+ * [Route.Inbox] (which is the route for the [ReplyInboxScreen] Composable). In the [NavGraphBuilder]
+ * `builder` Composable lambda argument we have:
  *  - [NavGraphBuilder.composable] for the [Route.Inbox] route in whose [AnimatedContentScope] `content`
  *  Composable lambda argument we compose a [ReplyInboxScreen] whose [ReplyContentType] `contentType`
  *  argument is our [ReplyContentType] parameter [contentType], whose [ReplyHomeUIState] argument is
@@ -224,8 +224,8 @@ fun ReplyApp(
  * @param navigationType The [ReplyNavigationType] that corresponds to the [NavigationSuiteType]
  * that is being used for the [NavigationSuiteScaffoldLayout] in our app.
  * @param closeDetailScreen The lambda to be called when the detail screen is to be closed.
- * @param navigateToDetail A lambda to be called with the [Email.id] of the [Email] to have its details
- * displayed and the [ReplyContentType] appropriate for the device we are running on.
+ * @param navigateToDetail A lambda to be called with the [Email.id] of the [Email] to have its
+ * details displayed and the [ReplyContentType] appropriate for the device we are running on.
  * @param toggleSelectedEmail A lambda to be called with the [Email.id] of the [Email] whose selected
  * status the user wants to toggle.
  * @param modifier A [Modifier] instance that our caller can use to modify our appearance and/or

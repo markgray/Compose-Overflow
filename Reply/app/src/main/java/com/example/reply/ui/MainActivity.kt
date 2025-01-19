@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
      * Called when the activity is starting. First we call [enableEdgeToEdge] to enable the edge to
      * edge display for Andoid versions older than Android 15 (where it is enabled by default). Then
      * we call our super's implementation of `onCreate`. Finally, we call [setContent] to have it
-     * it Compose its `content` composable lambda argument into our activity. In that lambda we use
+     * Compose its `content` composable lambda argument into our activity. In that lambda we use
      * our [ContrastAwareReplyTheme] custom [MaterialTheme] to wrap its `content` Composable lambda
      * argument and supply [MaterialTheme] values for the Composables in that lambda. Within that
      * lambda we first initialize our [WindowSizeClass] variable `val windowSize` to the
@@ -68,13 +68,14 @@ class MainActivity : ComponentActivity() {
      * with its [WindowSizeClass] `windowSize` argument set to our `windowSize` variable, its [List]
      * of [DisplayFeature] `displayFeatures` argument set to our `displayFeatures` variable, its
      * [ReplyHomeUIState] `replyHomeUIState` argument set to our `uiState` variable, its lambda
-     * `closeDetailScreen` argument set to a lambda that calls the [ReplyHomeViewModel.closeDetailScreen]
-     * method of our [viewModel] field, its lambda `navigateToDetail` argument set to a lambda that
-     * calls the [ReplyHomeViewModel.setOpenedEmail] method of our [viewModel] field with the
-     * [Email.id] of the [Email] to be displayed and the [ReplyContentType] appropriate for the
-     * device we are running on, and its lambda `toggleSelectedEmail` argument is a lambda that
-     * calls the [ReplyHomeViewModel.toggleSelectedEmail] method of our [viewModel] field with the
-     * [Email.id] of the [Email] whose selected state is to be toggled.
+     * `closeDetailScreen` argument set to a lambda that calls the
+     * [ReplyHomeViewModel.closeDetailScreen] method of our [viewModel] field, its lambda
+     * `navigateToDetail` argument set to a lambda that calls the [ReplyHomeViewModel.setOpenedEmail]
+     * method of our [viewModel] field with the [Email.id] of the [Email] to be displayed and the
+     * [ReplyContentType] appropriate for the device we are running on, and its lambda
+     * `toggleSelectedEmail` argument is a lambda that calls the
+     * [ReplyHomeViewModel.toggleSelectedEmail] method of our [viewModel] field with the [Email.id]
+     * of the [Email] whose selected state is to be toggled.
      *
      * @param savedInstanceState The [Bundle] of this activity's previously saved state. We do not
      * override [onSaveInstanceState] so do not use.
@@ -110,7 +111,7 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- *
+ * Preview of our [ReplyApp]
  */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true)
@@ -126,7 +127,7 @@ fun ReplyAppPreview() {
 }
 
 /**
- *
+ * Preview of our [ReplyApp] on a 700.dp wide by 500.dp high device.
  */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 700, heightDp = 500)
@@ -142,7 +143,7 @@ fun ReplyAppPreviewTablet() {
 }
 
 /**
- *
+ * Preview of our [ReplyApp] on a 500.dp wide by 700.dp high device.
  */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 500, heightDp = 700)
@@ -158,7 +159,7 @@ fun ReplyAppPreviewTabletPortrait() {
 }
 
 /**
- *
+ * Preview of our [ReplyApp] on a 1100.dp wide by 600.dp high device.
  */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 1100, heightDp = 600)
@@ -174,7 +175,7 @@ fun ReplyAppPreviewDesktop() {
 }
 
 /**
- *
+ * Preview of our [ReplyApp] on a 600.dp wide by 1100.dp high device.
  */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, widthDp = 600, heightDp = 1100)
