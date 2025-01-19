@@ -110,10 +110,19 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     }
 
     /**
+     * This method toggles the "Selected" status of the [Email] whose [Email.id] is our [Long] parameter
+     * [emailId]. We start by initializing our [Set] of [Long] variable `val currentSelection` to the
+     * [ReplyHomeUIState.selectedEmails] property of the [StateFlow.value] of our field [uiState].
+     * Then we set the [StateFlow.value] of [ReplyHomeUIState] field [_uiState] to a copy of itself
+     * with the [ReplyHomeUIState.selectedEmails] property set to the [Set] of [Long] variable of
+     * `currentSelection` minus [emailId] if it contains it, or the [Set] of [Long] variable of
+     * `currentSelection` plus [emailId] if it does not already contain it (thereby toggling its
+     * selected status).
      *
+     * @param emailId the [Email.id] of the [Email] whose selected status we are toggling.
      */
     fun toggleSelectedEmail(emailId: Long) {
-        val currentSelection = uiState.value.selectedEmails
+        val currentSelection: Set<Long> = uiState.value.selectedEmails
         _uiState.value = _uiState.value.copy(
             selectedEmails = if (currentSelection.contains(emailId))
                 currentSelection.minus(emailId) else currentSelection.plus(emailId)
@@ -121,7 +130,11 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
     }
 
     /**
-     *
+     * This method causes the detail screen to close by setting the [MutableStateFlow.value] of
+     * [ReplyHomeUIState] field [_uiState] to a copy of itself with its
+     * [ReplyHomeUIState.isDetailOnlyOpen] property set to `false`, and its
+     * [ReplyHomeUIState.openedEmail] to the first [Email] in its [List] of [Email]
+     * property [ReplyHomeUIState.emails].
      */
     fun closeDetailScreen() {
         @Suppress("RedundantValueArgument")
@@ -134,31 +147,32 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
 }
 
 /**
- *
+ * This data class holds the UI state of the Reply app.
  */
 data class ReplyHomeUIState(
     /**
-     *
+     * The full [List] of [Email] in our [EmailsRepository].
      */
     val emails: List<Email> = emptyList(),
     /**
-     *
+     * The set of [Email.id] of the [Email]s that the user has selected.
      */
     val selectedEmails: Set<Long> = emptySet(),
     /**
-     *
+     * The [Email] that is currently being displayed in the detail screen.
      */
     val openedEmail: Email? = null,
     /**
-     *
+     * `true` if only the detail screen is displayed.
      */
     val isDetailOnlyOpen: Boolean = false,
     /**
-     *
+     * When `true` we are waiting for [EmailsRepository.getAllEmails] to finish loading.
      */
     val loading: Boolean = false,
     /**
-     *
+     * If non-`null` this is the [Throwable.message] of an exception thrown by
+     * [EmailsRepository.getAllEmails].
      */
     val error: String? = null
 )

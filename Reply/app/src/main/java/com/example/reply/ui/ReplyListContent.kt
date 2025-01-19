@@ -42,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -53,13 +54,37 @@ import com.example.reply.ui.components.EmailDetailAppBar
 import com.example.reply.ui.components.ReplyDockedSearchBar
 import com.example.reply.ui.components.ReplyEmailListItem
 import com.example.reply.ui.components.ReplyEmailThreadItem
+import com.example.reply.ui.navigation.Route
 import com.example.reply.ui.utils.ReplyContentType
 import com.example.reply.ui.utils.ReplyNavigationType
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
+import kotlinx.coroutines.CoroutineScope
 
 /**
+ * This is the screen displayed for the [Route.Inbox] route, which is the "start destination" of the
+ * app. Our first step is to launch a [LaunchedEffect] whose `key1` is our [ReplyContentType] parameter
+ * [contentType] so that whenever it changes the [LaunchedEffect] will be run again. This is done so
+ * that the [CoroutineScope] `block` lambda can call our [closeDetailScreen] lambda parameter to
+ * close the detail screen if [contentType] has changed to [ReplyContentType.SINGLE_PANE].
  *
+ * @param contentType the current [ReplyContentType] of the app, one of [ReplyContentType.SINGLE_PANE]
+ * or [ReplyContentType.DUAL_PANE].
+ * @param replyHomeUIState the [State] wrapped [ReplyHomeUIState] current UI state of the app.
+ * @param navigationType the current [ReplyNavigationType] of the app, one of
+ * [ReplyNavigationType.BOTTOM_NAVIGATION] or [ReplyNavigationType.NAVIGATION_RAIL] or
+ * [ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER].
+ * @param displayFeatures the [List] of [DisplayFeature] that the device supports.
+ * @param closeDetailScreen lambda function that closes the detail screen.
+ * @param navigateToDetail lambda function that navigates to the detail screen to display the [Email]
+ * whose [Email.id] matches the [Long] parameter of the lambda function, and with the [ReplyContentType]
+ * parameter causing the [ReplyHomeUIState.isDetailOnlyOpen] to be set to `true` only if the parameter
+ * is [ReplyContentType.SINGLE_PANE].
+ * @param toggleSelectedEmail lambda function that toggles the selected state of the [Email] whose
+ * [Email.id] matches the [Long] parameter of the lambda function.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 fun ReplyInboxScreen(
@@ -73,7 +98,8 @@ fun ReplyInboxScreen(
     modifier: Modifier = Modifier
 ) {
     /**
-     * When moving from LIST_AND_DETAIL page to LIST page clear the selection and user should see LIST screen.
+     * When moving from LIST_AND_DETAIL page to LIST close the detail screen so the user will see
+     * the LIST screen.
      */
     LaunchedEffect(key1 = contentType) {
         if (contentType == ReplyContentType.SINGLE_PANE && !replyHomeUIState.isDetailOnlyOpen) {
@@ -81,7 +107,7 @@ fun ReplyInboxScreen(
         }
     }
 
-    val emailLazyListState = rememberLazyListState()
+    val emailLazyListState: LazyListState = rememberLazyListState()
 
     // TODO: Show top app bar over full width of app when in multi-select mode
 
@@ -106,7 +132,7 @@ fun ReplyInboxScreen(
             strategy = HorizontalTwoPaneStrategy(splitFraction = 0.5f, gapWidth = 16.dp),
             displayFeatures = displayFeatures
         )
-    } else {
+    } else {  // `ReplyContentType.SINGLE_PANE`
         Box(modifier = modifier.fillMaxSize()) {
             ReplySinglePaneContent(
                 replyHomeUIState = replyHomeUIState,
@@ -120,11 +146,16 @@ fun ReplyInboxScreen(
             if (navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ExtendedFloatingActionButton(
                     text = { Text(text = stringResource(id = R.string.compose)) },
-                    icon = { Icon(Icons.Default.Edit, stringResource(id = R.string.compose)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = stringResource(id = R.string.compose)
+                        )
+                    },
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp),
+                        .align(alignment = Alignment.BottomEnd)
+                        .padding(all = 16.dp),
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                     contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     expanded = emailLazyListState.lastScrolledBackward ||
