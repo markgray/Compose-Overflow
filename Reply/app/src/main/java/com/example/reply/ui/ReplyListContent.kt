@@ -21,6 +21,7 @@ package com.example.reply.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,6 +37,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +47,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.window.layout.DisplayFeature
@@ -77,18 +81,41 @@ import kotlinx.coroutines.CoroutineScope
  *  is the  [Set] of [Long] in the [ReplyHomeUIState.selectedEmails] property of [replyHomeUIState],
  *  whose `toggleEmailSelection` argument is our lambda parameter [toggleSelectedEmail], whose
  *  `emailLazyListState` argument is our [LazyListState] variable `emailLazyListState`, and whose
- *  `navigateToDetail` is our lambda parameter [navigateToDetail].
+ *  `navigateToDetail` argument is our lambda parameter [navigateToDetail].
  *
  *  The `second` argument of our [TwoPane] is a lambda that composes a [ReplyEmailDetail] whose
- *  `email` argument is the [ReplyHomeUIState.openedEmail] property of [replyHomeUIState] is that is
+ *  `email` argument is the [ReplyHomeUIState.openedEmail] property of [replyHomeUIState] if that is
  *  not `null` or the first [Email] in the [List] of [Email] in the [ReplyHomeUIState.emails] property
- *  of [replyHomeUIState], and the `isFullScreen` argument is `false`. The `strategy` argument of our
- *  [TwoPane] is a [HorizontalTwoPaneStrategy] whose `splitFraction` argument is `0.5f`, and whose
- *  `gapWidth` argument is `16.dp`.
+ *  of [replyHomeUIState] if it is `null`. The `isFullScreen` argument of the [ReplyEmailDetail] is
+ *  `false`.
+ *
+ *  The `strategy` argument of our [TwoPane] is a [HorizontalTwoPaneStrategy] whose `splitFraction`
+ *  argument is `0.5f`, and whose `gapWidth` argument is `16.dp`.
  *
  *  - [ReplyContentType.SINGLE_PANE] our root composable is a [Box] whose `modifier` argument chains
  *  to our [Modifier] parameter [modifier] a [Modifier.fillMaxSize] to have it take up all of its
- *  incoming size constraint.
+ *  incoming size constraint. In the [BoxScope] `content` composable lambda argument of the [Box] we
+ *  compose a [ReplySinglePaneContent] whose `replyHomeUIState` argument is our [ReplyHomeUIState]
+ *  parameter [replyHomeUIState], whose `toggleEmailSelection` argument is our lambda parameter
+ *  [toggleSelectedEmail], whose `emailLazyListState` argument is our [LazyListState] variable
+ *  `emailLazyListState`, whose [Modifier] `modifier` argument is a [Modifier.fillMaxSize], whose
+ *  `closeDetailScreen` argument is our lambda parameter [closeDetailScreen], and whose
+ *  `navigateToDetail` argument is our lambda parameter [navigateToDetail]. Then if our
+ *  [ReplyNavigationType] parameter [navigationType] is [ReplyNavigationType.BOTTOM_NAVIGATION] we
+ *  compose an [ExtendedFloatingActionButton], whose `text` argument is a lambda that composes a
+ *  [Text] whose `text` argument is the string resource with id `R.string.compose` ("Compose"), whose
+ *  `icon` argument is a lambda  that composes an [Icon] whose [ImageVector] `imageVector` argument is
+ *  the [ImageVector] drawn by [Icons.Filled.Edit] (a stylized pencil icon) and whose
+ *  `contentDescription` argument is the [String] with resource id `R.string.compose` ("Compose"),
+ *  the `onClick` argument of the [ExtendedFloatingActionButton] is an empty lambda, the [Modifier]
+ *  `modifier` argument is a [BoxScope.align] whose `alignment` argument is [Alignment.BottomEnd] to
+ *  align it at the bottom end of the [Box], with a [Modifier.padding] chained to that which adds
+ *  `16.dp` padding to all sides. The [Color] `containerColor` argument is the
+ *  [ColorScheme.tertiaryContainer] of our custom [MaterialTheme.colorScheme], the [Color]
+ *  `contentColor` argument is the [ColorScheme.onTertiaryContainer] of our custom
+ *  [MaterialTheme.colorScheme], and the `expanded` argument of the [ExtendedFloatingActionButton] is
+ *  `true` if the [LazyListState.lastScrolledBackward] property of our [LazyListState] variable
+ *  `emailLazyListState` is `true` or its [LazyListState.canScrollBackward] property is `false`.
  *
  * @param contentType the current [ReplyContentType] of the app, one of [ReplyContentType.SINGLE_PANE]
  * or [ReplyContentType.DUAL_PANE].
@@ -190,7 +217,38 @@ fun ReplyInboxScreen(
 }
 
 /**
+ * This composable is used by [ReplyInboxScreen] if the [ReplyContentType] used for the device is
+ * [ReplyContentType.SINGLE_PANE]. If the [ReplyHomeUIState.openedEmail] property of our
+ * [ReplyHomeUIState] parameter [replyHomeUIState] is not `null` and its
+ * [ReplyHomeUIState.isDetailOnlyOpen] is `true` we compose a [BackHandler] whose `onBack` argument
+ * is a lambda that calls our [closeDetailScreen] lambda parameter. Then we compose a
+ * [ReplyEmailDetail] whose `email` argument is the [ReplyHomeUIState.openedEmail] property of our
+ * [ReplyHomeUIState] parameter [replyHomeUIState] and whose `onBackPressed` argument is a lambda
+ * that calls our [closeDetailScreen] lambda parameter.
  *
+ * Otherwise we compose a [ReplyEmailList] whose [List] of [Email] `emails` argument is the
+ * [ReplyHomeUIState.emails] of our [ReplyHomeUIState] parameter [replyHomeUIState], whose `openedEmail`
+ * argument is the [ReplyHomeUIState.openedEmail] property of our [ReplyHomeUIState] parameter
+ * [replyHomeUIState], whose [Set] of [Long] `selectedEmailIds` argument is the
+ * [ReplyHomeUIState.selectedEmails] property of our [ReplyHomeUIState] parameter [replyHomeUIState],
+ * whose `toggleEmailSelection` argument is our lambda parameter [toggleEmailSelection], whose
+ * `emailLazyListState` argument is our [LazyListState] parameter [emailLazyListState], whose
+ * `modifier` argument is our [Modifier] argument [modifier], and whose `navigateToDetail` argument
+ * is our lambda parameter [navigateToDetail].
+ *
+ * @param replyHomeUIState the [State] wrapped [ReplyHomeUIState] that holds the current UI state.
+ * @param toggleEmailSelection lambda function that toggles the selected state of the [Email] whose
+ * [Email.id] matches the [Long] parameter of the lambda function.
+ * @param emailLazyListState the [LazyListState] that [ReplyEmailList] should use to control the
+ * scrolling of its [LazyColumn].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. Our caller does not pass us any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
+ * @param closeDetailScreen lambda function that closes the detail screen.
+ * @param navigateToDetail lambda function that navigates to the detail screen to display the [Email]
+ * whose [Email.id] matches the [Long] parameter of the lambda function, and with the [ReplyContentType]
+ * parameter causing the [ReplyHomeUIState.isDetailOnlyOpen] to be set to `true` only if the parameter
+ * is [ReplyContentType.SINGLE_PANE].
  */
 @Composable
 fun ReplySinglePaneContent(
@@ -222,7 +280,28 @@ fun ReplySinglePaneContent(
 }
 
 /**
+ * This Composable displays the [List] of [Email]s in its [List] of [Email]s parameter [emails]. Our
+ * root Composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter [modifier]
+ * a [Modifier.windowInsetsPadding] whose `insets` argument is [WindowInsets.Companion.statusBars]
+ * to
  *
+ * @param emails the [List] of [Email]s to display.
+ * @param openedEmail the [Email] that is currently being displayed in the detail screen.
+ * @param selectedEmailIds the [Set] of [Long]s of the [Email.id] of the [Email]s that are
+ * currently selected.
+ * @param toggleEmailSelection lambda function that toggles the selected state of the [Email] whose
+ * [Email.id] matches the [Long] parameter of the lambda function.
+ * @param emailLazyListState the [LazyListState] that we should use to control the scrolling of our
+ * [LazyColumn].
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [ReplyInboxScreen] does not pass us any when the [ReplyContentType] is
+ * [ReplyContentType.DUAL_PANE] so the empty, default, or starter [Modifier] that contains no
+ * elements is used for it, but [ReplySinglePaneContent] passes us a [Modifier.fillMaxSize] when
+ * [ReplyInboxScreen] calls it for [ReplyContentType.SINGLE_PANE].
+ * @param navigateToDetail lambda function that navigates to the detail screen to display the [Email]
+ * whose [Email.id] matches the [Long] parameter of the lambda function, and with the [ReplyContentType]
+ * parameter causing the [ReplyHomeUIState.isDetailOnlyOpen] to be set to `true` only if the parameter
+ * is [ReplyContentType.SINGLE_PANE].
  */
 @Composable
 fun ReplyEmailList(
@@ -234,7 +313,7 @@ fun ReplyEmailList(
     modifier: Modifier = Modifier,
     navigateToDetail: (Long, ReplyContentType) -> Unit
 ) {
-    Box(modifier = modifier.windowInsetsPadding(WindowInsets.statusBars)) {
+    Box(modifier = modifier.windowInsetsPadding(insets = WindowInsets.statusBars)) {
         ReplyDockedSearchBar(
             emails = emails,
             onSearchItemSelected = { searchedEmail: Email ->
@@ -251,20 +330,20 @@ fun ReplyEmailList(
                 .padding(top = 80.dp),
             state = emailLazyListState
         ) {
-            items(items = emails, key = { it.id }) { email ->
+            items(items = emails, key = { it.id }) { email: Email ->
                 ReplyEmailListItem(
                     email = email,
-                    navigateToDetail = { emailId ->
+                    navigateToDetail = { emailId: Long ->
                         navigateToDetail(emailId, ReplyContentType.SINGLE_PANE)
                     },
                     toggleSelection = toggleEmailSelection,
                     isOpened = openedEmail?.id == email.id,
-                    isSelected = selectedEmailIds.contains(email.id)
+                    isSelected = selectedEmailIds.contains(element = email.id)
                 )
             }
             // Add extra spacing at the bottom if
             item {
-                Spacer(Modifier.windowInsetsBottomHeight(WindowInsets.systemBars))
+                Spacer(modifier = Modifier.windowInsetsBottomHeight(insets = WindowInsets.systemBars))
             }
         }
     }
