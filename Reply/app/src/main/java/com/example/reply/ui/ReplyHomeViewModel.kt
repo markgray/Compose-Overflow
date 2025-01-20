@@ -114,8 +114,8 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
      * [emailId]. We start by initializing our [Set] of [Long] variable `val currentSelection` to the
      * [ReplyHomeUIState.selectedEmails] property of the [StateFlow.value] of our field [uiState].
      * Then we set the [StateFlow.value] of [ReplyHomeUIState] field [_uiState] to a copy of itself
-     * with the [ReplyHomeUIState.selectedEmails] property set to the [Set] of [Long] variable of
-     * `currentSelection` minus [emailId] if it contains it, or the [Set] of [Long] variable of
+     * with the [ReplyHomeUIState.selectedEmails] property set to the [Set] of [Long] variable
+     * `currentSelection` minus [emailId] if it contains it, or the [Set] of [Long] variable
      * `currentSelection` plus [emailId] if it does not already contain it (thereby toggling its
      * selected status).
      *

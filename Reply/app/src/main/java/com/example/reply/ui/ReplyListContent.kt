@@ -66,11 +66,34 @@ import kotlinx.coroutines.CoroutineScope
  * app. Our first step is to launch a [LaunchedEffect] whose `key1` is our [ReplyContentType] parameter
  * [contentType] so that whenever it changes the [LaunchedEffect] will be run again. This is done so
  * that the [CoroutineScope] `block` lambda can call our [closeDetailScreen] lambda parameter to
- * close the detail screen if [contentType] has changed to [ReplyContentType.SINGLE_PANE].
+ * close the detail screen if [contentType] has changed from [ReplyContentType.DUAL_PANE] to
+ * [ReplyContentType.SINGLE_PANE]. Next we initialize and remember our [LazyListState] variable
+ * `val emailLazyListState` to the instance returned by [rememberLazyListState]. Then we branch on
+ * the value of our [ReplyContentType] parameter [contentType]:
+ *  - [ReplyContentType.DUAL_PANE] we compose a [TwoPane] whose `first` argument is a lambda that
+ *  composes a [ReplyEmailList] whose `emails` argument is the [ReplyHomeUIState.emails] property of
+ *  our [ReplyHomeUIState] parameter [replyHomeUIState], whose `openedEmail` argument is the
+ *  [ReplyHomeUIState.openedEmail] property of [replyHomeUIState], whose `selectedEmailIds` argument
+ *  is the  [Set] of [Long] in the [ReplyHomeUIState.selectedEmails] property of [replyHomeUIState],
+ *  whose `toggleEmailSelection` argument is our lambda parameter [toggleSelectedEmail], whose
+ *  `emailLazyListState` argument is our [LazyListState] variable `emailLazyListState`, and whose
+ *  `navigateToDetail` is our lambda parameter [navigateToDetail].
+ *
+ *  The `second` argument of our [TwoPane] is a lambda that composes a [ReplyEmailDetail] whose
+ *  `email` argument is the [ReplyHomeUIState.openedEmail] property of [replyHomeUIState] is that is
+ *  not `null` or the first [Email] in the [List] of [Email] in the [ReplyHomeUIState.emails] property
+ *  of [replyHomeUIState], and the `isFullScreen` argument is `false`. The `strategy` argument of our
+ *  [TwoPane] is a [HorizontalTwoPaneStrategy] whose `splitFraction` argument is `0.5f`, and whose
+ *  `gapWidth` argument is `16.dp`.
+ *
+ *  - [ReplyContentType.SINGLE_PANE] our root composable is a [Box] whose `modifier` argument chains
+ *  to our [Modifier] parameter [modifier] a [Modifier.fillMaxSize] to have it take up all of its
+ *  incoming size constraint.
  *
  * @param contentType the current [ReplyContentType] of the app, one of [ReplyContentType.SINGLE_PANE]
  * or [ReplyContentType.DUAL_PANE].
- * @param replyHomeUIState the [State] wrapped [ReplyHomeUIState] current UI state of the app.
+ * @param replyHomeUIState the [State] wrapped [ReplyHomeUIState] that holds the current UI state
+ * of the app.
  * @param navigationType the current [ReplyNavigationType] of the app, one of
  * [ReplyNavigationType.BOTTOM_NAVIGATION] or [ReplyNavigationType.NAVIGATION_RAIL] or
  * [ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER].
