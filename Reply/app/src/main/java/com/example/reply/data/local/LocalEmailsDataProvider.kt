@@ -339,7 +339,6 @@ object LocalEmailsDataProvider {
     /**
      * Get a list of `EmailFolder` names by which [Email]s can be categorized.
      */
-    @Suppress("unused")
     fun getAllFolders(): List<String> = listOf(
         "Receipts",
         "Pine Elementary",

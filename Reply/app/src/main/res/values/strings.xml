@@ -8,10 +8,10 @@
   or implied. See the License for the specific language governing permissions and limitations under
   the License.
   -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Reply</string>
     <string name="navigation_drawer">Navigation Drawer</string>
-    <string name="close_drawer">Close drawer</string>
+    <string name="close_drawer" tools:ignore="PrivateResource">Close drawer</string>
     <string name="tab_inbox">Inbox</string>
     <string name="tab_article">Articles</string>
     <string name="tab_dm">Direct Messages</string>
