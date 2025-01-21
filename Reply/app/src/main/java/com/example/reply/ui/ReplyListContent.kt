@@ -32,6 +32,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -283,7 +285,21 @@ fun ReplySinglePaneContent(
  * This Composable displays the [List] of [Email]s in its [List] of [Email]s parameter [emails]. Our
  * root Composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter [modifier]
  * a [Modifier.windowInsetsPadding] whose `insets` argument is [WindowInsets.Companion.statusBars]
- * to
+ * to padding so that the content doesn't enter the `insets` space. In the [BoxScope] `content`
+ * composable lambda argument of the [Box] we compose a [ReplyDockedSearchBar] whose `emails`
+ * argument is our [List] of [Email] parameter [emails], whose `onSearchItemSelected` argument is
+ * a lambda that accepts the [Email] passed the lambda in variable `searchedEmail` and calls our
+ * [navigateToDetail] lambda parameter with the [Email.id] of `searchedEmail` and
+ * [ReplyContentType.SINGLE_PANE], and the [Modifier] argument of the [ReplyDockedSearchBar] is a
+ * [Modifier.fillMaxWidth] with a [Modifier.padding] that adds `16.dp` to each `horizontal` side
+ * and `16.dp` to each `vertical` side. Next in the [Box] is a [LazyColumn] whose [Modifier]
+ * `modifier` argument is a [Modifier.fillMaxWidth], with a [Modifier.padding] that adds `80.dp` to
+ * the `top` (to avoid overlaying the [ReplyDockedSearchBar]), and whose [LazyListState] `state`
+ * argument is our [LazyListState] parameter [emailLazyListState]. In the [LazyListScope] `content`
+ * lambda argument we have an [LazyListScope.items] whose `items` argument is our [List] of [Email]
+ * parameter [emails], and whose `key` argument is the [Email.id] of the current [Email] being passed
+ * to its `itemContent` lambda parameter. In the [LazyItemScope] `itemContent` argument we accept the
+ * [Email] passed the lambda in the variable `email`
  *
  * @param emails the [List] of [Email]s to display.
  * @param openedEmail the [Email] that is currently being displayed in the detail screen.
