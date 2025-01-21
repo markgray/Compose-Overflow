@@ -36,10 +36,6 @@ android {
         }
     }
 }
-kotlin {
-    jvmToolchain(17)
-}
-
 dependencies {
 
     implementation(libs.androidx.glance.appwidget)
