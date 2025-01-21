@@ -44,6 +44,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -292,14 +293,28 @@ fun ReplySinglePaneContent(
  * [navigateToDetail] lambda parameter with the [Email.id] of `searchedEmail` and
  * [ReplyContentType.SINGLE_PANE], and the [Modifier] argument of the [ReplyDockedSearchBar] is a
  * [Modifier.fillMaxWidth] with a [Modifier.padding] that adds `16.dp` to each `horizontal` side
- * and `16.dp` to each `vertical` side. Next in the [Box] is a [LazyColumn] whose [Modifier]
- * `modifier` argument is a [Modifier.fillMaxWidth], with a [Modifier.padding] that adds `80.dp` to
- * the `top` (to avoid overlaying the [ReplyDockedSearchBar]), and whose [LazyListState] `state`
- * argument is our [LazyListState] parameter [emailLazyListState]. In the [LazyListScope] `content`
- * lambda argument we have an [LazyListScope.items] whose `items` argument is our [List] of [Email]
- * parameter [emails], and whose `key` argument is the [Email.id] of the current [Email] being passed
- * to its `itemContent` lambda parameter. In the [LazyItemScope] `itemContent` argument we accept the
- * [Email] passed the lambda in the variable `email`
+ * and `16.dp` to each `vertical` side.
+ *
+ * Next in the [Box] is a [LazyColumn] whose [Modifier] `modifier` argument is a
+ * [Modifier.fillMaxWidth], with a [Modifier.padding] that adds `80.dp` to the `top` (to avoid
+ * overlaying the [ReplyDockedSearchBar]), and whose [LazyListState] `state` argument is our
+ * [LazyListState] parameter [emailLazyListState]. In the [LazyListScope] `content` lambda argument
+ * we have an [LazyListScope.items] whose `items` argument is our [List] of [Email] parameter
+ * [emails], and whose `key` argument is the [Email.id] of the current [Email] being passed to its
+ * `itemContent` lambda parameter. In the [LazyItemScope] `itemContent` argument we accept the
+ * [Email] passed the lambda in the variable `email` then compose a [ReplyEmailListItem] whose
+ * `email` argument is `email`, whose `navigateToDetail` argument is a lambda that calls our
+ * [navigateToDetail] lambda parameter with `email` and [ReplyContentType.SINGLE_PANE] as the
+ * [ReplyContentType] argument, whose `toggleSelection` argument is our lambda parameter
+ * [toggleEmailSelection], whose `isOpened` argument is `true` if the [Email] passed the lambda is
+ * has the same [Email.id] as the [Email] in our [Email] parameter [openedEmail], and whose
+ * `isSelected` argument is `true` if our [Set] of [Long] parameter [selectedEmailIds] contains the
+ * [Email.id] of `email`.
+ *
+ * Below the [LazyListScope.items] is an [LazyListScope.item] which holds a [Spacer] whose [Modifier]
+ * `modifier` argument is a [Modifier.windowInsetsBottomHeight] whose `insets` argument is
+ * [WindowInsets.Companion.systemBars] to add extra spacing at the bottom to avioid the system bars
+ * when the [LazyColumn] is scrolled up all the way.
  *
  * @param emails the [List] of [Email]s to display.
  * @param openedEmail the [Email] that is currently being displayed in the detail screen.
@@ -357,7 +372,7 @@ fun ReplyEmailList(
                     isSelected = selectedEmailIds.contains(element = email.id)
                 )
             }
-            // Add extra spacing at the bottom if
+            // Add extra spacing at the bottom to avioid the system bars when scrolled up all the way
             item {
                 Spacer(modifier = Modifier.windowInsetsBottomHeight(insets = WindowInsets.systemBars))
             }
@@ -366,7 +381,34 @@ fun ReplyEmailList(
 }
 
 /**
+ * This Composable displays the [Email] in its [Email] parameter [email]. Our root Composable is a
+ * [LazyColumn] whose `modifier` argument chains to our [Modifier] parameter [modifier] a
+ * [Modifier.background] whose [Color] `color` argument is the [ColorScheme.inverseOnSurface] of
+ * our custom [MaterialTheme.colorScheme]. In the [LazyListScope] `content` lambda argument we
+ * compose:
+ *  - a [LazyListScope.item] whose [LazyItemScope] `content` lambda argument is a lambda that
+ *  composes a [EmailDetailAppBar] whose `email` argument is our [Email] parameter [email],
+ *  and whose `onBackPressed` argument is our lambda parameter [onBackPressed].
+ *  - a [LazyListScope.items] whose `items` argument is the [Email.threads] of our [Email] parameter
+ *  [email], and whose `key` argument is the [Email.id] of the current [Email], and in its
+ *  [LazyItemScope] `itemContent` Composable lambda argument we accept the [Email] passed the lambda
+ *  in variable `email` then compose a [ReplyEmailThreadItem] whose `email` argument is `email`.
+ *  - a [LazyListScope.item] whose [LazyItemScope] `content` lambda argument is a lambda that
+ *  composes a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.windowInsetsBottomHeight]
+ *  whose `insets` argument is [WindowInsets.Companion.systemBars] to add extra spacing at the bottom
+ *  to avioid the system bars when the [LazyColumn] is scrolled up all the way.
  *
+ * @param email the [Email] that we are to display.
+ * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
+ * behavior. [ReplyInboxScreen] does not pass us any so the empty, default, or starter [Modifier]
+ * that contains no elements is used.
+ * @param isFullScreen if `true` the device we are running on is using [ReplyContentType.DUAL_PANE]
+ * and we are being called in [TwoPane] as its `second` argument and if `false` the device we are
+ * running on is using [ReplyContentType.SINGLE_PANE] and we are being called in
+ * [ReplySinglePaneContent]. This is used as the `isFullScreen` argument of [EmailDetailAppBar]
+ * and causes it to align its [TopAppBar] depending on the value.
+ * @param onBackPressed lambda function to call when the "Back" button is pressed. When on a
+ * [ReplyContentType.SINGLE_PANE] device this will close the detail screen.
  */
 @Composable
 fun ReplyEmailDetail(
@@ -384,7 +426,7 @@ fun ReplyEmailDetail(
                 onBackPressed()
             }
         }
-        items(items = email.threads, key = { it.id }) { email ->
+        items(items = email.threads, key = { it.id }) { email: Email ->
             ReplyEmailThreadItem(email = email)
         }
         item {
