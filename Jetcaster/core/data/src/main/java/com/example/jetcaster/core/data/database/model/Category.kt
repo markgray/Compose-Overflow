@@ -22,6 +22,9 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ *
+ */
 @Entity(
     tableName = "categories",
     indices = [
@@ -30,6 +33,12 @@ import androidx.room.PrimaryKey
 )
 @Immutable
 data class Category(
+    /**
+     *
+     */
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
+    /**
+     *
+     */
     @ColumnInfo(name = "name") val name: String
 )

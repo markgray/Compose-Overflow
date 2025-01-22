@@ -22,10 +22,16 @@ import com.example.jetcaster.core.data.database.model.Category
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [Room] DAO for [Category] related operations.
+ * `Room` DAO for [Category] related operations.
  */
 @Dao
 abstract class CategoriesDao : BaseDao<Category> {
+    /**
+     * This method returns a [Flow] of [List] of [Category] sorted by the number of podcasts in
+     * each category. The `Query` Marks a method in a Dao annotated class as a query method.
+     * The value of the annotation is the query that will be run when this method is called. The
+     * [Int] parameter [limit] will be bound to the `:limit` parameter in the query.
+     */
     @Query(
         """
         SELECT categories.* FROM categories
@@ -41,9 +47,15 @@ abstract class CategoriesDao : BaseDao<Category> {
         limit: Int
     ): Flow<List<Category>>
 
+    /**
+     *
+     */
     @Query("SELECT * FROM categories WHERE name = :name")
     abstract suspend fun getCategoryWithName(name: String): Category?
 
+    /**
+     *
+     */
     @Query("SELECT * FROM categories WHERE name = :name")
     abstract fun observeCategory(name: String): Flow<Category?>
 }

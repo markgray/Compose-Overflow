@@ -47,10 +47,33 @@ import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
 )
 @TypeConverters(DateTimeTypeConverters::class)
 abstract class JetcasterDatabase : RoomDatabase() {
+    /**
+     *
+     */
     abstract fun podcastsDao(): PodcastsDao
+
+    /**
+     *
+     */
     abstract fun episodesDao(): EpisodesDao
+
+    /**
+     *
+     */
     abstract fun categoriesDao(): CategoriesDao
+
+    /**
+     *
+     */
     abstract fun podcastCategoryEntryDao(): PodcastCategoryEntryDao
+
+    /**
+     *
+     */
     abstract fun transactionRunnerDao(): TransactionRunnerDao
+
+    /**
+     *
+     */
     abstract fun podcastFollowedEntryDao(): PodcastFollowedEntryDao
 }

@@ -24,13 +24,19 @@ import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [Room] DAO for [Podcast] related operations.
+ * `Room` DAO for [Podcast] related operations.
  */
 @Dao
 abstract class PodcastsDao : BaseDao<Podcast> {
+    /**
+     *
+     */
     @Query("SELECT * FROM podcasts WHERE uri = :uri")
     abstract fun podcastWithUri(uri: String): Flow<Podcast>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -48,6 +54,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
     )
     abstract fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -67,6 +76,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -89,6 +101,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -106,6 +121,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -122,6 +140,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
     )
     abstract fun searchPodcastByTitle(keyword: String, limit: Int): Flow<List<PodcastWithExtraInfo>>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -146,6 +167,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>>
 
+    /**
+     *
+     */
     @Query("SELECT COUNT(*) FROM podcasts")
     abstract suspend fun count(): Int
 }

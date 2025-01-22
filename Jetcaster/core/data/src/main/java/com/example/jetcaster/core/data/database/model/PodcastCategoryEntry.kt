@@ -23,6 +23,9 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+/**
+ *
+ */
 @Entity(
     tableName = "podcast_category_entries",
     foreignKeys = [
@@ -49,7 +52,16 @@ import androidx.room.PrimaryKey
 )
 @Immutable
 data class PodcastCategoryEntry(
+    /**
+     *
+     */
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id: Long = 0,
+    /**
+     *
+     */
     @ColumnInfo(name = "podcast_uri") val podcastUri: String,
+    /**
+     *
+     */
     @ColumnInfo(name = "category_id") val categoryId: Long
 )
