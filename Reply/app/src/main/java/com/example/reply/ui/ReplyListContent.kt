@@ -306,7 +306,7 @@ fun ReplySinglePaneContent(
  * `email` argument is `email`, whose `navigateToDetail` argument is a lambda that calls our
  * [navigateToDetail] lambda parameter with `email` and [ReplyContentType.SINGLE_PANE] as the
  * [ReplyContentType] argument, whose `toggleSelection` argument is our lambda parameter
- * [toggleEmailSelection], whose `isOpened` argument is `true` if the [Email] passed the lambda is
+ * [toggleEmailSelection], whose `isOpened` argument is `true` if the [Email] passed the lambda
  * has the same [Email.id] as the [Email] in our [Email] parameter [openedEmail], and whose
  * `isSelected` argument is `true` if our [Set] of [Long] parameter [selectedEmailIds] contains the
  * [Email.id] of `email`.
@@ -389,10 +389,10 @@ fun ReplyEmailList(
  *  - a [LazyListScope.item] whose [LazyItemScope] `content` lambda argument is a lambda that
  *  composes a [EmailDetailAppBar] whose `email` argument is our [Email] parameter [email],
  *  and whose `onBackPressed` argument is our lambda parameter [onBackPressed].
- *  - a [LazyListScope.items] whose `items` argument is the [Email.threads] of our [Email] parameter
- *  [email], and whose `key` argument is the [Email.id] of the current [Email], and in its
- *  [LazyItemScope] `itemContent` Composable lambda argument we accept the [Email] passed the lambda
- *  in variable `email` then compose a [ReplyEmailThreadItem] whose `email` argument is `email`.
+ *  - a [LazyListScope.items] whose [List] of [Email] `items` argument is the [Email.threads] of our
+ *  [Email] parameter [email], and whose `key` argument is the [Email.id] of the current [Email], and
+ *  in its [LazyItemScope] `itemContent` Composable lambda argument we accept the [Email] passed the
+ *  lambda in variable `email` then compose a [ReplyEmailThreadItem] whose `email` argument is `email`.
  *  - a [LazyListScope.item] whose [LazyItemScope] `content` lambda argument is a lambda that
  *  composes a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.windowInsetsBottomHeight]
  *  whose `insets` argument is [WindowInsets.Companion.systemBars] to add extra spacing at the bottom
