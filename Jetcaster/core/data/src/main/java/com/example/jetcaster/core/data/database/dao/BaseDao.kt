@@ -50,8 +50,8 @@ interface BaseDao<T> {
 
     /**
      * The `@Insert` annotation marks this as an insert method. It will insert the [Collection] of
-     * [T] parameter [entities] into the database. If the record already exists in the database this
-     * will replace it due to the `onConflict` parameter of [OnConflictStrategy.REPLACE].
+     * [T] parameter [entities] into the database. If the records already exist in the database this
+     * will replace them due to the `onConflict` parameter of [OnConflictStrategy.REPLACE].
      *
      * @param entities the [Collection] of [T] entities to insert into the database.
      */

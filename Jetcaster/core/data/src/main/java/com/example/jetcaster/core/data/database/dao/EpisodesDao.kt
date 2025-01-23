@@ -24,11 +24,13 @@ import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [Room] DAO for [Episode] related operations.
+ * `Room` DAO for [Episode] related operations.
  */
 @Dao
 abstract class EpisodesDao : BaseDao<Episode> {
-
+    /**
+     *
+     */
     @Query(
         """
         SELECT * FROM episodes WHERE uri = :uri
@@ -36,6 +38,9 @@ abstract class EpisodesDao : BaseDao<Episode> {
     )
     abstract fun episode(uri: String): Flow<Episode>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -46,6 +51,9 @@ abstract class EpisodesDao : BaseDao<Episode> {
     )
     abstract fun episodeAndPodcast(episodeUri: String): Flow<EpisodeToPodcast>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -59,6 +67,9 @@ abstract class EpisodesDao : BaseDao<Episode> {
         limit: Int
     ): Flow<List<EpisodeToPodcast>>
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
@@ -74,9 +85,15 @@ abstract class EpisodesDao : BaseDao<Episode> {
         limit: Int
     ): Flow<List<EpisodeToPodcast>>
 
+    /**
+     *
+     */
     @Query("SELECT COUNT(*) FROM episodes")
     abstract suspend fun count(): Int
 
+    /**
+     *
+     */
     @Transaction
     @Query(
         """
