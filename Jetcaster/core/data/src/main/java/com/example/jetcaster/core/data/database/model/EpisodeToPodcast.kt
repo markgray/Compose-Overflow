@@ -21,13 +21,26 @@ import androidx.room.Ignore
 import androidx.room.Relation
 import java.util.Objects
 
+/**
+ *
+ */
 class EpisodeToPodcast {
+    /**
+     *
+     */
     @Embedded
     lateinit var episode: Episode
 
+    /**
+     *
+     */
+    @Suppress("PropertyName")
     @Relation(parentColumn = "podcast_uri", entityColumn = "uri")
     lateinit var _podcasts: List<Podcast>
 
+    /**
+     *
+     */
     @get:Ignore
     val podcast: Podcast
         get() = _podcasts[0]
@@ -35,8 +48,11 @@ class EpisodeToPodcast {
     /**
      * Allow consumers to destructure this class
      */
-    operator fun component1() = episode
-    operator fun component2() = podcast
+    operator fun component1(): Episode = episode
+    /**
+     *
+     */
+    operator fun component2(): Podcast = podcast
 
     override fun equals(other: Any?): Boolean = when {
         other === this -> true
