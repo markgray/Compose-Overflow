@@ -20,7 +20,8 @@ import androidx.room.Dao
 import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 
 /**
- * `Room` DAO for [PodcastCategoryEntry] related operations.
+ * `Room` DAO for [PodcastCategoryEntry] related operations. This table only needs the basic CRUB
+ * methods.
  */
 @Dao
 abstract class PodcastCategoryEntryDao : BaseDao<PodcastCategoryEntry>

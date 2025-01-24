@@ -149,12 +149,31 @@ abstract class EpisodesDao : BaseDao<Episode> {
     ): Flow<List<EpisodeToPodcast>>
 
     /**
+     * This method returns the number of [Episode] entries in the `episodes` table.
      *
+     * @return the `COUNT` of all of the [Episode] entries in the `episodes` table.
      */
     @Query("SELECT COUNT(*) FROM episodes")
     abstract suspend fun count(): Int
 
     /**
+     * This returns the [Episode]'s whose `podcast_uri` is in our [List] of [String] parameter
+     * [podcastUris] with the newest episodes first, with the number returned limited to our [Int]
+     * parameter [limit]. The meaning of the SQL:
+     *  - `SELECT * FROM episodes WHERE podcast_uri IN (:podcastUris)` this selects all of the
+     *  [Episode] in the `episodes` table where the `podcast_uri` is in our [List] of [String]
+     *  parameter [podcastUris].
+     *  - `ORDER BY datetime(published) DESC`: This clause sorts the results in descending order
+     *  based on the `DATETIME` of the [OffsetDateTime] `published` column.
+     *  - `LIMIT :limit`: This clause limits the number of rows returned by the query to the value
+     *  of our [Int] parameter [limit].
+     *
+     * @param podcastUris the [List] of podcast URIs whose [Episode]s we are interested in.
+     * @param limit the maximum number of [Episode] entries to return.
+     * @return a [Flow] of [List] of [EpisodeToPodcast] constructed from the [Episode]'s that the
+     * podcasts whose URIs are in our [List] of [String] parameter [podcastUris] produced, sorted
+     * by the date in the [Episode.published] column in descending order with the number returned
+     * limited by our [Int] parameter [limit].
      *
      */
     @Transaction
