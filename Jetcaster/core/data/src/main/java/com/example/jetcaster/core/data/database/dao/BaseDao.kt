@@ -45,6 +45,7 @@ interface BaseDao<T> {
      *
      * @param entity the [T] entities to insert into the database.
      */
+    @Suppress("unused")
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg entity: T)
 
@@ -65,6 +66,7 @@ interface BaseDao<T> {
      *
      * @param entity the [T] entity to update in the database.
      */
+    @Suppress("unused")
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(entity: T)
 
@@ -75,6 +77,7 @@ interface BaseDao<T> {
      * @param entity the [T] entity to delete from the database.
      * @return the number of rows deleted.
      */
+    @Suppress("unused")
     @Delete
     suspend fun delete(entity: T): Int
 }

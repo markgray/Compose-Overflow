@@ -37,8 +37,8 @@ abstract class CategoriesDao : BaseDao<Category> {
      *
      * Inside the parenthesis:
      *  - `SELECT category_id, COUNT(podcast_uri) AS podcast_count FROM podcast_category_entries`
-     *  selects all of the `category_id` fields and the `COUNT` of the `podcast_uri` field aliased
-     *  to `podcast_count` in the `podcast_category_entries` table
+     *  selects all of the `category_id` fields and the `COUNT` of the `podcast_uri` field (aliased
+     *  to `podcast_count`) in the `podcast_category_entries` table
      *  - `GROUP BY category_id` groups the output of the `SELECT` by the `category_id` field.
      *
      * and then:
