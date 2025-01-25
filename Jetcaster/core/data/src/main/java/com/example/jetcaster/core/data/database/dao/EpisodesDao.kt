@@ -161,8 +161,8 @@ abstract class EpisodesDao : BaseDao<Episode> {
      * [podcastUris] with the newest episodes first, with the number returned limited to our [Int]
      * parameter [limit]. The meaning of the SQL:
      *  - `SELECT * FROM episodes WHERE podcast_uri IN (:podcastUris)` this selects all of the
-     *  [Episode] in the `episodes` table where the `podcast_uri` is in our [List] of [String]
-     *  parameter [podcastUris].
+     *  [Episode] in the `episodes` table where the `podcast_uri` column is `IN` our [List] of
+     *  [String] parameter [podcastUris].
      *  - `ORDER BY datetime(published) DESC`: This clause sorts the results in descending order
      *  based on the `DATETIME` of the [OffsetDateTime] `published` column.
      *  - `LIMIT :limit`: This clause limits the number of rows returned by the query to the value
@@ -174,7 +174,6 @@ abstract class EpisodesDao : BaseDao<Episode> {
      * podcasts whose URIs are in our [List] of [String] parameter [podcastUris] produced, sorted
      * by the date in the [Episode.published] column in descending order with the number returned
      * limited by our [Int] parameter [limit].
-     *
      */
     @Transaction
     @Query(

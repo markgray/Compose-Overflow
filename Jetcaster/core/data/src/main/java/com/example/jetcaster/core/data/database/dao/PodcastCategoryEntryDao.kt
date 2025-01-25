@@ -21,7 +21,7 @@ import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 
 /**
  * `Room` DAO for [PodcastCategoryEntry] related operations. This table only needs the basic CRUB
- * methods.
+ * methods that are provided by [BaseDao].
  */
 @Dao
 abstract class PodcastCategoryEntryDao : BaseDao<PodcastCategoryEntry>
