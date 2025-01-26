@@ -47,11 +47,11 @@ abstract class PodcastsDao : BaseDao<Podcast> {
      *    - `SELECT podcasts.*` this selects all or the [Podcast] entries `FROM` the `podcasts` table
      *    - `last_episode_date`: This is an alias for the maximum (most recent) published date of an
      *    episode, which will be calculated in a subquery.
-     *    - `followed_entries.podcast_uri IS NOT NULL) AS is_followed`: This is a conditional expression
-     *    that checks if a matching entry exists in the podcast_followed_entries table. If a matching
-     *    podcast_uri is found in podcast_followed_entries, it means the podcast is followed, and
-     *    is_followed will be TRUE. If no match is found, followed_entries.podcast_uri will be NULL,
-     *    and is_followed will be FALSE.
+     *    - `followed_entries.podcast_uri IS NOT NULL) AS is_followed`: This is a conditional
+     *    expression that checks if a matching entry exists in the podcast_followed_entries table.
+     *    If a matching podcast_uri is found in podcast_followed_entries, it means the podcast is
+     *    followed, and is_followed will be TRUE. If no match is found, followed_entries.podcast_uri
+     *    will be NULL, and is_followed will be FALSE.
      *  2. `FROM podcasts`: This specifies that the primary table for the query is podcasts.
      *  3. `INNER JOIN (...) episodes ON podcasts.uri = episodes.podcast_uri`: This joins the
      *  podcasts table with a subquery aliased as episodes. The Subquery:
