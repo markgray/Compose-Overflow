@@ -19,7 +19,7 @@ package com.example.jetcaster.core.data.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.jetcaster.core.data.database.model.Episode
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import kotlinx.coroutines.flow.Flow
@@ -97,8 +97,46 @@ abstract class PodcastsDao : BaseDao<Podcast> {
     abstract fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo>
 
     /**
-     * This method returns a [Flow] of [PodcastWithExtraInfo] from the `podcasts` table sorted by
-     * the most recent episode's [Episode.published] date.
+     * This method returns a [Flow] of [PodcastWithExtraInfo] created from the `podcasts` table
+     * sorted by the most recent episode of each podcast. The SQL statment means:
+     *  1. `SELECT podcasts.*, last_episode_date, (followed_entries.podcast_uri IS NOT NULL) AS is_followed`:
+     *    - `podcasts.*`: This selects all columns from the podcasts table.
+     *    - `last_episode_date`: This is an alias for the maximum (most recent) published date of
+     *    episodes for each podcast, which will be calculated in a subquery.
+     *    - `(followed_entries.podcast_uri IS NOT NULL) AS is_followed`: This is a conditional
+     *    expression. It checks if a `podcast_uri` exists in the `podcast_followed_entries` table.
+     *    If it exists (meaning the podcast is followed), it evaluates to `true`; otherwise, it's
+     *    `false`. This result is aliased as is_followed.
+     *  2. `FROM podcasts`: This specifies that the primary table for the query is podcasts.
+     *  3. `INNER JOIN (...) episodes ON podcasts.uri = episodes.podcast_uri`: This is an INNER JOIN
+     *  operation, meaning it will only include rows where a match is found in both tables. The
+     *  subquery `(SELECT podcast_uri, MAX(published) AS last_episode_date FROM episodes GROUP BY
+     *  podcast_uri)` is used to find the most recent episode for each podcast.
+     *    - `SELECT podcast_uri, MAX(published) AS last_episode_date FROM episodes GROUP BY podcast_uri`:
+     *    This selects the `podcast_uri` and the maximum published date (aliased as `last_episode_date`).
+     *    - `FROM episodes`: This specifies that the subquery is operating on the episodes table.
+     *    `GROUP BY podcast_uri`: This groups the episodes by their `podcast_uri`, so `MAX(published)`
+     *    will find the latest date for each podcast.
+     *    - `ON podcasts.uri = episodes.podcast_uri`: This is the join condition. It links the `podcasts`
+     *    table to the results of the subquery based on matching `podcast_uri` values.
+     *  4. `LEFT JOIN podcast_followed_entries AS followed_entries ON followed_entries.podcast_uri = episodes.podcast_uri`:
+     *    - This is a `LEFT JOIN`, which means it will include all rows from the left table (podcasts
+     *    joined with the subquery results) and matching rows from the right table
+     *    (`podcast_followed_entries`). If there's no match in `podcast_followed_entries`, the columns
+     *    from that table will be NULL.
+     *    - `podcast_followed_entries AS followed_entries`: This specifies the table to join with and
+     *    gives it an alias followed_entries.
+     *    - `ON followed_entries.podcast_uri = episodes.podcast_uri`: This is the join condition,
+     *    linking based on matching `podcast_uri` values.
+     *  5. `ORDER BY datetime(last_episode_date) DESC`: This sorts the results in descending order
+     *  based on the last_episode_date. datetime() is used to ensure proper date/time comparison.
+     *  6. `LIMIT :limit`: This limits the number of rows returned to the value specified by our [Int]
+     *  parameter [limit].
+     *
+     * @param limit the maximum number of [PodcastWithExtraInfo] to return.
+     * @return a [Flow] of [List] of [PodcastWithExtraInfo] constructed from the `podcasts` table
+     * sorted by the latest episode of each podcast and the number of rows returned limited to our
+     * [Int] parameter [limit].
      */
     @Transaction
     @Query(
@@ -120,7 +158,53 @@ abstract class PodcastsDao : BaseDao<Podcast> {
     ): Flow<List<PodcastWithExtraInfo>>
 
     /**
+     * This method returns a [Flow] of [PodcastWithExtraInfo] created from the podcasts in the
+     * `podcasts` table which belong to the category whose [Category.id] is equal to our [Long]
+     * [categoryId] sorted by the podcasts most recent episode date. The SQL statment means:
+     *  1. `SELECT podcasts.*, last_episode_date, (followed_entries.podcast_uri IS NOT NULL) AS is_followed`
+     *    - `podcasts.*`: This selects all columns from the podcasts table.
+     *    - `last_episode_date`: This is an alias for the most recent episode's published date for
+     *    each podcast. It's calculated in a subquery.
+     *    - `(followed_entries.podcast_uri IS NOT NULL) AS is_followed`: This is a conditional
+     *    expression that checks if a podcast is followed. If a matching `podcast_uri` exists in the
+     *    `podcast_followed_entries table`, it means the podcast is followed, and this expression
+     *    evaluates to `true`. Otherwise, it's `false`. `AS is_followed`: This aliases the result of
+     *    the conditional expression to `is_followed`, making it a column in the result set.
+     *  2. `FROM podcasts`: This specifies that the primary table for the query is podcasts.
+     *  3. `INNER JOIN (...) inner_query ON podcasts.uri = inner_query.podcast_uri`: This is an
+     *  `INNER JOIN` with a subquery, aliased as `inner_query`. An `INNER JOIN` means that only rows
+     *  where a match is found in both the podcasts table and the `inner_query` results will be
+     *  included.
+     *    -  `episodes.podcast_uri, MAX(published) AS last_episode_date`: This selects the `podcast_uri`
+     *    and the maximum (most recent) published date, aliased as `last_episode_date`.
+     *    - `FROM episodes`: This specifies that the subquery is operating on the episodes table.
+     *    - `INNER JOIN podcast_category_entries ON episodes.podcast_uri = podcast_category_entries.podcast_uri`:
+     *    This joins the `episodes` table with the `podcast_category_entries` table based on matching
+     *    `podcast_uri`. This is how we filter episodes by category.
+     *    - `WHERE category_id = :categoryId`: This filters the episodes to include only those that
+     *    belong to the category whose [Category.id] is equal to our [Long] parameter [categoryId].
+     *    - `GROUP BY episodes.podcast_uri`: This groups the episodes by their `podcast_uri`, so
+     *    `MAX(published)` will find the latest date for each podcast within the specified category.
+     *    - `ON podcasts.uri = inner_query.podcast_uri`: This is the join condition, linking the
+     *    `podcasts` table to the results of the subquery based on matching `podcast_uri` values.
+     *  4. `LEFT JOIN podcast_followed_entries AS followed_entries ON followed_entries.podcast_uri = inner_query.podcast_uri`:
+     *  This is a `LEFT JOIN` with the `podcast_followed_entries` table, aliased as `followed_entries`.
+     *    - A `LEFT JOIN` means that all rows from the left side (the `podcasts` table joined with
+     *    the `inner_query` results) will be included. If there's a matching row in
+     *    `podcast_followed_entries`, the columns from that table will be included. If there's no
+     *    match, the columns from `podcast_followed_entries` will be NULL.
+     *    - `ON followed_entries.podcast_uri = inner_query.podcast_uri`: This is the join condition,
+     *    linking based on matching `podcast_uri` values.
+     *  5. `ORDER BY datetime(last_episode_date) DESC`: This sorts the results in descending order
+     *  based on the `last_episode_date`. datetime() is used to ensure proper date/time comparison.
+     *  6. `LIMIT :limit`: This limits the number of rows returned to the value specified by the
+     *  by our [Int] parameter [limit].
      *
+     * @param categoryId the [Category.id] of the [Category] whose podcasts we are interested in.
+     * @param limit the maximum number of rows to return.
+     * @return a [Flow] of [List] of [PodcastWithExtraInfo] created from the podcasts whose category
+     * has the [Category.id] equal to our [Long] parameter [categoryId] sorted by the latest episode
+     * in each podcast with the number of rows returned limited to our [Int] parameter [limit].
      */
     @Transaction
     @Query(
