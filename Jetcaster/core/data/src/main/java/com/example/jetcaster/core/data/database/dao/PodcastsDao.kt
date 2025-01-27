@@ -125,7 +125,7 @@ abstract class PodcastsDao : BaseDao<Podcast> {
      *    (`podcast_followed_entries`). If there's no match in `podcast_followed_entries`, the columns
      *    from that table will be NULL.
      *    - `podcast_followed_entries AS followed_entries`: This specifies the table to join with and
-     *    gives it an alias followed_entries.
+     *    gives it the alias `followed_entries`.
      *    - `ON followed_entries.podcast_uri = episodes.podcast_uri`: This is the join condition,
      *    linking based on matching `podcast_uri` values.
      *  5. `ORDER BY datetime(last_episode_date) DESC`: This sorts the results in descending order
@@ -160,7 +160,7 @@ abstract class PodcastsDao : BaseDao<Podcast> {
     /**
      * This method returns a [Flow] of [PodcastWithExtraInfo] created from the podcasts in the
      * `podcasts` table which belong to the category whose [Category.id] is equal to our [Long]
-     * [categoryId] sorted by the podcasts most recent episode date. The SQL statment means:
+     * [categoryId] sorted by the podcasts' most recent episode date. The SQL statment means:
      *  1. `SELECT podcasts.*, last_episode_date, (followed_entries.podcast_uri IS NOT NULL) AS is_followed`
      *    - `podcasts.*`: This selects all columns from the podcasts table.
      *    - `last_episode_date`: This is an alias for the most recent episode's published date for
@@ -175,8 +175,8 @@ abstract class PodcastsDao : BaseDao<Podcast> {
      *  `INNER JOIN` with a subquery, aliased as `inner_query`. An `INNER JOIN` means that only rows
      *  where a match is found in both the podcasts table and the `inner_query` results will be
      *  included.
-     *    -  `episodes.podcast_uri, MAX(published) AS last_episode_date`: This selects the `podcast_uri`
-     *    and the maximum (most recent) published date, aliased as `last_episode_date`.
+     *    -  `SELECT episodes.podcast_uri, MAX(published) AS last_episode_date`: This selects the
+     *    `podcast_uri` and the maximum (most recent) published date, aliased as `last_episode_date`.
      *    - `FROM episodes`: This specifies that the subquery is operating on the episodes table.
      *    - `INNER JOIN podcast_category_entries ON episodes.podcast_uri = podcast_category_entries.podcast_uri`:
      *    This joins the `episodes` table with the `podcast_category_entries` table based on matching
