@@ -332,7 +332,7 @@ abstract class PodcastsDao : BaseDao<Podcast> {
      *  7. `LIMIT :limit`: This limits the number of results returned to the value specified by our
      *   [Int] parameter [limit].
      *
-     * @param keyword the keyword to search for in the podcast titles.
+     * @param keyword the [String] to search for in the podcast titles.
      * @param limit the maximum number of rows to return.
      * @return a [Flow] of [List] of [PodcastWithExtraInfo] created from the podcasts that the user
      * is following whose title contains our [String] parameter [keyword], sorted by the most recent
@@ -403,9 +403,9 @@ abstract class PodcastsDao : BaseDao<Podcast> {
      *  7. `LIMIT :limit`: This limits the number of results returned to the value specified by
      *  our [Int] parameter [limit].
      *
-     * @param keyword the [String] keyword to search for in the podcast titles.
+     * @param keyword the [String] to search for in the podcast titles.
      * @param categoryIdList a [List] of [Category.id]'s of [Category]'s that the podcasts need to
-     * be in.
+     * be in order to be included in the results.
      * @param limit the maximum number of results to return.
      * @return a [Flow] of [List] of [PodcastWithExtraInfo] created from the podcasts whose title
      * contains our [String] parameter [keyword] that are in the categories whose [Category.id]
