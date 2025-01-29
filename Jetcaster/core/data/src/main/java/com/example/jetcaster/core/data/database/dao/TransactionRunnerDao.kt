@@ -40,7 +40,7 @@ abstract class TransactionRunnerDao : TransactionRunner {
     protected open suspend fun runInTransaction(tx: suspend () -> Unit): Unit = tx()
 
     /**
-     * [invoke] is a very Kotlin-idiomatic way to make a `TransactionRunner` instance callable like
+     * [invoke] is a very Kotlin-idiomatic way to make a [TransactionRunner] instance callable like
      * a function. It makes the code more concise and readable. The `@Ignore` annotation is used to
      * prevent Room from generating an implementation for the invoke function. This is because the
      * implementation is provided in the abstract class. It just calls our protected [runInTransaction]
