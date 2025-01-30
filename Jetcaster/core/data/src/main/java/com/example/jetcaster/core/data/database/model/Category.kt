@@ -27,8 +27,8 @@ import androidx.room.PrimaryKey
  * RSS feed. The fields are self-explanatory, and the contents today are: "Society & Culture",
  * "Arts", "News", "Health & Fitness", "Comedy", "True Crime", "TV & Film", "Technology", "Science",
  * "Sports", and "Business". The meanings of the anotations are:
- *  1. @Entity: This annotation marks the Category class as a Room entity, which represents a table
- *  in your database.
+ *  1. `@Entity`: This annotation marks the Category class as a Room entity, which represents a table
+ *  in our database.
  *    - tableName: This parameter specifies the name of the table in the database.
  *    - indices: This parameter is used to define indices for the table.
  *    - Index("name", unique = true): This creates an index on the "name" column.
@@ -36,10 +36,10 @@ import androidx.room.PrimaryKey
  *    - unique = true: This is the crucial part. Setting unique to true enforces that all values in
  *    the "name" column must be unique. If you try to insert a row with a "name" that already exists,
  *    Room will throw an exception.
- *  2. @PrimaryKey: This annotation marks the id field as the primary key for the table.
- *    - autoGenerate: This parameter is set to true, which means that Room will automatically
+ *  2. `@PrimaryKey`: This annotation marks the id field as the primary key for the table.
+ *    - autoGenerate: This parameter is set to `true`, which means that Room will automatically
  *    generate the unique id.
- *  3. @ColumnInfo(name = "id"): This annotation is used to specify the name of the column in the
+ *  3. `@ColumnInfo(name = "id")`: This annotation is used to specify the name of the column in the
  *  table.
  *
  * The data class is immutable, which means that its contents cannot be changed after it is created.

@@ -28,8 +28,8 @@ import java.time.OffsetDateTime
 /**
  * This is the data class that defines our `episodes` table in the database, it is created from the
  * RSS feed. The meanings of the anotations are:
- *  1. @Entity: This annotation marks the Episode class as a Room entity, which represents a table
- *  within the database.
+ *  1. `@Entity`: This annotation marks the [Episode] class as a Room entity, which represents a
+ *  table within the database.
  *  2. `tableName = "episodes"`: This parameter specifies the name of the table in the database.
  *  3. `indices = [Index("uri", unique = true)]`: This parameter is used to define indices for the
  *  table.
@@ -40,18 +40,18 @@ import java.time.OffsetDateTime
  *  4. `foreignKeys = [ ... ]`: This parameter is used to define foreign key constraints for the
  *  table. Foreign keys are used to establish relationships between tables.
  *  5. `ForeignKey( ... )`: This is a foreign key constraint.
- *    - `entity = Podcast::class`: This parameter specifies the entity that this foreign key
- *    references the Podcast table.
- *    - `parentColumns = ["uri"]`: This specifies that the "uri" column in the Podcast table is the
- *    parent column (the column being referenced).
+ *    - `entity = Podcast::class`: This parameter specifies entity that this foreign key references
+ *    the `podcasts` table.
+ *    - `parentColumns = ["uri"]`: This specifies that the "uri" column in the `podcasts` table is
+ *    the parent column (the column being referenced).
  *    - `childColumns = ["podcast_uri"]`: This specifies that the "podcast_uri" column in the
- *    episodes table is the child column (the column containing the foreign key).
+ *    `episodes` table is the child column (the column containing the foreign key).
  *    - `onUpdate = ForeignKey.CASCADE`: This defines the behavior when the parent column ("uri" in
- *    the Podcast table) is updated. CASCADE means that if the parent URI is updated, the
+ *    the `podcasts` table) is updated. CASCADE means that if the parent URI is updated, the
  *    corresponding "podcast_uri" values in the "episodes" table will also be updated to match.
  *    - `onDelete = ForeignKey.CASCADE`: This defines the behavior when a row in the parent table
- *    (Podcast) is deleted. CASCADE means that if a podcast is deleted, all episodes associated with
- *    that podcast (where "podcast_uri" matches the deleted podcast's URI) will also be deleted.
+ *    (`podcasts`) is deleted. CASCADE means that if a podcast is deleted, all episodes associated
+ *    with that podcast (where "podcast_uri" matches the deleted podcast's URI) will also be deleted.
  */
 @Entity(
     tableName = "episodes",
@@ -72,7 +72,9 @@ import java.time.OffsetDateTime
 @Immutable
 data class Episode(
     /**
-     * This is the Primary Key for the table, and is the http URI of the episode.
+     * This is the Primary Key for the table. It is the http URI of the episode, or some other way
+     * to play the episode (since this app does not actually play episodes I have no idea how one
+     * should use the non-http [String] to play an episode).
      */
     @PrimaryKey @ColumnInfo(name = "uri") val uri: String,
     /**
