@@ -22,43 +22,60 @@ import androidx.room.Relation
 import java.util.Objects
 
 /**
- *
+ * This class is used to return an [Episode] and it's [Podcast] to the caller of a method.
  */
 class EpisodeToPodcast {
     /**
-     *
+     * `@Embedded`: You're using @Embedded to include the Episode entity directly within the
+     * EpisodeToPodcast class. This is a good approach if you want to treat Episode's fields
+     * as if they were part of EpisodeToPodcast.
      */
     @Embedded
     lateinit var episode: Episode
 
     /**
-     *
+     * `@Relation`: This is the core of your relationship definition.
+     *  - parentColumn = "podcast_uri": This indicates that the podcast_uri column in the Episode
+     *  entity (which is embedded) is the foreign key.
+     *  - `entityColumn = "uri"`: This indicates that the uri column in the Podcast entity is the
+     *  primary key that podcast_uri references.
+     *  - `_podcasts: List<Podcast>`: This is the [List] of [Podcast] entities that are related to
+     *  the [Episode].
      */
     @Suppress("PropertyName")
     @Relation(parentColumn = "podcast_uri", entityColumn = "uri")
     lateinit var _podcasts: List<Podcast>
 
     /**
-     *
+     * `@get:Ignore`: We're using @Ignore to prevent Room from treating [podcast] as a database
+     * column. This is correct since it's a derived property.
+     *  - `podcast: Podcast`: This is a convenience property that returns the first Podcast in the
+     *  _podcasts list. This assumes there's always at least one Podcast related to an Episode.
      */
     @get:Ignore
     val podcast: Podcast
         get() = _podcasts[0]
 
     /**
-     * Allow consumers to destructure this class
+     * Allow consumers to destructure this class, returns the [episode] as the first element.
      */
     operator fun component1(): Episode = episode
     /**
-     *
+     * Allow consumers to destructure this class, returns the [podcast] as the second element.
      */
     operator fun component2(): Podcast = podcast
 
+    /**
+     * Allow consumers to use == to compare instances.
+     */
     override fun equals(other: Any?): Boolean = when {
         other === this -> true
         other is EpisodeToPodcast -> episode == other.episode && _podcasts == other._podcasts
         else -> false
     }
 
+    /**
+     * Allow consumers to use the hashcode method.
+     */
     override fun hashCode(): Int = Objects.hash(episode, _podcasts)
 }
