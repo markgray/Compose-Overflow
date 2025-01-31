@@ -22,22 +22,29 @@ import androidx.room.Relation
 import java.util.Objects
 
 /**
- * This class is used to return an [Episode] and it's [Podcast] to the caller of a method.
+ * This class is used by several methods to return an [Episode] and the [Podcast]`s that are related
+ * to it. In actual use the [Episode] probably only has one [Podcast] related to it, the one that
+ * broadcasts the [Episode], but there must of been some reason to allow for more than one [Podcast]
+ * to be related to the same [Episode].
  */
 class EpisodeToPodcast {
     /**
-     * `@Embedded`: You're using @Embedded to include the Episode entity directly within the
-     * EpisodeToPodcast class. This is a good approach if you want to treat Episode's fields
-     * as if they were part of EpisodeToPodcast.
+     * This is the [Episode] being returned.
+     *
+     * `@Embedded`: We're using `@Embedded` to include the Episode entity directly within the
+     * [EpisodeToPodcast] class. This is a good approach if you want to treat [Episode]'s fields
+     * as if they were part of [EpisodeToPodcast].
      */
     @Embedded
     lateinit var episode: Episode
 
     /**
+     * This is the [List] of [Podcast] being returned.
+     *
      * `@Relation`: This is the core of your relationship definition.
-     *  - parentColumn = "podcast_uri": This indicates that the podcast_uri column in the Episode
-     *  entity (which is embedded) is the foreign key.
-     *  - `entityColumn = "uri"`: This indicates that the uri column in the Podcast entity is the
+     *  - `parentColumn = "podcast_uri"`: This indicates that the `podcast_uri` column in the
+     *  [Episode] entity (which is embedded) is the foreign key.
+     *  - `entityColumn = "uri"`: This indicates that the uri column in the [Podcast] entity is the
      *  primary key that podcast_uri references.
      *  - `_podcasts: List<Podcast>`: This is the [List] of [Podcast] entities that are related to
      *  the [Episode].
@@ -47,10 +54,13 @@ class EpisodeToPodcast {
     lateinit var _podcasts: List<Podcast>
 
     /**
+     * This is a convenience property that returns the first [Podcast] in the [_podcasts] list.
+     * This assumes there's always at least one [Podcast] related to an [Episode].
+     *
      * `@get:Ignore`: We're using @Ignore to prevent Room from treating [podcast] as a database
      * column. This is correct since it's a derived property.
-     *  - `podcast: Podcast`: This is a convenience property that returns the first Podcast in the
-     *  _podcasts list. This assumes there's always at least one Podcast related to an Episode.
+     *  - `podcast: Podcast`: This is a convenience property that returns the first [Podcast] in the
+     *  `_podcasts` list. This assumes there's always at least one [Podcast] related to an [Episode].
      */
     @get:Ignore
     val podcast: Podcast
