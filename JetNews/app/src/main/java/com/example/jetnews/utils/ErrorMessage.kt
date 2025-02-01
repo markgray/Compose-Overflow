@@ -17,7 +17,6 @@
 package com.example.jetnews.utils
 
 import androidx.annotation.StringRes
-import com.example.jetnews.R
 import com.example.jetnews.data.Result
 import com.example.jetnews.data.posts.PostsRepository
 import com.example.jetnews.data.posts.impl.FakePostsRepository
