@@ -90,7 +90,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  of our custom [MaterialTheme.typography] (`fontSize` = 14.sp, `lineHeight` = 20.sp, `letterSpacing`
  *  = 0.25.sp, `lineBreak` = [LineBreak.Paragraph]).
  *  - a [Text] whose `text` is the [String] that is formatted using the [String] whose resource id
- *  is [R.string.home_post_min_read] ("%1$s - %2$d min read") using [Metadata.date] of the [Post.metadata]
+ *  is `R.string.home_post_min_read` ("%1$s - %2$d min read") using [Metadata.date] of the [Post.metadata]
  *  of our [Post] parameter [post] and the [Metadata.readTimeMinutes] of the [Post.metadata] of our
  *  [Post] parameter [post] as the `formatArgs`, and whose [TextStyle] `style` argument is the
  *  [Typography.bodySmall] of our custom [MaterialTheme.typography] (`fontSize` = 12.sp, `lineHeight`

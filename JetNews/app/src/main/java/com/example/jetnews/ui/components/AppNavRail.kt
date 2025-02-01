@@ -50,7 +50,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  * the majority of tablets in landscape and large unfolded inner displays in landscape). Our root
  * Composable is a [NavigationRail] whose `header` lambda argument is a lambda which composes an
  * [Icon] whose `painter` argument is the [Painter] created from the drawable with resource ID
- * [R.drawable.ic_jetnews_logo] (a vector which consists of a "greater than" character followed by
+ * `R.drawable.ic_jetnews_logo` (a vector which consists of a "greater than" character followed by
  * an underline character), the `modifier` argument of the [Icon] is a [Modifier.padding] that adds
  * 12.dp padding to the top and bottom, and the `tint` argument is the [ColorScheme.primary] of our
  * custom [MaterialTheme.colorScheme]. The `modifier` argument of the [NavigationRail] is our
@@ -64,9 +64,9 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  is equal to [JetnewsDestinations.HOME_ROUTE], whose `onClick` argument is our [navigateToHome] lambda
  *  parameter, whose `icon` argument is a lambda which composes an [Icon] whose `imageVector` argument
  *  causes it to render the [ImageVector] drawn by [Icons.Filled.Home] (a stylized "house"), and the
- *  `contentDescription` argument of the [Icon] is the [String] with resource ID [R.string.home_title]
+ *  `contentDescription` argument of the [Icon] is the [String] with resource ID `R.string.home_title`
  *  ("Home"), the `label` argument of the [NavigationRailItem] is a lambda which composes a [Text] whose
- *  `text` is the [String] with resource ID [R.string.home_title] also, and the `alwaysShowLabel` argument
+ *  `text` is the [String] with resource ID `R.string.home_title` also, and the `alwaysShowLabel` argument
  *  of the [NavigationRailItem] is `false` (when `false` the label will only be shown when this item
  *  is selected).
  *  - a [NavigationRailItem] whose `selected` argument is `true` if our [String] parameter [currentRoute]
@@ -74,8 +74,8 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  lambda parameter, whose `icon` argument is a lambda which composes an [Icon] whose `imageVector`
  *  argument causes it to render the [ImageVector] drawn by [Icons.AutoMirrored.Filled.ListAlt] (a
  *  stylized "list of items"), and the `contentDescription` argument of the [Icon] is the [String]
- *  with resource ID [R.string.interests_title] ("Interests"), the `label` argument of the [NavigationRailItem]
- *  is a lambda which composes a [Text] whose `text` is the [String] with resource ID [R.string.interests_title]
+ *  with resource ID `R.string.interests_title` ("Interests"), the `label` argument of the [NavigationRailItem]
+ *  is a lambda which composes a [Text] whose `text` is the [String] with resource ID `R.string.interests_title`
  *  also, and the `alwaysShowLabel` argument of the [NavigationRailItem] is `false` (when `false` the
  *  label will only be shown when this item is selected).
  *

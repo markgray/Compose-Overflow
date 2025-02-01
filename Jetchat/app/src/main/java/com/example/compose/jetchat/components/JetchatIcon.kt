@@ -42,9 +42,9 @@ import com.example.compose.jetchat.R
  * the an empty [Modifier] if it is `null`. Then our root Composable is a [Box] whose `modifier`
  * argument uses the [Modifier.then] method of our [Modifier] parameter [modifier] to append our
  * [Modifier] variable `semantics`. The `content` of the [Box] is an [Icon] displaying the drawable
- * with resource ID [R.drawable.ic_jetchat_back] using as its `tint` the [ColorScheme.primaryContainer]
+ * with resource ID `R.drawable.ic_jetchat_back` using as its `tint` the [ColorScheme.primaryContainer]
  * color of our [MaterialTheme.colorScheme]. On top of this is then rendered a second [Icon] displaying
- * the drawable with resource ID [R.drawable.ic_jetchat_front] using as its `tint` the
+ * the drawable with resource ID `R.drawable.ic_jetchat_front` using as its `tint` the
  * [ColorScheme.primary] color of our [MaterialTheme.colorScheme].
  *
  * @param contentDescription if non-`null` a [String] to use as the `contentDescription` of our [Box].

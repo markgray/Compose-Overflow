@@ -87,7 +87,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 /**
  * This Composable is used to display the [ProfileScreenState] for a particular `userId`, either
  * [meProfile] or [colleagueProfile]. It is used in a [ComposeView] found in the layout file with
- * resource ID [R.layout.fragment_profile] by [ProfileFragment]. We start by initializing and
+ * resource ID `R.layout.fragment_profile` by [ProfileFragment]. We start by initializing and
  * remembering our [MutableState] wrapped [Boolean] variable `var functionalityNotAvailablePopupShown`
  * to `false`. Then is `functionalityNotAvailablePopupShown` has changed to `true` in a later
  * recomposition we call our [FunctionalityNotAvailablePopup] with its `onDismiss` lambda argument
@@ -189,17 +189,17 @@ fun ProfileScreen(
  *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to 8.dp
  *  - a [NameAndPosition] Composable whose `userData` argument is our [ProfileScreenState] parameter
  *  [userData] (which displays a [Name] Composable and a [Position] Composable in a column).
- *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID [R.string.display_name]
+ *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID `R.string.display_name`
  *  ("Display name"), and whose `value` argument is the [ProfileScreenState.displayName] field of our
  *  [ProfileScreenState] parameter [userData].
- *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID [R.string.status]
+ *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID `R.string.status`
  *  ("Status"), and whose `value` argument is the [ProfileScreenState.status] field of our
  *  [ProfileScreenState] parameter [userData].
- *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID [R.string.twitter]
+ *  - a [ProfileProperty] whose `label` argument is the [String] with resource ID `R.string.twitter`
  *  ("Twitter"), and whose `value` argument is the [ProfileScreenState.twitter] field of our
  *  [ProfileScreenState] parameter [userData].
  *  - if the [ProfileScreenState.timeZone] field of [userData] is not `null`, a [ProfileProperty]
- *  whose `label` argument is the [String] with resource ID [R.string.timezone] ("Timezone"),
+ *  whose `label` argument is the [String] with resource ID `R.string.timezone` ("Timezone"),
  *  and whose `value` argument is the [ProfileScreenState.timeZone] field of our [ProfileScreenState]
  *  parameter [userData].
  *  - a [Spacer] whose `modifier` argument is a [Modifier.height] that sets its `height` to our [Dp]
@@ -419,7 +419,7 @@ fun ProfileProperty(label: String, value: String, isLink: Boolean = false) {
 /**
  * [ProfileFragment] composes this into the UI instead of [ProfileScreen] if the [ProfileScreenState]
  * that it is supposed to display is `null`. We just display a [Text] whose `text` argument is the
- * [String] with resource ID [R.string.profile_error] ("There was an error loading the profile").
+ * [String] with resource ID `R.string.profile_error` ("There was an error loading the profile").
  */
 @Composable
 fun ProfileError() {
@@ -447,18 +447,18 @@ fun ProfileError() {
  * The `content` of the [FloatingActionButton] is an [AnimatingFabContent] whose `icon` argument is
  * an [Icon] whose `imageVector` is if our [Boolean] parameter [userIsMe] is `true` the [ImageVector]
  * drawn by [Icons.Outlined.Create] and if it is `false` the [ImageVector] drawn by [Icons.Outlined.Create],
- * and whose `contentDescription` argument is the [String] with resource ID [R.string.edit_profile]
- * ("Edit Profile") if [userIsMe] is `true` or the [String] with resource ID [R.string.message]
+ * and whose `contentDescription` argument is the [String] with resource ID `R.string.edit_profile`
+ * ("Edit Profile") if [userIsMe] is `true` or the [String] with resource ID `R.string.message`
  * ("Message") if [userIsMe] is `false`. The `text` argument of the [AnimatingFabContent] is the
- * [String] with resource ID [R.string.edit_profile] ("Edit Profile") if [userIsMe] is `true` or the
- * [String] with resource ID [R.string.message] ("Message") if [userIsMe] is `false`, and the
+ * [String] with resource ID `R.string.edit_profile` ("Edit Profile") if [userIsMe] is `true` or the
+ * [String] with resource ID `R.string.message` ("Message") if [userIsMe] is `false`, and the
  * `extended` argument is our [Boolean] parameter [extended].
  *
  * @param extended if `true` our [AnimatingFabContent] will be rendered at its full width (an [Icon]
  * and [Text]), and if `false` it will just be a 48.dp by 48.dp [Icon].
  * @param userIsMe if `true` the profile is for "Ali Conors (you)" and the [Text] of the FAB would
- * display the  [String] with resource ID [R.string.edit_profile] ("Edit Profile") and if `false`
- * the [Text] of the FAB would display the  [String] with resource ID [R.string.message] ("Message").
+ * display the  [String] with resource ID `R.string.edit_profile` ("Edit Profile") and if `false`
+ * the [Text] of the FAB would display the  [String] with resource ID `R.string.message` ("Message").
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [ProfileScreen] passes us a [BoxScope.align] whose `alignment` argument
  * is [Alignment.BottomEnd] to have us align our fab to the bottom end of the [BoxWithConstraints]

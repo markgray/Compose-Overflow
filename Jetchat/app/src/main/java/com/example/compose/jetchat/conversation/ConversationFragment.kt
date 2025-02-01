@@ -43,7 +43,7 @@ import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * This is the `app:startDestination` of our navigation graph, its ID is [R.id.nav_home].
+ * This is the `app:startDestination` of our navigation graph, its ID is `R.id.nav_home`.
  */
 class ConversationFragment : Fragment() {
 
@@ -65,7 +65,7 @@ class ConversationFragment : Fragment() {
      * `navigateToProfile` argument is a lambda which uses the variable name `user` to refer to the
      * [String] passed the lambda and creates a [Bundle] variable `val bundle` which has that `user`
      * [String] stored under the key "userId" and then calls the [NavController.navigate] method of
-     * the [NavController] returned by [findNavController] with the `resId` argument [R.id.nav_profile]
+     * the [NavController] returned by [findNavController] with the `resId` argument `R.id.nav_profile`
      * (the resource ID of the [ProfileFragment]) and the `args` argument `bundle` ([ProfileFragment]
      * uses the [Bundle] as the to locate the [ProfileScreenState] for the user whose name is the
      * [String] stored in the [Bundle] under the key "userId"). The `onNavIconPressed` argument of

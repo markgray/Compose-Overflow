@@ -81,19 +81,19 @@ class NavActivity : AppCompatActivity() {
      * After this we compose a [JetchatDrawer] into the UI whose `drawerState` argument is our
      * [DrawerState] variable `drawerState`, whose `onChatClicked` argument is a lambda that calls
      * our [findNavController] method and calls the [NavController.popBackStack] of the [NavController]
-     * returned to the controller's back stack back to the destination with resource ID [R.id.nav_home]
+     * returned to the controller's back stack back to the destination with resource ID `R.id.nav_home`
      * (the [ConversationFragment]) and then it calls the [CoroutineScope.launch] method of `scope`
      * to launch a coroutine that calls the [DrawerState.close] method of `drawerState` thereby closing
      * the [JetchatDrawer]. Its `onProfileClicked` argument is a lambda that constructs a [Bundle]
      * variable `val bundle` that stores the `useId` [String] passed the lambda under the key "userId"
      * then calls our [findNavController] method and calls the [NavController.navigate] method of the
-     * [NavController] returned to navigate to the destination with resource ID [R.id.nav_profile]
+     * [NavController] returned to navigate to the destination with resource ID `R.id.nav_profile`
      * (the [ProfileFragment]) using `bundle` as the arguments to pass to the destination, and then
      * it calls the [CoroutineScope.launch] method of `scope` to launch a coroutine that calls the
      * [DrawerState.close] method of `drawerState` thereby closing the [JetchatDrawer]. The `content`
      * lambda argument of the [JetchatDrawer] is an [AndroidViewBinding] whose `factory` argument is
      * the [ContentMainBinding.inflate] method (which inflates the xml file with resource ID
-     * [R.layout.content_main] as the content of the [AndroidViewBinding]).
+     * `R.layout.content_main` as the content of the [AndroidViewBinding]).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -172,12 +172,12 @@ class NavActivity : AppCompatActivity() {
     /**
      * Hack for bug [findNavController() fails in onCreate](https://issuetracker.google.com/142847973)
      * We use the [FragmentManager.findFragmentById] method to find the [NavHostFragment] with ID
-     * [R.id.nav_host_fragment] to initialize our [NavHostFragment] variable `val navHostFragment`
+     * `R.id.nav_host_fragment` to initialize our [NavHostFragment] variable `val navHostFragment`
      * then return the [NavController] returned by its [NavHostFragment.navController] property to
      * the caller.
      *
      * @return the [NavController] of the [NavHostFragment] found in the inflated layout file with
-     * resource ID [R.layout.content_main].
+     * resource ID `R.layout.content_main`.
      */
     private fun findNavController(): NavController {
         val navHostFragment: NavHostFragment =

@@ -99,7 +99,7 @@ import kotlinx.coroutines.runBlocking
  * [isExpandedScreen] is `false` will compose an [IconButton] whose `onClick` argument is our
  * lambda parameter [onBack] and whose `content` is an [Icon] whose `imageVector` argument causes
  * it to display the [ImageVector] drawn by [Icons.AutoMirrored.Filled.ArrowBack], whose
- * `contentDescription` is the [String] with resource ID [R.string.cd_navigate_up] "Navigate up",
+ * `contentDescription` is the [String] with resource ID `R.string.cd_navigate_up` "Navigate up",
  * and whose `tint` is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. The
  * `bottomBarContent` lambda argument of [ArticleScreenContent] is a lambda which if our [Boolean]
  * parameter [isExpandedScreen] is `false` composes a [BottomAppBar] Composable whose `actions`
@@ -244,12 +244,12 @@ private fun ArticleScreenContent(
  * header `title` that is horizontally aligned to the center. It has slots for a title, navigation
  * icon, and actions). The `title` lambda argument of the [CenterAlignedTopAppBar] is a lambda which
  * composes a [Row] which in its [RowScope] `content` lambda argument holds an [Image] whose `painter`
- * argument causes it to draw the drawable with resource ID [R.drawable.icon_article_background]
+ * argument causes it to draw the drawable with resource ID `R.drawable.icon_article_background`
  * (a `vector` which draws the upper half of an "android" face), and the `modifier` argument of the
  * [Image] is a [Modifier.clip] which clips it to the `shape` [CircleShape], with a [Modifier.size]
  * which sets the size of the [Image] to 36.dp. The [Image] is followed in the [Row] by a [Text]
  * whose `text` argument is the [String] returned by the [stringResource] when it uses the format
- * [String] with resource ID [R.string.published_in] to format our [String] parameter [title]
+ * [String] with resource ID `R.string.published_in` to format our [String] parameter [title]
  * (prefixes the [title] with the [String] "Published in:"). The [TextStyle] `style` argument of the
  * [Text] is the [Typography.labelLarge] of our custom [MaterialTheme.typography] (`fontSize` = 14.sp,
  * `lineHeight` = 20.sp, `letterSpacing` = 0.1.sp, `fontWeight` = [FontWeight.Medium]). The `modifier`
@@ -306,13 +306,13 @@ private fun TopAppBar(
  * Display a popup explaining functionality not available. Our root Composable is an [AlertDialog]
  * whose `onDismissRequest` argument is our lambda parameter [onDismiss], whose `text` argument is
  * a lambda which composes a [Text] whose `text` argument is the [String] with resource ID
- * [R.string.article_functionality_not_available] ("Functionality not available"), and whose
+ * `R.string.article_functionality_not_available` ("Functionality not available"), and whose
  * [TextStyle] `style` argument is the [Typography.bodyLarge] of our custom [MaterialTheme.typography]
  * (`fontSize` is 16.sp, `lineHeight` is 24.sp, `letterSpacing` is 0.5.sp, and `lineBreak` is
  * [LineBreak.Paragraph] (slower, higher quality line breaking for improved readability). The
  * `confirmButton` argument of the [AlertDialog] is a lambda which composes a [TextButton] whose
  * `onClick` argument is our lambda parameter [onDismiss], and whose `content` lambda parameter is
- * a [Text] whose `text` argument is the [String] with resource ID [R.string.close] ("Close").
+ * a [Text] whose `text` argument is the [String] with resource ID `R.string.close` ("Close").
  *
  * @param onDismiss (event) request the popup be dismissed
  */
@@ -343,7 +343,7 @@ private fun FunctionalityNotAvailablePopup(onDismiss: () -> Unit) {
  * [Post.url] of our [Post] parameter [post] under the key [Intent.EXTRA_TEXT]. Finally we call the
  * [Context.startActivity] method to launch the [Intent] created by the [Intent.createChooser] for
  * the `target` argument of our [Intent] variable `intent`, and the `title` argument of the [String]
- * with resource ID [R.string.article_share_post] ("Share post"). (a new [Intent.ACTION_CHOOSER]
+ * with resource ID `R.string.article_share_post` ("Share post"). (a new [Intent.ACTION_CHOOSER]
  * [Intent] that wraps the `target` [Intent] that will launch an activity chooser, allowing the user
  * to pick what they want to before proceeding).
  *

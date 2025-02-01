@@ -84,8 +84,8 @@ import kotlin.math.roundToInt
  * calls us with an [Icon] whose `imageVector` is either [Icons.Outlined.Create] if the "user is me"
  * or [Icons.AutoMirrored.Outlined.Chat] if it is not.
  * @param text we use this as the `text` argument of our [IconAndTextRow]. Our caller [ProfileFab]
- * calls us with a [Text] that displays the [String] with resource ID [R.string.edit_profile]
- * ("Edit Profile") if the "user is me" or the [String] with resource ID [R.string.message]
+ * calls us with a [Text] that displays the [String] with resource ID `R.string.edit_profile`
+ * ("Edit Profile") if the "user is me" or the [String] with resource ID `R.string.message`
  * ("Message") if it is not.
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller [ProfileFab] does not pass one so is the empty, default, or starter

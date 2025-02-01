@@ -275,7 +275,7 @@ class HomeViewModel(
      *  - [Result.Error] we initialize our [List] of [ErrorMessage] variable `val errorMessages` to the
      *  current [HomeViewModelState.errorMessages] property appending a new instance of [ErrorMessage]
      *  whose [ErrorMessage.id] is the [UUID.getMostSignificantBits] of the random [UUID] returned
-     *  by [UUID.randomUUID], and whose [ErrorMessage.messageId] is the resource ID [R.string.load_error]
+     *  by [UUID.randomUUID], and whose [ErrorMessage.messageId] is the resource ID `R.string.load_error`
      *  (points to the [String] ("Can't update latest news"). We then update [viewModelState] with a
      *  copy whose [HomeViewModelState.errorMessages] is our variable `errorMessages`, and whose
      *  [HomeViewModelState.isLoading] property is `false`.

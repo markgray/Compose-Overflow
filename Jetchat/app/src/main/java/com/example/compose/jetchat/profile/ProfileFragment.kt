@@ -101,10 +101,10 @@ class ProfileFragment : Fragment() {
      * Called to have the fragment instantiate its user interface view. This will be called between
      * [onCreate] and [onViewCreated]. It is recommended to only inflate the layout in this method
      * and move logic that operates on the returned View to [onViewCreated]. We start by using our
-     * [LayoutInflater] parameter [inflater] to inflate our layout file [R.layout.fragment_profile]
+     * [LayoutInflater] parameter [inflater] to inflate our layout file `R.layout.fragment_profile`
      * using our [ViewGroup] parameter [container] for LayoutParams without attaching to it and
      * saving the [View] returned in our variable `val rootView`. Then we find the [ComposeView]
-     * in `rootView` with ID [R.id.toolbar_compose_view] and use the [apply] extension function to
+     * in `rootView` with ID `R.id.toolbar_compose_view` and use the [apply] extension function to
      * call its [ComposeView.setContent] function to set the Jetpack Compose UI content of the [View].
      * In the `content` lambda of the call we start by initializing and remembering our [MutableState]
      * wrapped [Boolean] variable `var functionalityNotAvailablePopupShown`to `false`. Next if
@@ -126,9 +126,9 @@ class ProfileFragment : Fragment() {
      * chained to the [Modifier.clickable] is a [Modifier.padding] that sets the `horizontal` padding
      * at each side to 12.dp and the `vertical` padding at top and bottom to 16.dp, and the last in
      * the chain is a [Modifier.height] that sets its height to 24.dp. The `contentDescription` argument
-     * of the [Icon] is the [String] with resource ID [R.string.more_options] ("More options").
+     * of the [Icon] is the [String] with resource ID `R.string.more_options` ("More options").
      *
-     * Next we find the [ComposeView] in `rootView` with ID [R.id.profile_compose_view] and use the
+     * Next we find the [ComposeView] in `rootView` with ID `R.id.profile_compose_view` and use the
      * [apply] extension function to call its [ComposeView.setContent] function to set the Jetpack
      * Compose UI content of the [View]. In the `content` lambda of the call we start by initializing
      * our [State] wrapped [ProfileScreenState] variable `val userData` using the [LiveData.observeAsState]

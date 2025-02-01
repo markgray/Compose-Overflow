@@ -475,9 +475,9 @@ private fun SelectorExpanded(
  * (centers its children horizontally).
  *
  * The `content` of the [Column] is two [Text] Composables, the first [Text] displays the `text`
- * whose resource ID is [R.string.not_available] ("Functionality currently not available") with its
+ * whose resource ID is `R.string.not_available` ("Functionality currently not available") with its
  * `style` [TextStyle] argument the [Typography.titleMedium] of our custom [MaterialTheme.typography].
- * The second [Text] displays the `text` whose resource ID is [R.string.not_available_subtitle]
+ * The second [Text] displays the `text` whose resource ID is `R.string.not_available_subtitle`
  * ("Grab a beverage and check back later!"), whose `modifier` argument is a [Modifier.paddingFrom]
  * whose `alignmentLine` is [FirstBaseline] (alignment line relative to which the padding is defined
  * is the AlignmentLine defined by the baseline of a first line), and whose `before` is 32.dp (the
@@ -525,28 +525,28 @@ fun FunctionalityNotAvailablePanel() {
  * children vertically. The `content` of the [Row] is:
  *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
  *  [currentInputSelector] is [InputSelector.EMOJI], whose `description` is the [String] with resource
- *  ID [R.string.emoji_selector_bt_desc] ("Show Emoji selector"), whose `icon` argument is the
+ *  ID `R.string.emoji_selector_bt_desc` ("Show Emoji selector"), whose `icon` argument is the
  *  [ImageVector] drawn by [Icons.Outlined.Mood] (a smiley face), and whose `onClick` argument is a
  *  lambda that calls our [onSelectorChange] lambda parameter with [InputSelector.EMOJI].
  *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
  *  [currentInputSelector] is [InputSelector.DM], whose `description` is the [String] with resource
- *  ID [R.string.dm_desc] ("Direct Message"),  whose `icon` argument is the [ImageVector] drawn by
+ *  ID `R.string.dm_desc` ("Direct Message"),  whose `icon` argument is the [ImageVector] drawn by
  *  [Icons.Outlined.AlternateEmail] (an "@" character), and whose `onClick` argument is a lambda that
  *  calls our [onSelectorChange] lambda parameter with [InputSelector.DM].
  *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
  *  [currentInputSelector] is [InputSelector.PICTURE], whose `description` is the [String] with
- *  resource ID [R.string.attach_photo_desc] ("Attach Photo"),  whose `icon` argument is the
+ *  resource ID `R.string.attach_photo_desc` ("Attach Photo"),  whose `icon` argument is the
  *  [ImageVector] drawn by [Icons.Outlined.InsertPhoto] (a stylized picture of a mountain range),
  *  and whose `onClick` argument is a lambda that calls our [onSelectorChange] lambda parameter with
  *  [InputSelector.PICTURE].
  *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
  *  [currentInputSelector] is [InputSelector.MAP], whose `description` is the [String] with resource
- *  ID [R.string.map_selector_desc] ("Location selector"),  whose `icon` argument is the [ImageVector]
+ *  ID `R.string.map_selector_desc` ("Location selector"),  whose `icon` argument is the [ImageVector]
  *  drawn by [Icons.Outlined.Place] (a location marker symbol), and whose `onClick` argument is a
  *  lambda that calls our [onSelectorChange] lambda parameter with [InputSelector.MAP].
  *  - an [InputSelectorButton] whose `selected` argument is `true` if our [InputSelector] parameter
  *  [currentInputSelector] is [InputSelector.PHONE], whose `description` is the [String] with resource
- *  ID [R.string.videochat_desc] ("Start videochat"),  whose `icon` argument is the [ImageVector]
+ *  ID `R.string.videochat_desc` ("Start videochat"),  whose `icon` argument is the [ImageVector]
  *  drawn by [Icons.Outlined.Duo] (a stylized movie camera), and whose `onClick` argument is a
  *  lambda that calls our [onSelectorChange] lambda parameter with [InputSelector.PHONE].
  *  - a [Spacer] whose whose `modifier` argument is a [RowScope.weight] whose `weight` argument of
@@ -568,7 +568,7 @@ fun FunctionalityNotAvailablePanel() {
  * whose `onClick` argument is our lambda parameter [onMessageSent], whose `colors` argument is our
  * [ButtonColors] variable `buttonColors`, whose `border` argument is our [BorderStroke] variable
  * `border`, and whose `contentPadding` argument is a [PaddingValues] that adds 0.dp to all sides.
- * The `content` of the [Button] is a [Text] whose `text` is the string with resource ID [R.string.send]
+ * The `content` of the [Button] is a [Text] whose `text` is the string with resource ID `R.string.send`
  * ("Send").
  *
  * @param onSelectorChange a lambda which the [InputSelectorButton]'s can call with the [InputSelector]
@@ -907,7 +907,7 @@ private fun UserInputText(
  * whose `modifier` argument is a [BoxScope.align] whose `alignment` is a [Alignment.CenterStart] to
  * align the [Text] to the start center of the [Box], with a [Modifier.padding] that adds 32.dp to
  * the `start` of the [Text], the `text` argument of the [Text] is the [String] with resource ID
- * [R.string.textfield_hint] ("Message #composers"), and the `style` [TextStyle] argument is a copy
+ * `R.string.textfield_hint` ("Message #composers"), and the `style` [TextStyle] argument is a copy
  * of the [Typography.bodyLarge] of our [MaterialTheme.typography] with the `color` set to our [Color]
  * variable `disableContentColor`.
  *
@@ -1008,7 +1008,7 @@ private fun BoxScope.UserInputTextField(
  *  its first baseline with its sibling, with a [Modifier.clipToBounds] at the end of the chain which
  *  clips its contents to its bounds. In the `content` of the [Box] we initialize our [Float] variable
  *  `val swipeThreshold` to 200.dp converted to pixels using the current [LocalDensity], then we
- *  compose a [Text] whose `text` is the [String] with resource ID [R.string.swipe_to_cancel_recording]
+ *  compose a [Text] whose `text` is the [String] with resource ID `R.string.swipe_to_cancel_recording`
  *  ("&#x25C0; Swipe to cancel"), whose `modifier` argument is a [BoxScope.align] whose `alignment`
  *  is [Alignment.Center], with a [Modifier.graphicsLayer] whose `block` lambda argument sets the
  *  `translationX` of the layer to one half of the [Float] value returned by our [swipeOffset] lambda
@@ -1091,7 +1091,7 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
  * [InputSelectorButton] for the [InputSelector.EMOJI] in the [UserInputSelector] Composable. We
  * start by initializing and remembering our [MutableState] wrapped [EmojiStickerSelector] variable
  * `var selected` to [EmojiStickerSelector.EMOJI], then we initialize our [String] variable
- * `val a11yLabel` to the [String] with resource ID [R.string.emoji_selector_desc] ("Emoji selector").
+ * `val a11yLabel` to the [String] with resource ID `R.string.emoji_selector_desc` ("Emoji selector").
  *
  * Our root Composable is a [Column] whose `modifier` argument is a [Modifier.focusRequester] whose
  * `focusRequester` argument is our [FocusRequester] parameter [focusRequester] (requests focus when
@@ -1103,10 +1103,10 @@ private fun RecordingIndicator(swipeOffset: () -> Float) {
  *  to each end of the [Row]. The `content` of the [Row] is two [ExtendedSelectorInnerButton]
  *  Composables, with both having a [RowScope.weight] with a `weight` of 1f as their `modifier`
  *  argument which makes them share the width of the [Row] equally. The first has as its `text`
- *  argument the [String] with resource ID [R.string.emojis_label] ("Emojis"), with its `onClick`
+ *  argument the [String] with resource ID `R.string.emojis_label` ("Emojis"), with its `onClick`
  *  argument a lambda which sets our [MutableState] wrapped [EmojiStickerSelector] varible `selected`
  *  to [EmojiStickerSelector.EMOJI] and its `selected` argument is `true`. The second has as its
- *  `text` argument the [String] with resource ID [R.string.stickers_label] ("Stickers"), with its
+ *  `text` argument the [String] with resource ID `R.string.stickers_label` ("Stickers"), with its
  *  `onClick` argument a lambda which sets our [MutableState] wrapped [EmojiStickerSelector] varible
  *  `selected` to [EmojiStickerSelector.STICKER] and its `selected` argument is `false`.
  *  - a [Row] whose `modifier` argument is a [Modifier.verticalScroll] whose `state` argument is a

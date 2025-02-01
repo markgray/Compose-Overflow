@@ -46,7 +46,7 @@ import com.example.jetnews.R
  * argument is our [onClick] lambda parameter and its `content` lambda argument is an [Icon] whose
  * `imageVector` argument causes it to display the [ImageVector] drawn by [Icons.Filled.ThumbUpOffAlt]
  * (a stylized hand with its thumb pointing up) and whose `contentDescription` arugment is the
- * [String] with resource ID [R.string.cd_add_to_favorites] ("Add to favorites").
+ * [String] with resource ID `R.string.cd_add_to_favorites` ("Add to favorites").
  *
  * @param onClick a lambda that our [IconButton] should call when it is clicked
  */
@@ -72,8 +72,8 @@ fun FavoriteButton(onClick: () -> Unit) {
  * argument of the [IconToggleButton] chains a [Modifier.semantics] to our [modifier] parament whose
  * [SemanticsPropertyReceiver.onClick] overrides the `label` of the [IconToggleButton] to supply
  * a custom click label that accessibility services can communicate to the user which is the
- * [String] with resource ID [R.string.unbookmark] ("unbookmark") if [isBookmarked] is `true` or
- * the [String] with resource ID [R.string.bookmark] ("bookmark") if [isBookmarked] is `false`.
+ * [String] with resource ID `R.string.unbookmark` ("unbookmark") if [isBookmarked] is `true` or
+ * the [String] with resource ID `R.string.bookmark` ("bookmark") if [isBookmarked] is `false`.
  *
  * @param isBookmarked if `true` the article has already been bookmarked
  * @param onClick a lambda that our [IconToggleButton] should call when it is toggled.
@@ -112,7 +112,7 @@ fun BookmarkButton(
  * feed by [HomeFeedWithArticleDetailsScreen]. It consists of an [IconButton] whose `onClick` argument
  * is our [onClick] lambda parameter and its content lambda argument is an [Icon] whose `imageVector`
  * argument causes it to display the [ImageVector] drawn by [Icons.Filled.Share] (a sideways "V")
- * and whose contentDescription arugment is the String with resource ID [R.string.cd_share] ("Share").
+ * and whose contentDescription arugment is the String with resource ID `R.string.cd_share` ("Share").
  *
  * @param onClick a lambda which our [IconButton] should call if it is clicked.
  */
@@ -132,9 +132,9 @@ fun ShareButton(onClick: () -> Unit) {
  * [PostTopBar] with them, which is the top bar for a Post when it is displayed next to the Home feed
  * by [HomeFeedWithArticleDetailsScreen]. It consists of an [IconButton] whose `onClick` argument is
  * our [onClick] lambda parameter and its `content` lambda argument is an [Icon] whose `imageVector`
- * argument causes it to display the [ImageVector] drawn by [R.drawable.ic_text_settings] ( (a bold
+ * argument causes it to display the [ImageVector] drawn by `R.drawable.ic_text_settings` ( (a bold
  * capital "A") and whose `contentDescription` arugment is the [String] with resource ID
- * [R.string.cd_text_settings] ("Text settings").
+ * `R.string.cd_text_settings` ("Text settings").
  *
  * @param onClick a lambda which our [IconButton] should call if it is clicked.
  */

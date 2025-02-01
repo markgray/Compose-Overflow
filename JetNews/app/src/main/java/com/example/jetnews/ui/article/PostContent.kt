@@ -229,7 +229,7 @@ private fun PostHeaderImage(post: Post) {
  *  0.1.sp, `fontWeight` = [FontWeight.Medium], and whose `modifier` argument is a [Modifier.padding]
  *  that adds 4.dp to the top of the [Text].
  *  * a [Text] whose `text` is the [String] that the format [String] whose resource ID is
- *  [R.string.article_post_min_read] ("%1$s • %2$d min read") creates when it substitutes the values
+ *  `R.string.article_post_min_read` ("%1$s • %2$d min read") creates when it substitutes the values
  *  of the [Metadata.date] of [metadata] and the [Metadata.readTimeMinutes] of [metadata] for the
  *  format arguments, and the [TextStyle] `style` argument is the [Typography.bodySmall] of our
  *  custom [MaterialTheme.typography] `fontSize` = 12.sp, `lineHeight` = 16.sp, `letterSpacing` = 0.4.sp,

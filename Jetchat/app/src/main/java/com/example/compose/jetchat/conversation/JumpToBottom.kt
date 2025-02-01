@@ -62,7 +62,7 @@ private enum class Visibility {
  * Then only is `bottomOffset` is greater than 0 do we compose an instance of [ExtendedFloatingActionButton]
  * into the UI. The `icon` argument of that [ExtendedFloatingActionButton] is an [Icon] drawing the
  * [ImageVector] defined in [Icons.Filled.ArrowDownward], the `text` argument is the [String] with
- * resource ID [R.string.jumpBottom] ("Jump to bottom"), its `onClick` argument is our [onClicked]
+ * resource ID `R.string.jumpBottom` ("Jump to bottom"), its `onClick` argument is our [onClicked]
  * parameter, its `containerColor` argument (the color used for the background of the FAB) is the
  * [ColorScheme.surface] of [MaterialTheme.colorScheme], its `contentColor` (preferred color for
  * content inside the FAB) is the [ColorScheme.primary] of [MaterialTheme.colorScheme]. The `modifier`

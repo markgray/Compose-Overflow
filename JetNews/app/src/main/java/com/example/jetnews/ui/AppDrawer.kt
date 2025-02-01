@@ -56,7 +56,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  - a [JetNewsLogo] whose `modifier` argument is a [Modifier.padding] that adds 28.sp to each side and
  *  24.dp to its top and bottom.
  *  - a [NavigationDrawerItem] whose `label` argument is a lambda which renders a [Text] whose `text`
- *  is the [String] with resource ID [R.string.home_title] ("Home"), whose `icon` argument is a
+ *  is the [String] with resource ID `R.string.home_title` ("Home"), whose `icon` argument is a
  *  lambda which renders an [Icon] whose `imageVector` argument causes it to display the [ImageVector]
  *  drawn by [Icons.Filled.Home] (a stylized house), whose `selected` argument is `true` if our [String]
  *  parameter [currentRoute] is equal to [JetnewsDestinations.HOME_ROUTE] ("home"), whose `onClick`
@@ -65,7 +65,7 @@ import com.example.jetnews.ui.theme.JetnewsTheme
  *  is the [PaddingValues] constant [NavigationDrawerItemDefaults.ItemPadding] (adds 12.dp to each
  *  side).
  *  - a [NavigationDrawerItem] whose `label` argument is a lambda which renders a [Text] whose `text`
- *  is the [String] with resource ID [R.string.interests_title] ("Interests"), whose `icon` argument
+ *  is the [String] with resource ID `R.string.interests_title` ("Interests"), whose `icon` argument
  *  is a lambda which renders an [Icon] whose `imageVector` argument causes it to display the
  *  [ImageVector] drawn by [Icons.AutoMirrored.Filled.ListAlt] (a stylized list), whose selected
  *  argument is true if our [String] parameter [currentRoute] is equal to [JetnewsDestinations.INTERESTS_ROUTE]
@@ -123,15 +123,15 @@ fun AppDrawer(
  * This is our app logo, which is used as the top line of the [ModalDrawerSheet] used by our
  * [AppDrawer] Composable. Our root Composable is a [Row] whose `modifier` argument is our [Modifier]
  * parameter [modifier]. The `content` of the [Row] consists of an [Icon] which displays the `vector`
- * drawn by the drawable with resource ID [R.drawable.ic_jetnews_logo] (a greater than character ">"
+ * drawn by the drawable with resource ID `R.drawable.ic_jetnews_logo` (a greater than character ">"
  * followed by an underline character "_" in a "box"). The `tint` argument of the [Icon] is the
  * [ColorScheme.primary] of our custom [MaterialTheme.colorScheme] (a red in light mode and a pink
  * in dark mode if [Build.VERSION.SDK_INT] is less than [Build.VERSION_CODES.S]). The [Icon] is
  * followed by a [Spacer] whose `modifier` argument is a [Modifier.width] which sets its `width` to
  * 8.dp and this is followed by another [Icon] whose `painter` argument causes it to display the
- * `vector` drawn by the drawable with resource ID [R.drawable.ic_jetnews_wordmark] (the word
+ * `vector` drawn by the drawable with resource ID `R.drawable.ic_jetnews_wordmark` (the word
  * "jetnews" drawn in a modernistic sans-serif font), the `contentDescription` argument of the
- * [Icon] is the [String] with resource ID [R.string.app_name] ("Jetnews"), and the `tint` argument
+ * [Icon] is the [String] with resource ID `R.string.app_name` ("Jetnews"), and the `tint` argument
  * is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme] (a black in light
  * mode and a light pink in dark mode if [Build.VERSION.SDK_INT] is less than [Build.VERSION_CODES.S]).
  *

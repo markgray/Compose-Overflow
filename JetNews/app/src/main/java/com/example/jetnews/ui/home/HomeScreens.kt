@@ -492,7 +492,7 @@ fun HomeFeedScreen(
  * with a [Modifier.padding] that adds the `paddingValues` that the [Scaffold] passed to our
  * variable `innerPadding`, and with [Modifier.fillMaxSize] added to that to have the [TextButton]
  * occupy its entire incoming size constraints. The `content` of the [TextButton] is a [Text] that
- * displays the `text` whose resource ID is [R.string.home_tap_to_load_content] ("Tap to load content"),
+ * displays the `text` whose resource ID is `R.string.home_tap_to_load_content` ("Tap to load content"),
  * and whose `textAlign` is [TextAlign.Center] to center the `text`. If on the other hand the [List]
  * of [ErrorMessage] in the [HomeUiState.errorMessages] of [uiState] is not empty we compose a [Box]
  * whose `modifier` argument chains to our [Modifier] variable `contentModifier` a [Modifier.padding]
@@ -505,7 +505,7 @@ fun HomeFeedScreen(
  * at index 0 in the [HomeUiState.errorMessages] of [uiState]. We initialize our [String] variable
  * `val errorMessageText` to the [String] whose resource ID is the [ErrorMessage.messageId] property
  * of `errorMessage`, and our [String] variable `val retryMessageText` to the [String] with resource
- * ID [R.string.retry] ("Retry"). We use [rememberUpdatedState] to initialize our lambda variable
+ * ID `R.string.retry` ("Retry"). We use [rememberUpdatedState] to initialize our lambda variable
  * `val onRefreshPostsState` using our lambda parameter [onRefreshPosts] as the `newValue` argument
  * of [rememberUpdatedState] so that it will be updated to the latest value of [onRefreshPosts] should
  * it change, and do the same for our lambda taking a [Long] variable `val onErrorDismissState` with
@@ -828,7 +828,7 @@ private fun FullScreenLoading() {
  * Top section of [PostList], used for the [Post] of the [PostsFeed.highlightedPost] property. We
  * start by composing a [Text] whose `modifier` argument is a [Modifier.padding] that adds 16.dp
  * to the [Text]'s `start`. 16.dp to its `top`, and 16.dp to its `end`, whose `text` argument is the
- * [String] with resource ID [R.string.home_top_section_title] ("Top stories for you"), and whose
+ * [String] with resource ID `R.string.home_top_section_title` ("Top stories for you"), and whose
  * [TextStyle] argument `style` is the [Typography.titleMedium] of our custom [MaterialTheme.typography]
  * (`fontSize` = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.15.sp, `fontWeight` = [FontWeight.Medium],
  * lineBreak = [LineBreak.Heading]). The [Text] is followed by a [PostCardTop] whose `post` argument
@@ -901,7 +901,7 @@ private fun PostListSimpleSection(
  * property of the [PostsFeed] that [PostList] is called with. Our root Composable is a [Column] whose
  * [ColumnScope] `content` lambda argument we have:
  *  - a [Text] whose `modifier` argument is a [Modifier.padding] that adds 16.dp to all of its sides,
- *  whose `text` is the [String] with resouce ID [R.string.home_popular_section_title] ("Popular on
+ *  whose `text` is the [String] with resouce ID `R.string.home_popular_section_title` ("Popular on
  *  Jetnews"), and whose `style` [TextStyle] argument is the [Typography.titleLarge] of our custom
  *  [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight` = 28.sp, `letterSpacing` = 0.sp,
  *  and `lineBreak` = [LineBreak.Heading]).
@@ -1000,7 +1000,7 @@ private fun PostListDivider() {
  *  updated text comes as a parameter of the callback) is our lambda parameter [onSearchInputChanged].
  *  - `placeholder` (the optional placeholder to be displayed when the text field is in focus and the
  *  input text is empty. The default text style for internal Text is [Typography.bodyLarge]) is a
- *  lambda that composes a [Text] whose `text` is the [String] with resource ID [R.string.home_search]
+ *  lambda that composes a [Text] whose `text` is the [String] with resource ID `R.string.home_search`
  *  ("Search articles").
  *  - `leadingIcon` (the optional leading icon to be displayed at the beginning of the text field
  *  container) is an [Icon] that displays the [ImageVector] drawn by [Icons.Filled.Search] (a stylized
@@ -1146,10 +1146,10 @@ fun PostTopBar(
  * TopAppBar for the Home screen, it is used as the `topBar` argument of the [Scaffold] used by
  * [HomeScreenWithList]. We start by initializing our [Context] variable `val context` to the
  * current [LocalContext] and our [String] variable `val title` to the [String] with resource ID
- * [R.string.app_name] ("Jetnews"). When our root Composable is a [CenterAlignedTopAppBar] whose
+ * `R.string.app_name` ("Jetnews"). When our root Composable is a [CenterAlignedTopAppBar] whose
  * arguments are:
  *  - `title` is a lambda that composes an [Image] that displays the drawable with resource ID
- *  [R.drawable.ic_jetnews_wordmark], with the `contentDescription` our [String] variable `title`,
+ *  `R.drawable.ic_jetnews_wordmark`, with the `contentDescription` our [String] variable `title`,
  *  the `contentScale` [ContentScale.Inside] (Scales the source to maintain the aspect ratio to be
  *  inside the destination bounds), with the `colorFilter` a [ColorFilter.tint] whose `color`
  *  argument is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme], and the
@@ -1157,9 +1157,9 @@ fun PostTopBar(
  *  constraint.
  *  - `navigationIcon` is a lambda that composes an [IconButton] whose `onClick` argument is our
  *  lambda parameter [openDrawer], and whose `content` is an [Icon] that draws the drawable with
- *  resourse ID [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an underline
+ *  resourse ID `R.drawable.ic_jetnews_logo` (a "greater than" character followed by an underline
  *  character), the `contentDescription` of the [Icon] is the [String] with resource ID
- *  [R.string.cd_open_navigation_drawer] ("Open navigation drawer"), and the `tint` of the [Icon]
+ *  `R.string.cd_open_navigation_drawer` ("Open navigation drawer"), and the `tint` of the [Icon]
  *  is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme].
  *  - `actions` is a [RowScope] lambda holding an [IconButton] whose `onClick` argument is a lambda
  *  that calls [Toast.makeText] to toast the message "Search is not yet implemented in this

@@ -115,8 +115,8 @@ import kotlinx.coroutines.launch
  * Entry point for a conversation screen, it is used in a call to [ComposeView.setContent] in the
  * `onCreateView` override of [ConversationFragment] to create the [View] that `onCreateView` returns
  * to its caller. We start by initializing our [String] variable `val authorMe` to the string with
- * resource ID [R.string.author_me] ("me") and our [String] variable `val timeNow` to the string with
- * resource ID [R.string.now] ("8:30 PM"). We initialize and remember our [LazyListState] variable
+ * resource ID `R.string.author_me` ("me") and our [String] variable `val timeNow` to the string with
+ * resource ID `R.string.now` ("8:30 PM"). We initialize and remember our [LazyListState] variable
  * `val scrollState`, initialize and remember our [TopAppBarState] variable `val topBarState`,
  * initialize and remember our [TopAppBarScrollBehavior] variable `val scrollBehavio` to a pinned
  * [TopAppBarScrollBehavior] that tracks nested-scroll callbacks and updates its
@@ -334,7 +334,7 @@ const val ConversationTestTag: String = "ConversationTestTag"
  * with. We start by initializing and remembering our [CoroutineScope] variable `val scope` with a
  * new instance. Then our root Composable is a [Box] whose `modifier` argument is our [Modifier]
  * parameter [modifier]. In its `content` lambda it initializes its [String] variable `val authorMe`
- * to the [String] with resource ID [R.string.author_me] ("me"), its root Composable is a [LazyColumn]
+ * to the [String] with resource ID `R.string.author_me` ("me"), its root Composable is a [LazyColumn]
  * whose `reverseLayout` argument is `true` (reverse the direction of scrolling and layout. When true,
  * items are laid out in the reverse order and [LazyListState.firstVisibleItemIndex] == 0 means that
  * column is scrolled to the bottom). The `state` argument of the [LazyColumn] is our [LazyListState]
@@ -511,7 +511,7 @@ fun Messages(
  * parameter [msg] when the [Image] displaying the [Message.authorImage] in our [Row] is clicked.
  * @param msg the [Message] we are supposed to display.
  * @param isUserMe if `true` then the [Message.author] field of our [Message] parameter [msg] is
- * equal to the [String] with resource ID [R.string.author_me] ("me").
+ * equal to the [String] with resource ID `R.string.author_me` ("me").
  * @param isFirstMessageByAuthor if `true` the previous author is equal to the [Message.author] field
  * of our [Message] parameter [msg].
  * @param isLastMessageByAuthor if `true` the next author is equal to the [Message.author] field of
@@ -588,7 +588,7 @@ fun Message(
  *
  * @param msg the [Message] we are to display.
  * @param isUserMe if `true` the [Message.author] is equal to the [String] with resource ID
- * [R.string.author_me] ("me"), and this effects the [Color] used to display the [Message].
+ * `R.string.author_me` ("me"), and this effects the [Color] used to display the [Message].
  * @param isFirstMessageByAuthor if `true` the author of the [Message] before ours in the [List] of
  * [Message] is different from our [Message.author], and we will want to display a bigger [Spacer]
  * between these two [AuthorAndTextMessage]. NOTE: the `reverseLayout` argument of the [LazyColumn]
@@ -601,7 +601,7 @@ fun Message(
  * after us in the [List].
  * @param authorClicked a lambda that should be called with the author name when a reference to an
  * author is clicked. The `onCreateView` override of [ConversationFragment] passes down through the
- * hierarchy a lambda which navigates to the destination [R.id.nav_profile] with the [String] passed
+ * hierarchy a lambda which navigates to the destination `R.id.nav_profile` with the [String] passed
  * the lambda as its `args` which navigates to the [ProfileFragment], where the the author's
  * [ProfileScreenState] is displayed by a [ProfileScreen].
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
@@ -769,11 +769,11 @@ private fun RowScope.DayHeaderLine() {
  *  uniformly (maintaining the source's aspect ratio) so that both dimensions (width and height) of
  *  the source will be equal to or less than the corresponding dimension of the destination, whose
  *  `modifier` is a [Modifier.size] setting its size to 160.dp, and whose `contentDescription` is
- *  the [String] with resource ID [R.string.attached_image] ("Attached image").
+ *  the [String] with resource ID `R.string.attached_image` ("Attached image").
  *
  * @param message the [Message] we are to display.
  * @param isUserMe if `true` the [Message.author] of [message] is equal to the [String] with resource
- * ID [R.string.author_me] ("me").
+ * ID `R.string.author_me` ("me").
  * @param authorClicked a lambda which can be called to navigate to the `author` profile of the
  * [String] passed it.
  */
@@ -848,7 +848,7 @@ fun ChatItemBubble(
  * @param message the [Message] that we are to have parsed into an [AnnotatedString] which we can
  * feed to our [ClickableText] Composable.
  * @param isUserMe if `true` the [Message.author] of [message] is equal to the [String] with resource
- * ID [R.string.author_me] ("me"), and our text should be colored appropriately.
+ * ID `R.string.author_me` ("me"), and our text should be colored appropriately.
  * @param authorClicked lambda which can be called to navigate to the author profile of the [String]
  * passed it.
  */

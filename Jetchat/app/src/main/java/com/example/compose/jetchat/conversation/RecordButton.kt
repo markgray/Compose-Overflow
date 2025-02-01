@@ -114,12 +114,12 @@ import kotlinx.coroutines.launch
  * `val tooltipState` to a new instance. The `positionProvider` argument of the [TooltipBox] is
  * the remembered [PopupPositionProvider] returned by the [TooltipDefaults.rememberRichTooltipPositionProvider]
  * method, the `tooltip` argument is a lambda that composes a [RichTooltip] whose `text` lambda argument
- * is a [Text] whose `text` is the [String] with resource ID [R.string.touch_and_hold_to_record]
+ * is a [Text] whose `text` is the [String] with resource ID `R.string.touch_and_hold_to_record`
  * ("Touch and hold to record"), the `enableUserInput` argument is `false` to disable the handling of
  * long press and mouse hover through the `state` provided, and its `state` argument is our [TooltipState]
  * variable `tooltipState`. The `content` of the [TooltipBox] is an [Icon] whose `imageVector` is the
  * [ImageVector] drawn by [Icons.Filled.Mic], whose `contentDescription` argument is the [String]
- * with resource ID [R.string.record_message] ("Record voice message"), whose `tint` is the current
+ * with resource ID `R.string.record_message` ("Record voice message"), whose `tint` is the current
  * value of our animated [State] of [Color] variable `iconColor`, and whose `modifier` argument uses
  * the [Modifier] parameter of [RecordButton] then chains a [Modifier.sizeIn] to it that sets its
  * `minWidth` to 56.dp and its `minHeight` to 6.dp, followed by a chain to a [Modifier.padding] that

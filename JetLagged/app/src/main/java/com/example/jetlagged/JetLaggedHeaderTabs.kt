@@ -51,27 +51,27 @@ enum class SleepTab(
      */
     val title: Int) {
     /**
-     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_day_heading] ("Day")
+     * [SleepTab] whose [title] is the resource ID `R.string.sleep_tab_day_heading` ("Day")
      */
     Day(R.string.sleep_tab_day_heading),
 
     /**
-     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_week_heading] ("Week")
+     * [SleepTab] whose [title] is the resource ID `R.string.sleep_tab_week_heading` ("Week")
      */
     Week(R.string.sleep_tab_week_heading),
 
     /**
-     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_month_heading] ("Month")
+     * [SleepTab] whose [title] is the resource ID `R.string.sleep_tab_month_heading` ("Month")
      */
     Month(R.string.sleep_tab_month_heading),
 
     /**
-     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_six_months_heading] ("6M")
+     * [SleepTab] whose [title] is the resource ID `R.string.sleep_tab_six_months_heading` ("6M")
      */
     SixMonths(R.string.sleep_tab_six_months_heading),
 
     /**
-     * [SleepTab] whose [title] is the resource ID [R.string.sleep_tab_one_year_heading] ("1Y")
+     * [SleepTab] whose [title] is the resource ID `R.string.sleep_tab_one_year_heading` ("1Y")
      */
     OneYear(R.string.sleep_tab_one_year_heading)
 }

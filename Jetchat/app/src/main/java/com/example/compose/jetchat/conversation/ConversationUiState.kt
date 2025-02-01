@@ -101,7 +101,7 @@ data class Message(
     val image: Int? = null,
     /**
      * The resource ID of a drawable to use as the avatar of the author of the [Message]. Notice
-     * that there are only two, [R.drawable.ali] for the author "me" and [R.drawable.someone_else]
+     * that there are only two, `R.drawable.ali` for the author "me" and `R.drawable.someone_else`
      * for everybody else.
      */
     val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.someone_else

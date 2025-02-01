@@ -111,7 +111,7 @@ enum class Sections(@StringRes val titleResId: Int) {
      * [InterestsUiState.topics], and the [Set] of [TopicSelection] collected as [State] from
      * the [StateFlow] of [Set] of [TopicSelection] of the [InterestsViewModel.selectedTopics]
      * property in a [TabWithSections]. The `titleResId` property is the resource ID
-     * [R.string.interests_section_topics] ("Topics")
+     * `R.string.interests_section_topics` ("Topics")
      */
     Topics(titleResId = R.string.interests_section_topics),
 
@@ -120,7 +120,7 @@ enum class Sections(@StringRes val titleResId: Int) {
      * [InterestsUiState.people], and the [Set] of [String] collected as [State] from
      * the [StateFlow] of [Set] of [String] of the [InterestsViewModel.selectedPeople]
      * property in a [TabWithTopics]. The `titleResId` property is the resource ID
-     * [R.string.interests_section_people] ("People")
+     * `R.string.interests_section_people` ("People")
      */
     People(titleResId = R.string.interests_section_people),
 
@@ -129,7 +129,7 @@ enum class Sections(@StringRes val titleResId: Int) {
      * [InterestsUiState.publications], and the [Set] of [String] collected as [State] from
      * the [StateFlow] of [Set] of [String] of the [InterestsViewModel.selectedPublications]
      * property in a [TabWithTopics]. The `titleResId` property is the resource ID
-     * [R.string.interests_section_publications] ("Publications")
+     * `R.string.interests_section_publications` ("Publications")
      */
     Publications(titleResId = R.string.interests_section_publications)
 }
@@ -152,7 +152,7 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  *  [SnackbarHostState] parameter [snackbarHostState].
  *  - `topBar` is a lambda that composes a [CenterAlignedTopAppBar] whose `title` argument is a
  *  lambda that composes a [Text] whose `text` argument is the [String] with resource ID
- *  [R.string.cd_interests] ("Interests"), using as its [TextStyle] `style` argument the
+ *  `R.string.cd_interests` ("Interests"), using as its [TextStyle] `style` argument the
  *  [Typography.titleLarge] of our custom [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight`
  *  = 28.sp, `letterSpacing` = 0.sp, and `lineBreak` = [LineBreak.Heading]), and as its `color`
  *  argument the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. The `navigationIcon`
@@ -160,16 +160,16 @@ class TabContent(val section: Sections, val content: @Composable () -> Unit)
  *  is `false` (a phone instead of a table) in which case it is an [IconButton] whose `onClick` argument
  *  is our lambda parameter [openDrawer], and whose `content` lambda argument composes an [Icon] whose
  *  [Painter] argument `painter` causes it to render the vector drawable whose resource ID is
- *  [R.drawable.ic_jetnews_logo] (a "greater than" character followed by an "underline" character).
+ *  `R.drawable.ic_jetnews_logo` (a "greater than" character followed by an "underline" character).
  *  The `contentDescription` argument of the [Icon] is the [String] with resource ID
- *  [R.string.cd_open_navigation_drawer] ("Open navigation drawer"), and its [Color] `tint` argument
+ *  `R.string.cd_open_navigation_drawer` ("Open navigation drawer"), and its [Color] `tint` argument
  *  is the [ColorScheme.primary] of our custom [MaterialTheme.colorScheme]. The `actions` argument of
  *  the [CenterAlignedTopAppBar] is a [RowScope] lambda that composes an [IconButton] whose `onClick`
  *  argument is a lambda which pops ups a [Toast] with the message "Search is not yet implemented in
  *  this configuration". The `content` lambda argument of the [IconButton] composes an [Icon] whose
  *  `imageVector` argument is the [ImageVector] drawn by [Icons.Filled.Search] (a stylized magnifying
  *  glass), and its `contentDescription` argument is the [String] whose resource ID is
- *  [R.string.cd_search] ("Search").
+ *  `R.string.cd_search` ("Search").
  *
  * The `content` lambda argument of the [Scaffold] accepts the [PaddingValues] passed the lambda as
  * variable `val innerPadding` and uses it to initialize its [Modifier] variable `val screenModifier`
@@ -513,7 +513,7 @@ private fun TabWithSections(
  * `verticalAlignment` argument of the [Row] is [Alignment.CenterVertically] to center its children
  * vertically. In the [RowScope] `content` lambda argument of the [Row]:
  *  - we start by initializing our [Painter] variable `val image` to a [Painter] created to draw the
- *  drawable with resource ID [R.drawable.placeholder_1_1].
+ *  drawable with resource ID `R.drawable.placeholder_1_1`.
  *  - Then we compose an [Image] whose `painter` argument is our [Painter] variable `image`, and whose
  *  `modifier` argument is a [Modifier.size] that sets its size to 56.dp, with a [Modifier.clip] that
  *  clips the [Image] `shape` to a  [RoundedCornerShape] with `size` 4.dp

@@ -49,7 +49,7 @@ import com.example.compose.jetchat.profile.ProfileFragment
  * [ConversationContent] Composable, and in [ProfileFragment] in a [ComposeView] as its "tool bar".
  * We pass [CenterAlignedTopAppBar] our parameters unchanged, but use a [JetchatIcon] for its
  * `navigationIcon` argument, with its `contentDescription` the [String] with resource ID
- * [R.string.navigation_drawer_open] ("Open navigation drawer"), and its `modifier` argument a
+ * `R.string.navigation_drawer_open` ("Open navigation drawer"), and its `modifier` argument a
  * [Modifier.size] that sets its size to 64.dp, with a [Modifier.clickable] whose `onClick` argument
  * is our lambda parameter [onNavIconPressed] followed by a [Modifier.padding] that adds 16.dp to
  * all sides of the [JetchatIcon].

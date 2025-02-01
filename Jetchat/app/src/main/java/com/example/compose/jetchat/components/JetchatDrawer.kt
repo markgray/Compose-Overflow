@@ -80,7 +80,7 @@ import com.example.compose.jetchat.theme.KarlaFontFamily
  * which sets the height to that of the insets at the top of the screen with its `insets` argument
  * [WindowInsets.Companion.statusBars] (this pushes the drawer content below the status bar). This
  * is followed by a [DrawerHeader] which displays in a [Row] the  [JetchatIcon] and an [Image] that
- * draws the `jetchat` logo in resource ID [R.drawable.jetchat_logo]. After this is a [DividerItem]
+ * draws the `jetchat` logo in resource ID `R.drawable.jetchat_logo`. After this is a [DividerItem]
  * Composable which draws a [HorizontalDivider] whose `color` is a copy of the [ColorScheme.onSurface] with
  * its alpha set to 0.12f. This is followed by a [DrawerItemHeader] which displays the [Text] "Chats",
  * and this is followed by a [ChatItem] displaying the [Text] "composers" and a [ChatItem] displaying
@@ -99,13 +99,13 @@ import com.example.compose.jetchat.theme.KarlaFontFamily
  * @param onProfileClicked lambda to be called with the [ProfileScreenState.userId] of the profile
  * depicted when a [ProfileItem] is clicked. In the `onCreate` override of [NavActivity] this is a
  * lambda which creates a [Bundle] of the [String]'s "userId" to the [String] the lambda is called
- * with then calls the [NavController.navigate] method with the resource ID [R.id.nav_profile]
+ * with then calls the [NavController.navigate] method with the resource ID `R.id.nav_profile`
  * (the [ProfileFragment] destination in the navigation xml file) and the [Bundle] created (this
  * displays the information about [ProfileScreenState] of the [ProfileItem] clicked either [meProfile]
  * or [colleagueProfile]).
  * @param onChatClicked lambda to be called with the name of the chat when a [ChatItem] is clicked.
  * In the `onCreate` override of [NavActivity] this is a lambda which pop's the BackStack back to
- * [R.id.nav_home] (the "#composers" main screen) and closes the drawer (ie. does nothing).
+ * `R.id.nav_home` (the "#composers" main screen) and closes the drawer (ie. does nothing).
  */
 @Composable
 fun JetchatDrawerContent(
@@ -138,7 +138,7 @@ fun JetchatDrawerContent(
  * is a [CenterVertically] that centers its children vertically. It `content` consists of our
  * [JetchatIcon] Composable with its `modifier` argument a [Modifier.size] that sets its size to
  * 24.dp, and this is followed by an [Image] displaying the drawable with resource ID
- * [R.drawable.jetchat_logo] (which is a `vector` drawing of the word "jetchat" in a highly stylized
+ * `R.drawable.jetchat_logo` (which is a `vector` drawing of the word "jetchat" in a highly stylized
  * font), its `modifier` argument is a [Modifier.padding] that adds 16.dp to the `start` of the
  * [Image].
  */
@@ -205,7 +205,7 @@ private fun DrawerItemHeader(text: String) {
  * to the [ColorScheme.primary] color of our [MaterialTheme.colorScheme] if [Boolean] parameter
  * [selected] is `true` or to the [ColorScheme.onSurfaceVariant] color of our [MaterialTheme.colorScheme]
  * if it is `false`. The first Composable child of the [Row] is an [Icon] which renders the drawable
- * with resource ID [R.drawable.ic_jetchat], with its `tint` argument our [Color] variable `iconTint`,
+ * with resource ID `R.drawable.ic_jetchat`, with its `tint` argument our [Color] variable `iconTint`,
  * and with its `modifier` argument a [Modifier.padding] that adds: `start` = 16.dp, `top` = 16.dp,
  * and `bottom` = 16.dp padding to the [Icon]. The second child of the [Row]is a [Text] which displays
  * our [String] parameter [text], using the `style` [Typography.bodyMedium] as its [TextStyle], and

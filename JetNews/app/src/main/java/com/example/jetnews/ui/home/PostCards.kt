@@ -77,7 +77,7 @@ import com.example.jetnews.ui.home.PostCardHistory as PostCardHistory1
  * [Metadata.readTimeMinutes] of the [Post.metadata] property. Our root Composable is a [Row]
  * whose `modifier` argument is our [Modifier] parameter [modifier]. In the [RowScope] `content`
  * lambda argument of the [Row] we have a [Text] whose `text` is a [String] that is formatted by
- * the format string whose resource `id` is [R.string.home_post_min_read] "%1$s - %2$d min read"
+ * the format string whose resource `id` is `R.string.home_post_min_read` "%1$s - %2$d min read"
  * with the `formatArgs` for the format string the [PostAuthor.name] of the [Metadata.author] of
  * the [Post.metadata] property of our [Post] parameter [post], and the [Metadata.readTimeMinutes]
  * of the [Post.metadata] property. The [TextStyle] `style` argument of the [Text] is the
@@ -163,8 +163,8 @@ fun PostTitle(post: Post) {
  * Used by the `PostListSimpleSection` to display a [PostTitle] and [AuthorAndReadTime] for one of
  * the [Post] in the [List] of [Post] found in the [PostsFeed.recommendedPosts] of the current
  * [PostsFeed]. We start by initializing our [String] variable `val bookmarkAction` to the [String]
- * with resource ID [R.string.unbookmark] ("unbookmark") if our [Boolean] parameter [isFavorite] is
- * `true` or the the [String] with resource ID [R.string.bookmark] ("bookmark") if it is `false`.
+ * with resource ID `R.string.unbookmark` ("unbookmark") if our [Boolean] parameter [isFavorite] is
+ * `true` or the the [String] with resource ID `R.string.bookmark` ("bookmark") if it is `false`.
  * Then our root Composable is a [Row] whose `modifier` argument is a [Modifier.clickable] whose
  * `onClick` argument is a lambda that calls our lambda parameter [navigateToArticle] with the
  * [Post.id] of our [Post] parameter [post] to navigate to the article screen to have it display the
@@ -255,7 +255,7 @@ fun  PostCardSimple(
  *  Chained to that [Modifier] is a [Modifier.padding] that adds 12.dp padding to its top and
  *  bottom.
  *  - the [ColumnScope] `content` lambda of the [Column] contains a [Text] whose `text` argument is
- *  the [String] with resource ID [R.string.home_post_based_on_history] ("BASED ON YOUR HISTORY"),
+ *  the [String] with resource ID `R.string.home_post_based_on_history` ("BASED ON YOUR HISTORY"),
  *  and whose [TextStyle] `style` argument is the [Typography.labelMedium] of our custom
  *  [MaterialTheme.typography]. Below that in the [Column] is a [PostTitle] whose `post` argument
  *  is our [Post] parameter [post], and that is followed by an [AuthorAndReadTime] whose `post`
@@ -266,7 +266,7 @@ fun  PostCardSimple(
  *  to be displayed that advises "This feature is not yet implemented"). The `content` lambda of
  *  the [AlertDialog] is an [Icon] whose `imageVector` argument causes it to display the [ImageVector]
  *  drawn by [Icons.Filled.MoreVert] (three verical dots), and whose `contentDescription` argument is
- *  the [String] with resource ID [R.string.cd_more_actions] ("More actions").
+ *  the [String] with resource ID `R.string.cd_more_actions` ("More actions").
  *
  * When done composing our content we check if our [MutableState] wrapped [Boolean] variable `openDialog`
  * is now `true` (the user clicked the [IconButton] in our [Row]) and if it is we compose an [AlertDialog]
@@ -276,15 +276,15 @@ fun  PostCardSimple(
  *  on the next recomposition) This is called when the user tries to dismiss the Dialog by clicking
  *  outside or pressing the back button.
  *  - `title` is a lambda that composes a [Text] whose `text` is the [String] with resourse ID
- *  [R.string.fewer_stories] ("Show fewer stories like this?"), and whose [TextStyle] `style` argument
+ *  `R.string.fewer_stories` ("Show fewer stories like this?"), and whose [TextStyle] `style` argument
  *  is the [Typography.titleLarge] of our custom [MaterialTheme.typography] (`fontSize` = 22.sp,
  *  `lineHeight` = 28.sp, `letterSpacing` = 0.sp, `lineBreak` = [LineBreak.Heading])
  *  - `text` is a lambda that composes a [Text] whose `text` argument is the [String] with resource
- *  ID [R.string.fewer_stories_content] ("This feature is not yet implemented"), whose [TextStyle]
+ *  ID `R.string.fewer_stories_content` ("This feature is not yet implemented"), whose [TextStyle]
  *  `style` argument is the [Typography.bodyLarge] of our custom [MaterialTheme.typography] (`fontSize`
  *  = 16.sp, `lineHeight` = 24.sp, `letterSpacing` = 0.5.sp, and `lineBreak` = [LineBreak.Paragraph]).
  *  - `confirmButton` is a lambda that composes a [Text] whose `text` is the [String] with resource
- *  ID [R.string.agree] ("Agree"), whose [TextStyle] `style` argument is the [Typography.titleLarge]
+ *  ID `R.string.agree` ("Agree"), whose [TextStyle] `style` argument is the [Typography.titleLarge]
  *  of our custom [MaterialTheme.typography] (`fontSize` = 22.sp, `lineHeight` = 28.sp, `letterSpacing`
  *  = 0.sp, `lineBreak` = [LineBreak.Heading], whose [Color] `color` argument is the [ColorScheme.primary]
  *  of our custom [MaterialTheme.colorScheme], and whose `modifier` argument is a [Modifier.padding]

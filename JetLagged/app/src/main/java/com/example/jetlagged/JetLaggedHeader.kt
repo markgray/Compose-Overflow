@@ -50,7 +50,7 @@ import com.example.jetlagged.ui.theme.TitleBarStyle
 /**
  * This sits at the top of the [JetLaggedScreen] Composable and holds an [IconButton] which when
  * clicked calls its [onDrawerClicked] lambda parameter, and a [Text] that displays the [String]
- * with resource ID [R.string.jetlagged_app_heading] ("JetLagged"). Our root composable is a [Box]
+ * with resource ID `R.string.jetlagged_app_heading` ("JetLagged"). Our root composable is a [Box]
  * whose `modifier` argument chains a [Modifier.height] to our [Modifier] parameter [modifier] that
  * sets its height to 150.dp. The `content` of the [Box] is a [Row] whose `modifier` argument is a
  * [Modifier.windowInsetsPadding] which adds padding so that its content doesn't enter the `insets`
@@ -58,9 +58,9 @@ import com.example.jetlagged.ui.theme.TitleBarStyle
  * the device). The `content` of the [Row] is an [IconButton] whose `onClick` argument is our lambda
  * parameter [onDrawerClicked], and whose `content` is an [Icon] whose `imageVector` argument is the
  * [ImageVector] drawn by [Icons.Filled.Menu] (three horizontal bars), and whose `contentDescription`
- * argument is the [String] with resource ID [R.string.not_implemented] ("Not implemented yet"). This
+ * argument is the [String] with resource ID `R.string.not_implemented` ("Not implemented yet"). This
  * is followed by a [Text] whose `text` argument is the [String] with resource ID
- * [R.string.jetlagged_app_heading] ("JetLagged"), whose `modifier` argument is a [Modifier.fillMaxWidth]
+ * `R.string.jetlagged_app_heading` ("JetLagged"), whose `modifier` argument is a [Modifier.fillMaxWidth]
  * that causes it to occupy its entire incoming width contraint, with a [Modifier.padding] that adds
  * 8.dp padding to its `top`. The [TextStyle] for its `style` argument is our [TitleBarStyle] (the
  * downloadable [GoogleFont] "Lato" with a `fontSize` of 22.sp and a [FontWeight] of 700) and its
@@ -117,16 +117,16 @@ fun JetLaggedHeader(
  * [Arrangement.SpaceBetween] which causes the [Row] to place its children such that they are spaced
  * evenly across the main axis, without free space before the first child or after the last child.
  * The `content` of the [Row] is a [Column] whose `content` is a [Text] whose `text` is the [String]
- * with resource ID [R.string.average_time_in_bed_heading] ("AVG. TIME IN BED") with a [TextStyle]
+ * with resource ID `R.string.average_time_in_bed_heading` ("AVG. TIME IN BED") with a [TextStyle]
  * `style` argument of [SmallHeadingStyle] (the downloadable [GoogleFont] "Lato" with a `fontSize`
  * of 16.sp and a [FontWeight] of 600) and below this is another [Text] whose `text` is the [String]
- * with resource ID [R.string.placeholder_text_ave_time] ("8h2min") with a [TextStyle] `style`
+ * with resource ID `R.string.placeholder_text_ave_time` ("8h2min") with a [TextStyle] `style`
  * argument of [HeadingStyle] (the downloadable [GoogleFont] "Lato" with a `fontSize`of 24.sp and a
  * [FontWeight] of 600). Following this [Column] in the [Row] is a [Spacer] whose `modifier` argument
  * is a [Modifier.width] that sets its width to 16.dp. The [Spacer] is followed by another [Column]
- * whose `content` is a [Text] whose `text` is the [String] with resource ID [R.string.average_sleep_time_heading]
+ * whose `content` is a [Text] whose `text` is the [String] with resource ID `R.string.average_sleep_time_heading`
  * ("AVG. SLEEP TIME") with a [TextStyle] `style` argument of [SmallHeadingStyle] and below this is
- * another [Text] whose `text` is the [String] with resource ID [R.string.placeholder_text_ave_time_2]
+ * another [Text] whose `text` is the [String] with resource ID `R.string.placeholder_text_ave_time_2`
  * ("7h15min") with a [TextStyle] `style` argument of [HeadingStyle]. Below the [Row] is a [Spacer]
  * whose `modifier` argument is a [Modifier.height] that sets the height of the [Spacer] to 32.dp.
  *

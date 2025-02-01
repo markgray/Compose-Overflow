@@ -36,6 +36,6 @@ import java.util.UUID
  * generate a [UUID] and uses the [UUID.getMostSignificantBits] to get the most significant 64 bits
  * when it creates a new [ErrorMessage] and this is the only place a new [ErrorMessage] is created.
  * @param messageId the resource ID of a [String] explaining this [ErrorMessage]. Always
- * [R.string.load_error] ("Can't update latest news").
+ * `R.string.load_error` ("Can't update latest news").
  */
 data class ErrorMessage(val id: Long, @StringRes val messageId: Int)
