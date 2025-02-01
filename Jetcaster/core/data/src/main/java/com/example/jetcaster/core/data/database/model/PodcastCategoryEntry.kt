@@ -24,7 +24,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * This is the data class that defines our `podcast_category_entries` table in the database.
+ * This is the data class that defines the `podcast_category_entries` table in the database.
  *  1. `@Entity(...)`: This is a Room annotation that tells Room that this class represents a
  *  table in our database.
  *  2. `tableName = "podcast_category_entries"`: This specifies the name of the table that Room will
