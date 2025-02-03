@@ -75,6 +75,9 @@ class PodcastWithExtraInfo {
      * only if their [podcast], [lastEpisodeDate], and [isFollowed] properties are all equal.
      * The `other === this` check is an optimization to quickly return `true` if the two references
      * point to the exact same object in memory.
+     *
+     * @param other the other object to compare with this [PodcastWithExtraInfo]
+     * @return `true` if [other] is equal to this [PodcastWithExtraInfo]
      */
     override fun equals(other: Any?): Boolean = when {
         other === this -> true
@@ -91,6 +94,10 @@ class PodcastWithExtraInfo {
      * whenever you override equals. The contract between equals and hashCode is that if two objects
      * are equal according to equals, they must have the same hash code. The Objects.hash() function
      * is a convenient way to generate a hash code based on multiple properties.
+     *
+     * @return a hash code for our three fields. The hash code is generated as if all the input
+     * values were placed into an array, and that array were hashed by calling
+     * `Arrays.hashCode(Object[])`.
      */
     override fun hashCode(): Int = Objects.hash(podcast, lastEpisodeDate, isFollowed)
 }
