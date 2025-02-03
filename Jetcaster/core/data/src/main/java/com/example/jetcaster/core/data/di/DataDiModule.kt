@@ -49,10 +49,24 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.LoggingEventListener
 
+/**
+ * This Kotlin object is a Dagger/Hilt module. Its primary role is to provide dependencies for our
+ * application, specifically related to data access and management. The meaning of the annotations:
+ *  1. `@Module`: Annotates a class that contributes to the object graph. It defines a configuration
+ *  point for your object graph, where you declare which objects you want to be available for
+ *  injection, their dependencies and their scopes.
+ *  2. `@InstallIn(SingletonComponent::class)`: An annotation that declares which component(s) the
+ *  annotated class should be included in when Hilt generates the components. This may only be used
+ *  with classes annotated with @Module or @EntryPoint.
+ *    - `SingletonComponent::class`: A Hilt component for singleton bindings.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataDiModule {
 
+    /**
+     * Provides a configured [OkHttpClient] instance for making network requests.
+     */
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -64,6 +78,9 @@ object DataDiModule {
         }
         .build()
 
+    /**
+     * Creates and provides an instance of our [JetcasterDatabase] Room database.
+     */
     @Provides
     @Singleton
     fun provideDatabase(
@@ -75,6 +92,9 @@ object DataDiModule {
             .fallbackToDestructiveMigration()
             .build()
 
+    /**
+     * Provides a configured [ImageLoader] for loading and displaying images.
+     */
     @Provides
     @Singleton
     fun provideImageLoader(
@@ -84,62 +104,99 @@ object DataDiModule {
         .respectCacheHeaders(false)
         .build()
 
+    /**
+     * Provides an instance of [CategoriesDao] to interact with the "categories" table in the
+     * database.
+     */
     @Provides
     @Singleton
     fun provideCategoriesDao(
         database: JetcasterDatabase
     ): CategoriesDao = database.categoriesDao()
 
+    /**
+     * Provides an instance of [PodcastCategoryEntryDao] to interact with the "podcast_category_entries"
+     * table in the database.
+     */
     @Provides
     @Singleton
     fun providePodcastCategoryEntryDao(
         database: JetcasterDatabase
     ): PodcastCategoryEntryDao = database.podcastCategoryEntryDao()
 
+    /**
+     * Provides an instance of [PodcastsDao] to interact with the "podcasts" table in the database.
+     */
     @Provides
     @Singleton
     fun providePodcastsDao(
         database: JetcasterDatabase
     ): PodcastsDao = database.podcastsDao()
 
+    /**
+     * Provides an instance of [EpisodesDao] to interact with the "episodes" table in the database.
+     */
     @Provides
     @Singleton
     fun provideEpisodesDao(
         database: JetcasterDatabase
     ): EpisodesDao = database.episodesDao()
 
+    /**
+     * Provides an instance of [PodcastFollowedEntryDao] to interact with the "podcast_followed_entries"
+     * table in the database.
+     */
     @Provides
     @Singleton
     fun providePodcastFollowedEntryDao(
         database: JetcasterDatabase
     ): PodcastFollowedEntryDao = database.podcastFollowedEntryDao()
 
+    /**
+     * Provides an instance of [TransactionRunner] to execute multiple database operations as a
+     * single atomic transaction.
+     */
     @Provides
     @Singleton
     fun provideTransactionRunner(
         database: JetcasterDatabase
     ): TransactionRunner = database.transactionRunnerDao()
 
+    /**
+     * Provides a [SyndFeedInput] for parsing RSS/Atom feeds.
+     */
     @Provides
     @Singleton
-    fun provideSyndFeedInput() = SyndFeedInput()
+    fun provideSyndFeedInput(): SyndFeedInput = SyndFeedInput()
 
+    /**
+     * Provides a [CoroutineDispatcher] for I/O-bound operations.
+     */
     @Provides
     @Dispatcher(JetcasterDispatchers.IO)
     @Singleton
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    /**
+     * Provides a [CoroutineDispatcher] for UI-related tasks.
+     */
     @Provides
     @Dispatcher(JetcasterDispatchers.Main)
     @Singleton
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
+    /**
+     * Provides an instance of [EpisodeStore] to manage podcast episodes.
+     */
     @Provides
     @Singleton
     fun provideEpisodeStore(
         episodeDao: EpisodesDao
     ): EpisodeStore = LocalEpisodeStore(episodeDao)
 
+    /**
+     * Provides an instance of [PodcastStore] to manage podcast information.
+     */
     @Provides
     @Singleton
     fun providePodcastStore(
@@ -152,6 +209,9 @@ object DataDiModule {
         transactionRunner = transactionRunner
     )
 
+    /**
+     * Provides an instance of [CategoryStore] to manage podcast categories.
+     */
     @Provides
     @Singleton
     fun provideCategoryStore(
