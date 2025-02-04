@@ -54,7 +54,7 @@ import com.example.jetcaster.core.data.database.model.PodcastFollowedEntry
  *    - `exportSchema = true`: If set to `true`, you should also configure the room.schemaLocation in
  *    your build.gradle file to specify where the schema files should be saved. This is useful for
  *    tracking database schema changes over time and for debugging.
- *  5. `@TypeConverters Annotation`: This annotation tells Room to use the specified type converters
+ *  5. `@TypeConverters` Annotation: This annotation tells Room to use the specified type converters
  *  for handling custom data types.
  *    - `DateTimeTypeConverters::class`: The class named [DateTimeTypeConverters] contains methods
  *    annotated with @TypeConverter. These methods are responsible for converting between your custom
