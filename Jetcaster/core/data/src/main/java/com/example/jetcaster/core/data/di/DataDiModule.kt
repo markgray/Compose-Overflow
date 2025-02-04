@@ -38,6 +38,7 @@ import com.example.jetcaster.core.data.repository.LocalCategoryStore
 import com.example.jetcaster.core.data.repository.LocalEpisodeStore
 import com.example.jetcaster.core.data.repository.LocalPodcastStore
 import com.example.jetcaster.core.data.repository.PodcastStore
+import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.rometools.rome.io.SyndFeedInput
 import dagger.Module
 import dagger.Provides
@@ -53,7 +54,7 @@ import java.io.File
 import javax.inject.Singleton
 
 /**
- * This Kotlin object is a Dagger/Hilt module. Its primary role is to provide dependencies for our
+ * This Kotlin object is a Dagger/Hilt [Module]. Its primary role is to provide dependencies for our
  * application, specifically related to data access and management. The meaning of the annotations:
  *  1. `@Module`: Annotates a class that contributes to the object graph. It defines a configuration
  *  point for your object graph, where you declare which objects you want to be available for
@@ -78,7 +79,7 @@ object DataDiModule {
      * we call [OkHttpClient.Builder.build] to build the configured [OkHttpClient] and return it to
      * the caller. It is injected by Hilt when a [PodcastsFetcher] is constructed.
      *
-     * @param context the [Context] injected by Hilt thanks to the `@ApplicationContext` annotation.
+     * @param context the [Context] injected by Hilt thanks to the [ApplicationContext] annotation.
      * @return a configured [OkHttpClient] suitable for injection.
      */
     @Provides
@@ -104,7 +105,7 @@ object DataDiModule {
      * to the methods [provideCategoriesDao], [providePodcastCategoryEntryDao], [providePodcastsDao].
      * [provideEpisodesDao], [providePodcastFollowedEntryDao], and [provideTransactionRunner].
      *
-     * @param context the [Context] injected by Hilt thanks to the `@ApplicationContext` annotation.
+     * @param context the [Context] injected by Hilt thanks to the [ApplicationContext] annotation.
      * @return a configured and initialized [JetcasterDatabase] suitable for injection.
      */
     @Provides
@@ -222,9 +223,13 @@ object DataDiModule {
 
     /**
      * [Provides] a [Singleton] instance of [TransactionRunner] to use to execute multiple database
-     * operations as a single atomic transaction.
+     * operations as a single atomic transaction. We just return the [TransactionRunner] that the
+     * [JetcasterDatabase.transactionRunnerDao] method of our [database] parameter returns to our
+     * caller. It is injected by Hilt to the methods [PodcastsRepository] and [providePodcastStore].
      *
      * @param database the [JetcasterDatabase] injected by Hilt using the [provideDatabase] method.
+     * @return a [Singleton] instance of [TransactionRunner] to use to run multiple database
+     * operations as a single atomic transaction suitable for injection.
      */
     @Provides
     @Singleton
@@ -233,14 +238,24 @@ object DataDiModule {
     ): TransactionRunner = database.transactionRunnerDao()
 
     /**
-     * Provides a [SyndFeedInput] for parsing RSS/Atom feeds.
+     * [Provides] a [Singleton] instance of [SyndFeedInput] for parsing RSS/Atom feeds. We just
+     * return a new [SyndFeedInput] instance to our caller. It is injected by Hilt to the constructor
+     * of [PodcastsFetcher].
+     *
+     * @return a [Singleton] instance of [SyndFeedInput] for parsing RSS/Atom feeds suitable for
+     * injection.
      */
     @Provides
     @Singleton
     fun provideSyndFeedInput(): SyndFeedInput = SyndFeedInput()
 
     /**
-     * Provides a [CoroutineDispatcher] for I/O-bound operations.
+     * [Provides] a [Singleton] instance of [CoroutineDispatcher] for I/O-bound operations. We just
+     * return [Dispatchers.IO] to our caller. It is injected by Hilt to the constructor of
+     * [PodcastsFetcher].
+     *
+     * @return a [Singleton] instance of [CoroutineDispatcher] for I/O-bound operations suitable
+     * for injection.
      */
     @Provides
     @Dispatcher(JetcasterDispatchers.IO)
@@ -248,7 +263,14 @@ object DataDiModule {
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     /**
-     * Provides a [CoroutineDispatcher] for UI-related tasks.
+     * [Provides] a [Singleton] instance of [CoroutineDispatcher] for UI-related tasks. We just
+     * return [Dispatchers.Main] to our caller. It is injected by Hilt to the constructor of
+     * [PodcastsRepository] and to the method `DomainDiModule.provideEpisodePlayer` (which [Provides]
+     * an instance of `EpisodePlayer`) See `com/example/jetcaster/core/di/DomainDiModule.kt` and
+     * `com/example/jetcaster/core/player/EpisodePlayer.kt`.
+     *
+     * @return a [Singleton] instance of [CoroutineDispatcher] for UI-related tasks suitable for
+     * injection.
      */
     @Provides
     @Dispatcher(JetcasterDispatchers.Main)
@@ -256,7 +278,7 @@ object DataDiModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     /**
-     * Provides an instance of [EpisodeStore] to manage podcast episodes.
+     * [Provides] a [Singleton] instance of [EpisodeStore] to manage podcast episodes.
      */
     @Provides
     @Singleton
