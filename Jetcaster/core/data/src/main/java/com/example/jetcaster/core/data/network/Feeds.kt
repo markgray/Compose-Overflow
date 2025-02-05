@@ -16,15 +16,15 @@
 
 package com.example.jetcaster.core.data.network
 
-/**
- * A hand selected list of feeds URLs used for the purposes of displaying real information
- * in this sample app.
- */
 private const val NowInAndroid = "https://feeds.libsyn.com/244409/rss"
 private const val AndroidDevelopersBackstage =
     "https://feeds.feedburner.com/blogspot/AndroidDevelopersBackstage"
 
-val SampleFeeds = listOf(
+/**
+ * A hand selected list of feeds URLs used for the purposes of displaying real information
+ * in this sample app.
+ */
+val SampleFeeds: List<String> = listOf(
     NowInAndroid,
     AndroidDevelopersBackstage,
     "https://www.omnycontent.com/d/playlist/aaea4e69-af51-495e-afc9-a9760146922b/" +

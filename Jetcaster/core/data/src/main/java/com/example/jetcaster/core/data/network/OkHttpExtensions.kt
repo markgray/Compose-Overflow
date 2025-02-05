@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.data.network
 
+import kotlinx.coroutines.CancellableContinuation
 import java.io.IOException
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,33 +27,36 @@ import okhttp3.Response
 import okhttp3.internal.closeQuietly
 
 /**
- * Suspending wrapper around an OkHttp [Call], using [Call.enqueue].
+ * Suspending wrapper around an OkHttp [Call], using [Call.enqueue]. Since it is unused, I think I
+ * will skip writing the documentation for it. TODO: Write the documentation.
  */
+@Suppress("unused")
 @OptIn(ExperimentalCoroutinesApi::class)
-suspend fun Call.await(): Response = suspendCancellableCoroutine { continuation ->
-    enqueue(
-        object : Callback {
-            override fun onResponse(call: Call, response: Response) {
-                continuation.resume(response) {
-                    // If we have a response but we're cancelled while resuming, we need to
-                    // close() the unused response
-                    if (response.body != null) {
-                        response.closeQuietly()
+suspend fun Call.await(): Response =
+    suspendCancellableCoroutine { continuation: CancellableContinuation<Response> ->
+        enqueue(
+            object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    continuation.resume(value = response) {
+                        // If we have a response but we're cancelled while resuming, we need to
+                        // close() the unused response
+                        if (response.body != null) {
+                            response.closeQuietly()
+                        }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call, e: IOException) {
-                continuation.resumeWithException(e)
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resumeWithException(e)
+                }
             }
-        }
-    )
+        )
 
-    continuation.invokeOnCancellation {
-        try {
-            cancel()
-        } catch (t: Throwable) {
-            // Ignore cancel exception
+        continuation.invokeOnCancellation {
+            try {
+                cancel()
+            } catch (t: Throwable) {
+                // Ignore cancel exception
+            }
         }
     }
-}

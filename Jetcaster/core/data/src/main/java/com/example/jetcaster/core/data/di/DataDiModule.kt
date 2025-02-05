@@ -323,7 +323,7 @@ object DataDiModule {
 
     /**
      * [Provides] a [Singleton] instance of [CategoryStore] to manage podcast categories. We just
-     * return a new instance of [LocalCategoryStore] canstructed to use our [EpisodesDao] parameter
+     * return a new instance of [LocalCategoryStore] constructed to use our [EpisodesDao] parameter
      * [episodeDao] as its `episodesDao` argument, our [PodcastsDao] parameter [podcastDao] as its
      * `podcastDao` argument, our [CategoriesDao] parameter [categoriesDao] as its `categoriesDao`
      * argument and our [PodcastCategoryEntryDao] parameter [podcastCategoryEntryDao] as its

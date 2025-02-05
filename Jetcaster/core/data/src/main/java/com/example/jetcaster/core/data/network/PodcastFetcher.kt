@@ -22,6 +22,7 @@ import com.example.jetcaster.core.data.JetcasterDispatchers
 import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.Podcast
+import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.rometools.modules.itunes.EntryInformation
 import com.rometools.modules.itunes.FeedInformation
 import com.rometools.rome.feed.synd.SyndEntry
@@ -43,13 +44,16 @@ import kotlinx.coroutines.withContext
 import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
 
 /**
- * A class which fetches some selected podcast RSS feeds.
+ * A class which fetches some selected podcast RSS feeds. Injected via Hilt to construct a
+ * [PodcastsRepository].
  *
- * @param okHttpClient [OkHttpClient] to use for network requests
- * @param syndFeedInput [SyndFeedInput] to use for parsing RSS feeds.
- * @param ioDispatcher [CoroutineDispatcher] to use for running fetch requests.
+ * @param okHttpClient [OkHttpClient] to use for network requests injected by Hilt.
+ * @param syndFeedInput [SyndFeedInput] to use for parsing RSS feeds injected by Hilt.
+ * @param ioDispatcher [CoroutineDispatcher] to use for running fetch requests injected by Hilt.
  */
 class PodcastsFetcher @Inject constructor(
     private val okHttpClient: OkHttpClient,
@@ -76,44 +80,82 @@ class PodcastsFetcher @Inject constructor(
     operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> {
         // We use flatMapMerge here to achieve concurrent fetching/parsing of the feeds.
         return feedUrls.asFlow()
-            .flatMapMerge { feedUrl ->
+            .flatMapMerge { feedUrl: String ->
                 flow {
-                    emit(fetchPodcast(feedUrl))
-                }.catch { e ->
+                    emit(fetchPodcast(url = feedUrl))
+                }.catch { e: Throwable ->
                     // If an exception was caught while fetching the podcast, wrap it in
                     // an Error instance.
-                    emit(PodcastRssResponse.Error(e))
+                    emit(value = PodcastRssResponse.Error(throwable = e))
                 }
             }
     }
 
+    /**
+     * Fetches a podcast's RSS feed from a given URL and parses it into a [PodcastRssResponse] object.
+     *
+     * This function performs a network request to retrieve the RSS feed, handles caching, and parses
+     * the XML content into a structured format. It also manages potential network and parsing errors.
+     *
+     * @param url The URL of the podcast's RSS feed.
+     * @return A [PodcastRssResponse] object containing the parsed podcast data.
+     * @throws HttpException If the network request fails (e.g., non-2xx response code).
+     * @throws Exception If there is an error during the parsing process (e.g., malformed XML).
+     * @throws IllegalStateException if the response body is null
+     */
     private suspend fun fetchPodcast(url: String): PodcastRssResponse {
-        return withContext(ioDispatcher) {
-            val request = Request.Builder()
-                .url(url)
-                .cacheControl(cacheControl)
+        return withContext(context = ioDispatcher) {
+            val request: Request = Request.Builder()
+                .url(url = url)
+                .cacheControl(cacheControl = cacheControl)
                 .build()
 
-            val response = okHttpClient.newCall(request).execute()
+            val response: Response = okHttpClient.newCall(request = request).execute()
 
             // If the network request wasn't successful, throw an exception
-            if (!response.isSuccessful) throw HttpException(response)
+            if (!response.isSuccessful) throw HttpException(response = response)
 
             // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
             // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
             // from a stream.
-            response.body!!.use { body ->
-                syndFeedInput.build(body.charStream()).toPodcastResponse(url)
+            response.body!!.use { body: ResponseBody ->
+                syndFeedInput.build(body.charStream()).toPodcastResponse(feedUrl = url)
             }
         }
     }
 }
 
+/**
+ * Represents the response from fetching a podcast's RSS feed.
+ * This sealed class encapsulates either a successful response containing podcast data or an error.
+ */
 sealed class PodcastRssResponse {
-    data class Error(
+
+    /**
+     * Represents an error state in a Podcast RSS response.
+     *
+     * This class encapsulates an optional [Throwable] that describes the error
+     * that occurred during the processing or retrieval of the Podcast RSS feed.
+     *
+     * @property throwable The [Throwable] representing the error, or null if no specific
+     *                    error was encountered. This can be used to obtain more detailed
+     *                    information about the cause of the error, such as the exception
+     *                    type, error message, and stack trace.
+     */
+    data class Error(        
         val throwable: Throwable?,
     ) : PodcastRssResponse()
 
+    /**
+     * Represents a successful response containing podcast information, episodes, and categories.
+     *
+     * This data class encapsulates the successful outcome of a podcast RSS feed request.
+     * It holds the main podcast details, a list of associated episodes, and a set of relevant categories.
+     *
+     * @property podcast The main [Podcast] information.
+     * @property episodes A list of [Episode] objects associated with the podcast.
+     * @property categories A set of [Category] objects representing the podcast's categories.
+     */
     data class Success(
         val podcast: Podcast,
         val episodes: List<Episode>,
@@ -121,14 +163,34 @@ sealed class PodcastRssResponse {
     ) : PodcastRssResponse()
 }
 
+
 /**
- * Map a Rome [SyndFeed] instance to our own [Podcast] data class.
+ * Converts a [SyndFeed] object (from Rome library) to a [PodcastRssResponse].
+ *
+ * This function parses a [SyndFeed] representing an RSS podcast feed and extracts
+ * relevant information to create a structured response object ([PodcastRssResponse]).
+ * It handles details like podcast metadata, episodes, and categories.
+ *
+ * @param feedUrl The original URL from which the SyndFeed was fetched. This is used
+ *                as a fallback for the podcast URI if the feed itself doesn't
+ *                contain a specific URI.
+ * @return A [PodcastRssResponse.Success] object containing the parsed podcast information,
+ *         including podcast details, episodes, and categories.
+ *
+ * @throws Exception If there are issues accessing elements within the SyndFeed, or if casting is not possible.
+ *
+ * @see SyndFeed
+ * @see PodcastRssResponse
+ * @see Episode
+ * @see Podcast
+ * @see Category
+ * @see FeedInformation
  */
 private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
-    val podcastUri = uri ?: feedUrl
-    val episodes = entries.map { it.toEpisode(podcastUri) }
+    val podcastUri: String = uri ?: feedUrl
+    val episodes: List<Episode> = entries.map { it.toEpisode(podcastUri = podcastUri) }
 
-    val feedInfo = getModule(PodcastModuleDtd) as? FeedInformation
+    val feedInfo: FeedInformation? = getModule(PodcastModuleDtd) as? FeedInformation
     val podcast = Podcast(
         uri = podcastUri,
         title = title,
@@ -138,15 +200,36 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
         imageUrl = feedInfo?.imageUri?.toString()
     )
 
-    val categories = feedInfo?.categories
+    val categories: Set<Category> = feedInfo?.categories
         ?.map { Category(name = it.name) }
         ?.toSet() ?: emptySet()
 
-    return PodcastRssResponse.Success(podcast, episodes, categories)
+    return PodcastRssResponse.Success(
+        podcast = podcast,
+        episodes = episodes,
+        categories = categories
+    )
 }
 
+
 /**
- * Map a Rome [SyndEntry] instance to our own [Episode] data class.
+ * Converts a [SyndEntry] object from a podcast feed into an [Episode] object.
+ *
+ * This function extracts relevant information from a [SyndEntry] and constructs an [Episode] object,
+ * including the episode's URI, podcast URI, title, author, summary, subtitle, published date, and duration.
+ *
+ * @param podcastUri The URI of the podcast to which this episode belongs.
+ *                   This will be used to associate the episode with its podcast.
+ * @return An [Episode] object representing the data extracted from the [SyndEntry].
+ * @throws IllegalArgumentException if the published date is null, as it's a required field.
+ *
+ * Example:
+ * ```kotlin
+ *  val syndEntry: SyndEntry = // ... get SyndEntry from feed
+ *  val podcastUri = "https://example.com/podcast"
+ *  val episode = syndEntry.toEpisode(podcastUri)
+ *  println(episode)
+ * ```
  */
 private fun SyndEntry.toEpisode(podcastUri: String): Episode {
     val entryInformation = getModule(PodcastModuleDtd) as? EntryInformation
