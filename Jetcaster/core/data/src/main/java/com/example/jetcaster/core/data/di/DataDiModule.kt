@@ -278,16 +278,36 @@ object DataDiModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     /**
-     * [Provides] a [Singleton] instance of [EpisodeStore] to manage podcast episodes.
+     * [Provides] a [Singleton] instance of [EpisodeStore] to manage podcast episodes. We just return
+     * a [LocalEpisodeStore] constructed using our [EpisodesDao] parameter [episodeDao] as its
+     * `episodesDao` argument. It is injected by Hilt to 9 different places, mostly places I cannot
+     * link to so I will leave it up to you to click on the "Dependency Related Files ..." icon in
+     * the gutter if you are interested.
+     *
+     * @param episodeDao the [Singleton] instance of [EpisodesDao] injected by Hilt.
+     * @return the [Singleton] instance of [EpisodeStore], configured to use [EpisodesDao] to access
+     * the "episodes" table in the database.
      */
     @Provides
     @Singleton
     fun provideEpisodeStore(
         episodeDao: EpisodesDao
-    ): EpisodeStore = LocalEpisodeStore(episodeDao)
+    ): EpisodeStore = LocalEpisodeStore(episodesDao = episodeDao)
 
     /**
-     * Provides an instance of [PodcastStore] to manage podcast information.
+     * [Provides] a [Singleton] instance of [PodcastStore] to manage podcast information. We just
+     * return an instance of [LocalPodcastStore] constructed to use our [PodcastsDao] parameter
+     * [podcastDao] as its `podcastDao` argument, our [PodcastFollowedEntryDao] parameter
+     * [podcastFollowedEntryDao] as its `podcastFollowedEntryDao` argument and our [TransactionRunner]
+     * parameter [transactionRunner] as its `transactionRunner` argument. It is injected by Hilt
+     * to 9 different places, mostly places I cannot link to so I will leave it up to you to click
+     * on the "Dependency Related Files ..." icon in the gutter if you are interested.
+     *
+     * @param podcastDao the [Singleton] instance of [PodcastsDao] injected by Hilt.
+     * @param podcastFollowedEntryDao the [Singleton] instance of [PodcastFollowedEntryDao] injected
+     * by Hilt.
+     * @param transactionRunner the [Singleton] instance of [TransactionRunner] injected by Hilt.
+     * @return a [Singleton] instance of [LocalPodcastStore] suitable for injection.
      */
     @Provides
     @Singleton
@@ -302,7 +322,21 @@ object DataDiModule {
     )
 
     /**
-     * Provides an instance of [CategoryStore] to manage podcast categories.
+     * [Provides] a [Singleton] instance of [CategoryStore] to manage podcast categories. We just
+     * return a new instance of [LocalCategoryStore] canstructed to use our [EpisodesDao] parameter
+     * [episodeDao] as its `episodesDao` argument, our [PodcastsDao] parameter [podcastDao] as its
+     * `podcastDao` argument, our [CategoriesDao] parameter [categoriesDao] as its `categoriesDao`
+     * argument and our [PodcastCategoryEntryDao] parameter [podcastCategoryEntryDao] as its
+     * `categoryEntryDao` argument. It is injected by Hilt to 6 different places, mostly places I
+     * cannot link to so I will leave it up to you to click on the "Dependency Related Files ..."
+     * icon in the gutter if you are interested.
+     *
+     * @param categoriesDao the [Singleton] instance of [CategoriesDao] injected by Hilt.
+     * @param podcastCategoryEntryDao the [Singleton] instance of [PodcastCategoryEntryDao] injected
+     * by Hilt.
+     * @param podcastDao the [Singleton] instance of [PodcastsDao] injected by Hilt.
+     * @param episodeDao the [Singleton] instance of [EpisodesDao] injected by Hilt.
+     * @return a [Singleton] instance of [LocalCategoryStore] suitable for injection.
      */
     @Provides
     @Singleton
@@ -316,5 +350,4 @@ object DataDiModule {
         podcastsDao = podcastDao,
         categoriesDao = categoriesDao,
         categoryEntryDao = podcastCategoryEntryDao,
-    )
-}
+    )}
