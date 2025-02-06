@@ -71,10 +71,58 @@ class PodcastsFetcher @Inject constructor(
     }
 
     /**
-     * Returns a [Flow] which fetches each podcast feed and emits it in turn.
+     * Invokes the fetching and parsing process for a list of podcast RSS feed URLs.
      *
-     * The feeds are fetched concurrently, meaning that the resulting emission order may not
-     * match the order of [feedUrls].
+     * This function takes a list of RSS feed URLs, fetches the content of each URL,
+     * and parses it to extract podcast information. It uses concurrent fetching
+     * and parsing to improve efficiency.
+     *
+     * Code explanation:
+     *  1. operator fun invoke(feedUrls: [List]<[String]>): [Flow]<[PodcastRssResponse]>
+     *    - This defines an invoke operator function. In Kotlin, invoke allows you to call an object
+     *    as if it were a function. In this case, it means you can call this function directly on an
+     *    instance of the class it's defined in, without explicitly naming the function.
+     *    - `feedUrls: List<String>`: This is the input parameter, a list of strings, where each string
+     *    is an URL to a podcast's RSS feed.
+     *    - [Flow]<[PodcastRssResponse]>: This is the return type. It indicates that the function
+     *    returns a [Flow], which is a Kotlin Coroutines concept for asynchronous streams of data.
+     *    Each item emitted by this flow will be a [PodcastRssResponse].
+     *    - [PodcastRssResponse.Success]: Indicates that the feed was successfully fetched and parsed.
+     *    - [PodcastRssResponse.Error]: Indicates that an error occurred during the process.
+     *  2. feedUrls.asFlow(): This converts the input [List]<[String]> of feed URLs into a
+     *  [Flow]<[String]>. This allows you to use Kotlin [Flow] operators on the list.
+     *  3. `flatMapMerge { feedUrl: String -> ... }`: This is the core of the concurrent processing.
+     *  flatMapMerge is a powerful operator that does the following:
+     *    - It takes each feedUrl emitted by the upstream flow (feedUrls.asFlow()).
+     *    - For each feedUrl, it launches a new coroutine to process it.
+     *    - It then merges the results from all these coroutines into a single output flow.
+     *    - The flatMapMerge operator allows for concurrent execution of the inner flows. The number
+     *    of concurrent flows is limited by the concurrency parameter, which defaults to the number
+     *    of available processors.
+     *    - In essence, it's like saying, "For each feed URL, start a separate task to fetch and
+     *    parse it, and then combine all the results into one stream." This is the part that makes
+     *    the fetching and parsing concurrent.
+     *  4. `flow { ... }`: This creates a new [Flow] within the flatMapMerge lambda. This inner flow
+     *  is responsible for fetching and parsing a single feed.
+     *    - `emit(fetchPodcast(url = feedUrl))`: This line does the actual work.
+     *    - `fetchPodcast(url = feedUrl)`: This is a suspend function that fetches and parses the
+     *    content of the RSS feed at the given `feedUrl` and returns a [PodcastRssResponse], either
+     *    an [PodcastRssResponse.Success] or an [PodcastRssResponse.Error].
+     *  5. `catch { e: Throwable -> ... }`: This is an error-handling operator. If an error occurs
+     *  it will be caught here, and the flow will emit a [PodcastRssResponse.Error] with the
+     *  exception that occurred.
+     *
+     * @param feedUrls A list of strings, where each string is a URL pointing to a podcast's RSS feed.
+     * @return A [Flow] of [PodcastRssResponse] objects. Each emission represents the result of
+     * fetching and parsing a single RSS feed. The flow may emit:
+     *  - [PodcastRssResponse.Success]: If the fetch and parsing were successful.
+     *  - [PodcastRssResponse.Error]: If an error occurred during fetching or parsing.
+     *
+     * The flow completes when all feeds have been processed.
+     *
+     * @throws Exception If any of the provided feedUrls are invalid.
+     *
+     * @OptIn(ExperimentalCoroutinesApi::class) This function uses experimental coroutines APIs for concurrent flow processing.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> {
