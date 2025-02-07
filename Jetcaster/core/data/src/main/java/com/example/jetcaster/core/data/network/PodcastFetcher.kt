@@ -66,7 +66,7 @@ class PodcastsFetcher @Inject constructor(
      * Instead of fetching data on every app open, we instead allow the use of 'stale'
      * network responses (up to 8 hours).
      */
-    private val cacheControl by lazy {
+    private val cacheControl: CacheControl by lazy {
         CacheControl.Builder().maxStale(8, TimeUnit.HOURS).build()
     }
 
@@ -122,7 +122,8 @@ class PodcastsFetcher @Inject constructor(
      *
      * @throws Exception If any of the provided feedUrls are invalid.
      *
-     * @OptIn(ExperimentalCoroutinesApi::class) This function uses experimental coroutines APIs for concurrent flow processing.
+     * @OptIn(ExperimentalCoroutinesApi::class) This function uses experimental coroutines APIs for
+     * concurrent flow processing.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(feedUrls: List<String>): Flow<PodcastRssResponse> {
@@ -139,17 +140,66 @@ class PodcastsFetcher @Inject constructor(
             }
     }
 
+
     /**
      * Fetches a podcast's RSS feed from a given URL and parses it into a [PodcastRssResponse] object.
      *
      * This function performs a network request to retrieve the RSS feed, handles caching, and parses
      * the XML content into a structured format. It also manages potential network and parsing errors.
      *
+     * Code explanation:
+     *  1. `withContext(context = ioDispatcher) { ... }`: This is a suspending function that
+     *  allows you to change the coroutine context for a specific block of code.
+     *    - `context = ioDispatcher`: This specifies that the code within the lambda { ... } should
+     *    run on the ioDispatcher. This is a dispatcher designed for I/O-bound operations, such as
+     *    network requests and file system access.
+     *  2. `val request: Request = Request.Builder() ... .build()`: This code uses the OkHttp library
+     *  to create an HTTP request.
+     *    - `Request.Builder()`: Starts building a new request.
+     *    - `.url(url = url)`: Sets the URL of the request to the url parameter passed to the function.
+     *    - `.cacheControl(cacheControl = cacheControl)`: Configures the caching behavior of the
+     *    request using our [CacheControl] variable [cacheControl]. This allows the function to
+     *    potentially use cached responses instead of always making a network request.
+     *    - `.build()`: Finalizes the request configuration and creates the [Request] object.
+     *  3. `val response: Response = okHttpClient.newCall(request = request).execute()`:
+     *    - `okHttpClient`: This is the singleton [OkHttpClient] instance injected by Hilt.
+     *    - `.newCall(request = request)`: Creates a new call object for the `Request` variable
+     *    `request`.
+     *    - `.execute()`: Executes the request synchronously. This means the current coroutine will
+     *    be paused until the response is received.
+     *  4. `if (!response.isSuccessful) throw HttpException(response = response)`: This checks if the
+     *  HTTP response was successful (the status code is in the 2xx range).
+     *    - `response.isSuccessful`: A boolean property indicating whether the response was successful.
+     *    - `throw HttpException(response = response)`: If the response was not successful, an
+     *    HttpException is thrown, providing details about the failed response.
+     *  5. `response.body!!.use { body: ResponseBody -> ... }`:
+     *    - Accesses the response body. The !! is the not-null assertion operator, which means the
+     *    code assumes the response body is not `null`. If it is `null`, an `IllegalStateException`
+     *    will be thrown.
+     *    - `.use { ... }`: This is a Kotlin standard library function that ensures the `ResponseBody`
+     *    is properly closed after it's used, even if exceptions occur. This is important for
+     *    releasing resources.
+     *    - `body: ResponseBody`: The `ResponseBody` is the content of the HTTP response.
+     *  6. `syndFeedInput.build(body.charStream()).toPodcastResponse(feedUrl = url)`:
+     *    - `syndFeedInput`: This is the instance of `SyndFeedInput` that is injected by Hilt. It
+     *    comes from the Rome library, which is used for parsing RSS and Atom feeds.
+     *    - `.build(body.charStream())`: Parses the RSS feed from the response body's character stream.
+     *    - .toPodcastResponse(feedUrl = url): This our custom extension function [toPodcastResponse]
+     *    that converts the parsed `SyndFeed` object (from Rome) into a `PodcastRssResponse` object.
+     *    It also includes the original feed URL in the `PodcastRssResponse`.
+     *
      * @param url The URL of the podcast's RSS feed.
      * @return A [PodcastRssResponse] object containing the parsed podcast data.
      * @throws HttpException If the network request fails (e.g., non-2xx response code).
      * @throws Exception If there is an error during the parsing process (e.g., malformed XML).
      * @throws IllegalStateException if the response body is null
+     *
+     * @see PodcastRssResponse
+     * @see OkHttpClient
+     * @see HttpException
+     * @see SyndFeed
+     * @see SyndFeedInput
+     * @see toPodcastResponse
      */
     private suspend fun fetchPodcast(url: String): PodcastRssResponse {
         return withContext(context = ioDispatcher) {
@@ -174,8 +224,8 @@ class PodcastsFetcher @Inject constructor(
 }
 
 /**
- * Represents the response from fetching a podcast's RSS feed.
- * This sealed class encapsulates either a successful response containing podcast data or an error.
+ * Represents the response from fetching a podcast's RSS feed. This sealed class encapsulates either
+ * a successful response containing podcast data or an error.
  */
 sealed class PodcastRssResponse {
 
@@ -185,10 +235,9 @@ sealed class PodcastRssResponse {
      * This class encapsulates an optional [Throwable] that describes the error
      * that occurred during the processing or retrieval of the Podcast RSS feed.
      *
-     * @property throwable The [Throwable] representing the error, or null if no specific
-     *                    error was encountered. This can be used to obtain more detailed
-     *                    information about the cause of the error, such as the exception
-     *                    type, error message, and stack trace.
+     * @property throwable The [Throwable] representing the error, or null if no specific error was
+     * encountered. This can be used to obtain more detailed information about the cause of the
+     * error, such as the exception type, error message, and stack trace.
      */
     data class Error(        
         val throwable: Throwable?,
@@ -197,8 +246,8 @@ sealed class PodcastRssResponse {
     /**
      * Represents a successful response containing podcast information, episodes, and categories.
      *
-     * This data class encapsulates the successful outcome of a podcast RSS feed request.
-     * It holds the main podcast details, a list of associated episodes, and a set of relevant categories.
+     * This data class encapsulates the successful outcome of a podcast RSS feed request. It holds
+     * the main podcast details, a list of associated episodes, and a set of relevant categories.
      *
      * @property podcast The main [Podcast] information.
      * @property episodes A list of [Episode] objects associated with the podcast.
@@ -219,13 +268,43 @@ sealed class PodcastRssResponse {
  * relevant information to create a structured response object ([PodcastRssResponse]).
  * It handles details like podcast metadata, episodes, and categories.
  *
- * @param feedUrl The original URL from which the SyndFeed was fetched. This is used
- *                as a fallback for the podcast URI if the feed itself doesn't
- *                contain a specific URI.
- * @return A [PodcastRssResponse.Success] object containing the parsed podcast information,
- *         including podcast details, episodes, and categories.
+ * First we initialize our [String] variable `val podcastUri` with the [SyndFeed.getUri] value of
+ * our [SyndFeed] receiver, or if this is `null`, we use our [String] parameter [feedUrl]. Then
+ * we initialize our [List] of [Episode] variable `val episodes` with the results of applying the
+ * [List.map] extension function to the [SyndFeed.getEntries] property of our [SyndFeed] receiver,
+ * and in the `transform` lambda we call our [SyndEntry.toEpisode] extension function on each
+ * [SyndEntry] in the [SyndFeed] feed to convert it to an [Episode]. We initialize our
+ * [FeedInformation] variable `val feedInfo` with the value of the [SyndFeed.getModule] property
+ * of our [SyndFeed] receiver using our [String] constant [PodcastModuleDtd] as the module URI, and
+ * if this is not `null`, we cast it to a [FeedInformation]. We initialize our [Podcast] variable
+ * `val podcast` to be a new instance of [Podcast] with the following properties:
+ *  - `uri = podcastUri`: The URI of the podcast.
+ *  - `title = title`: The title of the podcast.
+ *  - `description = feedInfo?.summary ?: description`: The description of the podcast, using the
+ *  [FeedInformation.getSummary] property if available, or the [SyndFeed.getDescription] property.
+ *  - `author = author`: The author of the podcast.
+ *  - `copyright = copyright`: The copyright information of the podcast.
+ *  - `imageUrl = feedInfo?.imageUri?.toString()`: The URL of the podcast's image, if available in
+ *  the [FeedInformation.getImageUri] property.
  *
- * @throws Exception If there are issues accessing elements within the SyndFeed, or if casting is not possible.
+ * We initialize our [Set] of [Category] variable `val categories` with the results of applying
+ * the [List.map] extension function to the [FeedInformation.getCategories] property of our [SyndFeed]
+ * receiver, and in the `transform` lambda we create a new [Category] instance for each [Category.name]
+ * in the [List], then use the [List.toSet] extension function to convert the [List] of [Category]
+ * to a [Set] of [Category], or if anything in the chain is `null`, we return an empty [Set].
+ *
+ * Finally, we return a [PodcastRssResponse.Success] instance with the following properties:
+ *  - `podcast = podcast`: The [Podcast] instance we initialized earlier.
+ *  - `episodes = episodes`: The [List] of [Episode] instances we initialized earlier.
+ *  - `categories = categories`: The [Set] of [Category] instances we initialized earlier.
+ *
+ * @param feedUrl The original URL from which the SyndFeed was fetched. This is used
+ * as a fallback for the podcast URI if the feed itself doesn't contain a specific URI.
+ * @return A [PodcastRssResponse.Success] object containing the parsed podcast information,
+ * including podcast details, episodes, and categories.
+ *
+ * @throws Exception If there are issues accessing elements within the SyndFeed, or if casting is
+ * not possible.
  *
  * @see SyndFeed
  * @see PodcastRssResponse
@@ -264,20 +343,15 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
  * Converts a [SyndEntry] object from a podcast feed into an [Episode] object.
  *
  * This function extracts relevant information from a [SyndEntry] and constructs an [Episode] object,
- * including the episode's URI, podcast URI, title, author, summary, subtitle, published date, and duration.
+ * including the episode's URI, podcast URI, title, author, summary, subtitle, published date, and
+ * duration.
  *
- * @param podcastUri The URI of the podcast to which this episode belongs.
- *                   This will be used to associate the episode with its podcast.
+ * First we initialize our [EntryInformation]
+ *
+ * @param podcastUri The URI of the podcast to which this episode belongs. This will be used to
+ * associate the episode with its podcast.
  * @return An [Episode] object representing the data extracted from the [SyndEntry].
  * @throws IllegalArgumentException if the published date is null, as it's a required field.
- *
- * Example:
- * ```kotlin
- *  val syndEntry: SyndEntry = // ... get SyndEntry from feed
- *  val podcastUri = "https://example.com/podcast"
- *  val episode = syndEntry.toEpisode(podcastUri)
- *  println(episode)
- * ```
  */
 private fun SyndEntry.toEpisode(podcastUri: String): Episode {
     val entryInformation = getModule(PodcastModuleDtd) as? EntryInformation
@@ -294,8 +368,8 @@ private fun SyndEntry.toEpisode(podcastUri: String): Episode {
 }
 
 /**
- * Most feeds use the following DTD to include extra information related to
- * their podcast. Info such as images, summaries, duration, categories is sometimes only available
- * via this attributes in this DTD.
+ * Most feeds use the following DTD to include extra information related to their podcast. Info such
+ * as images, summaries, duration, categories is sometimes only available via this attributes in
+ * this DTD.
  */
 private const val PodcastModuleDtd = "http://www.itunes.com/dtds/podcast-1.0.dtd"
