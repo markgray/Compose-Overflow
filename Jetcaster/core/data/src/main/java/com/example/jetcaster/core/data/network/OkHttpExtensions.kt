@@ -61,7 +61,7 @@ import okhttp3.internal.closeQuietly
  *  interface. This is where you define what happens when the network request succeeds or fails.
  *  6. `override fun onResponse(call: Call, response: Response) { ... }`: This method is called by
  *  `OkHttp` when the network request is successful.
- *    - `resume()`: This method resumes the coroutine.
+ *    - `continuation.resume()`: This method resumes the coroutine.
  *    - `value = response`: This provides the [Response] object as the result of the coroutine.
  *    - `{ ... }`: This is a completion handler. It's a lambda that is executed if the coroutine is
  *    cancelled after the response has been received but before the coroutine has fully resumed.

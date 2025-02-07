@@ -75,7 +75,8 @@ class PodcastsFetcher @Inject constructor(
      *
      * This function takes a list of RSS feed URLs, fetches the content of each URL,
      * and parses it to extract podcast information. It uses concurrent fetching
-     * and parsing to improve efficiency.
+     * and parsing to improve efficiency. If is called from the [PodcastsRepository.updatePodcasts]
+     * method.
      *
      * Code explanation:
      *  1. operator fun invoke(feedUrls: [List]<[String]>): [Flow]<[PodcastRssResponse]>
