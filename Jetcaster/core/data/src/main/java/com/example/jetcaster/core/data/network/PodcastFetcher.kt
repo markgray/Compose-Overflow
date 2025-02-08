@@ -197,6 +197,7 @@ class PodcastsFetcher @Inject constructor(
      *
      * @see PodcastRssResponse
      * @see OkHttpClient
+     * @see CacheControl
      * @see HttpException
      * @see SyndFeed
      * @see SyndFeedInput
