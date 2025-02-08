@@ -25,14 +25,10 @@ import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.repository.PodcastsRepository
 import com.rometools.modules.itunes.EntryInformation
 import com.rometools.modules.itunes.FeedInformation
+import com.rometools.rome.feed.module.Module
 import com.rometools.rome.feed.synd.SyndEntry
 import com.rometools.rome.feed.synd.SyndFeed
 import com.rometools.rome.io.SyndFeedInput
-import java.time.Duration
-import java.time.Instant
-import java.time.ZoneOffset
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -46,6 +42,12 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody
+import java.time.Duration
+import java.time.Instant
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * A class which fetches some selected podcast RSS feeds. Injected via Hilt to construct a
@@ -348,7 +350,21 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
  * including the episode's URI, podcast URI, title, author, summary, subtitle, published date, and
  * duration.
  *
- * First we initialize our [EntryInformation]
+ * First we initialize our [EntryInformation] variable `val entryInformation` with the [Module] returned
+ * by the [SyndEntry.getModule] function of our [SyndEntry] receiver, using our [String] constant
+ * [PodcastModuleDtd] as the module URI. If this is not `null`, we cast it to an [EntryInformation].
+ * Then we return a new [Episode] instance with the following properties:
+ *  - `uri` = [SyndEntry.getUri]: The URI of the episode.
+ *  - `podcastUri` = [podcastUri]: The URI of the podcast this episode belongs to.
+ *  - `title` = [SyndEntry.getTitle]: The title of the episode.
+ *  - `author` = [SyndEntry.getAuthor]: The author of the episode.
+ *  - `summary` = [EntryInformation.getSummary] if that is not `null` or [SyndEntry.getDescription]
+ *  if it is as the summary.
+ *  - `subtitle` = [EntryInformation.getSubtitle]: The subtitle of the episode.
+ *  - `published` = [Instant.ofEpochMilli] of the [SyndEntry.getPublishedDate] offset by
+ *  [ZoneOffset.UTC] to convert it to an [OffsetDateTime].
+ *  - `duration` = [EntryInformation.getDuration] converted to a [Duration] of its milliseconds value
+ *  if it is not `null`.
  *
  * @param podcastUri The URI of the podcast to which this episode belongs. This will be used to
  * associate the episode with its podcast.
