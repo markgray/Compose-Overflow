@@ -63,6 +63,9 @@ interface CategoryStore {
      * on the count of podcasts within that category. The podcasts are then returned as a list of
      * [PodcastWithExtraInfo] objects.
      *
+     * Note: Currently, in the [LocalCategoryStore] implementation, it's sorted by the last episode
+     * date, as indicated by its call to [PodcastsDao.podcastsInCategorySortedByLastEpisode].
+     *
      * @param categoryId The unique identifier of the category for which to retrieve podcasts.
      * @param limit An optional parameter specifying the maximum number of podcasts to return.
      * Defaults to [Int.MAX_VALUE] if not provided, effectively returning all podcasts in the
@@ -81,7 +84,7 @@ interface CategoryStore {
      * Retrieves a list of episodes from podcasts belonging to a specific category.
      *
      * This function fetches episodes from podcasts that are associated with the given category ID.
-     * It provides a stream of lists, allowing for reactive updates as the data changes.
+     * It provides a [Flow] of lists, allowing for reactive updates as the data changes.
      *
      * @param categoryId The unique identifier of the category. Episodes from podcasts in this
      * category will be retrieved.
@@ -193,6 +196,9 @@ class LocalCategoryStore(
      * with each category. The categories with the highest podcast counts will appear first in the
      * list.
      *
+     * We just return the [Flow] of [List] of [Category] from the [CategoriesDao.categoriesSortedByPodcastCount]
+     * method of our [CategoriesDao] field [categoriesDao] when called with our [Int] parameter [limit].
+     *
      * @param limit The maximum number of categories to return. If there are fewer categories than
      * the limit, all available categories will be returned.
      * @return A [Flow] emitting a list of [Category] objects. Each [Category] object represents a
@@ -200,7 +206,7 @@ class LocalCategoryStore(
      * with each category.
      */
     override fun categoriesSortedByPodcastCount(limit: Int): Flow<List<Category>> {
-        return categoriesDao.categoriesSortedByPodcastCount(limit)
+        return categoriesDao.categoriesSortedByPodcastCount(limit = limit)
     }
 
     /**
@@ -214,7 +220,12 @@ class LocalCategoryStore(
      * Note: Currently, in this specific implementation, it's sorted by the last episode date, as
      * indicated by the call to [PodcastsDao.podcastsInCategorySortedByLastEpisode]. It needs to be
      * modified if it is to be sorted by the podcast count in the category as the name of the
-     * function suggests.
+     * function suggests. TODO: Rename or modify.
+     *
+     * We just return the [Flow] of [List] of [PodcastWithExtraInfo] from the
+     * [PodcastsDao.podcastsInCategorySortedByLastEpisode] method of our [PodcastsDao] field
+     * [podcastsDao] when called with our [Long] parameter [categoryId] and our [Int] parameter
+     * [limit].
      *
      * @param categoryId The [Category.id] of the [Category] to retrieve podcasts from.
      * @param limit The maximum number of podcasts to return.
@@ -226,7 +237,10 @@ class LocalCategoryStore(
         categoryId: Long,
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastsDao.podcastsInCategorySortedByLastEpisode(categoryId, limit)
+        return podcastsDao.podcastsInCategorySortedByLastEpisode(
+            categoryId = categoryId,
+            limit = limit
+        )
     }
 
     /**
@@ -236,6 +250,10 @@ class LocalCategoryStore(
      * This function uses the [EpisodesDao] field [episodesDao] to query the underlying data source
      * to retrieve episodes that are associated with podcasts within the given category, sorted by
      * the last episode date. The results are limited to a specified number of episodes.
+     *
+     * We just return the [Flow] of [List] of [EpisodeToPodcast] from the
+     * [EpisodesDao.episodesFromPodcastsInCategory] method of our [EpisodesDao] field [episodesDao]
+     * when called with our [Long] parameter [categoryId] and our [Int] parameter [limit].
      *
      * @param categoryId The [Category.id] of the category to filter podcasts by.
      * @param limit The maximum number of episodes to retrieve.
@@ -249,7 +267,7 @@ class LocalCategoryStore(
         categoryId: Long,
         limit: Int
     ): Flow<List<EpisodeToPodcast>> {
-        return episodesDao.episodesFromPodcastsInCategory(categoryId, limit)
+        return episodesDao.episodesFromPodcastsInCategory(categoryId = categoryId, limit = limit)
     }
 
     /**
@@ -298,10 +316,13 @@ class LocalCategoryStore(
      * category with that name exists. The [Flow] will emit whenever the corresponding category in
      * the database is updated.
      *
+     * We just return the [Flow] of [Category] from the [CategoriesDao.observeCategory] method of
+     * our [CategoriesDao] field [categoriesDao] when called with our [String] parameter [name].
+     *
      * @param name The name of the category to retrieve.
      * @return A [Flow] emitting the [Category] object if found, or `null` otherwise. The Flow will
      * emit on data changes in the underlying database.
      */
     override fun getCategory(name: String): Flow<Category?> =
-        categoriesDao.observeCategory(name)
+        categoriesDao.observeCategory(name = name)
 }
