@@ -21,9 +21,12 @@ import com.example.jetcaster.core.data.database.dao.EpisodesDao
 import com.example.jetcaster.core.data.database.dao.PodcastCategoryEntryDao
 import com.example.jetcaster.core.data.database.dao.PodcastsDao
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.Episode
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.Podcast
 import com.example.jetcaster.core.data.database.model.PodcastCategoryEntry
 import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
+import dagger.Provides
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -56,7 +59,7 @@ interface CategoryStore {
      * Retrieves a list of podcasts belonging to a specific category, sorted by the number of
      * podcasts in that category.
      *
-     * This function fetches podcasts associated with the given `categoryId` and orders them based
+     * This function fetches podcasts associated with the given [categoryId] and orders them based
      * on the count of podcasts within that category. The podcasts are then returned as a list of
      * [PodcastWithExtraInfo] objects.
      *
@@ -74,12 +77,6 @@ interface CategoryStore {
         limit: Int = Int.MAX_VALUE
     ): Flow<List<PodcastWithExtraInfo>>
 
-    /*
-     * Returns a flow containing a list of episodes from podcasts in the category with the
-     * given [categoryId], sorted by the their last episode date.
-     */
-
-
     /**
      * Retrieves a list of episodes from podcasts belonging to a specific category.
      *
@@ -88,11 +85,11 @@ interface CategoryStore {
      *
      * @param categoryId The unique identifier of the category. Episodes from podcasts in this
      * category will be retrieved.
-     * @param limit The maximum number of episodes to retrieve. Defaults to `Integer.MAX_VALUE`,
+     * @param limit The maximum number of episodes to retrieve. Defaults to [Integer.MAX_VALUE],
      * meaning no limit. If a limit is specified, the function will return up to that number of
      * episodes. If the number of episodes available is less than the limit, it returns all
      * available episodes.
-     * @return A [Flow] of [List<EpisodeToPodcast>]. Each list represents a batch of episodes and
+     * @return A [Flow] of [List] of [EpisodeToPodcast]. Each list represents a batch of episodes and
      * their associated podcast information. The flow will emit a new list whenever the underlying
      * data changes. The list can be empty if there are no episodes found for the specified category
      * or if all fetched episodes were filtered.
@@ -123,16 +120,18 @@ interface CategoryStore {
     /**
      * Adds a podcast to a specific category.
      *
-     * This function associates a podcast, identified by its URI, with a category, identified by its ID.
-     * This operation is typically used to organize podcasts into different groups or genres.
+     * This function associates a podcast, identified by its URI, with a category, identified by its
+     * [Category.id]. This operation is typically used to organize podcasts into different groups or
+     * genres.
      *
-     * @param podcastUri The URI (Uniform Resource Identifier) of the podcast to be added to the category.
-     * This should be a unique identifier for the podcast, often a URL or a content ID.
+     * @param podcastUri The URI (Uniform Resource Identifier) of the podcast to be added to the
+     * category. This should be a unique identifier for the podcast, often a URL or a content ID.
      * Example: "https://www.example.com/podcasts/my-podcast.rss" or "content://podcasts/123"
-     * @param categoryId The ID of the category to which the podcast will be added.
-     * This is typically a Long integer representing a unique identifier for the category.
+     * @param categoryId The [Category.id] of the category to which the podcast will be added.
+     * This is a [Long] integer representing a unique identifier for the category.
      * Example: 1, 2, 100
-     * @throws Exception If there's an error adding the podcast to the category, an exception might be thrown.
+     * @throws Exception If there's an error adding the podcast to the category, an exception might
+     * be thrown.
      * Possible reasons include:
      *  - The podcast URI is invalid or not found.
      *  - The category ID is invalid or not found.
@@ -150,16 +149,16 @@ interface CategoryStore {
      * Retrieves a category from the data source based on its name.
      *
      * This function queries the underlying data source (e.g., database, API) for a category
-     * with the specified name. If a matching category is found, it is emitted as a
-     * `Category` object within the `Flow`. If no matching category is found, `null` is
+     * with the specified [name]. If a matching category is found, it is emitted as a
+     * [Category] object within the [Flow]. If no matching category is found, `null` is
      * emitted.
      *
-     * The function returns a `Flow` to allow for asynchronous and potentially reactive
+     * The function returns a [Flow] to allow for asynchronous and potentially reactive
      * handling of the category retrieval process. This allows the caller to observe
      * the result and react to it as it becomes available.
      *
      * @param name The name of the category to retrieve.
-     * @return A `Flow` that emits a `Category` object if a category with the given name is found,
+     * @return A [Flow] that emits a [Category] object if a category with the given [name] is found,
      * or `null` if no matching category exists.
      */
     fun getCategory(name: String): Flow<Category?>
@@ -167,17 +166,21 @@ interface CategoryStore {
 
 /**
  * [LocalCategoryStore] is an implementation of [CategoryStore] that uses local DAOs to
- * provide access to the categories, podcasts and episodes.
+ * provide access to the categories, podcasts and episodes. It is constructed by Hilt as the
+ * [CategoryStore] to inject by the `provideCategoryStore` [Provides] method.
  *
  * This class interacts with the database through the provided DAOs and provides methods for
  * retrieving categories, podcasts within categories, and episodes from podcasts in categories.
  * It also supports adding new categories and associating podcasts with categories.
  *
- * @property categoriesDao DAO for accessing and manipulating Category entities.
- * @property categoryEntryDao DAO for accessing and manipulating PodcastCategoryEntry entities,
- * which link podcasts to categories.
- * @property episodesDao DAO for accessing and manipulating Episode entities.
- * @property podcastsDao DAO for accessing and manipulating Podcast entities.
+ * @property categoriesDao DAO for accessing and manipulating [Category] entities in the "categories"
+ * table.
+ * @property categoryEntryDao DAO for accessing and manipulating [PodcastCategoryEntry] entities
+ * in the "podcast_category_entries" table, which links podcasts to categories.
+ * @property episodesDao DAO for accessing and manipulating [Episode] entities in the "episodes"
+ * table.
+ * @property podcastsDao DAO for accessing and manipulating [Podcast] entities in the "podcasts"
+ * table.
  */
 class LocalCategoryStore(
     private val categoriesDao: CategoriesDao,
@@ -209,14 +212,15 @@ class LocalCategoryStore(
      * order, with the categories containing the newest episodes at the top).
      *
      * Note: Currently, in this specific implementation, it's sorted by the last episode date, as
-     * indicated by `podcastsInCategorySortedByLastEpisode`. It needs to be updated if it is to be
-     * sorted by the podcast count in the category as the name of the function suggests.
+     * indicated by the call to [PodcastsDao.podcastsInCategorySortedByLastEpisode]. It needs to be
+     * modified if it is to be sorted by the podcast count in the category as the name of the
+     * function suggests.
      *
-     * @param categoryId The ID of the category to retrieve podcasts from.
+     * @param categoryId The [Category.id] of the [Category] to retrieve podcasts from.
      * @param limit The maximum number of podcasts to return.
-     * @return A Flow emitting a List of PodcastWithExtraInfo, where each PodcastWithExtraInfo
+     * @return A [Flow] emitting a [List] of [PodcastWithExtraInfo], where each [PodcastWithExtraInfo]
      * represents a podcast in the specified category. The list is sorted as described above. If no
-     * podcasts are found or `categoryId` is not valid, it might return an empty List.
+     * podcasts are found or [categoryId] is not valid, it might return an empty [List].
      */
     override fun podcastsInCategorySortedByPodcastCount(
         categoryId: Long,
@@ -237,7 +241,7 @@ class LocalCategoryStore(
      * @param limit The maximum number of episodes to retrieve.
      * @return A [Flow] emitting a list of [EpisodeToPodcast] objects. Each [EpisodeToPodcast]
      * contains information about an episode and its associated podcast. The flow will emit the list
-     * of episodes as they are retrieved from the data source. The list will contain at most `limit`
+     * of episodes as they are retrieved from the data source. The list will contain at most [limit]
      * elements.
      * @throws Exception if there's an issue retrieving the data from the data source.
      */
@@ -252,14 +256,14 @@ class LocalCategoryStore(
      * Adds a category to the database if it doesn't already exist.
      *
      * This function checks if a category with the same name already exists.
-     * - If a category with the same name exists, it returns the ID of the existing category.
-     * - If a category with the same name does not exist, it inserts the new category into the
-     * database and returns the generated ID.
+     *  - If a category with the same name exists, it returns the ID of the existing category.
+     *  - If a category with the same name does not exist, it inserts the new category into the
+     *  database and returns the generated ID.
      *
      * @param category The [Category] object to be added.
      * @return The [Category.id] of the category. If a category with the same name already exists,
-     * the ID of the existing category is returned. Otherwise, the newly generated ID of the
-     * inserted category is returned.
+     * the [Category.id] of the existing category is returned. Otherwise, the newly generated ID of
+     * the inserted category is returned.
      * @throws Exception If any error occurred during the database operation
      */
     override suspend fun addCategory(category: Category): Long {
@@ -282,7 +286,7 @@ class LocalCategoryStore(
      */
     override suspend fun addPodcastToCategory(podcastUri: String, categoryId: Long) {
         categoryEntryDao.insert(
-            PodcastCategoryEntry(podcastUri = podcastUri, categoryId = categoryId)
+            entity = PodcastCategoryEntry(podcastUri = podcastUri, categoryId = categoryId)
         )
     }
 

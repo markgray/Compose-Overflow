@@ -282,12 +282,13 @@ sealed class PodcastRssResponse {
  * of our [SyndFeed] receiver using our [String] constant [PodcastModuleDtd] as the module URI, and
  * if this is not `null`, we cast it to a [FeedInformation]. We initialize our [Podcast] variable
  * `val podcast` to be a new instance of [Podcast] with the following properties:
- *  - `uri = podcastUri`: The URI of the podcast.
- *  - `title = title`: The title of the podcast.
+ *  - `uri = podcastUri`: The URI of the podcast is our [String] variable `podcastUri`.
+ *  - `title = title`: The title of the podcast is the [SyndFeed.getTitle] of our receiver.
  *  - `description = feedInfo?.summary ?: description`: The description of the podcast, using the
  *  [FeedInformation.getSummary] property if available, or the [SyndFeed.getDescription] property.
- *  - `author = author`: The author of the podcast.
- *  - `copyright = copyright`: The copyright information of the podcast.
+ *  - `author = author`: The author of the podcast is the [SyndFeed.getAuthor] of our receiver.
+ *  - `copyright = copyright`: The copyright information of the podcast is the [SyndFeed.getCopyright]
+ *  of our receiver.
  *  - `imageUrl = feedInfo?.imageUri?.toString()`: The URL of the podcast's image, if available in
  *  the [FeedInformation.getImageUri] property.
  *
@@ -302,7 +303,7 @@ sealed class PodcastRssResponse {
  *  - `episodes = episodes`: The [List] of [Episode] instances we initialized earlier.
  *  - `categories = categories`: The [Set] of [Category] instances we initialized earlier.
  *
- * @param feedUrl The original URL from which the SyndFeed was fetched. This is used
+ * @param feedUrl The original URL from which the [SyndFeed] was fetched. This is used
  * as a fallback for the podcast URI if the feed itself doesn't contain a specific URI.
  * @return A [PodcastRssResponse.Success] object containing the parsed podcast information,
  * including podcast details, episodes, and categories.
@@ -350,16 +351,18 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
  * including the episode's URI, podcast URI, title, author, summary, subtitle, published date, and
  * duration.
  *
- * First we initialize our [EntryInformation] variable `val entryInformation` with the [Module] returned
- * by the [SyndEntry.getModule] function of our [SyndEntry] receiver, using our [String] constant
- * [PodcastModuleDtd] as the module URI. If this is not `null`, we cast it to an [EntryInformation].
+ * First we initialize our [EntryInformation] variable `val entryInformation` with the [Module]
+ * returned by the [SyndEntry.getModule] function of our [SyndEntry] receiver, using our [String]
+ * constant [PodcastModuleDtd] as the module URI. If this is not `null`, we cast it to an
+ * [EntryInformation].
+ *
  * Then we return a new [Episode] instance with the following properties:
  *  - `uri` = [SyndEntry.getUri]: The URI of the episode.
  *  - `podcastUri` = [podcastUri]: The URI of the podcast this episode belongs to.
  *  - `title` = [SyndEntry.getTitle]: The title of the episode.
  *  - `author` = [SyndEntry.getAuthor]: The author of the episode.
  *  - `summary` = [EntryInformation.getSummary] if that is not `null` or [SyndEntry.getDescription]
- *  if it is as the summary.
+ *  if it is, as the summary.
  *  - `subtitle` = [EntryInformation.getSubtitle]: The subtitle of the episode.
  *  - `published` = [Instant.ofEpochMilli] of the [SyndEntry.getPublishedDate] offset by
  *  [ZoneOffset.UTC] to convert it to an [OffsetDateTime].
