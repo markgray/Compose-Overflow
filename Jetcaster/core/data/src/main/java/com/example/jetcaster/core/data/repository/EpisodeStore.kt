@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.Flow
 interface EpisodeStore {
 
     /**
-     * Retrieves an [Episode] object associated with the given episode URI.
+     * Retrieves the [Episode] object associated with the URI [episodeUri] from the "episodes" table.
      *
      * This function fetches episode details based on a unique identifier (URI). It is
      * designed to handle asynchronous data retrieval and returns a [Flow] that emits
@@ -48,19 +48,19 @@ interface EpisodeStore {
      * Retrieves an [EpisodeToPodcast] object containing an episode and its associated podcast,
      * based on the provided episode URI.
      *
-     * This function uses the provided `episodeUri` to query the underlying data source
-     * (e.g., a database, a content provider) and retrieve the corresponding episode and
-     * podcast details. It then combines these details into an `EpisodeToPodcast` object.
+     * This function uses the provided URI in its [String] parameter [episodeUri] to query the
+     * underlying data source (e.g., a database, a content provider) and retrieve the corresponding
+     *  podcast details. It then combines these details into an [EpisodeToPodcast] object.
      *
-     * The function returns a [Flow] that emits a single `EpisodeToPodcast` object. This allows
+     * The function returns a [Flow] that emits a single [EpisodeToPodcast] object. This allows
      * for asynchronous and reactive handling of the data.
      *
      * If no episode is found matching the provided URI or if the episode does not have an associated
-     * podcast, the flow will emit a default/empty `EpisodeToPodcast` object or potentially throw an
-     * exception depending on the implementation.
+`    * podcast, the flow will emit a default/empty [EpisodeToPodcast] object or potentially throw an
+`    * exception depending on the implementation.
      *
      * @param episodeUri The URI of the episode to retrieve. This is a unique identifier for the
-     * episode, typically a string.
+     * episode.
      * @return A [Flow] that emits a single [EpisodeToPodcast] object containing the episode and its
      * associated podcast.
      *
@@ -81,8 +81,8 @@ interface EpisodeStore {
      * with the podcast is less than the limit, only those available episodes are returned.
      * @return A [Flow] that emits lists of [EpisodeToPodcast] objects. Each list represents a batch
      * of episodes retrieved. The frequency and size of these batches are implementation-dependent.
-     * If no episode is associated with the PodcastUri, an empty list will be emitted. If an error
-     * occur during the fetching, an error will be propagated through the flow
+     * If no episode is associated with the [podcastUri], an empty list will be emitted. If an error
+     * occurs during the fetching, an [Exception] will be propagated through the [Flow].
      *
      * @throws Exception If there is an issue during retrieving the data. The specific Exception
      * type will depend of the internal implementation.
@@ -98,7 +98,7 @@ interface EpisodeStore {
      *
      * This function fetches episodes from multiple podcasts specified by their URIs. It limits the
      * total number of episodes retrieved across all podcasts to the specified limit. The results
-     * are provided as a flow of lists, where each list contains EpisodeToPodcast objects.
+     * are provided as a flow of lists, where each list contains [EpisodeToPodcast] objects.
      *
      * @param podcastUris A list of URIs representing the podcasts to fetch episodes from. Must not
      * be empty. If a URI is invalid or a podcast cannot be found, episodes from that podcast will
@@ -107,7 +107,7 @@ interface EpisodeStore {
      * [Integer.MAX_VALUE], meaning no limit. Must be non-negative. If limit is 0, it will emit an
      * empty list. If limit is less than the total number of episodes available, only up to the
      * limit will be returned.
-     * @return A Flow emitting lists of EpisodeToPodcast objects. Each emitted list represents a
+     * @return A [Flow] emitting lists of [EpisodeToPodcast] objects. Each emitted list represents a
      * chunk of retrieved episodes. The flow will complete when all available episodes (up to the
      * limit) have been emitted. The flow will emit at least one empty list if there are no episodes
      * available and limit is not equal to zero.
@@ -132,7 +132,7 @@ interface EpisodeStore {
      * processes. It should be called from within a coroutine or another suspend function.
      *
      * @param episodes The collection of [Episode] objects to be added. Must not be empty.
-     * @throws IllegalArgumentException If the `episodes` collection is empty.
+     * @throws IllegalArgumentException If the [episodes] collection is empty.
      * @throws Exception If an error occurs during the addition of episodes to the data store.
      */
     suspend fun addEpisodes(episodes: Collection<Episode>)
@@ -166,12 +166,17 @@ class LocalEpisodeStore(
 ) : EpisodeStore {
 
     /**
-     * Retrieves an [Episode] from the database corresponding to the given URI.
+     * Retrieves the [Episode] from the "episodes" table of the database corresponding to the [String]
+     * parameter [episodeUri].
      *
      * This function queries the underlying data access object ([episodesDao]) to
      * fetch an episode based on its unique URI. It returns a [Flow] that emits
      * the matching [Episode] or completes without emitting if no episode with
      * the specified URI is found.
+     *
+     * We just return the [Flow] of [Episode] returned by the [EpisodesDao.episode] method of our
+     * [EpisodesDao] field [episodesDao] when called with its `uri` argument our [String] parameter
+     * [episodeUri].
      *
      * @param episodeUri The unique URI of the episode to retrieve.
      * @return A [Flow] that emits the [Episode] associated with the given URI. If no episode with
@@ -189,12 +194,16 @@ class LocalEpisodeStore(
      * returns the episode along with its associated podcast information. It leverages Room's
      * relationship mapping to fetch both entities in a single query.
      *
+     * We just return the [Flow] of [EpisodeToPodcast] returned by the [EpisodesDao.episodeAndPodcast]
+     * method of our [EpisodesDao] field [episodesDao] when called with its `episodeUri` argument our
+     * [String] parameter [episodeUri].
+     *
      * @param episodeUri The URI of the episode to retrieve. This should be a unique identifier for
      * the episode within the data source.
      * @return A [Flow] emitting an [EpisodeToPodcast] object. This allows for observing changes to
-     * the underlying data. The Flow will emit a single [EpisodeToPodcast] object if a matching
-     * episode is found, otherwise, the Flow will complete without emitting any values. If multiple
-     * Episodes match the uri, the flow will only emit the first.
+     * the underlying data. The [Flow] will emit a single [EpisodeToPodcast] object if a matching
+     * episode is found, otherwise, the [Flow] will complete without emitting any values. If multiple
+     * Episodes match the uri, the [Flow] will only emit the first.
      * @throws Exception if there is an error querying the database. (e.g. Database is closed)
      */
     override fun episodeAndPodcastWithUri(episodeUri: String): Flow<EpisodeToPodcast> =
@@ -208,6 +217,11 @@ class LocalEpisodeStore(
      * [podcastUri]. The results are returned as a [Flow] of [List] of [EpisodeToPodcast] objects
      * allowing for reactive data handling.
      *
+     * We just return the [Flow] of [List] of [EpisodeToPodcast] returned by the
+     * [EpisodesDao.episodesForPodcastUri] method of our [EpisodesDao] field [episodesDao] when
+     * called with its `podcastUri` argument our [String] parameter [podcastUri] and its `limit`
+     * argument our [Int] parameter [limit].
+     *
      * @param podcastUri The URI (Uniform Resource Identifier) of the podcast for which to retrieve
      * episodes. This string should uniquely identify a podcast within the data source.
      * @param limit The maximum number of episodes to retrieve. If the podcast has fewer episodes
@@ -220,16 +234,20 @@ class LocalEpisodeStore(
         podcastUri: String,
         limit: Int
     ): Flow<List<EpisodeToPodcast>> {
-        return episodesDao.episodesForPodcastUri(podcastUri, limit)
+        return episodesDao.episodesForPodcastUri(podcastUri = podcastUri, limit = limit)
     }
 
     /**
      * Retrieves a list of episodes associated with a given [List] of podcast URIs, the number
      * returned limited by our [Int] parameter [limit].
      *
-     * This function queries the underlying data source (likely a database or cache) to fetch
-     * episodes. It provides a reactive stream of results, allowing the caller to observe changes
-     * over time.
+     * This function queries the underlying data source to fetch episodes. It provides a reactive
+     * [Flow] of results, allowing the caller to observe changes over time.
+     *
+     * We just return the [Flow] of [List] of [EpisodeToPodcast] returned by the
+     * [EpisodesDao.episodesForPodcasts] method of our [EpisodesDao] field [episodesDao] when
+     * called with its `podcastUris` argument our [List] of [String] parameter [podcastUris] and its
+     * `limit` argument our [Int] parameter [limit].
      *
      * @param podcastUris A list of podcast URIs (e.g., URLs, unique identifiers) to filter episodes
      * by. Episodes will only be included if they are associated with at least one of these URIs.
@@ -248,7 +266,7 @@ class LocalEpisodeStore(
         podcastUris: List<String>,
         limit: Int
     ): Flow<List<EpisodeToPodcast>> =
-        episodesDao.episodesForPodcasts(podcastUris, limit)
+        episodesDao.episodesForPodcasts(podcastUris = podcastUris, limit = limit)
 
     /**
      * Adds a collection of [Episode] objects to the database. This automatically switches to the
@@ -257,10 +275,13 @@ class LocalEpisodeStore(
      * This function inserts the provided episodes into the database using the underlying
      * [episodesDao]. It is a suspend function, meaning it can be safely called from a coroutine.
      *
+     * We just call the [EpisodesDao.insertAll] method of our [EpisodesDao] field [episodesDao] with
+     * its `entities` argument ouf [Collection] of [Episode] parameter [episodes].
+     *
      * @param episodes The collection of [Episode] objects to be added to the database.
      */
     override suspend fun addEpisodes(episodes: Collection<Episode>): Unit =
-        episodesDao.insertAll(episodes)
+        episodesDao.insertAll(entities = episodes)
 
     /**
      * Checks if the underlying data source of episodes is empty.
