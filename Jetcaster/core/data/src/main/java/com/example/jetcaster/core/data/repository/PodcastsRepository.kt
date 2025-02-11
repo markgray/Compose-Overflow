@@ -71,7 +71,7 @@ class PodcastsRepository @Inject constructor(
      *  - Wait for the completion of the refresh operation (by calling `refreshingJob?.join()`).
      *
      * When a new refresh operation is started, this property should be updated to hold the
-     * new Job. When the refresh operation completes (either successfully or with an error),
+     * new [Job]. When the refresh operation completes (either successfully or with an error),
      * this property should be set to null.
      */
     private var refreshingJob: Job? = null
@@ -100,16 +100,17 @@ class PodcastsRepository @Inject constructor(
      *  `refreshingJob?.join()`. This ensures that only one refresh operation happens at a time.
      *  2. **Determines if a refresh is needed:** If [force] is `true` or if the podcast store is
      *  empty (`podcastStore.isEmpty()`), it initiates a new refresh operation.
-     *  3. **Launches a new coroutine:** It launches a new coroutine within the provided `scope` to
-     *  perform the podcast fetching and updating in the background.
+     *  3. **Launches a new coroutine:** It launches a new coroutine within the [CoroutineScope]
+     *  field [scope] to perform the podcast fetching and updating in the background.
      *  4. **Fetches and processes podcasts:** It uses `podcastsFetcher` to retrieve podcasts from
-     *  the predefined `SampleFeeds`. It filters out any non-successful responses and maps the
-     *  successful responses to their contents.
+     *  the [List] of [String] `feedUrls` field [SampleFeeds]. It filters out any non-successful
+     *  responses and maps the successful responses to their contents.
      *  5. **Adds data to stores:** For each successful podcast response, it executes the following
      *  within a transaction:
-     *    - Adds the podcast to the `podcastStore`.
-     *    - Adds the associated episodes to the `episodeStore`.
-     *    - Adds each category to the `categoryStore` and associates the podcast with the category.
+     *    - Adds the podcast to the `PodcastStore` property `podcastStore`.
+     *    - Adds the associated episodes to the `EpisodeStore` property `episodeStore`.
+     *    - Adds each category to the `CategoryStore` property `categoryStore` and associates the
+     *    podcast with the category.
      *  6. **Waits for completion:** After launching the refresh job, it waits for the job to
      *  complete using `job.join()`. This ensures that the function doesn't return before the
      *  podcast update is finished.
@@ -118,7 +119,7 @@ class PodcastsRepository @Inject constructor(
      * `refreshingJob` running it will wait for it to finish.
      *
      * @param force If `true`, forces a refresh of the podcasts even if the store is not empty. If
-     * `false`, the function only updates the podcasts if the store is empty or if no other refresh
+     * `false`, the function only updates the podcasts if the store is empty and no other refresh
      * is already in progress.
      */
     suspend fun updatePodcasts(force: Boolean) {

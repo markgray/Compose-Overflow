@@ -40,7 +40,7 @@ interface PodcastStore {
      *
      * This function takes a URI string as input and returns a [Flow] that emits a single
      * [Podcast] object. The function is responsible for fetching the podcast data
-     * associated with the given URI and constructing the corresponding Podcast instance.
+     * associated with the given URI and constructing the corresponding [Podcast] instance.
      *
      * @param uri The unique URI identifying the podcast to retrieve. This could be a URL, a file
      * path, or any other string representation of a unique resource identifier for the podcast.
@@ -61,6 +61,7 @@ interface PodcastStore {
      * @return A [Flow] that emits a [PodcastWithExtraInfo] object. If the podcast with the URI
      * [podcastUri] is not found or an error occurs during the retrieval process, the flow will
      * emit an error.
+     * @see PodcastWithExtraInfo
      */
     fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo>
 
@@ -95,6 +96,7 @@ interface PodcastStore {
      * @return A [Flow] emitting a [List] of [PodcastWithExtraInfo] objects, sorted by the date of
      * the last episode in descending order (newest first). Returns an empty list if the user is not
      * following any podcasts or if the limit is zero or negative.
+     * @see PodcastWithExtraInfo
      */
     fun followedPodcastsSortedByLastEpisode(
         limit: Int = Int.MAX_VALUE
@@ -136,7 +138,7 @@ interface PodcastStore {
      * @param keyword The keyword to search for within the podcast titles. The search is case
      * insensitive. If the keyword is empty or blank, it will match any podcast (regarding the title
      * criteria).
-     * @param categories A list of [Category] objects representing the categories to filter by.
+     * @param categories A [List] of [Category] objects representing the categories to filter by.
      * If the list is empty, it will match any podcast (regarding the categories criteria).
      * @param limit The maximum number of podcasts to return. Defaults to [Int.MAX_VALUE] (no limit).
      * If a negative value is provided, it is treated as [Int.MAX_VALUE] (no limit).
@@ -157,7 +159,7 @@ interface PodcastStore {
      * identified by its URI. If the podcast is currently followed, it will be unfollowed, and
      * vice-versa.
      *
-     * @param podcastUri The URI of the podcast to toggle the followed state for.  This should be a
+     * @param podcastUri The URI of the podcast to toggle the followed state for. This should be a
      * valid, parseable URI representing the podcast. It could be a local file URI, a content
      * provider URI, or a remote URL.
      * @throws IllegalArgumentException if the provided podcastUri is an invalid or unparsable URI.
@@ -189,7 +191,7 @@ interface PodcastStore {
     /**
      * Unfollows a podcast identified by its URI.
      *
-     * This function removes the podcast from the user's list of followed podcasts.
+     * This function removes the podcast from the user's set of followed podcasts.
      * It performs a network operation to update the user's followed podcast list
      * on the server.
      *
