@@ -238,7 +238,17 @@ interface PodcastStore {
 }
 
 /**
- * A data repository for [Podcast] instances.
+ * [LocalPodcastStore] is a concrete implementation of [PodcastStore] that
+ * interacts directly with the local database to manage [Podcast] data.
+ *
+ * It provides methods for retrieving, searching, following, and unfollowing podcasts,
+ * as well as adding new podcasts to the local store.
+ *
+ * @property podcastDao The Data Access Object (DAO) for interacting with the "podcast" table 
+ * in the database.
+ * @property podcastFollowedEntryDao The DAO for managing the relationship between users and
+ * followed podcasts in the "podcast_followed_entries" table.
+ * @property transactionRunner An utility class to handle multiple atomic database transactions.
  */
 class LocalPodcastStore(
     private val podcastDao: PodcastsDao,
@@ -246,52 +256,161 @@ class LocalPodcastStore(
     private val transactionRunner: TransactionRunner
 ) : PodcastStore {
     /**
-     * Return a flow containing the [Podcast] with the given [uri].
+     * Retrieves a podcast from the data source by its URI.
+     *
+     * This function queries the [PodcastsDao] property [podcastDao] for a [Podcast] matching the
+     * URI in the [String] parameter [uri]. It returns a [Flow] that emits the [Podcast] object if
+     * found, or completes without emitting if no podcast with the specified URI exists.
+     *
+     * We just return the [Flow] of [Podcast] that the [PodcastsDao.podcastWithUri] method of
+     * [PodcastsDao] property [podcastDao] returns when called with our [String] parameter [uri].
+     *
+     * @param uri The URI of the podcast to retrieve.
+     * @return A [Flow] that emits the [Podcast] object if found. Emits nothing and completes if no
+     * podcast with the specified URI is found.
+     * @throws Exception if any error happens during the fetching process from the database.
+     * @see [PodcastsDao.podcastWithUri]
      */
     override fun podcastWithUri(uri: String): Flow<Podcast> {
-        return podcastDao.podcastWithUri(uri)
+        return podcastDao.podcastWithUri(uri = uri)
     }
 
     /**
-     * Return a flow containing the [PodcastWithExtraInfo] with the given [podcastUri].
+     * Retrieves a [PodcastWithExtraInfo] object from the database for a given podcast URI.
+     *
+     * This function uses the [PodcastsDao] property [podcastDao] to fetch detailed information about
+     * a podcast including the [Podcast] itself, the date of the latest episode, and whether it is
+     * followed or not. It returns a [Flow] that emits the [PodcastWithExtraInfo] object for the
+     * [Podcast] identified by the URI in its [String] parameter [podcastUri].
+     *
+     * We just return the [Flow] of [PodcastWithExtraInfo] that the [PodcastsDao.podcastWithExtraInfo]
+     * method of [PodcastsDao] property [podcastDao] returns when called with our [String] parameter
+     * [podcastUri].
+     *
+     * @param podcastUri The unique URI string identifying the podcast.
+     * @return A [Flow] emitting a single [PodcastWithExtraInfo] object. The Flow will emit the
+     * [PodcastWithExtraInfo] if the [Podcast] is found, otherwise the flow will complete. It does
+     * not emit errors, if a podcast is not found the flow simply finishes. Subscribers should
+     * consider handling empty flow conditions.
      */
     override fun podcastWithExtraInfo(podcastUri: String): Flow<PodcastWithExtraInfo> =
-        podcastDao.podcastWithExtraInfo(podcastUri)
+        podcastDao.podcastWithExtraInfo(podcastUri = podcastUri)
 
     /**
-     * Returns a flow containing the entire collection of podcasts, sorted by the last episode
-     * publish date for each podcast.
+     * Retrieves a [List] of [PodcastWithExtraInfo] of all of the podcasts sorted by the date of
+     * their last episode in descending order.
+     *
+     * This function queries the underlying data source to fetch [PodcastWithExtraInfo]'s for all of
+     * the [Podcast]'s in the database, sorted by the date of their last episode in descending order.
+     *
+     * We just return the [Flow] of [List] of [PodcastWithExtraInfo] that the
+     * [PodcastsDao.podcastsSortedByLastEpisode] method of [PodcastsDao] property [podcastDao]
+     * returns when called with our [Int] parameter [limit].
+     *
+     * @param limit The maximum number of podcasts to return. If there are fewer podcasts than the
+     * limit, all available podcasts will be returned.
+     * @return A [Flow] emitting a list of [PodcastWithExtraInfo] objects. The list is sorted by the
+     * date of the last episode (most recent first) and contains at most [limit] elements. The flow
+     * will emit an updated list if the underlying data changes.
      */
     override fun podcastsSortedByLastEpisode(
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastDao.podcastsSortedByLastEpisode(limit)
+        return podcastDao.podcastsSortedByLastEpisode(limit = limit)
     }
 
     /**
-     * Returns a flow containing a list of all followed podcasts, sorted by the their last
-     * episode date.
+     * Retrieves a list of followed podcasts sorted by the date of their last episode in descending
+     * order.
+     *
+     * This function fetches podcasts that the user is following and sorts them based on the most
+     * recent episode released. The result is a list of [PodcastWithExtraInfo] objects created for
+     * the followed podcasts, ordered from the podcast with the newest last episode to the podcast
+     * with the oldest last episode.
+     *
+     * We just return the [Flow] of [List] of [PodcastWithExtraInfo] that the
+     * [PodcastsDao.followedPodcastsSortedByLastEpisode] method of [PodcastsDao] property
+     * [podcastDao] returns when called with our [Int] parameter [limit].
+     *
+     * @param limit The maximum number of podcasts to return. If the number of followed podcasts is
+     * less than this limit, all followed podcasts will be returned. If the number of followed
+     * podcasts is more than this limit, only the top 'limit' number of podcasts will be returned.
+     * @return A [Flow] emitting a [List] of [PodcastWithExtraInfo] objects, sorted by the last
+     * episode date in descending order. The list may be empty if no podcasts are followed.
      */
     override fun followedPodcastsSortedByLastEpisode(
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastDao.followedPodcastsSortedByLastEpisode(limit)
+        return podcastDao.followedPodcastsSortedByLastEpisode(limit = limit)
     }
 
+    /**
+     * Searches for podcasts in the local database based on a keyword in their titles.
+     *
+     * This function queries the local podcast database to find podcasts whose titles
+     * contain the [String] parameter [keyword]. The search is case-insensitive.
+     *
+     * We just return the [Flow] of [List] of [PodcastWithExtraInfo] that the
+     * [PodcastsDao.searchPodcastByTitle] method of [PodcastsDao] property [podcastDao] returns
+     * when called with our [String] parameter [keyword] and [Int] parameter [limit].
+     *
+     * @param keyword The keyword to search for within podcast titles. It will match if the keyword
+     * is a substring of the title. e.g. if keyword is "Tech", it will match "Tech News Daily" or
+     * "MyTechCast".
+     * @param limit The maximum number of results to return. If there are more matching podcasts
+     * than [limit], only the first [limit] number of results will be returned.
+     * @return A [Flow] emitting a [List] of [PodcastWithExtraInfo] objects. The list will contain
+     * podcasts whose titles contain the [String] parameter [keyword]. If no podcasts are found 
+     * the [Flow] will emit an empty list.
+     */
     override fun searchPodcastByTitle(
         keyword: String,
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
-        return podcastDao.searchPodcastByTitle(keyword, limit)
+        return podcastDao.searchPodcastByTitle(keyword = keyword, limit = limit)
     }
 
+    /**
+     * Searches for podcasts based on a keyword in the title and a list of categories.
+     *
+     * This function queries the local database for podcasts that match the given search criteria.
+     * It filters podcasts whose titles contain the specified keyword (case-insensitive) and
+     * are associated with at least one of the provided categories. The search is limited to the
+     * specified number of results.
+     *
+     * We start by initializing our [List] of [Long] variable `val categoryIdList` using the [map]
+     * operator to convert each [Category] object in our [List] of [Category] parameter [categories]
+     * to its [Long] property [Category.id]. Then we return the [Flow] of [List] of
+     * [PodcastWithExtraInfo] that the [PodcastsDao.searchPodcastByTitleAndCategory] method of
+     * [PodcastsDao] property [podcastDao] returns when called with our [String] parameter [keyword],
+     * our [List] of [Long] variable `categoryIdList`, and our [Int] parameter [limit].
+     *
+     * @param keyword The keyword to search for within the podcast titles. The search is case
+     * insensitive.
+     * @param categories A list of [Category] objects representing the categories to filter by.
+     * Only podcasts belonging to at least one of these categories will be included.
+     * @param limit The maximum number of podcasts to return in the result.
+     * @return A [Flow] emitting a list of [PodcastWithExtraInfo] objects created for podcasts that
+     * match the search criteria. The list is ordered by the date of the last episode in each
+     * podcast in descending order (most recent first). If no matching podcasts are found, an empty
+     * list will be emitted.
+     *
+     * @see PodcastWithExtraInfo
+     * @see Category
+     * @see Flow
+     * @see PodcastsDao.searchPodcastByTitleAndCategory
+     */
     override fun searchPodcastByTitleAndCategories(
         keyword: String,
         categories: List<Category>,
         limit: Int
     ): Flow<List<PodcastWithExtraInfo>> {
-        val categoryIdList = categories.map { it.id }
-        return podcastDao.searchPodcastByTitleAndCategory(keyword, categoryIdList, limit)
+        val categoryIdList: List<Long> = categories.map { it.id }
+        return podcastDao.searchPodcastByTitleAndCategory(
+            keyword = keyword,
+            categoryIdList = categoryIdList,
+            limit = limit
+        )
     }
 
     override suspend fun followPodcast(podcastUri: String) {
