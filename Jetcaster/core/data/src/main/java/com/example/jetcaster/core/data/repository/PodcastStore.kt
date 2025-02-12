@@ -258,9 +258,10 @@ class LocalPodcastStore(
     /**
      * Retrieves a podcast from the data source by its URI.
      *
-     * This function queries the [PodcastsDao] property [podcastDao] for a [Podcast] matching the
-     * URI in the [String] parameter [uri]. It returns a [Flow] that emits the [Podcast] object if
-     * found, or completes without emitting if no podcast with the specified URI exists.
+     * This function queries the [PodcastsDao] property [podcastDao] for a [Podcast] whose
+     * [Podcast.uri] matches the URI in the [String] parameter [uri]. It returns a [Flow] that emits
+     * the [Podcast] object if found, or completes without emitting if no podcast with the specified
+     * URI exists.
      *
      * We just return the [Flow] of [Podcast] that the [PodcastsDao.podcastWithUri] method of
      * [PodcastsDao] property [podcastDao] returns when called with our [String] parameter [uri].
@@ -334,7 +335,7 @@ class LocalPodcastStore(
      *
      * @param limit The maximum number of podcasts to return. If the number of followed podcasts is
      * less than this limit, all followed podcasts will be returned. If the number of followed
-     * podcasts is more than this limit, only the top 'limit' number of podcasts will be returned.
+     * podcasts is more than this limit, only the top [limit] number of podcasts will be returned.
      * @return A [Flow] emitting a [List] of [PodcastWithExtraInfo] objects, sorted by the last
      * episode date in descending order. The list may be empty if no podcasts are followed.
      */
@@ -376,7 +377,7 @@ class LocalPodcastStore(
      * This function queries the local database for podcasts that match the given search criteria.
      * It filters podcasts whose titles contain the specified keyword (case-insensitive) and
      * are associated with at least one of the provided categories. The search is limited to the
-     * specified number of results.
+     * number of results specified by the [Int] parameter [limit].
      *
      * We start by initializing our [List] of [Long] variable `val categoryIdList` using the [map]
      * operator to convert each [Category] object in our [List] of [Category] parameter [categories]
