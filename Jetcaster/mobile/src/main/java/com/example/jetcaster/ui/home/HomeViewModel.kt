@@ -20,6 +20,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
@@ -47,6 +48,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import kotlin.enums.EnumEntries
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -87,29 +89,29 @@ class HomeViewModel @Inject constructor(
             // Combines the latest value from each of the flows, allowing us to generate a
             // view state instance which only contains the latest values.
             com.example.jetcaster.core.util.combine(
-                homeCategories,
-                selectedHomeCategory,
-                subscribedPodcasts,
-                refreshing,
-                _selectedCategory.flatMapLatest { selectedCategory ->
+                flow = homeCategories,
+                flow2 = selectedHomeCategory,
+                flow3 = subscribedPodcasts,
+                flow4 = refreshing,
+                flow5 = _selectedCategory.flatMapLatest { selectedCategory ->
                     filterableCategoriesUseCase(selectedCategory)
                 },
-                _selectedCategory.flatMapLatest {
+                flow6 = _selectedCategory.flatMapLatest {
                     podcastCategoryFilterUseCase(it)
                 },
-                subscribedPodcasts.flatMapLatest { podcasts ->
+                flow7 = subscribedPodcasts.flatMapLatest { podcasts ->
                     episodeStore.episodesInPodcasts(
                         podcastUris = podcasts.map { it.podcast.uri },
                         limit = 20
                     )
                 }
-            ) { homeCategories,
-                homeCategory,
-                podcasts,
-                refreshing,
-                filterableCategories,
-                podcastCategoryFilterResult,
-                libraryEpisodes ->
+            ) { homeCategories: EnumEntries<HomeCategory>,
+                homeCategory: HomeCategory,
+                podcasts: List<PodcastWithExtraInfo>,
+                refreshing: Boolean,
+                filterableCategories: FilterableCategoriesModel,
+                podcastCategoryFilterResult: PodcastCategoryFilterResult,
+                libraryEpisodes: List<EpisodeToPodcast> ->
 
                 _selectedCategory.value = filterableCategories.selectedCategory
 
@@ -127,7 +129,7 @@ class HomeViewModel @Inject constructor(
                     podcastCategoryFilterResult = podcastCategoryFilterResult,
                     library = libraryEpisodes.asLibrary()
                 )
-            }.catch { throwable ->
+            }.catch { throwable: Throwable ->
                 emit(
                     HomeScreenUiState(
                         isLoading = false,

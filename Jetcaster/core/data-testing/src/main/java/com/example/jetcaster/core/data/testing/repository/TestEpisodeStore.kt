@@ -25,7 +25,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-// TODO: Move to :testing module upon merging PR #1379
+/**
+ * An [EpisodeStore] used for testing.
+ * TODO: Move to :testing module upon merging PR #1379
+ */
 class TestEpisodeStore : EpisodeStore {
 
     private val episodesFlow = MutableStateFlow<List<Episode>>(listOf())
@@ -70,7 +73,7 @@ class TestEpisodeStore : EpisodeStore {
             }
         }
 
-    override suspend fun addEpisodes(episodes: Collection<Episode>) =
+    override suspend fun addEpisodes(episodes: Collection<Episode>): Unit =
         episodesFlow.update {
             it + episodes
         }

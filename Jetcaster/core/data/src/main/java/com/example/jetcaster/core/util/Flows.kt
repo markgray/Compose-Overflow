@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package com.example.jetcaster.core.util
 
 import kotlinx.coroutines.flow.Flow
 /**
- * Combines 3 flows into a single flow by combining their latest values using the provided transform function.
+ * Combines 5 flows into a single flow by combining their latest values using the provided transform
+ * function. UNUSED
  *
  * @param flow The first flow.
  * @param flow2 The second flow.
  * @param flow3 The third flow.
+ * @param flow4 The fourth flow.
+ * @param flow5 The fifth flow.
  * @param transform The transform function to combine the latest values of the three flows.
- * @return A flow that emits the results of the transform function applied to the latest values of the three flows.
+ * @return A flow that emits the results of the transform function applied to the latest values of
+ * the five flows.
  */
 fun <T1, T2, T3, T4, T5, R> combine(
     flow: Flow<T1>,
@@ -43,10 +49,20 @@ fun <T1, T2, T3, T4, T5, R> combine(
             args[4] as T5,
         )
     }
+
+/**
+ * Combines 2 flows into a single flow by combining their latest values using the provided transform
+ * function. UNUSED
+ *
+ * @param flow The first flow.
+ * @param flow2 The second flow.
+ * @param transform The transform function to combine the latest values of the two flows.
+ * @return A flow that emits the results of the transform function applied to the latest values of
+ * the two flows.
+ */
 fun <T1, T2, R> combine(
     flow: Flow<T1>,
     flow2: Flow<T2>,
-
     transform: suspend (T1, T2) -> R
 ): Flow<R> =
     kotlinx.coroutines.flow.combine(flow, flow2) { args: Array<*> ->
@@ -57,7 +73,8 @@ fun <T1, T2, R> combine(
     }
 
 /**
- * Combines six flows into a single flow by combining their latest values using the provided transform function.
+ * Combines 6 flows into a single flow by combining their latest values using the provided transform
+ * function. UNUSED
  *
  * @param flow The first flow.
  * @param flow2 The second flow.
@@ -66,7 +83,8 @@ fun <T1, T2, R> combine(
  * @param flow5 The fifth flow.
  * @param flow6 The sixth flow.
  * @param transform The transform function to combine the latest values of the six flows.
- * @return A flow that emits the results of the transform function applied to the latest values of the six flows.
+ * @return A flow that emits the results of the transform function applied to the latest values of
+ * the six flows.
  */
 fun <T1, T2, T3, T4, T5, T6, R> combine(
     flow: Flow<T1>,
@@ -89,7 +107,8 @@ fun <T1, T2, T3, T4, T5, T6, R> combine(
     }
 
 /**
- * Combines seven flows into a single flow by combining their latest values using the provided transform function.
+ * Combines 7 flows into a single flow by combining their latest values using the provided transform
+ * function. Used by `HomeViewModel` to create a `HomeScreenUiState`.
  *
  * @param flow The first flow.
  * @param flow2 The second flow.
@@ -99,7 +118,8 @@ fun <T1, T2, T3, T4, T5, T6, R> combine(
  * @param flow6 The sixth flow.
  * @param flow7 The seventh flow.
  * @param transform The transform function to combine the latest values of the seven flows.
- * @return A flow that emits the results of the transform function applied to the latest values of the seven flows.
+ * @return A flow that emits the results of the transform function applied to the latest values of
+ * the seven flows.
  */
 fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
     flow: Flow<T1>,

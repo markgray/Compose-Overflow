@@ -18,11 +18,44 @@ package com.example.jetcaster.core.data
 
 import javax.inject.Qualifier
 
+/**
+ * Qualifier annotation for injecting different [kotlinx.coroutines.CoroutineDispatcher]'s.
+ *
+ * This annotation is used in conjunction with Hilt to differentiate between different types of
+ * [kotlinx.coroutines.CoroutineDispatcher] instances.
+ *
+ * By annotating a `CoroutineDispatcher` dependency with `@Dispatcher`, you specify which
+ * kind of dispatcher you need, using the `jetcasterDispatcher` parameter.
+ *
+ * This allows you to inject different dispatchers for specific tasks like:
+ *  - `IO`: For network or disk operations.
+ *  - `Default`: For CPU-intensive tasks.
+ *  - `Main`: For UI related operations.
+ *  - `MainImmediate`: For immediate UI related operations.
+ *
+ * @property jetcasterDispatcher The specific type of [JetcasterDispatchers] that this
+ * dispatcher instance represents.
+ *
+ * @see JetcasterDispatchers
+ * @see kotlinx.coroutines.CoroutineDispatcher
+ */
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Dispatcher(val jetcasterDispatcher: JetcasterDispatchers)
 
+/**
+ * Enum class representing the different dispatchers used in the Jetcaster application.
+ *
+ * Dispatchers determine which thread or thread pool a coroutine will run on.
+ * This enum provides convenient aliases for common dispatchers.
+ */
 enum class JetcasterDispatchers {
+    /**
+     * This dispatcher is used for UI related operations.
+     */
     Main,
+    /**
+     * This dispatcher is used for network or disk operations.
+     */
     IO,
 }

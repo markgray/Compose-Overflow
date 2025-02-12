@@ -38,6 +38,22 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.jetcaster.core.designsystem.R
 
+/**
+ * Displays an image for a podcast, handling loading, error, and placeholder states.
+ *
+ * This composable function fetches and displays an image from a given URL. It provides visual
+ * feedback during the image loading process and handles potential errors gracefully. It also uses
+ * a placeholder image when the image is loading or fails to load, and a placeholder brush for a
+ * smooth transition.
+ *
+ * @param podcastImageUrl The URL of the podcast image to load.
+ * @param contentDescription A text description of the podcast image for accessibility.
+ * @param modifier Modifier to apply to the image container.
+ * @param contentScale How the image should be scaled to fit the container. Defaults to
+ * [ContentScale.Crop].
+ * @param placeholderBrush The brush to use as a background placeholder while the image is loading
+ * or in case of error. Defaults to [thumbnailPlaceholderDefaultBrush].
+ */
 @Composable
 fun PodcastImage(
     podcastImageUrl: String,

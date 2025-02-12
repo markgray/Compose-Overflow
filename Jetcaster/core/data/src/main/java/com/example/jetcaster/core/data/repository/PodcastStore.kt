@@ -414,30 +414,90 @@ class LocalPodcastStore(
         )
     }
 
+    /**
+     * Repository function to follow a podcast. This function inserts a new [PodcastFollowedEntry]
+     * into the database, representing that the user is now following the specified podcast.
+     *
+     * We just call the [PodcastFollowedEntryDao.insert] method of [PodcastFollowedEntryDao] property
+     * [podcastFollowedEntryDao] with our [String] parameter [podcastUri] as its `podcastUri` argument.
+     *
+     * @param podcastUri The URI (Uniform Resource Identifier) of the podcast to follow.
+     * @throws Exception if there's an error while inserting the podcast follow entry into the database.
+     *
+     * @see PodcastFollowedEntry
+     * @see podcastFollowedEntryDao
+     */
     override suspend fun followPodcast(podcastUri: String) {
         podcastFollowedEntryDao.insert(PodcastFollowedEntry(podcastUri = podcastUri))
     }
 
+    /**
+     * Toggles the followed status of a podcast.
+     *
+     * This function checks if a podcast, identified by our [String] parameter [podcastUri], is
+     * currently followed. If it is, the podcast is unfollowed. If it is not, the podcast is followed.
+     * These operations are performed within the atomic transaction that is provided by
+     * [TransactionRunner] property [transactionRunner] to ensure data consistency.
+     *
+     * @param podcastUri The URI of the podcast to toggle the followed status for.
+     * @throws Exception if any error occurs during the transaction or database operation.
+     * @see [unfollowPodcast]
+     * @see [followPodcast]
+     * @see [transactionRunner]
+     * @see [PodcastFollowedEntryDao.isPodcastFollowed]
+     */
     override suspend fun togglePodcastFollowed(podcastUri: String): Unit = transactionRunner {
-        if (podcastFollowedEntryDao.isPodcastFollowed(podcastUri)) {
-            unfollowPodcast(podcastUri)
+        if (podcastFollowedEntryDao.isPodcastFollowed(podcastUri = podcastUri)) {
+            unfollowPodcast(podcastUri = podcastUri)
         } else {
-            followPodcast(podcastUri)
+            followPodcast(podcastUri = podcastUri)
         }
     }
 
+    /**
+     * Unfollows a podcast by removing its entry from the followed podcasts database.
+     *
+     * This function deletes the corresponding [PodcastFollowedEntry] from the database
+     * based on the provided podcast URI. If no entry with the given URI exists,
+     * no action is taken.
+     *
+     * We just call the [PodcastFollowedEntryDao.deleteWithPodcastUri] method of our
+     * [PodcastFollowedEntryDao] property [podcastFollowedEntryDao] with our [String] parameter
+     * [podcastUri] as its `podcastUri` argument.
+     *
+     * @param podcastUri The unique URI of the podcast to unfollow. This is used to identify the
+     * specific [PodcastFollowedEntry] in the database.
+     */
     override suspend fun unfollowPodcast(podcastUri: String) {
-        podcastFollowedEntryDao.deleteWithPodcastUri(podcastUri)
+        podcastFollowedEntryDao.deleteWithPodcastUri(podcastUri = podcastUri)
     }
 
     /**
-     * Add a new [Podcast] to this store.
+     * Adds a new podcast to the data source.
      *
-     * This automatically switches to the main thread to maintain thread consistency.
+     * This function inserts a given [Podcast] object into the underlying data storage.
+     * It's a suspend function, meaning it should be called within a coroutine or another
+     * suspend function. This allows it to perform potentially long-running database operations
+     * without blocking the main thread. Automatically switches to the main thread to maintain
+     * thread consistency.
+     *
+     * We just call the [PodcastsDao.insert] method of [PodcastsDao] property [podcastDao] with
+     * our [Podcast] parameter [podcast] as its `entity` argument.
+     *
+     * @param podcast The [Podcast] object to be added to the data source.
      */
     override suspend fun addPodcast(podcast: Podcast) {
-        podcastDao.insert(podcast)
+        podcastDao.insert(entity = podcast)
     }
 
+    /**
+     * Checks if the "podcasts" table in the database is empty.
+     *
+     * We just return `true` if the [PodcastsDao.count] method of [PodcastsDao] property [podcastDao]
+     * is equal to 0, indicating that the "podcasts" table is empty. Otherwise, we return `false`.
+     *
+     * @return `true` if the data source contains no records (i.e., the count is 0), `false`
+     * otherwise.
+     */
     override suspend fun isEmpty(): Boolean = podcastDao.count() == 0
 }
