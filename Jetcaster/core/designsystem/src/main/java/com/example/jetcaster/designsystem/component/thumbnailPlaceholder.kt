@@ -24,13 +24,39 @@ import androidx.compose.ui.graphics.SolidColor
 import com.example.jetcaster.designsystem.theme.surfaceVariantDark
 import com.example.jetcaster.designsystem.theme.surfaceVariantLight
 
+/**
+ * Creates a default solid color brush for thumbnail placeholders.
+ *
+ * This function provides a simple way to create a [Brush] that can be used as a placeholder for
+ * thumbnails while they are loading or if they fail to load. It uses a solid color, defaulting to
+ * the value provided by [thumbnailPlaceHolderDefaultColor].
+ *
+ * @param color The color to use for the brush. Defaults to the color returned by
+ * [thumbnailPlaceHolderDefaultColor].
+ * @return A [Brush] instance filled with the specified color.
+ */
 @Composable
 internal fun thumbnailPlaceholderDefaultBrush(
     color: Color = thumbnailPlaceHolderDefaultColor()
 ): Brush {
-    return SolidColor(color)
+    return SolidColor(value = color)
 }
 
+/**
+ * Determines the default placeholder color for thumbnails based on the current dark mode setting.
+ *
+ * This function provides a color suitable for use as a placeholder background
+ * when loading thumbnails, ensuring it adapts to the user's system theme.
+ *
+ * @param isInDarkMode [Boolean] indicating if the current UI is in dark mode. Defaults to the
+ * system's dark mode setting using [isSystemInDarkTheme].
+ * @return A [Color] representing the default thumbnail placeholder color. Returns [surfaceVariantDark]
+ * if in dark mode, [surfaceVariantLight] otherwise.
+ *
+ * @see isSystemInDarkTheme
+ * @see surfaceVariantDark
+ * @see surfaceVariantLight
+ */
 @Composable
 private fun thumbnailPlaceHolderDefaultColor(
     isInDarkMode: Boolean = isSystemInDarkTheme()
