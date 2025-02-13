@@ -22,11 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
 
-/*
- * A container for text that should be HTML formatted. This container will handle building the
- * annotated string from [text], and enable text selection if [text] has any selectable element.
- */
-
 /**
  * [HtmlTextContainer] is a Composable function that renders HTML text within a selectable container.
  * This container will handle building the annotated string from [text], and enable text selection

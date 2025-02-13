@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.update
 
 /**
  * An [EpisodeStore] used for testing.
+ *
  * TODO: Move to :testing module upon merging PR #1379
  */
 class TestEpisodeStore : EpisodeStore {

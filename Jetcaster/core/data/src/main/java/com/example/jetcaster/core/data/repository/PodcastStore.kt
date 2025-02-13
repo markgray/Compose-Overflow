@@ -493,7 +493,7 @@ class LocalPodcastStore(
     /**
      * Checks if the "podcasts" table in the database is empty.
      *
-     * We just return `true` if the [PodcastsDao.count] method of [PodcastsDao] property [podcastDao]
+     * We just return `true` if the [PodcastsDao.count] property of [PodcastsDao] property [podcastDao]
      * is equal to 0, indicating that the "podcasts" table is empty. Otherwise, we return `false`.
      *
      * @return `true` if the data source contains no records (i.e., the count is 0), `false`

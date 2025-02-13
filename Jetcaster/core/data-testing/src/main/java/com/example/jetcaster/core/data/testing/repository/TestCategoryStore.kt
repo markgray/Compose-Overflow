@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.update
 /**
  * A [CategoryStore] used for testing.
  *
- * // TODO: Move to :testing module upon merging PR #1379
+ * TODO: Move to :testing module upon merging PR #1379
  */
 class TestCategoryStore : CategoryStore {
 

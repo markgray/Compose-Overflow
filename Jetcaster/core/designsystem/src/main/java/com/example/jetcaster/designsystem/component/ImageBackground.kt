@@ -54,7 +54,7 @@ fun ImageBackgroundColorScrim(
         url = url,
         modifier = modifier,
         overlay = {
-            drawRect(color)
+            drawRect(color = color)
         }
     )
 }
@@ -92,10 +92,6 @@ fun ImageBackgroundRadialGradientScrim(
     )
 }
 
-/*
- * Displays an image scaled 150% overlaid by [overlay]
- */
-
 /**
  * A composable function that displays an image from a given URL with a customizable overlay.
  *
@@ -105,7 +101,7 @@ fun ImageBackgroundRadialGradientScrim(
  *
  * The image is scaled to fill the available width and crop the excess, maintaining the aspect ratio.
  *
- * @param url The URL of the image to load. Can be null, in which case no image is displayed.
+ * @param url The URL of the image to load. Can be `null`, in which case no image is displayed.
  * @param overlay A lambda that defines how to draw the overlay on top of the image. This lambda
  * receives a [DrawScope] which can be used to draw custom shapes, text, or other graphics on top
  * of the image. This lambda will be executed after the image is drawn.
