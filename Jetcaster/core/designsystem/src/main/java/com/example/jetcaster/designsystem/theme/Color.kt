@@ -709,37 +709,385 @@ val inversePrimaryLightMediumContrast: Color = Color(0xFFFFB868)
  * @see ColorScheme.surfaceDim
  */
 val surfaceDimLightMediumContrast: Color = Color(0xFFE8D7C9)
+/**
+ * A bright-toned surface color with medium contrast in light theme. Suitable for use as a background
+ * or fill color in areas where a subtle difference from pure white is desired.
+ * This color provides a visually gentle contrast and a warm, bright feel.
+ * It's specifically designed to be used in light color schemes where a slight off-white
+ * variation is needed for UI elements, helping to define visual hierarchy without being too stark.
+ *
+ * @see ColorScheme.surfaceBright
+ */
 val surfaceBrightLightMediumContrast: Color = Color(0xFFFFF8F4)
+/**
+ * The color for the lowest surface container in a light theme with medium contrast.
+ *
+ * This color is used for the background of the least prominent UI elements in a light theme,
+ * where a medium contrast ratio is desired. It is typically a very light shade, close to white.
+ * This provides a subtle separation from the underlying background while maintaining a bright
+ * overall look. This color is a pure white.
+ *
+ * @see ColorScheme.surfaceContainerLowest
+ */
 val surfaceContainerLowestLightMediumContrast: Color = Color(0xFFFFFFFF)
+/**
+ * Surface variant for containers with lower emphasis than [surfaceContainerLightMediumContrast] in
+ * light theme with medium contrast.
+ *
+ * This color is intended for use in surface containers where a low-light appearance
+ * with medium contrast is desired.  It is a light shade of orange/beige.
+ * This color is often used for backgrounds, panels or cards in situations where
+ * a subtle separation from the surrounding UI is needed, while still maintaining
+ * a bright and airy feel.
+ *
+ * @see ColorScheme.surfaceContainerLow
+ */
 val surfaceContainerLowLightMediumContrast: Color = Color(0xFFFFF1E6)
+/**
+ * Represents a light-themed surface container color with medium contrast.
+ * This color is used for UI elements that need a background color with
+ * a medium level of contrast against the surrounding content in light mode.
+ *
+ * @see ColorScheme.surfaceContainer
+ */
 val surfaceContainerLightMediumContrast: Color = Color(0xFFFCEBDC)
+/**
+ * Represents a light theme medium-contrast color variant for surface containers with higher emphasis
+ * than [surfaceContainerLightMediumContrast].
+ *
+ * This color is designed to provide a subtle highlight on surfaces, offering a visual lift
+ * without being overly prominent. Its medium contrast level makes it suitable for a wide range
+ * of surface colors, ensuring readability and visual interest. It is particularly well-suited
+ * for interactive elements, subtle separators, or other UI components where a gentle
+ * highlighting effect is desired.
+ *
+ *  @see ColorScheme.surfaceContainerHigh
+ */
 val surfaceContainerHighLightMediumContrast: Color = Color(0xFFF6E5D7)
+/**
+ * The highest-emphasis surface container color in light mode with medium contrast.
+ * This color is typically used for UI elements that require the most emphasis or distinction
+ * within the surface container hierarchy in a light theme. It maintains a medium level of
+ * contrast to ensure accessibility while standing out from other surface containers.
+ *
+ * @see ColorScheme.surfaceContainerHighest
+ */
 val surfaceContainerHighestLightMediumContrast: Color = Color(0xFFF1E0D1)
-
+/**
+ * The primary color for light themes, with high contrast.
+ * This color is used for prominent UI elements that need to stand out against
+ * a light background, offering strong visual distinction.
+ *
+ * @see ColorScheme.primary
+ */
 val primaryLightHighContrast: Color = Color(0xFF351D00)
+/**
+ * Color used for text and icons displayed on top of the [primaryLightHighContrast] color in light
+ * theme with high contrast.
+ *
+ * This color is intended for scenarios where maximum contrast is needed to ensure readability and
+ * accessibility against a light primary background.  It is typically white (#FFFFFF) to provide the
+ * strongest contrast possible. Use this color for elements like text labels, icons, and other
+ * interactive elements that need to be clearly visible on a light primary surface.
+ *
+ * @see ColorScheme.onPrimary
+ */
 val onPrimaryLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * The primary container color in light theme with high contrast.
+ *
+ * This color is used for elements that contain or group primary content
+ * in a light theme with high contrast requirements. It is intended to
+ * provide sufficient contrast against the background and other elements.
+ *
+ * @see ColorScheme.primaryContainer
+ */
 val primaryContainerLightHighContrast: Color = Color(0xFF623A00)
+/**
+ * The high-contrast color to use for content on top of [primaryContainerLightHighContrast] in
+ * light theme with high contrast.
+ *
+ * This color is typically white (#FFFFFF) and is designed to ensure sufficient contrast
+ * against the light primary container color, improving accessibility and readability.
+ * Use this color for text, icons, and other content that needs to be clearly visible
+ * when placed on a light primary container.
+ *
+ * @see ColorScheme.onPrimaryContainer
+ */
 val onPrimaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * A secondary color intended for use in light theme with high contrast.
+ *
+ * This color is a dark brown (#301F00) and provides a strong contrast against lighter
+ * backgrounds, ensuring accessibility for users with visual impairments. It's suitable for
+ * elements like text, icons, or borders where clear visibility is crucial. Secondary colors are
+ * best for:
+ *  - Floating action buttons
+ *  - Selection controls, like checkboxes and radio buttons
+ *  - Highlighting selected text
+ *  - Links and headlines
+ *
+ * @see ColorScheme.secondary
+ */
 val secondaryLightHighContrast: Color = Color(0xFF301F00)
+/**
+ * The color to use for text and icons displayed on top [secondaryLightHighContrast] in a light theme
+ * with high contrast. This color is specifically designed to ensure sufficient contrast
+ * against the secondary light color, enhancing readability and accessibility.
+ * In high-contrast mode, this is typically a dark color like pure white (0xFFFFFFFF) to maximize
+ * visibility against a lighter secondary color background.
+ *
+ * @see ColorScheme.onSecondary
+ */
 val onSecondaryLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * The high-contrast color for the secondary container in a light theme.
+ * This color is intended for use in scenarios where a higher contrast is needed to meet
+ * accessibility standards. It represents a darker shade of the secondary container color,
+ * ensuring sufficient contrast against lighter backgrounds.
+ *
+ * Use cases include:
+ *  - Text on a secondary container background when a high contrast is needed.
+ *  - Icons or other graphical elements within a secondary container.
+ *  - State overlays on top of a secondary container.
+ *
+ * @see ColorScheme.secondaryContainer
+ */
 val secondaryContainerLightHighContrast: Color = Color(0xFF5A3D00)
+/**
+ * The color to use for content (text, icons) that is displayed on top of
+ * [secondaryContainerLightHighContrast] in light theme with high contrast.
+ * This is typically white to ensure sufficient contrast against the secondary
+ * container's background color.
+ *
+ * @see ColorScheme.onSecondaryContainer
+ */
 val onSecondaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * Tertiary color, light theme, high contrast.
+ *
+ * This color is used as a tertiary color in light theme, with high contrast.
+ * It represents a strong, easily distinguishable tertiary color, suitable for
+ * elements that need to stand out against a light background.
+ *
+ * Example Use Cases:
+ *  - Accent buttons or calls to action in light themes.
+ *  - Visual indicators or warnings.
+ *  - Elements requiring strong visual distinction.
+ *
+ * @see ColorScheme.tertiary
+ */
 val tertiaryLightHighContrast: Color = Color(0xFF3C1800)
+/**
+ * The color used for content on top of [tertiaryLightHighContrast] in light theme with high contrast.
+ *
+ * This color should be used when a high degree of contrast is needed against
+ * a light tertiary background. For example, text or icons placed directly
+ * on top of a surface with a light tertiary color. Using this color ensures
+ * maximum readability and accessibility. It is typically white (or very close to it).
+ *
+ * @see ColorScheme.onTertiary
+ */
 val onTertiaryLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * Tertiary container color in light theme with high contrast.
+ *
+ * This color is intended to be used as the background color for UI elements
+ * that require a higher level of contrast in light theme to improve
+ * accessibility. It is a dark orange-brown.
+ *
+ *  @see ColorScheme.tertiaryContainer
+ */
 val tertiaryContainerLightHighContrast: Color = Color(0xFF6F3100)
+/**
+ * The color that should be used for content on top of [tertiaryContainerLightHighContrast] in light
+ * theme with high contrast.
+ *
+ * This color is typically used for text and icons displayed on a tertiary container
+ * when the light theme is active and a high contrast ratio is desired. It is set to white (#FFFFFF)
+ * to ensure sufficient contrast against typical tertiary container backgrounds in light mode.
+ *
+ * @see ColorScheme.onTertiaryContainer
+ */
 val onTertiaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * Error color for light theme with high contrast.
+ *
+ * This color is designed to provide maximum visibility and contrast when used as an error indicator
+ * on light-themed surfaces. It is a dark, saturated red, ensuring it stands out prominently
+ * against lighter backgrounds.
+ *
+ * Example Use Cases:
+ *  - Indicating invalid input fields in a form.
+ *  - Highlighting error messages or warnings.
+ *  - Drawing attention to critical issues within the UI.
+ *
+ *  Color Value: #4C0014 (Dark Red)
+ *
+ * @see ColorScheme.error
+ */
 val errorLightHighContrast: Color = Color(0xFF4C0014)
+/**
+ * Color used for text and icons displayed on top of the [errorLightHighContrast] color in light
+ * theme with high contrast.
+ *
+ * This color is typically used for text or icons that represent errors or critical
+ * states when the application is in light mode and high contrast accessibility
+ * settings are enabled. It ensures sufficient contrast against the background
+ * for users with low vision.
+ *
+ * The value is set to `0xFFFFFFFF`, which represents pure white.
+ *
+ * @see ColorScheme.onError
+ */
 val onErrorLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * The light theme color to use for error container backgrounds in high-contrast scenarios.
+ *
+ * This color is a dark red, specifically `#7F1B30` in hexadecimal, designed to provide
+ * sufficient contrast against elements within the error container, ensuring readability
+ * and accessibility for users with visual impairments.  It's intended for use in
+ * UI components that need to highlight an error state when the device is in light mode
+ * and high-contrast mode is enabled.
+ *
+ * @see ColorScheme.errorContainer
+ */
 val errorContainerLightHighContrast: Color = Color(0xFF7F1B30)
+/**
+ * Color used for text and icons displayed on top of the [errorContainerLightHighContrast] color in
+ * light theme with high contrast.
+ *
+ * **Use Cases:**
+ *  * Background of error messages in light themes.
+ *  * Containers holding elements associated with errors.
+ *
+ * **Accessibility:**
+ * This color is designed to provide high contrast with the `onErrorLight` color, ensuring
+ * sufficient visibility for users with visual impairments.
+ *
+ * @see ColorScheme.onErrorContainer
+ */
 val onErrorContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+/**
+ * High-contrast background color for light themes.
+ *
+ * This color is intended to be used as a background in light theme scenarios where
+ * high contrast is needed to ensure readability and accessibility. It provides
+ * a strong visual distinction against text and other UI elements.
+ *
+ * The color is a light off-white with a slight peach hue.
+ *
+ * **Usage examples:**
+ *  - Background for cards or panels containing important information.
+ *  - Background for views where text needs to be highly legible.
+ *  - Background in areas with low ambient light.
+ *
+ * **Accessibility considerations:**
+ * This color has been chosen to provide sufficient contrast against dark text
+ * according to WCAG (Web Content Accessibility Guidelines) standards.
+ *
+ * @see ColorScheme.background
+ */
 val backgroundLightHighContrast: Color = Color(0xFFFFF8F4)
+/**
+ * Color intended to be used for text and icons that are displayed on [backgroundLightHighContrast]
+ * in light theme with high contrast.
+ * This color provides strong visibility and readability against bright surfaces.
+ *
+ * @see ColorScheme.onBackground
+ */
 val onBackgroundLightHighContrast: Color = Color(0xFF221A11)
+/**
+ * The high-contrast surface color used in light themes.
+ * This color is intended to be used for surfaces that need to stand out
+ * more prominently against the default surface color.
+ *
+ * This color is a light beige, with a hex code of #FFF8F4.
+ * It's suitable for elements requiring higher visual emphasis, like:
+ *  - Floating action buttons (FABs)
+ *  - Elevated cards or panels
+ *  - Dialog backgrounds
+ *  - Selected items in a list
+ *
+ * Using this color helps to ensure sufficient contrast between elements
+ * in the light theme, improving accessibility and readability.
+ *
+ * @see ColorScheme.surface
+ */
 val surfaceLightHighContrast: Color = Color(0xFFFFF8F4)
+/**
+ * High-contrast color variant intended for text and icons that appear on [surfaceLightHighContrast]
+ * in light theme with high contrast.
+ * This color ensures sufficient contrast for accessibility and readability.
+ * This is typically used when the surface color is light and needs a dark color for text or icons
+ * to stand out.
+ *
+ * Example Use Cases:
+ *  - Text displayed on a white or very light-colored card.
+ *  - Icons on a light-colored background.
+ *  - Dividers separating light-colored UI sections.
+ *
+ * @see ColorScheme.onSurface
+ */
 val onSurfaceLightHighContrast: Color = Color(0xFF000000)
+/**
+ * Light theme color for surface variant, high contrast.
+ * This color is a light beige, intended for use in UI elements where a higher contrast
+ * is needed within the surface variant context.  It's designed to stand out more
+ * than the standard [surfaceVariantLight] color while still maintaining visual
+ * harmony within the light theme.
+ *
+ * @see ColorScheme.surfaceVariant
+ */
 val surfaceVariantLightHighContrast: Color = Color(0xFFF7DEC8)
+/**
+ * The color used for text and icons on top of [surfaceVariantLightHighContrast] in light theme with
+ * high contrast.
+ *
+ * This color is intended to be used in scenarios where a higher degree of contrast is needed
+ * against a light surface variant background, such as when accessibility or visibility
+ * is a primary concern. It is a very dark color to ensure strong contrast.
+ *
+ * @see ColorScheme.onSurfaceVariant
+ */
 val onSurfaceVariantLightHighContrast: Color = Color(0xFF2E2113)
+/**
+ * A high-contrast light theme outline color.
+ *
+ * This color is intended for use in light themes where a stronger outline is needed for
+ * improved visibility and contrast. It is typically used to highlight UI elements or
+ * boundaries against a light background.
+ *
+ * The color is a dark shade with a hexadecimal value of `0xFF504030`, representing a
+ * dark brownish hue.
+ *
+ * @see ColorScheme.outline
+ */
 val outlineLightHighContrast: Color = Color(0xFF504030)
+/**
+ * High contrast variant of the outline color for light themes.
+ *
+ * This color is intended for use in light themes where a strong visual
+ * distinction is needed for outlines, such as around focused or highlighted
+ * components. It provides a higher contrast against light backgrounds compared
+ * to the standard [outlineVariantLight] color.
+ *
+ * This specific color is a dark brown.
+ *
+ * @see ColorScheme.outlineVariant
+ */
 val outlineVariantLightHighContrast: Color = Color(0xFF504030)
+/**
+ * A high-contrast scrim color for light theme.
+ *
+ * This color is a fully opaque black color ([Color.Black]) and is designed to be used as a
+ * scrim (a semi-transparent overlay) in light themes where a strong visual distinction is needed.
+ * It can be used, for instance, to dim the background when a modal or dialog is presented,
+ * creating a high-contrast separation between the content behind and the overlaying element.
+ * The strong contrast ensures the overlaying content is clearly emphasized.
+ *
+ * @see ColorScheme.scrim
+ */
 val scrimLightHighContrast: Color = Color(0xFF000000)
 val inverseSurfaceLightHighContrast: Color = Color(0xFF382F25)
 val inverseOnSurfaceLightHighContrast: Color = Color(0xFFFFFFFF)
