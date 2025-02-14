@@ -3,11 +3,14 @@
 # Do not add a dependency to an individual sample, edit the global version instead.
 #####
 [versions]
-accompanist = "0.34.0"
-androidGradlePlugin = "8.8.0"
+accompanist = "0.37.0"
+accompanist-flowLayout = "0.36.0"
+accompanist-swiperefresh = "0.36.0"
+accompanist-systemuicontroller = "0.36.0"
+androidGradlePlugin = "8.8.1"
 androidx-activity-compose = "1.10.0"
 androidx-appcompat = "1.7.0"
-androidx-compose-bom = "2025.01.01"
+androidx-compose-bom = "2025.02.00"
 androidx-constraintlayout = "1.1.0"
 androidx-core-splashscreen = "1.0.1"
 androidx-corektx = "1.15.0"
@@ -15,7 +18,7 @@ androidx-glance = "1.1.1"
 androidx-lifecycle = "2.8.7"
 androidx-lifecycle-compose = "2.8.7"
 androidx-lifecycle-runtime-compose = "2.8.7"
-androidx-navigation = "2.8.6"
+androidx-navigation = "2.8.7"
 androidx-palette = "1.0.0"
 androidx-test = "1.6.1"
 androidx-test-espresso = "3.6.1"
@@ -23,7 +26,7 @@ androidx-test-ext-junit = "1.2.1"
 androidx-test-ext-truth = "1.6.0"
 androidx-tv-foundation = "1.0.0-alpha12"
 androidx-tv-material = "1.0.0"
-androidx-wear-compose = "1.4.0"
+androidx-wear-compose = "1.4.1"
 androidx-window = "1.3.0"
 androidxHiltNavigationCompose = "1.2.0"
 androix-test-uiautomator = "2.3.0"
@@ -56,15 +59,15 @@ room = "2.6.1"
 secrets = "2.0.1"
 # @keep
 targetSdk = "35"
-version-catalog-update = "0.8.4"
+version-catalog-update = "0.8.5"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist-flowLayout" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
-accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist-swiperefresh" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist-systemuicontroller" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
