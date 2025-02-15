@@ -15,6 +15,7 @@
  */
 
 package com.example.jetcaster.designsystem.theme
+
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.ColorScheme
 
@@ -24,6 +25,7 @@ import androidx.compose.material3.ColorScheme
  * @see ColorScheme.primary
  */
 val primaryLight: Color = Color(0xFF885200)
+
 /**
  * The color to use for text and icons displayed on top of the primary color in light theme.
  * Typically, this is white to ensure contrast against a darker primary color.
@@ -31,6 +33,7 @@ val primaryLight: Color = Color(0xFF885200)
  * @see ColorScheme.onPrimary
  */
 val onPrimaryLight: Color = Color(0xFFFFFFFF)
+
 /**
  * The primary color used for containers in light theme.
  * This color is a bright orange-yellow, specifically hex code #FFAC46.
@@ -40,6 +43,7 @@ val onPrimaryLight: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.primaryContainer
  */
 val primaryContainerLight: Color = Color(0xFFFFAC46)
+
 /**
  * The color to use for text and icons displayed on top of a primary container in light theme.
  * This color should provide sufficient contrast against [primaryContainerLight].
@@ -47,6 +51,7 @@ val primaryContainerLight: Color = Color(0xFFFFAC46)
  * @see ColorScheme.onPrimaryContainer
  */
 val onPrimaryContainerLight: Color = Color(0xFF482900)
+
 /**
  * The secondary color used by the application in light theme. The secondary color provides more
  * ways to accent and distinguish your product. Secondary colors are best for:
@@ -58,6 +63,7 @@ val onPrimaryContainerLight: Color = Color(0xFF482900)
  * @see ColorScheme.secondary
  */
 val secondaryLight: Color = Color(0xFF7A5817)
+
 /**
  * The color to use for text and icons displayed on top of [secondaryLight] in light theme.
  * This color should have a high contrast against [secondaryLight] to ensure readability.
@@ -67,6 +73,7 @@ val secondaryLight: Color = Color(0xFF7A5817)
  * @see ColorScheme.onSecondary
  */
 val onSecondaryLight: Color = Color(0xFFFFFFFF)
+
 /**
  * The color for a secondary container in light theme.
  * This color is typically used as a background color for components that are
@@ -78,6 +85,7 @@ val onSecondaryLight: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.secondaryContainer
  */
 val secondaryContainerLight: Color = Color(0xFFFFD798)
+
 /**
  * The color used for text and icons that are placed on top of a secondary container
  * in a light theme. This color ensures sufficient contrast against the background
@@ -92,6 +100,7 @@ val secondaryContainerLight: Color = Color(0xFFFFD798)
  * @see ColorScheme.onSecondaryContainer
  */
 val onSecondaryContainerLight: Color = Color(0xFF5C3F00)
+
 /**
  * The tertiary color for light theme.
  *
@@ -107,6 +116,7 @@ val onSecondaryContainerLight: Color = Color(0xFF5C3F00)
  * @see ColorScheme.tertiary
  */
 val tertiaryLight: Color = Color(0xFF994700)
+
 /**
  * The color to use for text and icons displayed on top of [tertiaryLight] in light theme.
  * Typically this is white ([Color.White]).
@@ -114,6 +124,7 @@ val tertiaryLight: Color = Color(0xFF994700)
  * @see ColorScheme.onTertiary
  */
 val onTertiaryLight: Color = Color(0xFFFFFFFF)
+
 /**
  * The color for tertiary container backgrounds in light theme.
  * This color is typically used for UI elements that are less prominent than
@@ -124,6 +135,7 @@ val onTertiaryLight: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.tertiaryContainer
  */
 val tertiaryContainerLight: Color = Color(0xFFFF801F)
+
 /**
  * The preferred color for text and icons that appear on [tertiaryContainerLight] in light theme.
  * This color should provide sufficient contrast against the [tertiaryContainerLight] background.
@@ -131,6 +143,7 @@ val tertiaryContainerLight: Color = Color(0xFFFF801F)
  * @see ColorScheme.onTertiaryContainer
  */
 val onTertiaryContainerLight: Color = Color(0xFF2D1000)
+
 /**
  * Represents a red color typically used to indicate an error state in light theme.
  * This color is specifically defined as #A4384A in hexadecimal notation.
@@ -140,6 +153,7 @@ val onTertiaryContainerLight: Color = Color(0xFF2D1000)
  * @see ColorScheme.error
  */
 val errorLight: Color = Color(0xFFA4384A)
+
 /**
  * The color to use for text and icons displayed on top the error color in light theme.
  * This color is typically white ([Color.White]). It's used to ensure sufficient contrast when
@@ -148,6 +162,7 @@ val errorLight: Color = Color(0xFFA4384A)
  * @see ColorScheme.onError
  */
 val onErrorLight: Color = Color(0xFFFFFFFF)
+
 /**
  * The light theme color used for error containers.
  * Error containers are surfaces that display error messages or other critical information.
@@ -163,6 +178,7 @@ val errorContainerLight: Color = Color(0xFFF87889)
  * @see ColorScheme.onErrorContainer
  */
 val onErrorContainerLight: Color = Color(0xFF32000A)
+
 /**
  * The background color used in light theme.
  * This is a very light orange/peach color with a hex code of #FFF8F4.
@@ -170,6 +186,7 @@ val onErrorContainerLight: Color = Color(0xFF32000A)
  * @see ColorScheme.background
  */
 val backgroundLight: Color = Color(0xFFFFF8F4)
+
 /**
  * The color of text and icons displayed on the background color in light theme.
  * This color is designed to provide good contrast and readability when placed on surfaces
@@ -182,6 +199,7 @@ val backgroundLight: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.onBackground
  */
 val onBackgroundLight: Color = Color(0xFF221A11)
+
 /**
  * The default background color for elevated surfaces in the application in light theme.
  * This color is a light, off-white shade, typically used as the background for
@@ -194,6 +212,7 @@ val onBackgroundLight: Color = Color(0xFF221A11)
  * @see ColorScheme.surface
  */
 val surfaceLight: Color = Color(0xFFFFF8F4)
+
 /**
  * The color used for text and icons that are displayed on top of the surface color in light theme.
  * This color should have sufficient contrast against [surfaceLight] to ensure readability.
@@ -206,6 +225,7 @@ val surfaceLight: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.onSurface
  */
 val onSurfaceLight: Color = Color(0xFF221A11)
+
 /**
  * The color used for surface variants in light theme.
  * This color is a light beige-orange, typically used for elements that are
@@ -216,6 +236,7 @@ val onSurfaceLight: Color = Color(0xFF221A11)
  * @see ColorScheme.surfaceVariant
  */
 val surfaceVariantLight: Color = Color(0xFFF7DEC8)
+
 /**
  * The color of content (text, icons, etc.) that is displayed on top of a [surfaceVariantLight]
  * surface in light theme. It provides a medium contrast against the surface variant.
@@ -223,6 +244,7 @@ val surfaceVariantLight: Color = Color(0xFFF7DEC8)
  * @see ColorScheme.onSurfaceVariant
  */
 val onSurfaceVariantLight: Color = Color(0xFF544434)
+
 /**
  * The color used for the outline in light theme.
  * This color provides a subtle visual boundary or border for the component.
@@ -231,6 +253,7 @@ val onSurfaceVariantLight: Color = Color(0xFF544434)
  * @see ColorScheme.outline
  */
 val outlineLight: Color = Color(0xFF877461)
+
 /**
  * A variant of the outline color in light theme. Often used for subtle visual separators or borders
  * in light theme designs. This color provides a less intense outline than the primary outline
@@ -239,6 +262,7 @@ val outlineLight: Color = Color(0xFF877461)
  * @see ColorScheme.outlineVariant
  */
 val outlineVariantLight: Color = Color(0xFFDAC3AD)
+
 /**
  * The light theme scrim color used for overlaying content.
  * This is a black color (alpha: 100%, RGB: 0, 0, 0).
@@ -248,6 +272,7 @@ val outlineVariantLight: Color = Color(0xFFDAC3AD)
  * @see ColorScheme.scrim
  */
 val scrimLight: Color = Color(0xFF000000)
+
 /**
  * The inverse surface color in light theme. This color is used for elements that should appear
  * to be on a surface, but in an inverted or "light" context. This is often used for
@@ -257,6 +282,7 @@ val scrimLight: Color = Color(0xFF000000)
  * @see ColorScheme.inverseSurface
  */
 val inverseSurfaceLight: Color = Color(0xFF382F25)
+
 /**
  * A color that contrasts well with [inverseSurfaceLight] in light theme. Useful for content that
  * sits on top of containers that are [inverseSurfaceLight]. Used for text and icons on
@@ -265,6 +291,7 @@ val inverseSurfaceLight: Color = Color(0xFF382F25)
  * @see ColorScheme.inverseOnSurface
  */
 val inverseOnSurfaceLight: Color = Color(0xFFFFEEDF)
+
 /**
  * An inverse color of the primary color in a light color scheme.
  * This color is typically used to provide a contrasting visual element against
@@ -275,6 +302,7 @@ val inverseOnSurfaceLight: Color = Color(0xFFFFEEDF)
  * @see ColorScheme.inversePrimary
  */
 val inversePrimaryLight: Color = Color(0xFFFFB868)
+
 /**
  * The surface color used for backgrounds and containers in light theme, when they are slightly
  * dimmed. This color is a light beige, designed to provide a subtle contrast to other elements
@@ -284,6 +312,7 @@ val inversePrimaryLight: Color = Color(0xFFFFB868)
  * @see ColorScheme.surfaceDim
  */
 val surfaceDimLight: Color = Color(0xFFE8D7C9)
+
 /**
  * Defines a surface color that is brighter than surface in light theme.
  * This color is a light, warm tone, often used for backgrounds and surfaces
@@ -293,6 +322,7 @@ val surfaceDimLight: Color = Color(0xFFE8D7C9)
  * @see ColorScheme.surfaceBright
  */
 val surfaceBrightLight: Color = Color(0xFFFFF8F4)
+
 /**
  * The color for the lowest container surface in a light theme. This is typically used
  * for elements that are visually the furthest back or at the base of a hierarchy of surfaces.
@@ -306,6 +336,7 @@ val surfaceBrightLight: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.surfaceContainerLowest
  */
 val surfaceContainerLowestLight: Color = Color(0xFFFFFFFF)
+
 /**
  * The color used for low-emphasis surface containers in light theme.
  *
@@ -316,6 +347,7 @@ val surfaceContainerLowestLight: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.surfaceContainerLow
  */
 val surfaceContainerLowLight: Color = Color(0xFFFFF1E6)
+
 /**
  * The light theme color for surface containers, such as cards, sheets, and menus.
  *
@@ -329,6 +361,7 @@ val surfaceContainerLight: Color = Color(0xFFFCEBDC)
  * @see ColorScheme.surfaceContainerHigh
  */
 val surfaceContainerHighLight: Color = Color(0xFFF6E5D7)
+
 /**
  * The highest-emphasis surface container color in light theme.
  * This color is used for the most prominent surface containers, such as
@@ -352,6 +385,7 @@ val surfaceContainerHighestLight: Color = Color(0xFFF1E0D1)
  * @see ColorScheme.primary
  */
 val primaryLightMediumContrast: Color = Color(0xFF623A00)
+
 /**
  * The color to use for text and icons displayed on top of a primary color surface in light theme
  * with medium contrast. This color is white, designed to provide sufficient contrast against
@@ -360,6 +394,7 @@ val primaryLightMediumContrast: Color = Color(0xFF623A00)
  * @see ColorScheme.onPrimary
  */
 val onPrimaryLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * The primary container color in light theme with medium contrast.
  * This color is used for elements that sit on top of the primary color
@@ -369,6 +404,7 @@ val onPrimaryLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.primaryContainer
  */
 val primaryContainerLightMediumContrast: Color = Color(0xFFA76600)
+
 /**
  * The color to use for text and icons displayed on top of a primary container in light theme with
  * medium contrast. This color should provide sufficient contrast against
@@ -379,6 +415,7 @@ val primaryContainerLightMediumContrast: Color = Color(0xFFA76600)
  * @see ColorScheme.onPrimaryContainer
  */
 val onPrimaryContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Secondary color for light themes with medium contrast.
  *
@@ -394,6 +431,7 @@ val onPrimaryContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.secondary
  */
 val secondaryLightMediumContrast: Color = Color(0xFF5A3D00)
+
 /**
  * The color to use for content (text, icons) that is displayed on top of a secondary
  * color in a light theme, with a medium contrast level.
@@ -410,6 +448,7 @@ val secondaryLightMediumContrast: Color = Color(0xFF5A3D00)
  * @see ColorScheme.onSecondary
  */
 val onSecondaryLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Represents a medium-contrast color for the secondary container in a light theme.
  *
@@ -421,6 +460,7 @@ val onSecondaryLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.secondaryContainer
  */
 val secondaryContainerLightMediumContrast: Color = Color(0xFF936E2B)
+
 /**
  * The color to use for text and icons displayed on top of a secondary container in light theme with
  * medium contrast.
@@ -434,6 +474,7 @@ val secondaryContainerLightMediumContrast: Color = Color(0xFF936E2B)
  * @see ColorScheme.onSecondaryContainer
  */
 val onSecondaryContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Tertiary color with medium contrast in light theme. The tertiary color can be used to balance
  * primary and secondary colors, or bring heightened attention to an element such as an input field.
@@ -442,6 +483,7 @@ val onSecondaryContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.tertiary
  */
 val tertiaryLightMediumContrast: Color = Color(0xFF6F3100)
+
 /**
  * The color to use for content (text, icons) on [tertiaryLightMediumContrast] backgrounds in light
  * theme. This color provides a medium level of contrast against the tertiary light background.
@@ -456,6 +498,7 @@ val tertiaryLightMediumContrast: Color = Color(0xFF6F3100)
  * @see ColorScheme.onTertiary
  */
 val onTertiaryLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Tertiary container color in light theme with medium contrast.
  * This color is used for surfaces that contain tertiary content
@@ -469,6 +512,7 @@ val onTertiaryLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.tertiaryContainer
  */
 val tertiaryContainerLightMediumContrast: Color = Color(0xFFBC5800)
+
 /**
  * The color to use for text and icons displayed on top of a tertiary container in light theme with
  * medium contrast.
@@ -484,6 +528,7 @@ val tertiaryContainerLightMediumContrast: Color = Color(0xFFBC5800)
  * @see ColorScheme.onTertiaryContainer
  */
 val onTertiaryContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Error color with medium contrast suitable for light themes.
  * This color is intended for use in scenarios where an error state needs to be indicated with a
@@ -499,6 +544,7 @@ val onTertiaryContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.error
  */
 val errorLightMediumContrast: Color = Color(0xFF7F1B30)
+
 /**
  * The color to use for text and icons displayed on top of a light-themed
  * surface with medium contrast error color.
@@ -513,6 +559,7 @@ val errorLightMediumContrast: Color = Color(0xFF7F1B30)
  * @see ColorScheme.onError
  */
 val onErrorLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * The error container color for light theme with medium contrast.
  *
@@ -528,6 +575,7 @@ val onErrorLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.errorContainer
  */
 val errorContainerLightMediumContrast: Color = Color(0xFFC14E5F)
+
 /**
  * The color to use for text and icons displayed on top of an error container in light theme with
  * medium contrast.
@@ -538,6 +586,7 @@ val errorContainerLightMediumContrast: Color = Color(0xFFC14E5F)
  * @see ColorScheme.onErrorContainer
  */
 val onErrorContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * A light background color with medium contrast.
  *
@@ -554,6 +603,7 @@ val onErrorContainerLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.background
  */
 val backgroundLightMediumContrast: Color = Color(0xFFFFF8F4)
+
 /**
  * Color used for text and icons on top of [backgroundLightMediumContrast] in light theme.
  * This color is a dark brown, providing sufficient contrast for readability on lighter surfaces.
@@ -561,6 +611,7 @@ val backgroundLightMediumContrast: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.onBackground
  */
 val onBackgroundLightMediumContrast: Color = Color(0xFF221A11)
+
 /**
  * A light theme surface color with medium contrast.
  *
@@ -572,6 +623,7 @@ val onBackgroundLightMediumContrast: Color = Color(0xFF221A11)
  * @see ColorScheme.surface
  */
 val surfaceLightMediumContrast: Color = Color(0xFFFFF8F4)
+
 /**
  * The color used for text and icons that are placed on top of [surfaceLightMediumContrast] in light
  * theme.
@@ -579,6 +631,7 @@ val surfaceLightMediumContrast: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.onSurface
  */
 val onSurfaceLightMediumContrast: Color = Color(0xFF221A11)
+
 /**
  * A light theme color used for surface variants with medium contrast.
  *
@@ -590,6 +643,7 @@ val onSurfaceLightMediumContrast: Color = Color(0xFF221A11)
  * @see ColorScheme.surfaceVariant
  */
 val surfaceVariantLightMediumContrast: Color = Color(0xFFF7DEC8)
+
 /**
  * The color to use for text and icons displayed on [surfaceVariantLightMediumContrast] in light
  * theme. This color is designed for use in light color schemes where a medium level of contrast is
@@ -604,6 +658,7 @@ val surfaceVariantLightMediumContrast: Color = Color(0xFFF7DEC8)
  * @see ColorScheme.onSurfaceVariant
  */
 val onSurfaceVariantLightMediumContrast: Color = Color(0xFF504030)
+
 /**
  * A color representing a medium-contrast outline in light theme.
  *
@@ -622,6 +677,7 @@ val onSurfaceVariantLightMediumContrast: Color = Color(0xFF504030)
  * @see ColorScheme.outline
  */
 val outlineLightMediumContrast: Color = Color(0xFF6E5C4A)
+
 /**
  * A color representing a medium-contrast outline variant in light color theme.
  *
@@ -639,6 +695,7 @@ val outlineLightMediumContrast: Color = Color(0xFF6E5C4A)
  * @see ColorScheme.outlineVariant
  */
 val outlineVariantLightMediumContrast: Color = Color(0xFF8B7765)
+
 /**
  * A light theme scrim color with medium contrast.
  *
@@ -656,6 +713,7 @@ val outlineVariantLightMediumContrast: Color = Color(0xFF8B7765)
  * @see ColorScheme.scrim
  */
 val scrimLightMediumContrast: Color = Color(0xFF000000)
+
 /**
  * An light theme inverse surface color with medium contrast.
  *
@@ -675,6 +733,7 @@ val scrimLightMediumContrast: Color = Color(0xFF000000)
  * @see ColorScheme.inverseSurface
  */
 val inverseSurfaceLightMediumContrast: Color = Color(0xFF382F25)
+
 /**
  * A color that is a medium-contrast inverse of the on-surface color in light theme.
  * This color is typically used for text or icons that need to stand out against a
@@ -684,6 +743,7 @@ val inverseSurfaceLightMediumContrast: Color = Color(0xFF382F25)
  * @see ColorScheme.inverseOnSurface
  */
 val inverseOnSurfaceLightMediumContrast: Color = Color(0xFFFFEEDF)
+
 /**
  * The inverse primary color with medium contrast in light theme.
  *
@@ -699,6 +759,7 @@ val inverseOnSurfaceLightMediumContrast: Color = Color(0xFFFFEEDF)
  * @see ColorScheme.inversePrimary
  */
 val inversePrimaryLightMediumContrast: Color = Color(0xFFFFB868)
+
 /**
  * A light theme surface color with medium contrast that is dimmer than [surfaceLight].
  *
@@ -709,6 +770,7 @@ val inversePrimaryLightMediumContrast: Color = Color(0xFFFFB868)
  * @see ColorScheme.surfaceDim
  */
 val surfaceDimLightMediumContrast: Color = Color(0xFFE8D7C9)
+
 /**
  * A bright-toned surface color with medium contrast in light theme. Suitable for use as a background
  * or fill color in areas where a subtle difference from pure white is desired.
@@ -719,8 +781,9 @@ val surfaceDimLightMediumContrast: Color = Color(0xFFE8D7C9)
  * @see ColorScheme.surfaceBright
  */
 val surfaceBrightLightMediumContrast: Color = Color(0xFFFFF8F4)
+
 /**
- * The color for the lowest surface container in a light theme with medium contrast.
+ * The color for the lowest emphasis surface container in a light theme with medium contrast.
  *
  * This color is used for the background of the least prominent UI elements in a light theme,
  * where a medium contrast ratio is desired. It is typically a very light shade, close to white.
@@ -730,6 +793,7 @@ val surfaceBrightLightMediumContrast: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.surfaceContainerLowest
  */
 val surfaceContainerLowestLightMediumContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Surface variant for containers with lower emphasis than [surfaceContainerLightMediumContrast] in
  * light theme with medium contrast.
@@ -743,14 +807,16 @@ val surfaceContainerLowestLightMediumContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.surfaceContainerLow
  */
 val surfaceContainerLowLightMediumContrast: Color = Color(0xFFFFF1E6)
+
 /**
- * Represents a light-themed surface container color with medium contrast.
+ * Represents a light theme surface container color with medium contrast.
  * This color is used for UI elements that need a background color with
  * a medium level of contrast against the surrounding content in light mode.
  *
  * @see ColorScheme.surfaceContainer
  */
 val surfaceContainerLightMediumContrast: Color = Color(0xFFFCEBDC)
+
 /**
  * Represents a light theme medium-contrast color variant for surface containers with higher emphasis
  * than [surfaceContainerLightMediumContrast].
@@ -764,6 +830,7 @@ val surfaceContainerLightMediumContrast: Color = Color(0xFFFCEBDC)
  *  @see ColorScheme.surfaceContainerHigh
  */
 val surfaceContainerHighLightMediumContrast: Color = Color(0xFFF6E5D7)
+
 /**
  * The highest-emphasis surface container color in light mode with medium contrast.
  * This color is typically used for UI elements that require the most emphasis or distinction
@@ -773,14 +840,16 @@ val surfaceContainerHighLightMediumContrast: Color = Color(0xFFF6E5D7)
  * @see ColorScheme.surfaceContainerHighest
  */
 val surfaceContainerHighestLightMediumContrast: Color = Color(0xFFF1E0D1)
+
 /**
- * The primary color for light themes, with high contrast.
+ * The primary color for light theme, with high contrast.
  * This color is used for prominent UI elements that need to stand out against
  * a light background, offering strong visual distinction.
  *
  * @see ColorScheme.primary
  */
 val primaryLightHighContrast: Color = Color(0xFF351D00)
+
 /**
  * Color used for text and icons displayed on top of the [primaryLightHighContrast] color in light
  * theme with high contrast.
@@ -793,6 +862,7 @@ val primaryLightHighContrast: Color = Color(0xFF351D00)
  * @see ColorScheme.onPrimary
  */
 val onPrimaryLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * The primary container color in light theme with high contrast.
  *
@@ -803,6 +873,7 @@ val onPrimaryLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.primaryContainer
  */
 val primaryContainerLightHighContrast: Color = Color(0xFF623A00)
+
 /**
  * The high-contrast color to use for content on top of [primaryContainerLightHighContrast] in
  * light theme with high contrast.
@@ -815,6 +886,7 @@ val primaryContainerLightHighContrast: Color = Color(0xFF623A00)
  * @see ColorScheme.onPrimaryContainer
  */
 val onPrimaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * A secondary color intended for use in light theme with high contrast.
  *
@@ -830,6 +902,7 @@ val onPrimaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.secondary
  */
 val secondaryLightHighContrast: Color = Color(0xFF301F00)
+
 /**
  * The color to use for text and icons displayed on top [secondaryLightHighContrast] in a light theme
  * with high contrast. This color is specifically designed to ensure sufficient contrast
@@ -840,6 +913,7 @@ val secondaryLightHighContrast: Color = Color(0xFF301F00)
  * @see ColorScheme.onSecondary
  */
 val onSecondaryLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * The high-contrast color for the secondary container in a light theme.
  * This color is intended for use in scenarios where a higher contrast is needed to meet
@@ -854,6 +928,7 @@ val onSecondaryLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.secondaryContainer
  */
 val secondaryContainerLightHighContrast: Color = Color(0xFF5A3D00)
+
 /**
  * The color to use for content (text, icons) that is displayed on top of
  * [secondaryContainerLightHighContrast] in light theme with high contrast.
@@ -863,6 +938,7 @@ val secondaryContainerLightHighContrast: Color = Color(0xFF5A3D00)
  * @see ColorScheme.onSecondaryContainer
  */
 val onSecondaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Tertiary color, light theme, high contrast.
  *
@@ -878,6 +954,7 @@ val onSecondaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.tertiary
  */
 val tertiaryLightHighContrast: Color = Color(0xFF3C1800)
+
 /**
  * The color used for content on top of [tertiaryLightHighContrast] in light theme with high contrast.
  *
@@ -889,6 +966,7 @@ val tertiaryLightHighContrast: Color = Color(0xFF3C1800)
  * @see ColorScheme.onTertiary
  */
 val onTertiaryLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Tertiary container color in light theme with high contrast.
  *
@@ -899,6 +977,7 @@ val onTertiaryLightHighContrast: Color = Color(0xFFFFFFFF)
  *  @see ColorScheme.tertiaryContainer
  */
 val tertiaryContainerLightHighContrast: Color = Color(0xFF6F3100)
+
 /**
  * The color that should be used for content on top of [tertiaryContainerLightHighContrast] in light
  * theme with high contrast.
@@ -910,6 +989,7 @@ val tertiaryContainerLightHighContrast: Color = Color(0xFF6F3100)
  * @see ColorScheme.onTertiaryContainer
  */
 val onTertiaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * Error color for light theme with high contrast.
  *
@@ -927,6 +1007,7 @@ val onTertiaryContainerLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.error
  */
 val errorLightHighContrast: Color = Color(0xFF4C0014)
+
 /**
  * Color used for text and icons displayed on top of the [errorLightHighContrast] color in light
  * theme with high contrast.
@@ -941,6 +1022,7 @@ val errorLightHighContrast: Color = Color(0xFF4C0014)
  * @see ColorScheme.onError
  */
 val onErrorLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * The light theme color to use for error container backgrounds in high-contrast scenarios.
  *
@@ -953,6 +1035,7 @@ val onErrorLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.errorContainer
  */
 val errorContainerLightHighContrast: Color = Color(0xFF7F1B30)
+
 /**
  * Color used for text and icons displayed on top of the [errorContainerLightHighContrast] color in
  * light theme with high contrast.
@@ -968,6 +1051,7 @@ val errorContainerLightHighContrast: Color = Color(0xFF7F1B30)
  * @see ColorScheme.onErrorContainer
  */
 val onErrorContainerLightHighContrast: Color = Color(0xFFFFFFFF)
+
 /**
  * High-contrast background color for light themes.
  *
@@ -989,6 +1073,7 @@ val onErrorContainerLightHighContrast: Color = Color(0xFFFFFFFF)
  * @see ColorScheme.background
  */
 val backgroundLightHighContrast: Color = Color(0xFFFFF8F4)
+
 /**
  * Color intended to be used for text and icons that are displayed on [backgroundLightHighContrast]
  * in light theme with high contrast.
@@ -997,6 +1082,7 @@ val backgroundLightHighContrast: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.onBackground
  */
 val onBackgroundLightHighContrast: Color = Color(0xFF221A11)
+
 /**
  * The high-contrast surface color used in light themes.
  * This color is intended to be used for surfaces that need to stand out
@@ -1015,6 +1101,7 @@ val onBackgroundLightHighContrast: Color = Color(0xFF221A11)
  * @see ColorScheme.surface
  */
 val surfaceLightHighContrast: Color = Color(0xFFFFF8F4)
+
 /**
  * High-contrast color variant intended for text and icons that appear on [surfaceLightHighContrast]
  * in light theme with high contrast.
@@ -1030,6 +1117,7 @@ val surfaceLightHighContrast: Color = Color(0xFFFFF8F4)
  * @see ColorScheme.onSurface
  */
 val onSurfaceLightHighContrast: Color = Color(0xFF000000)
+
 /**
  * Light theme color for surface variant, high contrast.
  * This color is a light beige, intended for use in UI elements where a higher contrast
@@ -1040,6 +1128,7 @@ val onSurfaceLightHighContrast: Color = Color(0xFF000000)
  * @see ColorScheme.surfaceVariant
  */
 val surfaceVariantLightHighContrast: Color = Color(0xFFF7DEC8)
+
 /**
  * The color used for text and icons on top of [surfaceVariantLightHighContrast] in light theme with
  * high contrast.
@@ -1051,6 +1140,7 @@ val surfaceVariantLightHighContrast: Color = Color(0xFFF7DEC8)
  * @see ColorScheme.onSurfaceVariant
  */
 val onSurfaceVariantLightHighContrast: Color = Color(0xFF2E2113)
+
 /**
  * A high-contrast light theme outline color.
  *
@@ -1064,6 +1154,7 @@ val onSurfaceVariantLightHighContrast: Color = Color(0xFF2E2113)
  * @see ColorScheme.outline
  */
 val outlineLightHighContrast: Color = Color(0xFF504030)
+
 /**
  * High contrast variant of the outline color for light themes.
  *
@@ -1077,6 +1168,7 @@ val outlineLightHighContrast: Color = Color(0xFF504030)
  * @see ColorScheme.outlineVariant
  */
 val outlineVariantLightHighContrast: Color = Color(0xFF504030)
+
 /**
  * A high-contrast scrim color for light theme.
  *
@@ -1089,121 +1181,578 @@ val outlineVariantLightHighContrast: Color = Color(0xFF504030)
  * @see ColorScheme.scrim
  */
 val scrimLightHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.inverseSurface
+ */
 val inverseSurfaceLightHighContrast: Color = Color(0xFF382F25)
+
+/**
+ * @see ColorScheme.inverseOnSurface
+ */
 val inverseOnSurfaceLightHighContrast: Color = Color(0xFFFFFFFF)
+
+/**
+ * @see ColorScheme.inversePrimary
+ */
 val inversePrimaryLightHighContrast: Color = Color(0xFFFFE8D4)
+
+/**
+ * @see ColorScheme.surfaceDim
+ */
 val surfaceDimLightHighContrast: Color = Color(0xFFE8D7C9)
+
+/**
+ *@see ColorScheme.surfaceBright
+ */
 val surfaceBrightLightHighContrast: Color = Color(0xFFFFF8F4)
+
+/**
+ * @see ColorScheme.surfaceContainerLowest
+ */
 val surfaceContainerLowestLightHighContrast: Color = Color(0xFFFFFFFF)
+
+/**
+ * @see ColorScheme.surfaceContainerLow
+ */
 val surfaceContainerLowLightHighContrast: Color = Color(0xFFFFF1E6)
+
+/**
+ * @see ColorScheme.surfaceContainer
+ */
 val surfaceContainerLightHighContrast: Color = Color(0xFFFCEBDC)
+
+/**
+ * @see ColorScheme.surfaceContainerHigh
+ */
 val surfaceContainerHighLightHighContrast: Color = Color(0xFFF6E5D7)
+
+/**
+ * @see ColorScheme.surfaceContainerHighest
+ */
 val surfaceContainerHighestLightHighContrast: Color = Color(0xFFF1E0D1)
 
+/**
+ * @see ColorScheme.primary
+ */
 val primaryDark: Color = Color(0xFFFFCF9E)
+
+/**
+ * @see ColorScheme.onPrimary
+ */
 val onPrimaryDark: Color = Color(0xFF482900)
+
+/**
+ * @see ColorScheme.primaryContainer
+ */
 val primaryContainerDark: Color = Color(0xFFF79900)
+
+/**
+ * @see ColorScheme.onPrimaryContainer
+ */
 val onPrimaryContainerDark: Color = Color(0xFF371E00)
+
+/**
+ * @see ColorScheme.secondary
+ */
 val secondaryDark: Color = Color(0xFFFFFEFF)
+
+/**
+ * @see ColorScheme.onSecondary
+ */
 val onSecondaryDark: Color = Color(0xFF422C00)
+
+/**
+ * @see ColorScheme.secondaryContainer
+ */
 val secondaryContainerDark: Color = Color(0xFFFBCC80)
+
+/**
+ * @see ColorScheme.onPrimaryContainer
+ */
 val onSecondaryContainerDark: Color = Color(0xFF553A00)
+
+/**
+ * @see ColorScheme.tertiary
+ */
 val tertiaryDark: Color = Color(0xFFFFB68B)
+
+/**
+ * @see ColorScheme.onTertiary
+ */
 val onTertiaryDark: Color = Color(0xFF522300)
+
+/**
+ * @see ColorScheme.tertiaryContainer
+ */
 val tertiaryContainerDark: Color = Color(0xFFE76E00)
+
+/**
+ * @see ColorScheme.onTertiaryContainer
+ */
 val onTertiaryContainerDark: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.error
+ */
 val errorDark: Color = Color(0xFFFFB2B9)
+
+/**
+ * @see ColorScheme.onError
+ */
 val onErrorDark: Color = Color(0xFF65041F)
+
+/**
+ * @see ColorScheme.errorContainer
+ */
 val errorContainerDark: Color = Color(0xFFC14E5F)
+
+/**
+ * @see ColorScheme.onErrorContainer
+ */
 val onErrorContainerDark: Color = Color(0xFFFFFFFF)
+
+/**
+ * @see ColorScheme.background
+ */
 val backgroundDark: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.onBackground
+ */
 val onBackgroundDark: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.surface
+ */
 val surfaceDark: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.onSurface
+ */
 val onSurfaceDark: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.surfaceVariant
+ */
 val surfaceVariantDark: Color = Color(0xFF544434)
+
+/**
+ * @see ColorScheme.onSurfaceVariant
+ */
 val onSurfaceVariantDark: Color = Color(0xFFDAC3AD)
+
+/**
+ * @see ColorScheme.outline
+ */
 val outlineDark: Color = Color(0xFFA28D7A)
+
+/**
+ * @see ColorScheme.outlineVariant
+ */
 val outlineVariantDark: Color = Color(0xFF544434)
+
+/**
+ * @see ColorScheme.scrim
+ */
 val scrimDark: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.inverseSurface
+ */
 val inverseSurfaceDark: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.inverseOnSurface
+ */
 val inverseOnSurfaceDark: Color = Color(0xFF382F25)
+
+/**
+ * @see ColorScheme.inversePrimary
+ */
 val inversePrimaryDark: Color = Color(0xFF885200)
+
+/**
+ * @see ColorScheme.surfaceDim
+ */
 val surfaceDimDark: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.surfaceBright
+ */
 val surfaceBrightDark: Color = Color(0xFF42372D)
+
+/**
+ * @see ColorScheme.surfaceContainerLowest
+ */
 val surfaceContainerLowestDark: Color = Color(0xFF140D06)
+
+/**
+ * @see ColorScheme.surfaceContainerLow
+ */
 val surfaceContainerLowDark: Color = Color(0xFF221A11)
+
+/**
+ * @see ColorScheme.surfaceContainer
+ */
 val surfaceContainerDark: Color = Color(0xFF271E15)
+
+/**
+ * @see ColorScheme.surfaceContainerHigh
+ */
 val surfaceContainerHighDark: Color = Color(0xFF32281F)
+
+/**
+ * @see ColorScheme.surfaceContainerHighest
+ */
 val surfaceContainerHighestDark: Color = Color(0xFF3D3329)
 
+/**
+ * @see ColorScheme.primary
+ */
 val primaryDarkMediumContrast: Color = Color(0xFFFFCF9E)
+
+/**
+ * @see ColorScheme.onPrimary
+ */
 val onPrimaryDarkMediumContrast: Color = Color(0xFF351D00)
+
+/**
+ * @see ColorScheme.primaryContainer
+ */
 val primaryContainerDarkMediumContrast: Color = Color(0xFFF79900)
+
+/**
+ * @see ColorScheme.onPrimaryContainer
+ */
 val onPrimaryContainerDarkMediumContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.secondary
+ */
 val secondaryDarkMediumContrast: Color = Color(0xFFFFFEFF)
+
+/**
+ * @see ColorScheme.onSecondary
+ */
 val onSecondaryDarkMediumContrast: Color = Color(0xFF422C00)
+
+/**
+ * @see ColorScheme.secondaryContainer
+ */
 val secondaryContainerDarkMediumContrast: Color = Color(0xFFFBCC80)
+
+/**
+ * @see ColorScheme.onSecondaryContainer
+ */
 val onSecondaryContainerDarkMediumContrast: Color = Color(0xFF2C1C00)
+
+/**
+ * @see ColorScheme.tertiary
+ */
 val tertiaryDarkMediumContrast: Color = Color(0xFFFFBC95)
+
+/**
+ * @see ColorScheme.onTertiary
+ */
 val onTertiaryDarkMediumContrast: Color = Color(0xFF2A0E00)
+
+/**
+ * @see ColorScheme.tertiaryContainer
+ */
 val tertiaryContainerDarkMediumContrast: Color = Color(0xFFE76E00)
+
+/**
+ * @see ColorScheme.onTertiaryContainer
+ */
 val onTertiaryContainerDarkMediumContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.error
+ */
 val errorDarkMediumContrast: Color = Color(0xFFFFB8BE)
+
+/**
+ * @see ColorScheme.onError
+ */
 val onErrorDarkMediumContrast: Color = Color(0xFF36000C)
+
+/**
+ * @see ColorScheme.errorContainer
+ */
 val errorContainerDarkMediumContrast: Color = Color(0xFFE5697A)
+
+/**
+ * @see ColorScheme.onErrorContainer
+ */
 val onErrorContainerDarkMediumContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.background
+ */
 val backgroundDarkMediumContrast: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.onBackground
+ */
 val onBackgroundDarkMediumContrast: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.surface
+ */
 val surfaceDarkMediumContrast: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.onSurface
+ */
 val onSurfaceDarkMediumContrast: Color = Color(0xFFFFFAF8)
+
+/**
+ * @see ColorScheme.surfaceVariant
+ */
 val surfaceVariantDarkMediumContrast: Color = Color(0xFF544434)
+
+/**
+ * @see ColorScheme.onSurfaceVariant
+ */
 val onSurfaceVariantDarkMediumContrast: Color = Color(0xFFDEC7B1)
+
+/**
+ * @see ColorScheme.outline
+ */
 val outlineDarkMediumContrast: Color = Color(0xFFB59F8B)
+
+/**
+ * @see ColorScheme.outlineVariant
+ */
 val outlineVariantDarkMediumContrast: Color = Color(0xFF93806D)
+
+/**
+ * @see ColorScheme.scrim
+ */
 val scrimDarkMediumContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.inverseSurface
+ */
 val inverseSurfaceDarkMediumContrast: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.inverseOnSurface
+ */
 val inverseOnSurfaceDarkMediumContrast: Color = Color(0xFF32281F)
+
+/**
+ * @see ColorScheme.inversePrimary
+ */
 val inversePrimaryDarkMediumContrast: Color = Color(0xFF693E00)
+
+/**
+ * @see ColorScheme.surfaceDim
+ */
 val surfaceDimDarkMediumContrast: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.surfaceBright
+ */
 val surfaceBrightDarkMediumContrast: Color = Color(0xFF42372D)
+
+/**
+ * @see ColorScheme.surfaceContainerLowest
+ */
 val surfaceContainerLowestDarkMediumContrast: Color = Color(0xFF140D06)
+
+/**
+ * @see ColorScheme.surfaceContainerLow
+ */
 val surfaceContainerLowDarkMediumContrast: Color = Color(0xFF221A11)
+
+/**
+ * @see ColorScheme.surfaceContainer
+ */
 val surfaceContainerDarkMediumContrast: Color = Color(0xFF271E15)
+
+/**
+ * @see ColorScheme.surfaceContainerHigh
+ */
 val surfaceContainerHighDarkMediumContrast: Color = Color(0xFF32281F)
+
+/**
+ * @see ColorScheme.surfaceContainerHighest
+ */
 val surfaceContainerHighestDarkMediumContrast: Color = Color(0xFF3D3329)
 
+/**
+ * @see ColorScheme.primary
+ */
 val primaryDarkHighContrast: Color = Color(0xFFFFFAF8)
+
+/**
+ * @see ColorScheme.onPrimary
+ */
 val onPrimaryDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.primaryContainer
+ */
 val primaryContainerDarkHighContrast: Color = Color(0xFFFFBE76)
+
+/**
+ * @see ColorScheme.onPrimaryContainer
+ */
 val onPrimaryContainerDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.secondary
+ */
 val secondaryDarkHighContrast: Color = Color(0xFFFFFEFF)
+
+/**
+ * @see ColorScheme.onSecondary
+ */
 val onSecondaryDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.secondaryContainer
+ */
 val secondaryContainerDarkHighContrast: Color = Color(0xFFFBCC80)
+
+/**
+ * @see ColorScheme.onSecondaryContainer
+ */
 val onSecondaryContainerDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.tertiary
+ */
 val tertiaryDarkHighContrast: Color = Color(0xFFFFFAF8)
+
+/**
+ * @see ColorScheme.onTertiary
+ */
 val onTertiaryDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.tertiaryContainer
+ */
 val tertiaryContainerDarkHighContrast: Color = Color(0xFFFFBC95)
+
+/**
+ * @see ColorScheme.onTertiaryContainer
+ */
 val onTertiaryContainerDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.error
+ */
 val errorDarkHighContrast: Color = Color(0xFFFFF9F9)
+
+/**
+ * @see ColorScheme.onError
+ */
 val onErrorDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.errorContainer
+ */
 val errorContainerDarkHighContrast: Color = Color(0xFFFFB8BE)
+
+/**
+ * @see ColorScheme.onErrorContainer
+ */
 val onErrorContainerDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.background
+ */
 val backgroundDarkHighContrast: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.onBackground
+ */
 val onBackgroundDarkHighContrast: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.surface
+ */
 val surfaceDarkHighContrast: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.onSurface
+ */
 val onSurfaceDarkHighContrast: Color = Color(0xFFFFFFFF)
+
+/**
+ * @see ColorScheme.surfaceVariant
+ */
 val surfaceVariantDarkHighContrast: Color = Color(0xFF544434)
+
+/**
+ * @see ColorScheme.onSurfaceVariant
+ */
 val onSurfaceVariantDarkHighContrast: Color = Color(0xFFFFFAF8)
+
+/**
+ * @see ColorScheme.outline
+ */
 val outlineDarkHighContrast: Color = Color(0xFFDEC7B1)
+
+/**
+ * @see ColorScheme.outlineVariant
+ */
 val outlineVariantDarkHighContrast: Color = Color(0xFFDEC7B1)
+
+/**
+ * @see ColorScheme.scrim
+ */
 val scrimDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.inverseSurface
+ */
 val inverseSurfaceDarkHighContrast: Color = Color(0xFFF1E0D1)
+
+/**
+ * @see ColorScheme.inverseOnSurface
+ */
 val inverseOnSurfaceDarkHighContrast: Color = Color(0xFF000000)
+
+/**
+ * @see ColorScheme.inversePrimary
+ */
 val inversePrimaryDarkHighContrast: Color = Color(0xFF3F2400)
+
+/**
+ * @see ColorScheme.surfaceDim
+ */
 val surfaceDimDarkHighContrast: Color = Color(0xFF1A120A)
+
+/**
+ * @see ColorScheme.surfaceBright
+ */
 val surfaceBrightDarkHighContrast: Color = Color(0xFF42372D)
+
+/**
+ * @see ColorScheme.surfaceContainerLowest
+ */
 val surfaceContainerLowestDarkHighContrast: Color = Color(0xFF140D06)
+
+/**
+ * @see ColorScheme.surfaceContainerLow
+ */
 val surfaceContainerLowDarkHighContrast: Color = Color(0xFF221A11)
+
+/**
+ * @see ColorScheme.surfaceContainer
+ */
 val surfaceContainerDarkHighContrast: Color = Color(0xFF271E15)
+
+/**
+ * @see ColorScheme.surfaceContainerHigh
+ */
 val surfaceContainerHighDarkHighContrast: Color = Color(0xFF32281F)
+
+/**
+ * @see ColorScheme.surfaceContainerHighest
+ */
 val surfaceContainerHighestDarkHighContrast: Color = Color(0xFF3D3329)
