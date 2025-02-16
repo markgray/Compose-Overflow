@@ -1631,131 +1631,205 @@ val primaryContainerDarkMediumContrast: Color = Color(0xFFF79900)
 val onPrimaryContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode medium contrast secondary color provides more ways to accent and distinguish your
+ * product. Secondary colors are best for:
+ *  - Floating action buttons
+ *  - Selection controls, like checkboxes and radio buttons
+ *  - Highlighting selected text
+ *  - Highlighting Links and headlines
+ *
  * @see ColorScheme.secondary
  */
 val secondaryDarkMediumContrast: Color = Color(0xFFFFFEFF)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [secondaryDarkMediumContrast] color.
+ *
  * @see ColorScheme.onSecondary
  */
 val onSecondaryDarkMediumContrast: Color = Color(0xFF422C00)
 
 /**
+ * Dark mode medium contrast tonal color to be used in containers.
+ *
  * @see ColorScheme.secondaryContainer
  */
 val secondaryContainerDarkMediumContrast: Color = Color(0xFFFBCC80)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [secondaryContainerDarkMediumContrast] color.
+ *
  * @see ColorScheme.onSecondaryContainer
  */
 val onSecondaryContainerDarkMediumContrast: Color = Color(0xFF2C1C00)
 
 /**
+ * Dark mode medium contrast tertiary color that can be used to balance primary and secondary colors,
+ * or bring heightened attention to an element such as an input field.
+ *
  * @see ColorScheme.tertiary
  */
 val tertiaryDarkMediumContrast: Color = Color(0xFFFFBC95)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [tertiaryDarkMediumContrast] color.
+ *
  * @see ColorScheme.onTertiary
  */
 val onTertiaryDarkMediumContrast: Color = Color(0xFF2A0E00)
 
 /**
+ * Dark mode medium contrast tonal color to be used in containers.
+ *
  * @see ColorScheme.tertiaryContainer
  */
 val tertiaryContainerDarkMediumContrast: Color = Color(0xFFE76E00)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [tertiaryContainerDarkMediumContrast] color.
+ *
  * @see ColorScheme.onTertiaryContainer
  */
 val onTertiaryContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
+ * Dark mode medium contrast error color used to indicate errors in components, such as invalid text
+ * in a text field.
+ *
  * @see ColorScheme.error
  */
 val errorDarkMediumContrast: Color = Color(0xFFFFB8BE)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [errorDarkMediumContrast] color.
+ *
  * @see ColorScheme.onError
  */
 val onErrorDarkMediumContrast: Color = Color(0xFF36000C)
 
 /**
+ * Dark mode medium contrast preferred tonal color of error containers.
+ *
  * @see ColorScheme.errorContainer
  */
 val errorContainerDarkMediumContrast: Color = Color(0xFFE5697A)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [errorContainerDarkMediumContrast] color.
+ *
  * @see ColorScheme.onErrorContainer
  */
 val onErrorContainerDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
+ * Dark mode medium contrast background color that appears behind scrollable content.
+ *
  * @see ColorScheme.background
  */
 val backgroundDarkMediumContrast: Color = Color(0xFF1A120A)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [backgroundDarkMediumContrast] color.
+ *
  * @see ColorScheme.onBackground
  */
 val onBackgroundDarkMediumContrast: Color = Color(0xFFF1E0D1)
 
 /**
+ * Dark mode medium contrast surface color used for surfaces of components, such as cards, sheets,
+ * and menus.
+ *
  * @see ColorScheme.surface
  */
 val surfaceDarkMediumContrast: Color = Color(0xFF1A120A)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [surfaceDarkMediumContrast] color.
+ *
  * @see ColorScheme.onSurface
  */
 val onSurfaceDarkMediumContrast: Color = Color(0xFFFFFAF8)
 
 /**
+ * Dark mode medium contrast option for a color with similar uses of surface.
+ *
  * @see ColorScheme.surfaceVariant
  */
 val surfaceVariantDarkMediumContrast: Color = Color(0xFF544434)
 
 /**
+ * Dark mode medium contrast Color used for text and icons displayed on top of the
+ * [surfaceVariantDarkMediumContrast] color.
+ *
  * @see ColorScheme.onSurfaceVariant
  */
 val onSurfaceVariantDarkMediumContrast: Color = Color(0xFFDEC7B1)
 
 /**
+ * Subtle Dark mode medium contrast color used for boundaries. Outline color role adds contrast for
+ * accessibility purposes.
+ *
  * @see ColorScheme.outline
  */
 val outlineDarkMediumContrast: Color = Color(0xFFB59F8B)
 
 /**
+ * Utility Dark mode medium contrast color used for boundaries for decorative elements when strong
+ * contrast is not required.
+ *
  * @see ColorScheme.outlineVariant
  */
 val outlineVariantDarkMediumContrast: Color = Color(0xFF93806D)
 
 /**
+ * Dark mode medium contrast scrim that obscures content.
+ *
  * @see ColorScheme.scrim
  */
 val scrimDarkMediumContrast: Color = Color(0xFF000000)
 
 /**
+ * Dark mode medium contrast color that contrasts sharply with [surfaceDarkMediumContrast]. Useful
+ * for surfaces that sit on top of other surfaces with [surfaceDarkMediumContrast] color.
+ *
  * @see ColorScheme.inverseSurface
  */
 val inverseSurfaceDarkMediumContrast: Color = Color(0xFFF1E0D1)
 
 /**
+ * Dark mode medium contrast color that contrasts well with [inverseSurfaceDarkMediumContrast].
+ * Useful for content that sits on top of containers that are [inverseSurfaceDarkMediumContrast].
+ *
  * @see ColorScheme.inverseOnSurface
  */
 val inverseOnSurfaceDarkMediumContrast: Color = Color(0xFF32281F)
 
 /**
+ * Dark mode medium contrast Color to be used as a "primary" color in places where the inverse color
+ * scheme is needed, such as the button on a SnackBar.
+ *
  * @see ColorScheme.inversePrimary
  */
 val inversePrimaryDarkMediumContrast: Color = Color(0xFF693E00)
 
 /**
+ * Dark mode medium contrast surface variant that is always dimmer than surface.
+ *
  * @see ColorScheme.surfaceDim
  */
 val surfaceDimDarkMediumContrast: Color = Color(0xFF1A120A)
 
 /**
+ * Dark mode medium contrast surface variant that is always brighter than surface.
+ *
  * @see ColorScheme.surfaceBright
  */
 val surfaceBrightDarkMediumContrast: Color = Color(0xFF42372D)
