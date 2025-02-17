@@ -25,12 +25,45 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 
 /**
- * A use case which returns all the latest episodes from all the podcasts the user follows.
+ * Use case responsible for retrieving the latest episodes from followed podcasts.
+ *
+ * This use case provides a stream of the most recent episodes from the podcasts that
+ * the user is following. It fetches followed podcasts, sorts them by the most recent
+ * episode's publication date, and then retrieves the latest episodes for each of
+ * these podcasts.
+ *
+ * The number of episodes fetched per podcast is dynamically adjusted based on the number
+ * of followed podcasts, ensuring a relevant and up-to-date stream of episodes.
+ *
+ * @property episodeStore The data store for accessing episodes.
+ * @property podcastStore The data store for accessing podcasts and user's followed podcasts.
  */
 class GetLatestFollowedEpisodesUseCase @Inject constructor(
     private val episodeStore: EpisodeStore,
     private val podcastStore: PodcastStore,
 ) {
+    /**
+     * Retrieves a flow of lists of episodes associated with followed podcasts, sorted by the most
+     * recent episode.
+     *
+     * This function performs the following operations:
+     * 1. Fetches the user's followed podcasts from the [podcastStore].
+     * 2. Sorts these followed podcasts by their last published episode (most recent first).
+     * 3. For each of the followed podcasts, fetches the most recent episodes from the [episodeStore].
+     * 4. The number of episodes fetched per podcast is determined by multiplying the number of
+     * followed podcasts by 5.
+     * 5. Emits a new list of [EpisodeToPodcast] each time the underlying data changes.
+     * 6. Uses `flatMapLatest` to ensure that only the most recent set of episodes is emitted.
+     * If new followed podcasts are added or the last episode for any podcast changes, any ongoing
+     * episode fetching operation is cancelled, and a new one is started, which will emit the latest
+     * results.
+     *
+     * @return A [Flow] that emits lists of [EpisodeToPodcast]. Each list represents the most recent
+     * episodes from the user's followed podcasts.
+     *
+     * @throws Exception If there's an issue fetching data from either the [podcastStore] or
+     * [episodeStore].
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<List<EpisodeToPodcast>> =
         podcastStore.followedPodcastsSortedByLastEpisode()

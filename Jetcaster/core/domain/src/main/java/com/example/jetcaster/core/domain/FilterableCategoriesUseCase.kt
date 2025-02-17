@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.core.domain
 
+import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
@@ -25,20 +26,39 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Use case for categories that can be used to filter podcasts.
+ * Use case responsible for providing a stream of [FilterableCategoriesModel]
+ * which represents a list of categories that can be filtered, along with
+ * the currently selected category.
+ *
+ * This use case retrieves categories from the [CategoryStore], transforms them
+ * into external models, and manages the selection state. It emits updates
+ * whenever the underlying category data changes.
+ *
+ * @property categoryStore The data source for categories.
  */
 class FilterableCategoriesUseCase @Inject constructor(
     private val categoryStore: CategoryStore
 ) {
     /**
-     * Created a [FilterableCategoriesModel] from the list of categories in [categoryStore].
-     * @param selectedCategory the currently selected category. If null, the first category
-     *        returned by the backing category list will be selected in the returned
-     *        FilterableCategoriesModel
+     * Creates a [Flow] of [FilterableCategoriesModel] from the list of categories in [categoryStore],
+     * and the currently selected category.
+     *
+     * We use the [CategoryStore.categoriesSortedByPodcastCount] to get the [Flow] of [List] list of
+     * [Category] it returns, then we use the [Flow.map] extension function to apply a transform to
+     * the [List] of [Category] producing a [Flow] of [FilterableCategoriesModel] with its
+     * `categories` argument the result of applying the `asExternalModel` function to each [Category],
+     * and its `selectedCategory` argument the result of applying the `asExternalModel` function to
+     * our [selectedCategory] argument if it is not `null`, otherwise the result of applying
+     * the `asExternalModel` function to the first [Category] in the [List] of [Category] returned by
+     * the [List.firstOrNull] function of the [List] of [Category].
+     *
+     * @param selectedCategory the currently selected category. If `null`, the first category
+     * returned by the backing category list will be selected in the returned
+     * [FilterableCategoriesModel]
      */
     operator fun invoke(selectedCategory: CategoryInfo?): Flow<FilterableCategoriesModel> =
         categoryStore.categoriesSortedByPodcastCount()
-            .map { categories ->
+            .map { categories: List<Category> ->
                 FilterableCategoriesModel(
                     categories = categories.map { it.asExternalModel() },
                     selectedCategory = selectedCategory

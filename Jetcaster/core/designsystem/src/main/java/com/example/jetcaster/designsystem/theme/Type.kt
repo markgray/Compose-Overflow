@@ -16,11 +16,54 @@
 
 package com.example.jetcaster.designsystem.theme
 
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-val JetcasterTypography = androidx.compose.material3.Typography(
+/**
+ * This object defines the typography used throughout the Jetcaster application.
+ *
+ * It uses the [Montserrat] font family for all text styles and provides a
+ * comprehensive set of text styles that conform to Material Design 3
+ * typography guidelines. These styles include display, headline, title, label, and body variations
+ * in large, medium, and small sizes. Each style specifies font size, weight, line height,
+ * and letter spacing, allowing for consistent and visually appealing text rendering across the app.
+ *
+ *  The defined typography options are:
+ *  - **displayLarge**: For the largest text elements, such as prominent titles.
+ *  - **displayMedium**: For slightly smaller, but still significant, display text.
+ *  - **displaySmall**: For smaller display text.
+ *  - **headlineLarge**: For large headlines.
+ *  - **headlineMedium**: For medium headlines.
+ *  - **headlineSmall**: For small headlines.
+ *  - **titleLarge**: For large titles.
+ *  - **titleMedium**: For medium titles.
+ *  - **titleSmall**: For small titles.
+ *  - **labelLarge**: For large labels, often used for buttons and other interactive elements.
+ *  - **labelMedium**: For medium labels.
+ *  - **labelSmall**: For small labels.
+ *  - **bodyLarge**: For large body text.
+ *  - **bodyMedium**: For medium body text.
+ *  - **bodySmall**: For small body text.
+ *
+ * @see [Typography.displayLarge]
+ * @see [Typography.displayMedium]
+ * @see [Typography.displaySmall]
+ * @see [Typography.headlineLarge]
+ * @see [Typography.headlineMedium]
+ * @see [Typography.headlineSmall]
+ * @see [Typography.titleLarge]
+ * @see [Typography.titleMedium]
+ * @see [Typography.titleSmall]
+ * @see [Typography.labelLarge]
+ * @see [Typography.labelMedium]
+ * @see [Typography.labelSmall]
+ * @see [Typography.bodyLarge]
+ * @see [Typography.bodyMedium]
+ * @see [Typography.bodySmall]
+ */
+val JetcasterTypography: Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = Montserrat,
         fontSize = 57.sp,

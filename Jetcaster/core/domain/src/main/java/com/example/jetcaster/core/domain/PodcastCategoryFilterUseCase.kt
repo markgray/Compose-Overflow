@@ -28,11 +28,39 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 
 /**
- *  A use case which returns top podcasts and matching episodes in a given [Category].
+ * Use case responsible for filtering and retrieving top podcasts and matching episodes related to
+ * a specific [Category].
+ *
+ * This class encapsulates the logic for fetching podcasts and episodes that belong to a given
+ * category. It leverages the [CategoryStore] to interact with the underlying data source and
+ * provides a clean, business-oriented interface for retrieving category-specific content.
+ *
+ * @property categoryStore The data store responsible for providing category-related information.
  */
 class PodcastCategoryFilterUseCase @Inject constructor(
     private val categoryStore: CategoryStore
 ) {
+    /**
+     * Invokes the logic to filter and retrieve podcasts and episodes related to a specific category.
+     *
+     * This function retrieves the most recent podcasts and episodes associated with the given
+     * `category`. It fetches a limited number of both (10 podcasts and 20 episodes) and
+     * combines them into a `PodcastCategoryFilterResult`.
+     *
+     * @param category The `CategoryInfo` object representing the category to filter by. If `null`,
+     * an empty `PodcastCategoryFilterResult` is returned, indicating no category-specific data.
+     * @return A `Flow` emitting `PodcastCategoryFilterResult` objects. The `PodcastCategoryFilterResult`
+     * contains the top podcasts and episodes related to the category.
+     * - `topPodcasts`: A list of the most recent podcasts (up to 10) in the category.
+     * - `episodes`: A list of recent episodes (up to 20) from podcasts within the category.
+     *
+     * @see CategoryInfo
+     * @see PodcastCategoryFilterResult
+     * @see CategoryStore.podcastsInCategorySortedByPodcastCount
+     * @see CategoryStore.episodesFromPodcastsInCategory
+     * @see asExternalModel
+     * @see asPodcastToEpisodeInfo
+     */
     operator fun invoke(category: CategoryInfo?): Flow<PodcastCategoryFilterResult> {
         if (category == null) {
             return flowOf(PodcastCategoryFilterResult())

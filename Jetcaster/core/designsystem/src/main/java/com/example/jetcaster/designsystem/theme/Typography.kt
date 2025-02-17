@@ -21,7 +21,34 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.example.jetcaster.core.designsystem.R
 
-val Montserrat = FontFamily(
+/**
+ * Represents the [Montserrat] font family, including various font weights.
+ *
+ * This FontFamily includes the following weights:
+ * - Light (Weight 300)
+ * - Regular (Weight 400)
+ * - Medium (Weight 500)
+ * - SemiBold (Weight 600)
+ *
+ * To use this font, simply reference `Montserrat` in your composable functions
+ * within a `TextStyle`. For example:
+ *
+ * ```kotlin
+ * Text(
+ *     text = "Hello, Montserrat!",
+ *     style = TextStyle(
+ *         fontFamily = Montserrat,
+ *         fontWeight = FontWeight.Medium,
+ *         fontSize = 16.sp
+ *     )
+ * )
+ * ```
+ *
+ * Ensure that the corresponding font files (montserrat_light.ttf,
+ * montserrat_regular.ttf, montserrat_medium.ttf, montserrat_semibold.ttf)
+ * are included in your project's `res/font` directory.
+ */
+val Montserrat: FontFamily = FontFamily(
     Font(R.font.montserrat_light, FontWeight.Light),
     Font(R.font.montserrat_regular, FontWeight.Normal),
     Font(R.font.montserrat_medium, FontWeight.Medium),

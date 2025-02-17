@@ -22,7 +22,20 @@ import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
 /**
- * Used as the [MaterialTheme.shapes] of the app.
+ * Defines the [MaterialTheme.shapes] shape scheme for the Jetcaster application.
+ *
+ * This property provides a set of [Shapes] used throughout the Jetcaster app's UI.
+ * It specifies the corner rounding for various UI elements, categorized by size:
+ *
+ * - **small**:  Represents small UI elements like buttons or chips. It uses a fully rounded
+ *   shape (50% corner radius).
+ * - **medium**:  Represents medium-sized UI elements like cards or dialogs. It uses a rounded
+ *   corner shape with a radius of 8dp.
+ * - **large**:  Represents large UI elements like sheets or containers. It uses a rounded corner
+ *   shape with a radius of 16dp.
+ *
+ * These shapes are designed to provide a consistent and visually appealing look and feel
+ * across the entire application.
  */
 val JetcasterShapes: Shapes = Shapes(
     small = RoundedCornerShape(percent = 50),

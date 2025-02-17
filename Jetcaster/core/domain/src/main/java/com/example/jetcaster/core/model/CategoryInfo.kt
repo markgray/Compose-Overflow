@@ -18,14 +18,24 @@ package com.example.jetcaster.core.model
 
 import com.example.jetcaster.core.data.database.model.Category
 
+/**
+ * @param id The unique identifier of the category.
+ * @param name The name of the category.
+ */
 data class CategoryInfo(
     val id: Long,
     val name: String
 )
 
-const val CategoryTechnology = "Technology"
+/**
+ *
+ */
+const val CategoryTechnology: String = "Technology"
 
-fun Category.asExternalModel() =
+/**
+ *
+ */
+fun Category.asExternalModel(): CategoryInfo =
     CategoryInfo(
         id = id,
         name = name

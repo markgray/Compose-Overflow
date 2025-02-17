@@ -27,12 +27,66 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 
+/**
+ * **DomainDiModule**
+ *
+ * This Hilt module provides dependencies related to the domain layer of the application.
+ * It is installed in the [SingletonComponent], meaning the provided dependencies
+ * will be available throughout the application's lifecycle as singletons.
+ *
+ * **Currently, it provides the following:**
+ *
+ *  - [EpisodePlayer]: An implementation of the EpisodePlayer interface, specifically
+ *  [MockEpisodePlayer]. This player is intended for development or testing,
+ *  as indicated by its "Mock" prefix. It is configured to run its operations
+ *  on the Main dispatcher.
+ *
+ * **Dependencies:**
+ *
+ *  - [CoroutineDispatcher]: The Main CoroutineDispatcher, provided via the `@Dispatcher` qualifier.
+ *
+ * **Scope:**
+ *
+ *  - `@Singleton`: All dependencies provided by this module are singleton scoped.
+ *
+ * **Installation:**
+ *
+ *  - `@InstallIn(SingletonComponent::class)`: This module is installed in the SingletonComponent,
+ *  making its bindings available throughout the application.
+ *
+ * @see Module
+ * @see InstallIn
+ * @see SingletonComponent
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DomainDiModule {
+    /**
+     * Provides a singleton instance of [EpisodePlayer].
+     *
+     * This function is responsible for creating and providing a single instance of
+     * [EpisodePlayer] that can be injected into other parts of the application.
+     * Currently, it provides a [MockEpisodePlayer] implementation for demonstration
+     * or testing purposes.
+     *
+     * The [EpisodePlayer] is configured to use the main dispatcher, ensuring that
+     * any operations related to updating the UI are performed on the main thread.
+     *
+     * @param mainDispatcher The [CoroutineDispatcher] representing the main thread. This dispatcher
+     * is used for any UI-related operations performed by the [EpisodePlayer]. It is injected via
+     * Dagger's dependency injection.
+     * @return A singleton instance of [EpisodePlayer].
+     *
+     * @see EpisodePlayer
+     * @see MockEpisodePlayer
+     * @see JetcasterDispatchers.Main
+     * @see CoroutineDispatcher
+     * @see Provides
+     * @see Singleton
+     */
     @Provides
     @Singleton
     fun provideEpisodePlayer(
         @Dispatcher(JetcasterDispatchers.Main) mainDispatcher: CoroutineDispatcher
-    ): EpisodePlayer = MockEpisodePlayer(mainDispatcher)
+    ): EpisodePlayer = MockEpisodePlayer(mainDispatcher = mainDispatcher)
 }
