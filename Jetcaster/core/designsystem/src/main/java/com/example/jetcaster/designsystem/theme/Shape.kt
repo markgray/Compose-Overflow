@@ -17,10 +17,14 @@
 package com.example.jetcaster.designsystem.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
-val JetcasterShapes = Shapes(
+/**
+ * Used as the [MaterialTheme.shapes] of the app.
+ */
+val JetcasterShapes: Shapes = Shapes(
     small = RoundedCornerShape(percent = 50),
     medium = RoundedCornerShape(size = 8.dp),
     large = RoundedCornerShape(size = 16.dp)

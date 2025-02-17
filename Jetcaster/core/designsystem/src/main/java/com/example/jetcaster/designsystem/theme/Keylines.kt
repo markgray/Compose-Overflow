@@ -16,6 +16,10 @@
 
 package com.example.jetcaster.designsystem.theme
 
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-val Keyline1 = 16.dp
+/**
+ * Used as a padding value in several Composables.
+ */
+val Keyline1: Dp = 16.dp

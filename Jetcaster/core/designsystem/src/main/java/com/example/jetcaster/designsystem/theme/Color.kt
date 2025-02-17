@@ -1835,201 +1835,325 @@ val surfaceDimDarkMediumContrast: Color = Color(0xFF1A120A)
 val surfaceBrightDarkMediumContrast: Color = Color(0xFF42372D)
 
 /**
+ * Dark mode medium contrast variant surface color for containers with lower emphasis than
+ * [surfaceContainerLowDarkMediumContrast]. Use this role for content which requires less emphasis
+ * than [surfaceContainerLowDarkMediumContrast].
+ *
  * @see ColorScheme.surfaceContainerLowest
  */
 val surfaceContainerLowestDarkMediumContrast: Color = Color(0xFF140D06)
 
 /**
+ * The dark mode medium contrast variant surface color for containers with lower emphasis than
+ * [surfaceContainerDarkMediumContrast]. Use this role for content which requires less emphasis than
+ * [surfaceContainerDarkMediumContrast].
+ *
  * @see ColorScheme.surfaceContainerLow
  */
 val surfaceContainerLowDarkMediumContrast: Color = Color(0xFF221A11)
 
 /**
+ * The dark mode medium contrast surface variant color that is used for containers of components,
+ * such as cards, sheets, and menus.
+ *
  * @see ColorScheme.surfaceContainer
  */
 val surfaceContainerDarkMediumContrast: Color = Color(0xFF271E15)
 
 /**
+ * The dark mode high contrast surface variant color for containers with higher emphasis than
+ * [surfaceContainerDarkHighContrast]. Use this role for content which requires more emphasis than
+ * [surfaceContainerDarkHighContrast].
+ *
  * @see ColorScheme.surfaceContainerHigh
  */
 val surfaceContainerHighDarkMediumContrast: Color = Color(0xFF32281F)
 
 /**
+ * The dark mode high contrast surface variant color for containers with higher emphasis than
+ * [surfaceContainerHighDarkMediumContrast]. Use this role for content which requires more emphasis
+ * than [surfaceContainerHighDarkMediumContrast].
+ *
  * @see ColorScheme.surfaceContainerHighest
  */
 val surfaceContainerHighestDarkMediumContrast: Color = Color(0xFF3D3329)
 
 /**
+ * The dark mode high contrast primary color is the color displayed most frequently across your
+ * app’s screens and components..
+ *
  * @see ColorScheme.primary
  */
 val primaryDarkHighContrast: Color = Color(0xFFFFFAF8)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [primaryDarkHighContrast] color.
+ *
  * @see ColorScheme.onPrimary
  */
 val onPrimaryDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast preferred tonal color for containers.
+ *
  * @see ColorScheme.primaryContainer
  */
 val primaryContainerDarkHighContrast: Color = Color(0xFFFFBE76)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [primaryContainerDarkHighContrast] color.
+ *
  * @see ColorScheme.onPrimaryContainer
  */
 val onPrimaryContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast secondary color provides more ways to accent and distinguish your
+ * product. Secondary colors are best for:
+ *  - Floating action buttons
+ *  - Selection controls, like checkboxes and radio buttons
+ *  - Highlighting selected text
+ *  - Links and headlines
+ *
  * @see ColorScheme.secondary
  */
 val secondaryDarkHighContrast: Color = Color(0xFFFFFEFF)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [secondaryDarkHighContrast] color.
+ *
  * @see ColorScheme.onSecondary
  */
 val onSecondaryDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast variant tonal color to be used in containers.
+ *
  * @see ColorScheme.secondaryContainer
  */
 val secondaryContainerDarkHighContrast: Color = Color(0xFFFBCC80)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [secondaryContainerDarkHighContrast] color.
+ *
  * @see ColorScheme.onSecondaryContainer
  */
 val onSecondaryContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast tertiary color that can be used to balance primary and secondary
+ * colors, or bring heightened attention to an element such as an input field.
+ *
  * @see ColorScheme.tertiary
  */
 val tertiaryDarkHighContrast: Color = Color(0xFFFFFAF8)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [tertiaryDarkHighContrast] color.
+ *
  * @see ColorScheme.onTertiary
  */
 val onTertiaryDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * A dark mode high contrast variant tonal color to be used in containers.
+ *
  * @see ColorScheme.tertiaryContainer
  */
 val tertiaryContainerDarkHighContrast: Color = Color(0xFFFFBC95)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [tertiaryContainerDarkHighContrast] color.
+ *
  * @see ColorScheme.onTertiaryContainer
  */
 val onTertiaryContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast error color is used to indicate errors in components, such as invalid
+ * text in a text field.
+ *
  * @see ColorScheme.error
  */
 val errorDarkHighContrast: Color = Color(0xFFFFF9F9)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [errorDarkHighContrast] color.
+ *
  * @see ColorScheme.onError
  */
 val onErrorDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast preferred tonal color of error containers.
+ *
  * @see ColorScheme.errorContainer
  */
 val errorContainerDarkHighContrast: Color = Color(0xFFFFB8BE)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [errorContainerDarkHighContrast] color.
+ *
  * @see ColorScheme.onErrorContainer
  */
 val onErrorContainerDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast background color that appears behind scrollable content.
+ *
  * @see ColorScheme.background
  */
 val backgroundDarkHighContrast: Color = Color(0xFF1A120A)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [backgroundDarkHighContrast] color.
+ *
  * @see ColorScheme.onBackground
  */
 val onBackgroundDarkHighContrast: Color = Color(0xFFF1E0D1)
 
 /**
+ * The dark mode high contrast surface color to use for surfaces of components, such as cards,
+ * sheets, and menus.
+ *
  * @see ColorScheme.surface
  */
 val surfaceDarkHighContrast: Color = Color(0xFF1A120A)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [surfaceDarkHighContrast] color.
+ *
  * @see ColorScheme.onSurface
  */
 val onSurfaceDarkHighContrast: Color = Color(0xFFFFFFFF)
 
 /**
+ * A dark mode high contrast option for a color with similar uses of [surfaceDarkHighContrast].
+ *
  * @see ColorScheme.surfaceVariant
  */
 val surfaceVariantDarkHighContrast: Color = Color(0xFF544434)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [surfaceVariantDarkHighContrast] color.
+ *
  * @see ColorScheme.onSurfaceVariant
  */
 val onSurfaceVariantDarkHighContrast: Color = Color(0xFFFFFAF8)
 
 /**
+ * A subtle dark mode high contrast color used for boundaries in dark mode. Outline color role adds
+ * contrast for accessibility.
+ *
  * @see ColorScheme.outline
  */
 val outlineDarkHighContrast: Color = Color(0xFFDEC7B1)
 
 /**
+ * A variant dark mode high contrast color used for boundaries for decorative elements.
+ *
  * @see ColorScheme.outlineVariant
  */
 val outlineVariantDarkHighContrast: Color = Color(0xFFDEC7B1)
 
 /**
+ * The dark mode high contrast color of a scrim to use to obscure content.
+ *
  * @see ColorScheme.scrim
  */
 val scrimDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * A dark mode high contrast color that contrasts sharply with [surfaceDarkHighContrast]. Useful for
+ * surfaces that sit on top of other surfaces that use [surfaceDarkHighContrast] color.
+ *
  * @see ColorScheme.inverseSurface
  */
 val inverseSurfaceDarkHighContrast: Color = Color(0xFFF1E0D1)
 
 /**
+ * The dark mode high contrast color used for text and icons displayed on top of the
+ * [inverseSurfaceDarkHighContrast] color.
+ *
  * @see ColorScheme.inverseOnSurface
  */
 val inverseOnSurfaceDarkHighContrast: Color = Color(0xFF000000)
 
 /**
+ * The dark mode high contrast color to be used as a "primary" color in places where the inverse
+ * color scheme is needed, such as the button on a SnackBar
+ *
  * @see ColorScheme.inversePrimary
  */
 val inversePrimaryDarkHighContrast: Color = Color(0xFF3F2400)
 
 /**
+ * A dark mode high contrast surface variant that is always dimmer than [surfaceDarkHighContrast],
+ * whether in light or dark mode.
+ *
  * @see ColorScheme.surfaceDim
  */
 val surfaceDimDarkHighContrast: Color = Color(0xFF1A120A)
 
 /**
+ * A dark mode high contrast surface variant that is always brighter than [surfaceDarkHighContrast],
+ * whether in light or dark mode.
+ *
  * @see ColorScheme.surfaceBright
  */
 val surfaceBrightDarkHighContrast: Color = Color(0xFF42372D)
 
 /**
+ * A dark mode high contrast surface variant for containers with lower emphasis than
+ * [surfaceContainerLowDarkHighContrast]. Use this role for content which requires less emphasis
+ * than [surfaceContainerLowDarkHighContrast].
+ *
  * @see ColorScheme.surfaceContainerLowest
  */
 val surfaceContainerLowestDarkHighContrast: Color = Color(0xFF140D06)
 
 /**
+ * A dark mode high contrast surface variant for containers with lower emphasis than
+ * [surfaceContainerDarkHighContrast]. Use this role for content which requires less emphasis than
+ * [surfaceContainerDarkHighContrast].
+ *
  * @see ColorScheme.surfaceContainerLow
  */
 val surfaceContainerLowDarkHighContrast: Color = Color(0xFF221A11)
 
 /**
+ * A dark mode high contrast surface variant to use for containers of components, such as cards,
+ * sheets, and menus.
+ *
  * @see ColorScheme.surfaceContainer
  */
 val surfaceContainerDarkHighContrast: Color = Color(0xFF271E15)
 
 /**
+ * A dark mode high contrast surface variant for containers with higher emphasis than
+ * [surfaceContainerDarkHighContrast]. Use this role for content which requires more emphasis than
+ * [surfaceContainerDarkHighContrast].
+ *
  * @see ColorScheme.surfaceContainerHigh
  */
 val surfaceContainerHighDarkHighContrast: Color = Color(0xFF32281F)
 
 /**
+ * A dark mode high contrast surface variant for containers with higher emphasis than
+ * [surfaceContainerHighDarkHighContrast]. Use this role for content which requires more emphasis
+ * than [surfaceContainerHighDarkHighContrast].
+ *
  * @see ColorScheme.surfaceContainerHighest
  */
 val surfaceContainerHighestDarkHighContrast: Color = Color(0xFF3D3329)
