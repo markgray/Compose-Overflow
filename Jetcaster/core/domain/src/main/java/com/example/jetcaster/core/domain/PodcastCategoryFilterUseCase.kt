@@ -17,6 +17,8 @@
 package com.example.jetcaster.core.domain
 
 import com.example.jetcaster.core.data.database.model.Category
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.repository.CategoryStore
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
@@ -41,21 +43,23 @@ class PodcastCategoryFilterUseCase @Inject constructor(
     private val categoryStore: CategoryStore
 ) {
     /**
-     * Invokes the logic to filter and retrieve podcasts and episodes related to a specific category.
+     * Invokes the logic to filter and retrieve podcasts and episodes related to a specific [Category].
      *
-     * This function retrieves the most recent podcasts and episodes associated with the given
-     * `category`. It fetches a limited number of both (10 podcasts and 20 episodes) and
-     * combines them into a `PodcastCategoryFilterResult`.
+     * This function retrieves the most recent podcasts and episodes associated with the [CategoryInfo]
+     * parameter [category]. It fetches a limited number of both (10 podcasts and 20 episodes) and
+     * combines them into a [PodcastCategoryFilterResult].
      *
-     * @param category The `CategoryInfo` object representing the category to filter by. If `null`,
-     * an empty `PodcastCategoryFilterResult` is returned, indicating no category-specific data.
-     * @return A `Flow` emitting `PodcastCategoryFilterResult` objects. The `PodcastCategoryFilterResult`
+     * @param category The [CategoryInfo] object representing the [Category] to filter by. If `null`,
+     * an empty [PodcastCategoryFilterResult] is returned, indicating no category-specific data.
+     * @return A [Flow] emitting [PodcastCategoryFilterResult] objects. The [PodcastCategoryFilterResult]
      * contains the top podcasts and episodes related to the category.
      * - `topPodcasts`: A list of the most recent podcasts (up to 10) in the category.
      * - `episodes`: A list of recent episodes (up to 20) from podcasts within the category.
      *
      * @see CategoryInfo
      * @see PodcastCategoryFilterResult
+     * @see PodcastCategoryFilterResult.topPodcasts
+     * @see PodcastCategoryFilterResult.episodes
      * @see CategoryStore.podcastsInCategorySortedByPodcastCount
      * @see CategoryStore.episodesFromPodcastsInCategory
      * @see asExternalModel
@@ -67,17 +71,21 @@ class PodcastCategoryFilterUseCase @Inject constructor(
         }
 
         val recentPodcastsFlow = categoryStore.podcastsInCategorySortedByPodcastCount(
-            category.id,
+            categoryId = category.id,
             limit = 10
         )
 
         val episodesFlow = categoryStore.episodesFromPodcastsInCategory(
-            category.id,
+            categoryId = category.id,
             limit = 20
         )
 
         // Combine our flows and collect them into the view state StateFlow
-        return combine(recentPodcastsFlow, episodesFlow) { topPodcasts, episodes ->
+        return combine(
+            flow = recentPodcastsFlow,
+            flow2 = episodesFlow
+        ) { topPodcasts: List<PodcastWithExtraInfo>,
+            episodes: List<EpisodeToPodcast> ->
             PodcastCategoryFilterResult(
                 topPodcasts = topPodcasts.map { it.asExternalModel() },
                 episodes = episodes.map { it.asPodcastToEpisodeInfo() }

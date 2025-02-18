@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 
 /**
  * Use case responsible for providing a stream of [FilterableCategoriesModel]
- * which represents a list of categories that can be filtered, along with
+ * which represents a list of categories that can be used for filtering, along with
  * the currently selected category.
  *
  * This use case retrieves categories from the [CategoryStore], transforms them
@@ -43,14 +43,15 @@ class FilterableCategoriesUseCase @Inject constructor(
      * Creates a [Flow] of [FilterableCategoriesModel] from the list of categories in [categoryStore],
      * and the currently selected category.
      *
-     * We use the [CategoryStore.categoriesSortedByPodcastCount] to get the [Flow] of [List] list of
-     * [Category] it returns, then we use the [Flow.map] extension function to apply a transform to
-     * the [List] of [Category] producing a [Flow] of [FilterableCategoriesModel] with its
-     * `categories` argument the result of applying the `asExternalModel` function to each [Category],
-     * and its `selectedCategory` argument the result of applying the `asExternalModel` function to
-     * our [selectedCategory] argument if it is not `null`, otherwise the result of applying
-     * the `asExternalModel` function to the first [Category] in the [List] of [Category] returned by
-     * the [List.firstOrNull] function of the [List] of [Category].
+     * We use the [CategoryStore.categoriesSortedByPodcastCount] method to get the [Flow] of [List]
+     * list of [Category] it returns, then we use the [Flow.map] extension function to apply a
+     * transform to the [List] of [Category] producing a [Flow] of [FilterableCategoriesModel] with
+     * its `categories` argument the result of applying the `asExternalModel` function to each
+     * [Category], and its `selectedCategory` argument the result of applying the `asExternalModel`
+     * function to our [selectedCategory] argument if it is not `null`, otherwise the result of
+     * applying the `asExternalModel` function to the first [Category] in the [List] of [Category]
+     * returned by the [List.firstOrNull] function of the [List] of [Category] (or `null` if the
+     * [List] of [Category] is empty).
      *
      * @param selectedCategory the currently selected category. If `null`, the first category
      * returned by the backing category list will be selected in the returned

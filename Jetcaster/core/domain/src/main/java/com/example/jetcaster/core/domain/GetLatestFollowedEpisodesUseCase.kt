@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 
 /**
- * Use case responsible for retrieving the latest episodes from followed podcasts.
+ * Use case responsible for retrieving the latest episodes from the followed podcasts.
  *
  * This use case provides a stream of the most recent episodes from the podcasts that
  * the user is following. It fetches followed podcasts, sorts them by the most recent
@@ -49,7 +49,7 @@ class GetLatestFollowedEpisodesUseCase @Inject constructor(
      * This function performs the following operations:
      * 1. Fetches the user's followed podcasts from the [podcastStore].
      * 2. Sorts these followed podcasts by their last published episode (most recent first).
-     * 3. For each of the followed podcasts, fetches the most recent episodes from the [episodeStore].
+     * 3. For each of the followed podcasts, fetches its most recent episode from the [episodeStore].
      * 4. The number of episodes fetched per podcast is determined by multiplying the number of
      * followed podcasts by 5.
      * 5. Emits a new list of [EpisodeToPodcast] each time the underlying data changes.

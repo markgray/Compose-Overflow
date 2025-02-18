@@ -36,6 +36,10 @@ import androidx.compose.ui.unit.dp
  *
  * These shapes are designed to provide a consistent and visually appealing look and feel
  * across the entire application.
+ *
+ * @see Shapes.small
+ * @see Shapes.medium
+ * @see Shapes.large
  */
 val JetcasterShapes: Shapes = Shapes(
     small = RoundedCornerShape(percent = 50),
