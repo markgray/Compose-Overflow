@@ -16,8 +16,16 @@
 
 package com.example.jetcaster.core.model
 
+import com.example.jetcaster.core.domain.PodcastCategoryFilterUseCase
+
 /**
- * A model holding top podcasts and matching episodes when filtering based on a category.
+ * A model holding top podcasts and matching episodes when filtering based on a category. It is
+ * created by [PodcastCategoryFilterUseCase] and used by the UI to display the filtered content.
+ *
+ * @property topPodcasts A list of [PodcastInfo] representing the top podcasts in the category.
+ * Defaults to an empty list if no top podcasts are found.
+ * @property episodes A list of [PodcastToEpisodeInfo] representing episodes related to podcasts
+ * within the category. Defaults to an empty list if no episodes are found.
  */
 data class PodcastCategoryFilterResult(
     val topPodcasts: List<PodcastInfo> = emptyList(),

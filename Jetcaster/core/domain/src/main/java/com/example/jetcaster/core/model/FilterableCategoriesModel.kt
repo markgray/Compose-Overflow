@@ -17,11 +17,21 @@
 package com.example.jetcaster.core.model
 
 /**
- * Model holding a list of categories and a selected category in the collection
+ * Model holding a list of categories and the selected category in the collection.
+ *
+ * This class holds a list of available categories and the currently selected category.
+ * It also provides a convenient way to check if the model is considered "empty,"
+ * which is defined as having either no categories or no selected category.
+ *
+ * @property categories The list of available categories. Defaults to an empty list.
+ * @property selectedCategory The currently selected category. Can be null if no category is selected. Defaults to null.
+ * @property isEmpty A boolean flag indicating whether the model is considered empty. It is true if
+ * either the [List] of [CategoryInfo] field [categories] is empty or [CategoryInfo] field
+ * [selectedCategory] is `null`, otherwise `false`.
  */
 data class FilterableCategoriesModel(
     val categories: List<CategoryInfo> = emptyList(),
     val selectedCategory: CategoryInfo? = null
 ) {
-    val isEmpty = categories.isEmpty() || selectedCategory == null
+    val isEmpty: Boolean = categories.isEmpty() || selectedCategory == null
 }

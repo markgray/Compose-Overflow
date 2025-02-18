@@ -20,7 +20,37 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import java.time.Duration
 import kotlinx.coroutines.flow.StateFlow
 
-val DefaultPlaybackSpeed = Duration.ofSeconds(1)
+/**
+ * The default playback speed for a media item. This is expressed as a [Duration]
+ * where a duration of 1 second means the media plays at normal speed.
+ *
+ * A playback speed of:
+ *  - `1 second` (1.0x) indicates normal playback speed.
+ *  - `2 seconds` (2.0x) indicates playback at double speed.
+ *  - `0.5 seconds` (0.5x) indicates playback at half speed.
+ *
+ * This value is used as the initial playback speed if no other speed is specified.
+ * It should generally correspond to a "real-time" playback rate.
+ */
+val DefaultPlaybackSpeed: Duration = Duration.ofSeconds(1)
+
+/**
+ * Represents the state of an episode player.
+ *
+ * This data class encapsulates all the necessary information about the current playback
+ * session, including the currently playing episode, the queue of episodes, the playback
+ * speed, whether playback is active, and the elapsed time within the current episode.
+ *
+ * @property currentEpisode The [PlayerEpisode] currently being played. Null if no episode is loaded.
+ * @property queue The list of [PlayerEpisode]s that are queued for playback. An empty list if the
+ * queue is empty.
+ * @property playbackSpeed The current playback speed as a [Duration] (e.g., 1x, 1.5x, etc.).
+ * Defaults to [DefaultPlaybackSpeed].
+ * @property isPlaying `true` if an episode is currently playing; `false` otherwise (paused or
+ * stopped).
+ * @property timeElapsed The amount of time elapsed in the current episode, represented as a
+ * [Duration]. Resets to [Duration.ZERO] when a new episode starts or when no episode is loaded.
+ */
 data class EpisodePlayerState(
     val currentEpisode: PlayerEpisode? = null,
     val queue: List<PlayerEpisode> = emptyList(),

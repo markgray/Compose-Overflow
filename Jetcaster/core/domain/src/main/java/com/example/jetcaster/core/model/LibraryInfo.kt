@@ -16,6 +16,16 @@
 
 package com.example.jetcaster.core.model
 
+/**
+ * Represents information about a library, specifically a collection of podcast episodes.
+ *
+ * This class holds a [List] of [PodcastToEpisodeInfo] objects, representing the episodes
+ * available in the library. It also implements the [List] interface by delegation,
+ * meaning it directly exposes the functionality of the underlying [episodes] list.
+ *
+ * @property episodes The list of [PodcastToEpisodeInfo] objects representing the episodes in the
+ * library. Defaults to an empty list if no episodes are provided.
+ */
 data class LibraryInfo(
     val episodes: List<PodcastToEpisodeInfo> = emptyList()
 ) : List<PodcastToEpisodeInfo> by episodes
