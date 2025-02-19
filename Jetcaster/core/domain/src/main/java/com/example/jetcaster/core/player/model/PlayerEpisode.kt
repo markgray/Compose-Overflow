@@ -32,7 +32,7 @@ import java.time.OffsetDateTime
  * @property title The title of the episode.
  * @property subTitle A short, descriptive subtitle for the episode.
  * @property published The date and time when the episode was published.
- * @property duration The duration of the episode's audio content. Can be null if unknown.
+ * @property duration The duration of the episode's audio content. Can be `null` if unknown.
  * @property podcastName The name of the podcast to which this episode belongs.
  * @property author The author or creator of the episode.
  * @property summary A brief summary or description of the episode's content.
@@ -50,7 +50,17 @@ data class PlayerEpisode(
     val podcastImageUrl: String = "",
 ) {
     /**
-     * Creates a [PlayerEpisode] instance by combining a [PodcastInfo] and an [EpisodeInfo].
+     * Creates a [PlayerEpisode] instance by combining a [PodcastInfo] and an [EpisodeInfo]. The
+     * properties of the [PlayerEpisode] are set as follows:
+     *  - [title] is the [EpisodeInfo.title] of [episodeInfo]
+     *  - [subTitle] is the [EpisodeInfo.subTitle] of [episodeInfo]
+     *  - [published] is the [EpisodeInfo.published] of [episodeInfo]
+     *  - [duration] is the [EpisodeInfo.duration] of [episodeInfo]
+     *  - [podcastName] is the [PodcastInfo.title] of [podcastInfo]
+     *  - [author] is the [EpisodeInfo.author] of [episodeInfo]
+     *  - [summary] is the [EpisodeInfo.summary] of [episodeInfo]
+     *  - [podcastImageUrl] is the [PodcastInfo.imageUrl] of [podcastInfo]
+     *  - [uri] is the [EpisodeInfo.uri] of [episodeInfo]
      *
      * @param podcastInfo Information related to the podcast of the current episode.
      * @param episodeInfo Information related to the current episode.

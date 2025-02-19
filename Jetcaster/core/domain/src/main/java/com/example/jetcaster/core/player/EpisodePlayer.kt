@@ -66,7 +66,7 @@ data class EpisodePlayerState(
 interface EpisodePlayer {
 
     /**
-     * A StateFlow that emits the [EpisodePlayerState] as controls as invoked on this player.
+     * A [StateFlow] that emits the current [EpisodePlayerState] of this player.
      */
     val playerState: StateFlow<EpisodePlayerState>
 

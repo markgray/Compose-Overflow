@@ -24,7 +24,8 @@ package com.example.jetcaster.core.model
  * which is defined as having either no categories or no selected category.
  *
  * @property categories The list of available categories. Defaults to an empty list.
- * @property selectedCategory The currently selected category. Can be null if no category is selected. Defaults to null.
+ * @property selectedCategory The currently selected category. Can be `null` if no category is
+ * selected. Defaults to `null`.
  * @property isEmpty A boolean flag indicating whether the model is considered empty. It is true if
  * either the [List] of [CategoryInfo] field [categories] is empty or [CategoryInfo] field
  * [selectedCategory] is `null`, otherwise `false`.

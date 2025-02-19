@@ -33,7 +33,7 @@ import java.time.OffsetDateTime
  * @property author The author or creator of the episode. Defaults to an empty string.
  * @property published The date and time when the episode was published, represented as an
  * [OffsetDateTime]. Defaults to [OffsetDateTime.MIN] if the published date is unknown.
- * @property duration The duration of the episode, represented as a [Duration]. Can be null if the
+ * @property duration The duration of the episode, represented as a [Duration]. Can be `null` if the
  * duration is unknown or unavailable.
  */
 data class EpisodeInfo(
@@ -52,7 +52,7 @@ data class EpisodeInfo(
  * This function maps the properties of an [Episode] object to the corresponding
  * properties of an [EpisodeInfo] object, suitable for use outside the domain layer.
  * It handles potential null values in the source object, providing default
- * empty strings for [Episode.subtitle], [Episode.summary], and [Episode.author] if they are null.
+ * empty strings for [Episode.subtitle], [Episode.summary], and [Episode.author] if they are `null`.
  *
  * @return An [EpisodeInfo] object containing the mapped data from the [Episode].
  */
