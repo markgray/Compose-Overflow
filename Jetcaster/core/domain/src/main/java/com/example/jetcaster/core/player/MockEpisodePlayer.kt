@@ -38,7 +38,8 @@ import kotlinx.coroutines.launch
  * This class provides a simulated episode player that allows you to control playback, queue
  * management, and time manipulation without relying on a real media player.
  *
- * The [MockEpisodePlayer] uses Kotlin Coroutines and Flows to manage its state and simulate time progression.
+ * The [MockEpisodePlayer] uses Kotlin Coroutines and Flows to manage its state and simulate
+ * time progression.
  *
  * @property mainDispatcher The coroutine dispatcher used for managing coroutines within the player.
  */
@@ -152,12 +153,17 @@ class MockEpisodePlayer(
         coroutineScope.launch {
             // Combine streams here
             combine(
-                _currentEpisode,
-                queue,
-                isPlaying,
-                timeElapsed,
-                _playerSpeed
-            ) { currentEpisode, queue, isPlaying, timeElapsed, playerSpeed ->
+                flow = _currentEpisode,
+                flow2 = queue,
+                flow3 = isPlaying,
+                flow4 = timeElapsed,
+                flow5 = _playerSpeed
+            ) { currentEpisode: PlayerEpisode?,
+                queue: List<PlayerEpisode>,
+                isPlaying: Boolean,
+                timeElapsed: Duration,
+                playerSpeed: Duration ->
+
                 EpisodePlayerState(
                     currentEpisode = currentEpisode,
                     queue = queue,
@@ -178,9 +184,9 @@ class MockEpisodePlayer(
      * The current speed at which the player is playing.
      *
      * This property represents the playback speed as a [Duration].
-     * A value of [Duration.seconds(1)] means normal speed.
-     * Values greater than [Duration.seconds(1)] indicate faster speeds.
-     * Values less than [Duration.seconds(1)] and greater than [Duration.ZERO] indicate slower speeds.
+     * A value of `Duration.seconds(1)` means normal speed.
+     * Values greater than `Duration.seconds(1)` indicate faster speeds.
+     * Values less than `Duration.seconds(1)` and greater than [Duration.ZERO] indicate slower speeds.
      * Values of [Duration.ZERO] or less are invalid and will likely result in undefined behavior.
      *
      * Note that this is a derived property based on the underlying [_playerSpeed] value.
@@ -244,7 +250,7 @@ class MockEpisodePlayer(
      * 1. **Checks if already playing:** If [isPlaying] is true, it does nothing and returns early,
      * preventing multiple playback instances.
      * 2. **Retrieves the current episode:** It attempts to get the current episode from
-     * [_currentEpisode]. If no episode is found (null), it returns early.
+     * [_currentEpisode]. If no episode is found (`null`), it returns early.
      * 3. **Sets playing state:** It sets [isPlaying] to true, indicating that playback has started.
      * 4. **Launches a coroutine:** It starts a coroutine using [coroutineScope] to handle the timer
      * and playback logic.
@@ -261,9 +267,9 @@ class MockEpisodePlayer(
      *     - If there is a next episode, `next()` is called to automatically start playing it.
      *
      * **Note:** This function relies on several other properties and functions, including:
-     *  - `isPlaying`: A `MutableStateFlow<Boolean>` representing the current playback state.
-     *  - `_currentEpisode`: A `StateFlow<Episode?>` holding the currently selected episode.
-     *  - `timeElapsed`: A `MutableStateFlow<Duration>` representing the elapsed time in the
+     *  - [isPlaying]: A `MutableStateFlow<Boolean>` representing the current playback state.
+     *  - [_currentEpisode]: A `StateFlow<Episode?>` holding the currently selected episode.
+     *  - [timeElapsed]: A `MutableStateFlow<Duration>` representing the elapsed time in the
      *  current episode.
      */
     override fun play() {
@@ -293,7 +299,7 @@ class MockEpisodePlayer(
     }
 
     override fun play(playerEpisode: PlayerEpisode) {
-        play(listOf(playerEpisode))
+        play(playerEpisodes = listOf(playerEpisode))
     }
 
     override fun play(playerEpisodes: List<PlayerEpisode>) {

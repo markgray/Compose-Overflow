@@ -71,12 +71,12 @@ interface EpisodePlayer {
     val playerState: StateFlow<EpisodePlayerState>
 
     /**
-     * Gets the current episode playing, or to be played, by this player.
+     * Returns the current episode playing, or to be played, by this player.
      */
     var currentEpisode: PlayerEpisode?
 
     /**
-     * The speed of which the player increments
+     * The speed at which the player increments the elapsed time
      */
     var playerSpeed: Duration
 
