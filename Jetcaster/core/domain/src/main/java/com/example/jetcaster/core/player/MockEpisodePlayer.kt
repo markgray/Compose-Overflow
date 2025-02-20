@@ -298,22 +298,64 @@ class MockEpisodePlayer(
         }
     }
 
+    /**
+     * Plays a single [PlayerEpisode].
+     *
+     * This function initiates playback of the specified [PlayerEpisode]. It essentially wraps the
+     * single episode in a list and delegates the actual playback to the
+     * [play(playerEpisodes: List<PlayerEpisode>)] function.
+     *
+     * @param playerEpisode The [PlayerEpisode] to be played.
+     *
+     * @see play(playerEpisodes: List<PlayerEpisode>)
+     */
     override fun play(playerEpisode: PlayerEpisode) {
         play(playerEpisodes = listOf(playerEpisode))
     }
 
+    /**
+     * Plays a list of [PlayerEpisode]s.
+     *
+     * This function handles the following:
+     * 1. **Pauses current playback:** If an episode is currently playing, it pauses it.
+     * 2. **Manages the queue:**
+     *    - It updates the internal queue of episodes to be played.
+     *    - If an episode from the provided `playerEpisodes` list is already in the queue, it
+     *    removes it from its current position and places it at the beginning of the new queue.
+     *    - It preserves the currently playing episode (if any) by adding it after the provided
+     *    `playerEpisodes` in the queue.
+     *    - It keeps the order of the previously existing episode not in the input list, after the
+     *    added playing episode (if any)
+     * 3. **Starts playback:** After updating the queue, it initiates playback by calling `next()`,
+     * which typically starts playing the first episode in the updated queue.
+     *
+     * @param playerEpisodes The list of [PlayerEpisode]s to play. These episodes will be added to
+     * the beginning of the updated queue.
+     *
+     * Example Scenarios:
+     *   - If `queue` is [A, B, C], `_currentEpisode` is B, and `playerEpisodes` is [D, E], the
+     *   new `queue` will be [D, E, B, A, C].
+     *   - If `queue` is [A, B, C], `_currentEpisode` is null, and `playerEpisodes` is [D, E],
+     *   the new `queue` will be [D, E, A, B, C].
+     *   - If `queue` is [A, B, C], `_currentEpisode` is B, and `playerEpisodes` is [B, E],
+     *   the new `queue` will be [B, E, B, A, C] and the first B is the B input
+     *   - If `queue` is [A, B, C], `_currentEpisode` is A, and `playerEpisodes` is [B, E],
+     *   the new `queue` will be [B, E, A, C]
+     *   - If `queue` is [A, B, C], `_currentEpisode` is B, and `playerEpisodes` is [A, B],
+     *   the new `queue` will be [A, B, B, C]
+     */
     override fun play(playerEpisodes: List<PlayerEpisode>) {
         if (isPlaying.value) {
             pause()
         }
 
         // Keep the currently playing episode in the queue
-        val playingEpisode = _currentEpisode.value
+        val playingEpisode: PlayerEpisode? = _currentEpisode.value
         var previousList: List<PlayerEpisode> = emptyList()
-        queue.update { queue ->
-            playerEpisodes.map { episode ->
+        queue.update { queue: List<PlayerEpisode> ->
+            playerEpisodes.map { episode: PlayerEpisode ->
                 if (queue.contains(episode)) {
-                    val mutableList = queue.toMutableList()
+                    val mutableList: MutableList<PlayerEpisode> = queue.toMutableList()
                     mutableList.remove(episode)
                     previousList = mutableList
                 } else {
@@ -330,6 +372,15 @@ class MockEpisodePlayer(
         next()
     }
 
+    /**
+     * Pauses the ongoing timer.
+     *
+     * This function sets the [isPlaying] state to `false`, indicating that the timer is no longer
+     * running. It also cancels the currently active timer job ([timerJob]) and sets it to `null`.
+     *
+     * After calling this function, the timer will be in a paused state, and no further time will be
+     * elapsed until the timer is resumed (if applicable).
+     */
     override fun pause() {
         isPlaying.value = false
 
@@ -337,6 +388,18 @@ class MockEpisodePlayer(
         timerJob = null
     }
 
+    /**
+     * Stops the timer and resets its state.
+     *
+     * This function performs the following actions:
+     * 1. Sets the [isPlaying] state to `false`, indicating that the timer is no longer running.
+     * 2. Resets the [timeElapsed] state to [Duration.ZERO], effectively setting the elapsed time
+     * back to zero.
+     * 3. Cancels the currently running [timerJob], if any.
+     * 4. Sets [timerJob] to `null`, clearing the reference to the cancelled job.
+     *
+     * This method should be called when the timer needs to be stopped and reset.
+     */
     override fun stop() {
         isPlaying.value = false
         timeElapsed.value = Duration.ZERO
@@ -345,6 +408,18 @@ class MockEpisodePlayer(
         timerJob = null
     }
 
+    /**
+     * Advances the playback time by the specified duration.
+     *
+     * This function updates the [timeElapsed] state, effectively simulating the passage of time
+     * during playback. The advancement is limited to the duration of the currently playing episode.
+     * If there is no current episode, this function does nothing.
+     *
+     * @param duration The duration to advance the playback time by. This should be a non-negative
+     * duration. If a negative duration is provided the elapsed time will actually go back, but will
+     * be clamped to 0. The advance is clamped to the current episode duration, so the elapsed time
+     * will never be greater than the duration of the current episode.
+     */
     override fun advanceBy(duration: Duration) {
         val currentEpisodeDuration = _currentEpisode.value?.duration ?: return
         timeElapsed.update {
@@ -352,31 +427,120 @@ class MockEpisodePlayer(
         }
     }
 
+    /**
+     * Rewinds the elapsed time by the specified duration.
+     *
+     * This function decrements the current elapsed time by the given [duration].
+     * If the resulting time would be negative, it is clamped to zero, preventing the time from
+     * going backward beyond the start.
+     *
+     * @param duration The duration to rewind by. Must be a non-negative duration.
+     *
+     * @throws IllegalArgumentException if duration is negative
+     */
     override fun rewindBy(duration: Duration) {
         timeElapsed.update {
             (it - duration).coerceAtLeast(Duration.ZERO)
         }
     }
 
+    /**
+     * Called when the user starts seeking (e.g., dragging the seek bar thumb).
+     *
+     * This method pauses the player to prevent it from competing with the timeline
+     * progression during the seeking operation. This ensures that the visual
+     * feedback of the seek operation (like scrubbing) is smooth and accurate,
+     * without interference from the underlying playback.
+     *
+     * Note: The player should be resumed via [onSeekingFinished] once the seeking operation is
+     * complete.
+     */
     override fun onSeekingStarted() {
         // Need to pause the player so that it doesn't compete with timeline progression.
         pause()
     }
 
+    /**
+     * Called when a seeking operation (e.g., fast-forwarding or rewinding) has finished.
+     *
+     * This function updates the [timeElapsed] state to reflect the new position reached after
+     * seeking and then resumes playback.
+     *
+     * Behavior:
+     * 1. **Retrieve Current Episode Duration:** It first attempts to get the duration of the
+     * currently playing episode from the [_currentEpisode] state. If no episode is currently
+     * loaded (i.e., `_currentEpisode.value` is `null`), the function returns early without
+     * doing anything.
+     * 2. **Clamp Duration:** It then ensures that the provided [duration] is within the valid
+     * range of the current episode's duration. It uses `coerceIn` to restrict the duration:
+     *     - If [duration] is less than [Duration.ZERO] (0), it's set to [Duration.ZERO].
+     *     - If [duration] is greater than the [currentEpisodeDuration], it's set to
+     *     [currentEpisodeDuration].
+     *     - Otherwise, it remains unchanged.
+     * 3. **Update Time Elapsed:** It updates the [timeElapsed] state with the clamped duration.
+     * This makes sure that UI elements and other components that rely on [timeElapsed] reflect the
+     * correct playback position.
+     * 4. **Resume Playback:** Finally, it calls the [play] function to resume playback from the
+     * newly set position.
+     *
+     * @param duration The new duration representing the time elapsed after the seek operation.
+     * This duration can be anywhere within the episode, including the beginning (0) or the end.
+     */
     override fun onSeekingFinished(duration: Duration) {
         val currentEpisodeDuration = _currentEpisode.value?.duration ?: return
         timeElapsed.update { duration.coerceIn(Duration.ZERO, currentEpisodeDuration) }
         play()
     }
 
+    /**
+     * Increases the current player speed by the specified duration.
+     *
+     * This function adds the given [speed] duration to the current [_playerSpeed].
+     * It's used to accelerate the player's speed by a certain increment.
+     *
+     * @param speed The [Duration] representing the amount by which to increase the player's speed.
+     * This value is added to the current speed.
+     */
     override fun increaseSpeed(speed: Duration) {
         _playerSpeed.value += speed
     }
 
+    /**
+     * Decreases the current player speed by the specified duration.
+     *
+     * This function subtracts the provided [speed] (a [Duration]) from the internal
+     * [_playerSpeed] value, effectively slowing down the player.
+     *
+     * @param speed The duration representing the amount by which to decrease the speed. A positive
+     * duration will reduce the speed, while a negative or zero duration will have no or opposite
+     * effect. For example, if the current speed is 2x and you decrease by a duration representing
+     * 0.5x, the resulting speed would be 1.5x
+     * @throws IllegalArgumentException if the resulting speed would be negative, since speeds are
+     * expected to be non-negative.
+     */
     override fun decreaseSpeed(speed: Duration) {
         _playerSpeed.value -= speed
     }
 
+    /**
+     * Advances to the next episode in the queue.
+     *
+     * This function performs the following actions:
+     * 1. Checks if the queue is empty. If it is, the function returns, doing nothing.
+     * 2. Resets the [timeElapsed] to zero, effectively starting the timer for the new episode.
+     * 3. Retrieves the next episode from the front of the queue.
+     * 4. Sets the [currentEpisode] to the retrieved episode.
+     * 5. Removes the selected episode from the queue.
+     * 6. Initiates playback of the newly selected [currentEpisode] by calling the [play] function.
+     *
+     * This method assumes that [queue] is a mutable list-like structure that maintains the order
+     * of episodes, [timeElapsed] is a value that tracks how long the current episode has been
+     * playing, and [currentEpisode] represents the episode currently being played. The [play]
+     * function is assumed to start or resume the playback of an episode.
+     *
+     * @throws NoSuchElementException if the queue is modified concurrently and becomes empty
+     * between the check and the retrieval of the next episode.
+     */
     override fun next() {
         val q = queue.value
         if (q.isEmpty()) {
@@ -390,6 +554,22 @@ class MockEpisodePlayer(
         play()
     }
 
+    /**
+     * Resets the timer to its initial state, stopping any ongoing timer.
+     *
+     * This function performs the following actions:
+     * 1. **Resets [timeElapsed]:** Sets the [timeElapsed] value to [Duration.ZERO], effectively
+     * resetting the elapsed time to zero.
+     * 2. **Stops playback:** Sets the [isPlaying] value to `false`, indicating that the timer is
+     * no longer running.
+     * 3. **Cancels the timer job:** If a timer job ([timerJob]) is currently running, it is
+     * canceled using `timerJob?.cancel()`.
+     * 4. **Clears the timer job reference:** Sets [timerJob] to `null`, ensuring that no reference
+     * to the canceled job is retained.
+     *
+     * This function is typically used to stop and reset a timer when the user navigates to a
+     * previous state or when the timer needs to be completely reset.
+     */
     override fun previous() {
         timeElapsed.value = Duration.ZERO
         isPlaying.value = false
