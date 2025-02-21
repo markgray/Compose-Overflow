@@ -53,6 +53,28 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import com.example.jetcaster.util.ToggleFollowPodcastIconButton
 import com.example.jetcaster.util.fullWidthItem
 
+/**
+ * Composes the UI for displaying a category of podcasts, including top podcasts
+ * and a list of episodes.
+ *
+ * This function utilizes a [LazyGridScope] to efficiently render a list of items within a grid.
+ * It displays a section for "Top Podcasts" followed by a scrollable list of episodes related to
+ * the category.
+ *
+ * @param podcastCategoryFilterResult The result containing the top podcasts and episodes for the
+ * category. It's expected to be an instance of [PodcastCategoryFilterResult], which should have
+ * properties:
+ *  - `topPodcasts`: A `List<PodcastInfo>` representing the top podcasts in the category.
+ *  - `episodes`: A `List<EpisodeItem>` representing episodes belonging to the category.
+ * @param navigateToPodcastDetails A lambda function that takes a [PodcastInfo] as input and
+ * navigates to the details screen of that podcast.
+ * @param navigateToPlayer A lambda function that takes an [EpisodeInfo] as input and navigates to
+ * the player screen to play that episode.
+ * @param onQueueEpisode A lambda function that takes a [PlayerEpisode] as input and handles the
+ * enqueuing of that episode to the player's queue.
+ * @param onTogglePodcastFollowed A lambda function that takes a [PodcastInfo] as input and handles
+ * toggling the follow/unfollow state of the podcast.
+ */
 fun LazyGridScope.podcastCategory(
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
@@ -69,10 +91,10 @@ fun LazyGridScope.podcastCategory(
     }
 
     val episodes = podcastCategoryFilterResult.episodes
-    items(episodes, key = { it.episode.uri }) { item ->
+    items(episodes, key = { it.episode.uri }) { (episode: EpisodeInfo, podcast: PodcastInfo) ->
         EpisodeListItem(
-            episode = item.episode,
-            podcast = item.podcast,
+            episode = episode,
+            podcast = podcast,
             onClick = navigateToPlayer,
             onQueueEpisode = onQueueEpisode,
             modifier = Modifier.fillMaxWidth()
@@ -174,6 +196,9 @@ private fun TopPodcastRowItem(
     }
 }
 
+/**
+ * A preview of the [EpisodeListItem] composable.
+ */
 @Preview
 @Composable
 fun PreviewEpisodeListItem() {

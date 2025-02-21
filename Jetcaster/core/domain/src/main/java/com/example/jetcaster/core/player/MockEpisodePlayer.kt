@@ -578,12 +578,49 @@ class MockEpisodePlayer(
         timerJob = null
     }
 
+    /**
+     * Checks if there are more elements available in the queue.
+     *
+     * This function determines whether the underlying queue managed by this class
+     * currently contains any elements. It provides a way to check if subsequent
+     * calls to methods like `next()` would be able to retrieve a valid element.
+     *
+     * @return `true` if the queue is not empty (i.e., there are elements available),
+     * `false` otherwise (i.e., the queue is empty and no more elements are available).
+     */
     private fun hasNext(): Boolean {
         return queue.value.isNotEmpty()
     }
 }
 
-// Used to enable property delegation
+/**
+ * Sets the value of a [MutableStateFlow] using the delegated property syntax.
+ *
+ * This function allows you to use the assignment operator (`=`) to directly
+ * set the value of a [MutableStateFlow] instance, similar to how you would
+ * with a regular property. It leverages Kotlin's delegated properties feature
+ * to provide a more concise syntax for updating the flow's value.
+ *
+ * Example usage:
+ * ```
+ * val myFlow = MutableStateFlow(0)
+ * var myValue by myFlow // Here 'by' uses getValue and setValue operators
+ *
+ * myValue = 10 // Equivalent to myFlow.value = 10
+ * ```
+ *
+ * Note: This function is designed to be used in conjunction with the `getValue` operator to provide
+ * a complete delegated property implementation for [MutableStateFlow].
+ *
+ * @param T The type of value held by the MutableStateFlow.
+ * @param thisObj The object instance that contains the delegated property. This is typically not
+ * used within this function's implementation but is required by the delegated property contract.
+ * @param property The KProperty representing the delegated property. This is typically not used
+ * within this function's implementation but is required by the delegated property contract.
+ * @param value The new value to be set for the [MutableStateFlow].
+ *
+ * @receiver [MutableStateFlow] <[T]> The [MutableStateFlow] instance whose value will be updated.
+ */
 private operator fun <T> MutableStateFlow<T>.setValue(
     thisObj: Any?,
     property: KProperty<*>,
@@ -592,5 +629,25 @@ private operator fun <T> MutableStateFlow<T>.setValue(
     this.value = value
 }
 
-private operator fun <T> MutableStateFlow<T>.getValue(thisObj: Any?, property: KProperty<*>): T =
-    this.value
+/**
+ * Provides a delegate operator function to retrieve the current value of a [MutableStateFlow].
+ * This operator allows accessing the value of a [MutableStateFlow] instance using Kotlin's
+ * delegated properties syntax. It essentially provides a read-only view of the underlying flow's
+ * current value.
+ *
+ *  @param thisObj The object instance to which the property is delegated. In most cases, this is
+ *  implicitly provided by Kotlin's delegate mechanism and doesn't need explicit handling. It can be
+ *  `null` if the delegate is used at the top-level or in a static context.
+ *  @param property The metadata of the delegated property. It provides information about the
+ *  property, such as its name and type. This is automatically provided by the Kotlin compiler when
+ *  using delegated properties.
+ *
+ *  @return The current value held by the [MutableStateFlow].
+ *
+ *  @see MutableStateFlow
+ *  @see kotlin.reflect.KProperty
+ */
+private operator fun <T> MutableStateFlow<T>.getValue(
+    thisObj: Any?,
+    property: KProperty<*>
+): T = this.value
