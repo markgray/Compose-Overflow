@@ -302,12 +302,13 @@ class MockEpisodePlayer(
      * Plays a single [PlayerEpisode].
      *
      * This function initiates playback of the specified [PlayerEpisode]. It essentially wraps the
-     * single episode in a list and delegates the actual playback to the
-     * [play(playerEpisodes: List<PlayerEpisode>)] function.
+     * single episode in a list and delegates the actual playback to the overload of [play] that
+     * takes a [List] of [PlayerEpisode] (sure wish I could link to it but that's the way it is for
+     * now).
      *
      * @param playerEpisode The [PlayerEpisode] to be played.
      *
-     * @see play(playerEpisodes: List<PlayerEpisode>)
+     * @see play(playerEpisodes: List<PlayerEpisode>) the overload that takes a [List] of [PlayerEpisode]
      */
     override fun play(playerEpisode: PlayerEpisode) {
         play(playerEpisodes = listOf(playerEpisode))
@@ -542,13 +543,13 @@ class MockEpisodePlayer(
      * between the check and the retrieval of the next episode.
      */
     override fun next() {
-        val q = queue.value
+        val q: List<PlayerEpisode> = queue.value
         if (q.isEmpty()) {
             return
         }
 
         timeElapsed.value = Duration.ZERO
-        val nextEpisode = q[0]
+        val nextEpisode: PlayerEpisode = q[0]
         currentEpisode = nextEpisode
         queue.value = q - nextEpisode
         play()
