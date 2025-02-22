@@ -23,10 +23,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -48,6 +48,20 @@ import com.example.jetcaster.designsystem.theme.Keyline1
 import com.example.jetcaster.ui.home.category.podcastCategory
 import com.example.jetcaster.util.fullWidthItem
 
+/**
+ * Composes the "Discover" items section within a [LazyVerticalGrid].
+ *
+ * This function renders the discoverable content, including category tabs and a list of podcasts
+ * filtered by the selected category. It handles the layout and interactions for this section.
+ *
+ * @param filterableCategoriesModel The model containing the available categories for filtering.
+ * @param podcastCategoryFilterResult The result of filtering podcasts based on the selected category.
+ * @param navigateToPodcastDetails Callback to navigate to the details screen of a selected podcast.
+ * @param navigateToPlayer Callback to navigate to the player screen for a selected episode.
+ * @param onCategorySelected Callback invoked when a category tab is selected.
+ * @param onTogglePodcastFollowed Callback to toggle the followed state of a podcast.
+ * @param onQueueEpisode Callback to add an episode to the player queue.
+ */
 fun LazyGridScope.discoverItems(
     filterableCategoriesModel: FilterableCategoriesModel,
     podcastCategoryFilterResult: PodcastCategoryFilterResult,
@@ -63,7 +77,7 @@ fun LazyGridScope.discoverItems(
     }
 
     fullWidthItem {
-        Spacer(Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
 
         PodcastCategoryTabs(
             filterableCategoriesModel = filterableCategoriesModel,
@@ -71,7 +85,7 @@ fun LazyGridScope.discoverItems(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(height = 8.dp))
     }
 
     podcastCategory(
@@ -83,13 +97,30 @@ fun LazyGridScope.discoverItems(
     )
 }
 
+/**
+ * Displays a horizontal row of clickable tabs representing podcast categories.
+ *
+ * This composable renders a set of [ChoiceChipContent] components within a [LazyRow],
+ * allowing the user to select a specific podcast category. The currently selected
+ * category is highlighted.
+ *
+ * @param filterableCategoriesModel A [FilterableCategoriesModel] that holds the list of available
+ * categories and the currently selected category.
+ * @param onCategorySelected A callback function invoked when a category tab is clicked.
+ * It receives the selected [CategoryInfo] as a parameter.
+ * @param modifier The [Modifier] to be applied to the root layout of this composable.
+ *
+ * @see FilterableCategoriesModel
+ * @see CategoryInfo
+ * @see ChoiceChipContent
+ */
 @Composable
 private fun PodcastCategoryTabs(
     filterableCategoriesModel: FilterableCategoriesModel,
     onCategorySelected: (CategoryInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedIndex = filterableCategoriesModel.categories.indexOf(
+    val selectedIndex: Int = filterableCategoriesModel.categories.indexOf(
         filterableCategoriesModel.selectedCategory
     )
     LazyRow(
@@ -99,8 +130,8 @@ private fun PodcastCategoryTabs(
     ) {
         itemsIndexed(
             items = filterableCategoriesModel.categories,
-            key = { i, category -> category.id }
-        ) { index, category ->
+            key = { _, (id, _) -> id }
+        ) { index: Int, category: CategoryInfo ->
             ChoiceChipContent(
                 text = category.name,
                 selected = index == selectedIndex,
@@ -111,7 +142,18 @@ private fun PodcastCategoryTabs(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+/**
+ * A composable function that renders a custom Choice Chip (Filter Chip).
+ *
+ * This function creates a chip that can be selected or unselected, displaying
+ * a checkmark icon when selected. It is commonly used for filtering options
+ * or selecting multiple categories.
+ *
+ * @param text The text to display on the chip's label.
+ * @param selected A boolean indicating whether the chip is currently selected.
+ * @param onClick The callback function to be executed when the chip is clicked.
+ * @param modifier Modifiers to be applied to the chip. Defaults to [Modifier].
+ */
 @Composable
 private fun ChoiceChipContent(
     text: String,

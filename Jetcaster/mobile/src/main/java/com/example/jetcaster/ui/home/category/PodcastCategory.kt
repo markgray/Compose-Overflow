@@ -27,8 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.LazyGrid
 import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -60,8 +60,8 @@ import com.example.jetcaster.util.fullWidthItem
  * and a list of episodes.
  *
  * This is an extension function of [LazyGridScope] that efficiently renders a list of items within
- * a [LazyGrid]. It displays a section for "Top Podcasts" followed by a scrollable list of episodes
- * related to the category.
+ * a [LazyVerticalGrid]. It displays a section for "Top Podcasts" followed by a scrollable list of
+ * episodes related to the category.
  *
  * @param podcastCategoryFilterResult The result containing the top podcasts and episodes for the
  * category. It's expected to be an instance of [PodcastCategoryFilterResult], which should have
@@ -104,6 +104,19 @@ fun LazyGridScope.podcastCategory(
     }
 }
 
+/**
+ * Displays a row of podcasts within a specific category.
+ *
+ * This composable function takes a list of [PodcastInfo] objects and displays them in a horizontal
+ * row using the [CategoryPodcastRow] composable. It also handles navigation to podcast details
+ * and toggling the "followed" status of a podcast.
+ *
+ * @param topPodcasts A list of [PodcastInfo] objects to display in the row.
+ * @param navigateToPodcastDetails A lambda function that takes a [PodcastInfo] object and
+ * navigates the user to the details screen for that podcast.
+ * @param onTogglePodcastFollowed A lambda function that takes a [PodcastInfo] object and toggles
+ * whether the podcast is followed or not.
+ */
 @Composable
 private fun CategoryPodcasts(
     topPodcasts: List<PodcastInfo>,
@@ -118,6 +131,23 @@ private fun CategoryPodcasts(
     )
 }
 
+/**
+ * Displays a horizontal row of podcast items within a specific category.
+ *
+ * This composable renders a horizontally scrollable list of podcasts, each represented by a
+ * [TopPodcastRowItem]. It handles the layout, spacing, and user interactions for each item
+ * in the row.
+ *
+ * @param podcasts A list of [PodcastInfo] objects to display. Each object contains information
+ * about a single podcast, such as its title, image URL, and whether it is followed.
+ * @param onTogglePodcastFollowed A callback function invoked when the user toggles the
+ * follow/unfollow state of a podcast. It receives the [PodcastInfo] of the podcast whose
+ * follow state changed.
+ * @param navigateToPodcastDetails A callback function invoked when the user clicks on a podcast
+ * item. It receives the [PodcastInfo] of the selected podcast and is intended to trigger navigation
+ * to a detailed view of that podcast.
+ * @param modifier Modifier for styling and layout customization of the entire row.
+ */
 @Composable
 private fun CategoryPodcastRow(
     podcasts: List<PodcastInfo>,
@@ -133,7 +163,7 @@ private fun CategoryPodcastRow(
             end = Keyline1,
             bottom = 24.dp
         ),
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+        horizontalArrangement = Arrangement.spacedBy(space = 24.dp)
     ) {
         items(
             items = podcasts,
@@ -145,7 +175,7 @@ private fun CategoryPodcastRow(
                 isFollowed = podcast.isSubscribed ?: false,
                 onToggleFollowClicked = { onTogglePodcastFollowed(podcast) },
                 modifier = Modifier
-                    .width(128.dp)
+                    .width(width = 128.dp)
                     .clickable {
                         navigateToPodcastDetails(podcast)
                     }
@@ -154,6 +184,17 @@ private fun CategoryPodcastRow(
     }
 }
 
+/**
+ * A composable function that displays a single row item for a top podcast.
+ *
+ * This composable shows a podcast's image, title, and a button to toggle following the podcast.
+ *
+ * @param podcastTitle The title of the podcast.
+ * @param podcastImageUrl The URL of the podcast's image.
+ * @param isFollowed Whether the podcast is currently followed by the user.
+ * @param modifier Modifier to be applied to the root layout.
+ * @param onToggleFollowClicked Callback to be invoked when the follow/unfollow button is clicked.
+ */
 @Composable
 private fun TopPodcastRowItem(
     podcastTitle: String,
@@ -168,13 +209,13 @@ private fun TopPodcastRowItem(
         Box(
             Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .align(Alignment.CenterHorizontally)
+                .aspectRatio(ratio = 1f)
+                .align(alignment = Alignment.CenterHorizontally)
         ) {
             PodcastImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.medium),
+                    .clip(shape = MaterialTheme.shapes.medium),
                 podcastImageUrl = podcastImageUrl,
                 contentDescription = podcastTitle
             )
@@ -182,7 +223,7 @@ private fun TopPodcastRowItem(
             ToggleFollowPodcastIconButton(
                 onClick = onToggleFollowClicked,
                 isFollowed = isFollowed,
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(alignment = Alignment.BottomEnd)
             )
         }
 

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.example.jetcaster.ui.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -123,23 +120,52 @@ import com.example.jetcaster.util.fullWidthItem
 import com.example.jetcaster.util.isCompact
 import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
+/**
+ * Determines whether the main pane of a [SupportingPaneScaffold] is currently hidden.
+ *
+ * This function checks the current state of the [SupportingPaneScaffold] to see if the pane assigned
+ * the [SupportingPaneScaffoldRole.Main] role is in the [PaneAdaptedValue.Hidden] state.
+ *
+ * @receiver [ThreePaneScaffoldNavigator] <[T]> The navigator instance providing access to the
+ * [SupportingPaneScaffold]'s current state.
+ * @return Boolean `true` if the main pane is hidden, `false` otherwise.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun <T> ThreePaneScaffoldNavigator<T>.isMainPaneHidden(): Boolean {
     return scaffoldValue[SupportingPaneScaffoldRole.Main] == PaneAdaptedValue.Hidden
 }
 
 /**
+ * Calculates the [PaneScaffoldDirective] based on the provided [WindowAdaptiveInfo] and [HingePolicy].
+ *
+ * This function determines how a pane scaffold should be configured for a given window state,
+ * considering factors such as window size class, posture (e.g., tabletop), and hinge position.
+ * It computes the maximum number of horizontal and vertical partitions, as well as the spacer sizes
+ * between panes, and any areas to be avoided.
+ *
  * Copied from `calculatePaneScaffoldDirective()` in [PaneScaffoldDirective], with modifications to
  * only show 1 pane horizontally if either width or height size class is compact.
+ *
+ * @param windowAdaptiveInfo Information about the current window state, including size class
+ * and posture.
+ * @param verticalHingePolicy The policy for handling vertical hinges, determining whether they
+ * should be avoided. Defaults to [HingePolicy.AvoidSeparating], meaning that content should not
+ * be split by the hinge.
+ * @return A [PaneScaffoldDirective] object containing the calculated configuration for the
+ * pane scaffold.
+ *
+ * @see PaneScaffoldDirective
+ * @see WindowAdaptiveInfo
+ * @see HingePolicy
+ * @see WindowWidthSizeClass
  */
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun calculateScaffoldDirective(
     windowAdaptiveInfo: WindowAdaptiveInfo,
     verticalHingePolicy: HingePolicy = HingePolicy.AvoidSeparating
@@ -191,10 +217,33 @@ fun calculateScaffoldDirective(
     )
 }
 
-/**
+/*
  * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
  */
-@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+
+/**
+ * Retrieves a list of vertical rectangular bounds that should be excluded based on the given
+ * posture and hinge policy.
+ *
+ * This function determines which vertical hinge bounds should be considered as "excluded" areas
+ * based on the current device posture and the specified hinge policy. These excluded bounds
+ * typically represent areas where content should avoid being displayed to ensure optimal user
+ * experience on foldable or dual-screen devices.
+ *
+ * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
+ *
+ * @param posture The current posture of the device, which provides information about the hinge
+ * state and position.
+ * @param hingePolicy The policy determining how the hinge area should be treated:
+ * - [HingePolicy.AvoidSeparating]: Content should avoid being split across a separating hinge.
+ * - [HingePolicy.AvoidOccluding]: Content should avoid being occluded by a hinge.
+ * - [HingePolicy.AlwaysAvoid]: Content should always avoid the hinge area, regardless of separation
+ * or occlusion.
+ *
+ * @return A list of [Rect] objects representing the vertical rectangular areas to be excluded.
+ * Returns an empty list if no bounds should be excluded based on the policy or if the hinge is not
+ * in a relevant state.
+ */
 private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy): List<Rect> {
     return when (hingePolicy) {
         HingePolicy.AvoidSeparating -> posture.separatingVerticalHingeBounds
@@ -204,14 +253,43 @@ private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy
     }
 }
 
+/**
+ * The main screen of the application, responsible for displaying the home screen content
+ * and handling navigation to the player screen.
+ *
+ * This composable orchestrates the display of the home screen based on the current UI state
+ * and window size class. It also manages error handling and provides a retry mechanism.
+ *
+ * Flow:
+ * 1. Collects the [HomeScreenUiState] from the [HomeViewModel].
+ * 2. Displays the [HomeScreenReady] composable, passing the UI state, window size class,
+ * navigation lambda, and ViewModel.
+ * 3. If the UI state contains an error message, displays the [HomeScreenError] composable
+ * with a retry button that calls the [HomeViewModel.refresh] function.
+ * 4. Uses [Box] to layer [HomeScreenReady] and [HomeScreenError] when needed.
+ *
+ * State:
+ * The UI state is represented by [HomeScreenUiState], which is collected from the [HomeViewModel].
+ *
+ * Dependencies:
+ * - [WindowSizeClass] from `androidx.compose.material3.windowsizeclass`
+ * - [HomeScreenUiState] (Assumed to be defined elsewhere in the project)
+ * - [EpisodeInfo] (Assumed to be defined)
+ *
+ * @param windowSizeClass The window size class of the current device, used for adaptive UI.
+ * @param navigateToPlayer A lambda function that triggers navigation to the player screen,
+ * receiving an [EpisodeInfo] as parameter representing the selected episode.
+ * @param viewModel The [HomeViewModel] instance used to manage the home screen's data and state.
+ * Defaults to a ViewModel provided by Hilt.
+ */
 @Composable
 fun MainScreen(
     windowSizeClass: WindowSizeClass,
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val homeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
-    val uiState = homeScreenUiState
+    val homeScreenUiState: HomeScreenUiState by viewModel.state.collectAsStateWithLifecycle()
+    val uiState: HomeScreenUiState = homeScreenUiState
     Box {
         HomeScreenReady(
             uiState = uiState,
@@ -226,6 +304,18 @@ fun MainScreen(
     }
 }
 
+/**
+ * Displays an error screen with a retry button.
+ *
+ * This composable function shows an error message and a button that allows the user to retry
+ * the operation that failed. It's typically used to inform the user that something went wrong
+ * and to provide a way to try again.
+ *
+ * @param onRetry A lambda function that is called when the retry button is clicked. This should
+ * contain the logic to re-attempt the failed operation (e.g., fetching data again).
+ * @param modifier Modifier for styling and layout of the error screen. Defaults to an empty
+ * modifier.
+ */
 @Composable
 private fun HomeScreenError(onRetry: () -> Unit, modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {
@@ -236,7 +326,7 @@ private fun HomeScreenError(onRetry: () -> Unit, modifier: Modifier = Modifier) 
         ) {
             Text(
                 text = stringResource(id = R.string.an_error_has_occurred),
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(all = 16.dp)
             )
             Button(onClick = onRetry) {
                 Text(text = stringResource(id = R.string.retry_label))
@@ -245,6 +335,9 @@ private fun HomeScreenError(onRetry: () -> Unit, modifier: Modifier = Modifier) 
     }
 }
 
+/**
+ * Preview of the [HomeScreenError] composable.
+ */
 @Preview
 @Composable
 fun HomeScreenErrorPreview() {
@@ -253,6 +346,21 @@ fun HomeScreenErrorPreview() {
     }
 }
 
+/**
+ * Composable function that renders the main home screen and handles navigation to the podcas
+ * t details screen. TODO: More detail
+ *
+ * This function utilizes [SupportingPaneScaffold] to manage a two-pane layout, allowing for the
+ * simultaneous display of the home screen and a podcast details screen on larger screens. It also
+ * handles back navigation and fetching the correct view models.
+ *
+ * @param uiState The [HomeScreenUiState] representing the current state of the home screen.
+ * @param windowSizeClass The [WindowSizeClass] of the current window.
+ * @param navigateToPlayer A lambda function to navigate to the player screen, accepting an
+ * [EpisodeInfo].
+ * @param viewModel The [HomeViewModel] for handling home screen actions. Defaults to a new
+ * instance from hilt.
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun HomeScreenReady(
@@ -261,8 +369,8 @@ private fun HomeScreenReady(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val navigator = rememberSupportingPaneScaffoldNavigator<String>(
-        scaffoldDirective = calculateScaffoldDirective(currentWindowAdaptiveInfo())
+    val navigator: ThreePaneScaffoldNavigator<String> = rememberSupportingPaneScaffoldNavigator<String>(
+        scaffoldDirective = calculateScaffoldDirective(windowAdaptiveInfo = currentWindowAdaptiveInfo())
     )
     BackHandler(enabled = navigator.canNavigateBack()) {
         navigator.navigateBack()
@@ -291,13 +399,13 @@ private fun HomeScreenReady(
                 )
             },
             supportingPane = {
-                val podcastUri = navigator.currentDestination?.content
+                val podcastUri: String? = navigator.currentDestination?.content
                 if (!podcastUri.isNullOrEmpty()) {
-                    val podcastDetailsViewModel =
+                    val podcastDetailsViewModel: PodcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
                             key = podcastUri
                         ) {
-                            it.create(podcastUri)
+                            it.create(podcastUri = podcastUri)
                         }
                     PodcastDetailsScreen(
                         viewModel = podcastDetailsViewModel,
@@ -593,6 +701,7 @@ private fun FollowedPodcastItem(
     }
 }
 
+@Suppress("SameParameterValue")
 @Composable
 private fun HomeCategoryTabs(
     categories: List<HomeCategory>,
@@ -758,7 +867,6 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun HomeAppBarPreview() {
