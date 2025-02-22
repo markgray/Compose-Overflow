@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.LazyGrid
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -45,6 +46,7 @@ import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.PodcastCategoryFilterResult
 import com.example.jetcaster.core.model.PodcastInfo
+import com.example.jetcaster.core.model.PodcastToEpisodeInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.designsystem.theme.Keyline1
@@ -57,15 +59,15 @@ import com.example.jetcaster.util.fullWidthItem
  * Composes the UI for displaying a category of podcasts, including top podcasts
  * and a list of episodes.
  *
- * This function utilizes a [LazyGridScope] to efficiently render a list of items within a grid.
- * It displays a section for "Top Podcasts" followed by a scrollable list of episodes related to
- * the category.
+ * This is an extension function of [LazyGridScope] that efficiently renders a list of items within
+ * a [LazyGrid]. It displays a section for "Top Podcasts" followed by a scrollable list of episodes
+ * related to the category.
  *
  * @param podcastCategoryFilterResult The result containing the top podcasts and episodes for the
  * category. It's expected to be an instance of [PodcastCategoryFilterResult], which should have
  * properties:
- *  - `topPodcasts`: A `List<PodcastInfo>` representing the top podcasts in the category.
- *  - `episodes`: A `List<EpisodeItem>` representing episodes belonging to the category.
+ *  - `topPodcasts`: A [List] of [PodcastInfo] representing the top podcasts in the category.
+ *  - `episodes`: A  [List] of [PodcastToEpisodeInfo] representing episodes belonging to the category.
  * @param navigateToPodcastDetails A lambda function that takes a [PodcastInfo] as input and
  * navigates to the details screen of that podcast.
  * @param navigateToPlayer A lambda function that takes an [EpisodeInfo] as input and navigates to
@@ -90,7 +92,7 @@ fun LazyGridScope.podcastCategory(
         )
     }
 
-    val episodes = podcastCategoryFilterResult.episodes
+    val episodes: List<PodcastToEpisodeInfo> = podcastCategoryFilterResult.episodes
     items(episodes, key = { it.episode.uri }) { (episode: EpisodeInfo, podcast: PodcastInfo) ->
         EpisodeListItem(
             episode = episode,

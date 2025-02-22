@@ -27,7 +27,7 @@ import java.time.ZoneOffset
 /**
  * A list of predefined categories used for previewing or testing purposes.
  *
- * This list contains a set of [CategoryInfo] objects representing different content categories.
+ * This list contains a set of [CategoryInfo] objects representing different categories.
  * It's primarily used in previews, mock data, or testing scenarios where a predefined set of
  * categories is needed.  These are not necessarily the exhaustive set of categories in the system,
  * just a subset for common use cases.
