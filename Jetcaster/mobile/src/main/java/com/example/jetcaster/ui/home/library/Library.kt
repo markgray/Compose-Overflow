@@ -48,8 +48,8 @@ import com.example.jetcaster.util.fullWidthItem
  * @param navigateToPlayer A lambda function that is invoked when an episode is clicked.
  * It receives the [EpisodeInfo] of the clicked episode and should handle navigation to
  * the player screen.
- * @param onQueueEpisode A lambda function that is invoked when an episode should be added to queue.
- * It receives the [PlayerEpisode] that will be queued.
+ * @param onQueueEpisode A lambda function that is invoked when an episode should be added to the
+ * queue. It receives the [PlayerEpisode] that will be queued.
  *
  * @see LazyGridScope
  * @see EpisodeListItem

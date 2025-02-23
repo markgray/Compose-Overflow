@@ -142,11 +142,11 @@ private fun CategoryPodcasts(
  * about a single podcast, such as its title, image URL, and whether it is followed.
  * @param onTogglePodcastFollowed A callback function invoked when the user toggles the
  * follow/unfollow state of a podcast. It receives the [PodcastInfo] of the podcast whose
- * follow state changed.
+ * followed state changed.
  * @param navigateToPodcastDetails A callback function invoked when the user clicks on a podcast
  * item. It receives the [PodcastInfo] of the selected podcast and is intended to trigger navigation
  * to a detailed view of that podcast.
- * @param modifier Modifier for styling and layout customization of the entire row.
+ * @param modifier [Modifier] for styling and layout customization of the entire row.
  */
 @Composable
 private fun CategoryPodcastRow(
@@ -204,10 +204,10 @@ private fun TopPodcastRowItem(
     onToggleFollowClicked: () -> Unit,
 ) {
     Column(
-        modifier.semantics(mergeDescendants = true) {}
+        modifier = modifier.semantics(mergeDescendants = true) {}
     ) {
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(ratio = 1f)
                 .align(alignment = Alignment.CenterHorizontally)

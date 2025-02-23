@@ -107,7 +107,7 @@ fun LazyGridScope.discoverItems(
  * @param filterableCategoriesModel A [FilterableCategoriesModel] that holds the list of available
  * categories and the currently selected category.
  * @param onCategorySelected A callback function invoked when a category tab is clicked.
- * It receives the selected [CategoryInfo] as a parameter.
+ * It receives the [CategoryInfo] of the selected category tab as a parameter.
  * @param modifier The [Modifier] to be applied to the root layout of this composable.
  *
  * @see FilterableCategoriesModel

@@ -217,10 +217,6 @@ fun calculateScaffoldDirective(
     )
 }
 
-/*
- * Copied from `getExcludedVerticalBounds()` in [PaneScaffoldDirective] since it is private.
- */
-
 /**
  * Retrieves a list of vertical rectangular bounds that should be excluded based on the given
  * posture and hinge policy.
@@ -273,8 +269,8 @@ private fun getExcludedVerticalBounds(posture: Posture, hingePolicy: HingePolicy
  *
  * Dependencies:
  * - [WindowSizeClass] from `androidx.compose.material3.windowsizeclass`
- * - [HomeScreenUiState] (Assumed to be defined elsewhere in the project)
- * - [EpisodeInfo] (Assumed to be defined)
+ * - [HomeScreenUiState] Defined in [HomeViewModel]
+ * - [EpisodeInfo] defined by the [EpisodeInfo] data class.
  *
  * @param windowSizeClass The window size class of the current device, used for adaptive UI.
  * @param navigateToPlayer A lambda function that triggers navigation to the player screen,
@@ -347,8 +343,8 @@ fun HomeScreenErrorPreview() {
 }
 
 /**
- * Composable function that renders the main home screen and handles navigation to the podcas
- * t details screen. TODO: More detail
+ * Composable function that renders the main home screen and handles navigation to the podcast
+ * details screen. TODO: More detail
  *
  * This function utilizes [SupportingPaneScaffold] to manage a two-pane layout, allowing for the
  * simultaneous display of the home screen and a podcast details screen on larger screens. It also
