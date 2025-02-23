@@ -168,7 +168,7 @@ private fun CategoryPodcastRow(
         items(
             items = podcasts,
             key = { it.uri }
-        ) { podcast ->
+        ) { podcast: PodcastInfo ->
             TopPodcastRowItem(
                 podcastTitle = podcast.title,
                 podcastImageUrl = podcast.imageUrl,

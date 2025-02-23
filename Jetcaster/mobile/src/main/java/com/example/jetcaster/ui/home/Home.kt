@@ -344,11 +344,60 @@ fun HomeScreenErrorPreview() {
 
 /**
  * Composable function that renders the main home screen and handles navigation to the podcast
- * details screen. TODO: More detail
+ * details screen.
  *
  * This function utilizes [SupportingPaneScaffold] to manage a two-pane layout, allowing for the
  * simultaneous display of the home screen and a podcast details screen on larger screens. It also
  * handles back navigation and fetching the correct view models.
+ *
+ * We start by creating and remembering a [ThreePaneScaffoldNavigator] with its `scaffoldDirective`
+ * argument a [calculateScaffoldDirective] constructed with its `windowAdaptiveInfo` argument the
+ * [WindowAdaptiveInfo] of the current window returned by the [currentWindowAdaptiveInfo] method
+ * (this determines how the two-pane layout should be displayed based on the current window size).
+ * Next we compose a [BackHandler] whose `enabled` property is set to `navigator.canNavigateBack()`
+ * and whose `onBack` lambda function is a lambda that calls the `navigator.navigateBack()` method.
+ * Our root composable is a [Surface] whose `content` composable lambda is a [SupportingPaneScaffold]
+ * whose arguments are:
+ *  1. `value` is the [ThreePaneScaffoldNavigator.scaffoldValue] of the `navigator` variable.
+ *  2. `directive` is the [ThreePaneScaffoldNavigator.scaffoldDirective] of the `navigator` variable.
+ *  3. `mainPane` is a lambda that renders the [HomeScreen] home screen content whose arguments are:
+ *      - `windowSizeClass` is our [WindowSizeClass] parameter [windowSizeClass].
+ *      - `isLoading` is the [HomeScreenUiState.isLoading] property of our [HomeScreenUiState]
+ *      parameter [uiState].
+ *      - `featuredPodcasts` is the [HomeScreenUiState.featuredPodcasts] property of our
+ *      [HomeScreenUiState] parameter [uiState].
+ *      - `homeCategories` is the [HomeScreenUiState.homeCategories] property of our
+ *      [HomeScreenUiState] parameter [uiState].
+ *      - `selectedHomeCategory` is the [HomeScreenUiState.selectedHomeCategory] property of our
+ *      [HomeScreenUiState] parameter [uiState].
+ *      - `filterableCategoriesModel` is the [HomeScreenUiState.filterableCategoriesModel] of our
+ *      [HomeScreenUiState] parameter [uiState].
+ *      - `podcastCategoryFilterResult` is the [HomeScreenUiState.podcastCategoryFilterResult] of our
+ *      [HomeScreenUiState] parameter [uiState].
+ *      - `library` is the [HomeScreenUiState.library] property of our [HomeScreenUiState] parameter
+ *      [uiState].
+ *      - `onHomeAction` is a lambda that calls the [HomeViewModel.onHomeAction] method of our
+ *      [HomeViewModel] parameter [viewModel]. This called by the [HomeScreen] composable with
+ *      different [HomeAction] values as its argument depending on what the user has selected.
+ *      - `navigateToPodcastDetails` is a lambda that calls the [ThreePaneScaffoldNavigator.navigateTo]
+ *      method of our [ThreePaneScaffoldNavigator] variable `navigator` with its `pane` argument
+ *      [SupportingPaneScaffoldRole.Supporting], and its `content` argument the [PodcastInfo.uri]
+ *      that is passed to the lambda.
+ *      - `navigateToPlayer` is our [navigateToPlayer] lambda parameter.
+ *      - `modifier` is [Modifier.fillMaxSize].
+ *  4. `supportingPane` is a lambda which:
+ *      - first initializes its [String] variable `podcastUri` with the
+ *      [ThreePaneScaffoldNavigator.currentDestination] property of our [ThreePaneScaffoldNavigator]
+ *      variable `navigator` if it is not null.
+ *      - if `podcastUri` is not empty or `null`, initializes a [PodcastDetailsViewModel] variable
+ *      `podcastDetailsViewModel` with its `create` lambda argument using the `podcastUri` variable
+ *      as its `podcastUri` argument.
+ *  5. Then `supportingPane` renders the [PodcastDetailsScreen] composable whose arguments are:
+ *      - `viewModel` is our [PodcastDetailsViewModel] variable `podcastDetailsViewModel`.
+ *      - `navigateToPlayer` is our [navigateToPlayer] lambda parameter.
+ *      - `navigateBack` is a lambda that calls the `navigator.navigateBack()` method if
+ *      `navigator.canNavigateBack()` is true.
+ *      - `showBackButton` is a boolean that is set to `navigator.isMainPaneHidden()`
  *
  * @param uiState The [HomeScreenUiState] representing the current state of the home screen.
  * @param windowSizeClass The [WindowSizeClass] of the current window.
@@ -388,7 +437,10 @@ private fun HomeScreenReady(
                     library = uiState.library,
                     onHomeAction = viewModel::onHomeAction,
                     navigateToPodcastDetails = {
-                        navigator.navigateTo(SupportingPaneScaffoldRole.Supporting, it.uri)
+                        navigator.navigateTo(
+                            pane = SupportingPaneScaffoldRole.Supporting,
+                            content = it.uri
+                        )
                     },
                     navigateToPlayer = navigateToPlayer,
                     modifier = Modifier.fillMaxSize()
@@ -420,6 +472,17 @@ private fun HomeScreenReady(
     }
 }
 
+/**
+ * Composable function representing the Home screen's app bar. TODO: Add detail.
+ *
+ * This app bar displays a search bar that allows users to search for podcasts.
+ * It also includes an account icon for profile access.
+ *
+ * @param isExpanded Boolean indicating whether the parent layout is in an expanded state. This
+ * affects the width of the search bar. If `true`, the search bar will occupy the full available
+ * width. If `false`, the search bar will have a default width.
+ * @param modifier Modifier for customizing the layout and appearance of the app bar.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeAppBar(
@@ -427,13 +490,13 @@ private fun HomeAppBar(
     modifier: Modifier = Modifier,
 ) {
     var queryText by remember {
-        mutableStateOf("")
+        mutableStateOf(value = "")
     }
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .background(color = Color.Transparent)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         SearchBar(
@@ -457,7 +520,7 @@ private fun HomeAppBar(
                     trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
-                            contentDescription = stringResource(R.string.cd_account)
+                            contentDescription = stringResource(id = R.string.cd_account)
                         )
                     },
                     interactionSource = null,
