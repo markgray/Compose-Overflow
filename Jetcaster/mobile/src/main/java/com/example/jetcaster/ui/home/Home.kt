@@ -48,6 +48,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -484,7 +485,7 @@ private fun HomeScreenReady(
 }
 
 /**
- * Composable function representing the Home screen's app bar. TODO: Add detail.
+ * Composable function representing the Home screen's app bar.
  *
  * This app bar displays a search bar that allows users to search for podcasts.
  * It also includes an account icon for profile access.
@@ -496,7 +497,23 @@ private fun HomeScreenReady(
  * argument chains a [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], followed by
  * [Modifier.background] whose `color` is [Color.Transparent], and at the end of the chain a
  * [Modifier.padding] that adds 16.dp to each `horizontal` side and 8.dp to each `vertical` side.
- * In the [RowScope] `content` composable lambda argument of the [Row] we compose a [SearchBar]
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose a [SearchBar].
+ * The `inputField` argument of the [SearchBar] is a lambda that renders a [SearchBarDefaults.InputField]
+ * whose `query` argument is our [MutableState] wrapped [String] variable `queryText`, and whose
+ * `onQueryChange` argument is a lambda that updates our [MutableState] wrapped [String] variable
+ * with the new [String] value passed the lambda. The `onSearch` argument is set to an empty lambda,
+ * and the `expanded` and `onExpandedChange` arguments are set to `false` and an empty lambda
+ * respectively. The `enabled` argument is set to `true`. The `placeholder` argument is a lambda
+ * that composes a [Text] with the `text` argument the string whose ID is `R.string.search_for_a_podcast`
+ * ("Search for a podcast"). The `leadingIcon` argument is a lambda that composes an [Icon] whose
+ * `imageVector` is [Icons.Filled.Search] and whose `contentDescription` is `null`. The `trailingIcon`
+ * argument is a lambda that composes an [Icon] whose `imageVector` is [Icons.Filled.AccountCircle]
+ * and whose `contentDescription` is the string whose ID is `R.string.cd_account` ("Account"). The
+ * `interactionSource` argument is `null`. The `modifier` argument is [Modifier.fillMaxWidth] if
+ * `isExpanded` is `true`, or [Modifier] otherwise.
+ *
+ * The `expanded` argument of the [SearchBar] is set to `false` and the `onExpandedChange` argument
+ * is an empty lambda. The `content` lambda argument of the [SearchBar] is an empty lambda.
  *
  * @param isExpanded Boolean indicating whether the parent layout is in an expanded state. This
  * affects the width of the search bar. If `true`, the search bar will occupy the full available
@@ -529,7 +546,7 @@ private fun HomeAppBar(
                     onExpandedChange = {},
                     enabled = true,
                     placeholder = {
-                        Text(stringResource(id = R.string.search_for_a_podcast))
+                        Text(text = stringResource(id = R.string.search_for_a_podcast))
                     },
                     leadingIcon = {
                         Icon(
@@ -553,6 +570,26 @@ private fun HomeAppBar(
     }
 }
 
+/**
+ * Creates a background for the Home Screen with a radial gradient overlay.
+ *
+ * This composable provides a background that matches the Material Theme's
+ * `background` color and adds a subtle radial gradient effect to enhance the
+ * visual depth. The gradient emanates from the center of the screen with a
+ * soft, translucent primary color overlay.
+ *
+ * Our root composable is a [Box] whose `modifier` argument chains a [Modifier.background] to our
+ * [Modifier] parameter [modifier] whose `color` is the [ColorScheme.background] of our custom
+ * [MaterialTheme.colorScheme]. In its `content` lambda argument we compose another [Box] whose
+ * `modifier` argument is a [Modifier.fillMaxSize], with a [Modifier.radialGradientScrim] chained
+ * to that whose `color` argument is a copy of the [ColorScheme.primary] of our custom
+ * [MaterialTheme.colorScheme] with its `alpha` property set to 0.15f. The [BoxScope] `content`
+ * composable lambda argument of the [Box] composes our [content] Composable lambda parameter. 
+ *
+ * @param modifier The modifier to be applied to the background Box.
+ * @param content The content to be displayed on top of the background. This lambda receives a
+ * [BoxScope] which allows using Box-specific modifiers like `align` and `matchParentSize`.
+ */
 @Composable
 private fun HomeScreenBackground(
     modifier: Modifier = Modifier,
@@ -565,12 +602,35 @@ private fun HomeScreenBackground(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .radialGradientScrim(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
+                .radialGradientScrim(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
         )
         content()
     }
 }
 
+/**
+ * Displays the main home screen of the podcast application. TODO: Add details
+ *
+ * This composable function orchestrates the layout and content of the home screen,
+ * including the top app bar, loading indicator, main content area, and snackbar.
+ * It handles displaying featured podcasts, home categories, filtering options,
+ * and user library information.
+ *
+ * @param windowSizeClass The current window size class, used to adapt the UI to different screen sizes.
+ * @param isLoading A boolean indicating whether the home screen data is currently loading.
+ * @param featuredPodcasts A list of featured podcasts to display on the home screen.
+ * @param selectedHomeCategory The currently selected home category, either [HomeCategory.Library]
+ * or [HomeCategory.Discover].
+ * @param homeCategories A list of available home categories.
+ * @param filterableCategoriesModel The model containing filterable category data.
+ * @param podcastCategoryFilterResult The result of filtering podcasts by category.
+ * @param library Information about the user's podcast library.
+ * @param onHomeAction Callback for actions triggered on the home screen (e.g., category selection,
+ * queueing episodes).
+ * @param navigateToPodcastDetails Callback to navigate to the details screen of a specific podcast.
+ * @param navigateToPlayer Callback to navigate to the episode player screen.
+ * @param modifier Modifier for styling and layout customization.
+ */
 @Composable
 private fun HomeScreen(
     windowSizeClass: WindowSizeClass,
