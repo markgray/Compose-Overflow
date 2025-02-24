@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,6 +80,7 @@ import androidx.compose.material3.adaptive.occludingVerticalHingeBounds
 import androidx.compose.material3.adaptive.separatingVerticalHingeBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -355,11 +357,18 @@ fun HomeScreenErrorPreview() {
  * [WindowAdaptiveInfo] of the current window returned by the [currentWindowAdaptiveInfo] method
  * (this determines how the two-pane layout should be displayed based on the current window size).
  * Next we compose a [BackHandler] whose `enabled` property is set to `navigator.canNavigateBack()`
- * and whose `onBack` lambda function is a lambda that calls the `navigator.navigateBack()` method.
+ * (returns `true` if there is a previous destination to navigate back to) and whose `onBack` lambda
+ * argument is a lambda that calls the `navigator.navigateBack()` method (Navigates to the previous
+ * destination).
+ *
  * Our root composable is a [Surface] whose `content` composable lambda is a [SupportingPaneScaffold]
  * whose arguments are:
- *  1. `value` is the [ThreePaneScaffoldNavigator.scaffoldValue] of the `navigator` variable.
- *  2. `directive` is the [ThreePaneScaffoldNavigator.scaffoldDirective] of the `navigator` variable.
+ *  1. `value` is the [ThreePaneScaffoldNavigator.scaffoldValue] of the `navigator` variable (The
+ *  current layout value of the associated three pane scaffold value, which represents unique layout
+ *  states of the scaffold).
+ *  2. `directive` is the [ThreePaneScaffoldNavigator.scaffoldDirective] of the `navigator` variable
+ *  (The current layout directives that the associated three pane scaffold needs to follow. It's
+ *  supposed to be automatically updated when the window configuration changes).
  *  3. `mainPane` is a lambda that renders the [HomeScreen] home screen content whose arguments are:
  *      - `windowSizeClass` is our [WindowSizeClass] parameter [windowSizeClass].
  *      - `isLoading` is the [HomeScreenUiState.isLoading] property of our [HomeScreenUiState]
@@ -382,11 +391,13 @@ fun HomeScreenErrorPreview() {
  *      - `navigateToPodcastDetails` is a lambda that calls the [ThreePaneScaffoldNavigator.navigateTo]
  *      method of our [ThreePaneScaffoldNavigator] variable `navigator` with its `pane` argument
  *      [SupportingPaneScaffoldRole.Supporting], and its `content` argument the [PodcastInfo.uri]
- *      that is passed to the lambda.
+ *      that is passed to the lambda (this navigates to the [SupportingPaneScaffoldRole.Supporting]
+ *      pane whose [PodcastDetailsScreen] will display the podcast whose URI is the `content`
+ *      argument of the `navigator.navigateTo` call).
  *      - `navigateToPlayer` is our [navigateToPlayer] lambda parameter.
  *      - `modifier` is [Modifier.fillMaxSize].
  *  4. `supportingPane` is a lambda which:
- *      - first initializes its [String] variable `podcastUri` with the
+ *      - first initializes its [String] variable `podcastUri` with the `content` of the
  *      [ThreePaneScaffoldNavigator.currentDestination] property of our [ThreePaneScaffoldNavigator]
  *      variable `navigator` if it is not null.
  *      - if `podcastUri` is not empty or `null`, initializes a [PodcastDetailsViewModel] variable
@@ -402,7 +413,7 @@ fun HomeScreenErrorPreview() {
  * @param uiState The [HomeScreenUiState] representing the current state of the home screen.
  * @param windowSizeClass The [WindowSizeClass] of the current window.
  * @param navigateToPlayer A lambda function to navigate to the player screen, accepting an
- * [EpisodeInfo].
+ * [EpisodeInfo] as its argument.
  * @param viewModel The [HomeViewModel] for handling home screen actions. Defaults to a new
  * instance from hilt.
  */
@@ -478,6 +489,15 @@ private fun HomeScreenReady(
  * This app bar displays a search bar that allows users to search for podcasts.
  * It also includes an account icon for profile access.
  *
+ * We start by initializings and remembering our [MutableState] wrapped [String] variable
+ * `var queryText` to an initial value of the empty [String]. Then our root composable is a [Row]
+ * whose `horizontalArrangement` argument is [Arrangement.End] (Places children horizontally such
+ * that they are as close as possible to the end of the main axis), and whose [Modifier] `modifier`
+ * argument chains a [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], followed by
+ * [Modifier.background] whose `color` is [Color.Transparent], and at the end of the chain a
+ * [Modifier.padding] that adds 16.dp to each `horizontal` side and 8.dp to each `vertical` side.
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose a [SearchBar]
+ *
  * @param isExpanded Boolean indicating whether the parent layout is in an expanded state. This
  * affects the width of the search bar. If `true`, the search bar will occupy the full available
  * width. If `false`, the search bar will have a default width.
@@ -489,7 +509,7 @@ private fun HomeAppBar(
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    var queryText by remember {
+    var queryText: String by remember {
         mutableStateOf(value = "")
     }
     Row(
