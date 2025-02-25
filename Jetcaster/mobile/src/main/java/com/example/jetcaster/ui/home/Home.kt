@@ -38,6 +38,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -100,6 +101,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.jetcaster.R
@@ -125,6 +127,7 @@ import com.example.jetcaster.util.quantityStringResource
 import com.example.jetcaster.util.radialGradientScrim
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
@@ -616,10 +619,60 @@ private fun HomeScreenBackground(
  * It handles displaying featured podcasts, home categories, filtering options,
  * and user library information.
  *
+ * First we compose a [LaunchedEffect] whose `key1` argument is `featuredPodcasts` (it will run
+ * whenever the value of [featuredPodcasts] changes). In the `block` composable lambda argument we
+ * check if the [featuredPodcasts] list is empty. If it is, we we call our lambda parameter
+ * [onHomeAction] (our caller passes a function reference to the [HomeViewModel.onHomeAction] method)
+ * with a [HomeAction.HomeCategorySelected] action whose `category` argument is [HomeCategory.Discover]
+ * (this will set the [selectedHomeCategory] to [HomeCategory.Discover] in the [HomeScreenUiState]
+ * which will trigger a recomposition of the [LazyGridScope.discoverItems] "Discover" items section
+ * of our UI).
+ *
+ * Then we initialize and remember our [CoroutineScope] variable `val coroutineScope` and our
+ * [SnackbarHostState] variable `val snackbarHostState` to new instances. Next we compose a
+ * [HomeScreenBackground] whose `modifier` argument chains a [Modifier.windowInsetsPadding] to our
+ * [Modifier] parameter [modifier] whose `insets` argument is [WindowInsets.Companion.navigationBars].
+ * In its `content` Composable lambda argument we compose a [Scaffold] whose `topBar` argument is a
+ * lambda that Composes a [Column] whose `content` composable lambda argument is a lambda which
+ * Composes a [HomeAppBar] whose `isExpanded` argument is the [WindowSizeClass.isCompact] property
+ * of our [WindowSizeClass] parameter [windowSizeClass], and whose `modifier` argument is a
+ * [Modifier.fillMaxWidth]. Below that if our [Boolean] parameter [isLoading] is `true` it renders a
+ * [LinearProgressIndicator] whose `modifier` argument is a [Modifier.fillMaxWidth] with a
+ * [Modifier.padding] whose `horizontal` argument is 16.dp chained to that. The `snackbarHost`
+ * argument of the [Scaffold] is a lambda that Composes a [SnackbarHost] whose `hostState` argument
+ * is our [SnackbarHostState] variable `snackbarHostState`, and the `containerColor` argument is
+ * [Color.Transparent]. In the `content` composable lambda argument of the [Scaffold] we accept the
+ * [PaddingValues] passed the lambda as variable `contentPadding`. Then we initialize our [String]
+ * variable `val snackBarText` with the string whose ID is `R.string.episode_added_to_your_queue`
+ * ("Episode added to your queue"). We initialize our [Boolean] variable `val showHomeCategoryTabs`
+ * to `true` if the [featuredPodcasts] list is not empty and the [homeCategories] list is not empty.
+ * Then our root composable is a [HomeContent] whose arguments are:
+ *  - `showHomeCategoryTabs` is our [Boolean] variable `showHomeCategoryTabs`.
+ *  - `featuredPodcasts` is our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts].
+ *  - `selectedHomeCategory` is our [HomeCategory] parameter [selectedHomeCategory].
+ *  - `homeCategories` is our [List] of [HomeCategory] parameter [homeCategories].
+ *  - `filterableCategoriesModel` is our [FilterableCategoriesModel] parameter
+ *  [filterableCategoriesModel].
+ *  - `podcastCategoryFilterResult` is our [PodcastCategoryFilterResult] parameter
+ *  [podcastCategoryFilterResult].
+ *  - `library` is our [LibraryInfo] parameter [library].
+ *  - `modifier` is a [Modifier.padding] whose `paddingValues` argument is our [PaddingValues]
+ *  variable `contentPadding`.
+ *  - `onHomeAction` is a lambda which accepts the [HomeAction] argument passed the lambda in
+ *  variable `action` and if `action` is an instance of [HomeAction.QueueEpisode] calls
+ *  [CoroutineScope.launch] method of our [CoroutineScope] variable `coroutineScope` in whose `block`
+ *  suspend lambda argument we call the [SnackbarHostState.showSnackbar] method of our
+ *  [SnackbarHostState] variable `snackbarHostState` with the `message` argument set to our [String]
+ *  variable `snackBarText`. Then it calls the [HomeViewModel.onHomeAction] method of our
+ *  [onHomeAction] lambda parameter with the [HomeAction] variable `action` passed the lambda.
+ *  - `navigateToPodcastDetails` is our lambda parameter [navigateToPodcastDetails].
+ *  - `navigateToPlayer` is our lambda parameter [navigateToPlayer].
+ *
  * @param windowSizeClass The current window size class, used to adapt the UI to different
- * screen sizes.
- * @param isLoading A boolean indicating whether the home screen data is currently loading.
- * @param featuredPodcasts A list of featured podcasts to display on the home screen.
+ * screen sizes (one of compact, medium, or expanded).
+ * @param isLoading A [Boolean] indicating whether the home screen data is currently loading.
+ * @param featuredPodcasts A [PersistentList] of [PodcastInfo] of featured podcasts to display on
+ * the home screen.
  * @param selectedHomeCategory The currently selected home category, either [HomeCategory.Library]
  * or [HomeCategory.Discover].
  * @param homeCategories A list of available home categories.
@@ -630,7 +683,11 @@ private fun HomeScreenBackground(
  * queueing episodes).
  * @param navigateToPodcastDetails Callback to navigate to the details screen of a specific podcast.
  * @param navigateToPlayer Callback to navigate to the episode player screen.
- * @param modifier Modifier for styling and layout customization.
+ * @param modifier [Modifier] for styling and layout customization. Our caller [HomeScreenReady]
+ * passes us a [Modifier.fillMaxSize]
+ *
+ * @see WindowWidthSizeClass
+ * @see WindowHeightSizeClass
  */
 @Composable
 private fun HomeScreen(
@@ -650,14 +707,14 @@ private fun HomeScreen(
     // Effect that changes the home category selection when there are no subscribed podcasts
     LaunchedEffect(key1 = featuredPodcasts) {
         if (featuredPodcasts.isEmpty()) {
-            onHomeAction(HomeAction.HomeCategorySelected(HomeCategory.Discover))
+            onHomeAction(HomeAction.HomeCategorySelected(category = HomeCategory.Discover))
         }
     }
 
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
     HomeScreenBackground(
-        modifier = modifier.windowInsetsPadding(WindowInsets.navigationBars)
+        modifier = modifier.windowInsetsPadding(insets = WindowInsets.navigationBars)
     ) {
         Scaffold(
             topBar = {
@@ -679,10 +736,11 @@ private fun HomeScreen(
                 SnackbarHost(hostState = snackbarHostState)
             },
             containerColor = Color.Transparent
-        ) { contentPadding ->
+        ) { contentPadding: PaddingValues ->
             // Main Content
-            val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
-            val showHomeCategoryTabs = featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
+            val snackBarText: String = stringResource(id = R.string.episode_added_to_your_queue)
+            val showHomeCategoryTabs: Boolean =
+                featuredPodcasts.isNotEmpty() && homeCategories.isNotEmpty()
             HomeContent(
                 showHomeCategoryTabs = showHomeCategoryTabs,
                 featuredPodcasts = featuredPodcasts,
@@ -691,11 +749,11 @@ private fun HomeScreen(
                 filterableCategoriesModel = filterableCategoriesModel,
                 podcastCategoryFilterResult = podcastCategoryFilterResult,
                 library = library,
-                modifier = Modifier.padding(contentPadding),
-                onHomeAction = { action ->
+                modifier = Modifier.padding(paddingValues = contentPadding),
+                onHomeAction = { action: HomeAction ->
                     if (action is HomeAction.QueueEpisode) {
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar(snackBarText)
+                            snackbarHostState.showSnackbar(message = snackBarText)
                         }
                     }
                     onHomeAction(action)
@@ -707,6 +765,28 @@ private fun HomeScreen(
     }
 }
 
+/**
+ * Displays the main content of the home screen, including featured podcasts,
+ * category tabs, and a grid of content based on the selected category. TODO: Add details
+ *
+ * @param showHomeCategoryTabs [Boolean] indicating whether to show the category tabs at the top.
+ * @param featuredPodcasts A [PersistentList] of [PodcastInfo] of the featured podcasts to display
+ * in a horizontal pager.
+ * @param selectedHomeCategory The currently selected category in the home screen.
+ * @param homeCategories The list of available home categories.
+ * @param filterableCategoriesModel The model for filtering podcasts by categories.
+ * @param podcastCategoryFilterResult The result of the podcast category filter operation.
+ * @param library Information about the user's library, such as saved podcasts or episodes.
+ * @param modifier [Modifier] for styling and layout customization. Our caller [HomeScreen] passes
+ * us a [Modifier.padding] with the [PaddingValues] passed the `content` lambda of the [Scaffold] it
+ * composes us in.
+ * @param onHomeAction Callback function triggered when a user interacts with the home screen.
+ * It provides information about the specific action taken.
+ * @param navigateToPodcastDetails Callback function to navigate to the podcast details screen.
+ * Takes the selected [PodcastInfo] as a parameter.
+ * @param navigateToPlayer Callback function to navigate to the player screen.
+ * Takes the selected [EpisodeInfo] as a parameter.
+ */
 @Composable
 private fun HomeContent(
     showHomeCategoryTabs: Boolean,
@@ -721,12 +801,12 @@ private fun HomeContent(
     navigateToPodcastDetails: (PodcastInfo) -> Unit,
     navigateToPlayer: (EpisodeInfo) -> Unit,
 ) {
-    val pagerState = rememberPagerState { featuredPodcasts.size }
-    LaunchedEffect(pagerState, featuredPodcasts) {
+    val pagerState: PagerState = rememberPagerState { featuredPodcasts.size }
+    LaunchedEffect(key1 = pagerState, key2 = featuredPodcasts) {
         snapshotFlow { pagerState.currentPage }
             .collect {
-                val podcast = featuredPodcasts.getOrNull(it)
-                onHomeAction(HomeAction.LibraryPodcastSelected(podcast))
+                val podcast: PodcastInfo? = featuredPodcasts.getOrNull(it)
+                onHomeAction(HomeAction.LibraryPodcastSelected(podcast = podcast))
             }
     }
 
