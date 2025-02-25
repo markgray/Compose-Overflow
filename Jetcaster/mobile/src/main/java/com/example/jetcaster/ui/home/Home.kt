@@ -616,7 +616,8 @@ private fun HomeScreenBackground(
  * It handles displaying featured podcasts, home categories, filtering options,
  * and user library information.
  *
- * @param windowSizeClass The current window size class, used to adapt the UI to different screen sizes.
+ * @param windowSizeClass The current window size class, used to adapt the UI to different
+ * screen sizes.
  * @param isLoading A boolean indicating whether the home screen data is currently loading.
  * @param featuredPodcasts A list of featured podcasts to display on the home screen.
  * @param selectedHomeCategory The currently selected home category, either [HomeCategory.Library]
