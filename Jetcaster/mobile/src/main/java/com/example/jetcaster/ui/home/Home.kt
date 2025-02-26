@@ -128,6 +128,7 @@ import com.example.jetcaster.util.radialGradientScrim
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
@@ -612,7 +613,7 @@ private fun HomeScreenBackground(
 }
 
 /**
- * Displays the main home screen of the podcast application. TODO: Add details
+ * Displays the main home screen of the podcast application.
  *
  * This composable function orchestrates the layout and content of the home screen,
  * including the top app bar, loading indicator, main content area, and snackbar.
@@ -622,31 +623,33 @@ private fun HomeScreenBackground(
  * First we compose a [LaunchedEffect] whose `key1` argument is `featuredPodcasts` (it will run
  * whenever the value of [featuredPodcasts] changes). In the `block` composable lambda argument we
  * check if the [featuredPodcasts] list is empty. If it is, we we call our lambda parameter
- * [onHomeAction] (our caller passes a function reference to the [HomeViewModel.onHomeAction] method)
- * with a [HomeAction.HomeCategorySelected] action whose `category` argument is [HomeCategory.Discover]
- * (this will set the [selectedHomeCategory] to [HomeCategory.Discover] in the [HomeScreenUiState]
- * which will trigger a recomposition of the [LazyGridScope.discoverItems] "Discover" items section
- * of our UI).
+ * [onHomeAction] (our caller passes a function reference to the [HomeViewModel.onHomeAction]
+ * method) with a [HomeAction.HomeCategorySelected] action whose `category` argument is
+ * [HomeCategory.Discover] (this will set the [selectedHomeCategory] to [HomeCategory.Discover] in
+ * the [HomeScreenUiState] which will trigger a recomposition of the [LazyGridScope.discoverItems]
+ * "Discover" items section of our UI).
  *
  * Then we initialize and remember our [CoroutineScope] variable `val coroutineScope` and our
  * [SnackbarHostState] variable `val snackbarHostState` to new instances. Next we compose a
- * [HomeScreenBackground] whose `modifier` argument chains a [Modifier.windowInsetsPadding] to our
- * [Modifier] parameter [modifier] whose `insets` argument is [WindowInsets.Companion.navigationBars].
- * In its `content` Composable lambda argument we compose a [Scaffold] whose `topBar` argument is a
- * lambda that Composes a [Column] whose `content` composable lambda argument is a lambda which
- * Composes a [HomeAppBar] whose `isExpanded` argument is the [WindowSizeClass.isCompact] property
- * of our [WindowSizeClass] parameter [windowSizeClass], and whose `modifier` argument is a
- * [Modifier.fillMaxWidth]. Below that if our [Boolean] parameter [isLoading] is `true` it renders a
- * [LinearProgressIndicator] whose `modifier` argument is a [Modifier.fillMaxWidth] with a
- * [Modifier.padding] whose `horizontal` argument is 16.dp chained to that. The `snackbarHost`
- * argument of the [Scaffold] is a lambda that Composes a [SnackbarHost] whose `hostState` argument
- * is our [SnackbarHostState] variable `snackbarHostState`, and the `containerColor` argument is
- * [Color.Transparent]. In the `content` composable lambda argument of the [Scaffold] we accept the
- * [PaddingValues] passed the lambda as variable `contentPadding`. Then we initialize our [String]
- * variable `val snackBarText` with the string whose ID is `R.string.episode_added_to_your_queue`
- * ("Episode added to your queue"). We initialize our [Boolean] variable `val showHomeCategoryTabs`
- * to `true` if the [featuredPodcasts] list is not empty and the [homeCategories] list is not empty.
- * Then our root composable is a [HomeContent] whose arguments are:
+ * [HomeScreenBackground] whose `modifier` argument chains a [Modifier.windowInsetsPadding] to
+ * our [Modifier] parameter [modifier] whose `insets` argument is
+ * [WindowInsets.Companion.navigationBars] (insets which represent where system UI places
+ * navigation bars. In its `content` Composable lambda argument we compose a [Scaffold] whose
+ * `topBar` argument is a lambda that Composes a [Column] whose `content` composable lambda argument
+ * is a lambda which Composes a [HomeAppBar] whose `isExpanded` argument is the
+ * [WindowSizeClass.isCompact] property of our [WindowSizeClass] parameter [windowSizeClass], and
+ * whose `modifier` argument is a [Modifier.fillMaxWidth]. Below that if our [Boolean] parameter
+ * [isLoading] is `true` it renders a [LinearProgressIndicator] whose `modifier` argument is a
+ * [Modifier.fillMaxWidth] with a [Modifier.padding] whose `horizontal` argument is 16.dp chained
+ * to that. The `snackbarHost` argument of the [Scaffold] is a lambda that Composes a [SnackbarHost]
+ * whose `hostState` argument is our [SnackbarHostState] variable `snackbarHostState`, and the
+ * `containerColor` argument is [Color.Transparent]. In the `content` composable lambda argument of
+ * the [Scaffold] we accept the [PaddingValues] passed the lambda as variable `contentPadding`. Then
+ * we initialize our [String] variable `val snackBarText` with the string whose ID is
+ * `R.string.episode_added_to_your_queue` ("Episode added to your queue"). We initialize our
+ * [Boolean] variable `val showHomeCategoryTabs` to `true` if the [featuredPodcasts] list is not
+ * empty and the [homeCategories] list is not empty. Then our root composable is a [HomeContent]
+ * whose arguments are:
  *  - `showHomeCategoryTabs` is our [Boolean] variable `showHomeCategoryTabs`.
  *  - `featuredPodcasts` is our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts].
  *  - `selectedHomeCategory` is our [HomeCategory] parameter [selectedHomeCategory].
@@ -660,8 +663,8 @@ private fun HomeScreenBackground(
  *  variable `contentPadding`.
  *  - `onHomeAction` is a lambda which accepts the [HomeAction] argument passed the lambda in
  *  variable `action` and if `action` is an instance of [HomeAction.QueueEpisode] calls
- *  [CoroutineScope.launch] method of our [CoroutineScope] variable `coroutineScope` in whose `block`
- *  suspend lambda argument we call the [SnackbarHostState.showSnackbar] method of our
+ *  [CoroutineScope.launch] method of our [CoroutineScope] variable `coroutineScope` in whose
+ *  `block` suspend lambda argument we call the [SnackbarHostState.showSnackbar] method of our
  *  [SnackbarHostState] variable `snackbarHostState` with the `message` argument set to our [String]
  *  variable `snackBarText`. Then it calls the [HomeViewModel.onHomeAction] method of our
  *  [onHomeAction] lambda parameter with the [HomeAction] variable `action` passed the lambda.
@@ -767,7 +770,38 @@ private fun HomeScreen(
 
 /**
  * Displays the main content of the home screen, including featured podcasts,
- * category tabs, and a grid of content based on the selected category. TODO: Add details
+ * category tabs, and a grid of content based on the selected category.
+ *
+ * First we initialize and remember our [PagerState] variable `val pagerState` to an instance whose
+ * `pageCount` lambda argument is a lambda that returns the [PersistentList.size] of our
+ * [PersistentList] of [PodcastInfo] parameter [featuredPodcasts]. Then we compose a
+ * [LaunchedEffect] whose `key1` argument is our [PagerState] variable `pagerState`, and whose
+ * `key2` argument is our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts]. In the
+ * `block` [CoroutineScope] suspend lambda argument of the [LaunchedEffect] we use [snapshotFlow]
+ * to create a [Flow] that runs its `block` lambda argument whenever it is collected. For its
+ * `block` lambda argument we pass a lambda which emits the [PagerState.currentPage] of our
+ * [PagerState] variable `pagerState`. To the [Flow] of the [snapshotFlow] we chain a [Flow.collect]
+ * and in the `collector` lambda argument we accept the [Int] passed the lambda in our variable
+ * `pageNumber` then initialize our [PodcastInfo] variable `val podcast` to the [PodcastInfo] at
+ * index `pageNumber` in [PersistentList] of [PodcastInfo] parameter [featuredPodcasts], then
+ * we call our lambda parameter [onHomeAction] with an [HomeAction.LibraryPodcastSelected] whose
+ * `podcast` argument is our `podcast` variable.
+ *
+ * Finally our root composable is a [HomeContentGrid] whose arguments are:
+ *  - `pagerState` our [PagerState] variable `pagerState`
+ *  - `showHomeCategoryTabs` our [Boolean] parameter [showHomeCategoryTabs]
+ *  - `featuredPodcasts` our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts]
+ *  - `selectedHomeCategory` our [HomeCategory] parameter [selectedHomeCategory]
+ *  - `homeCategories` our [List] of [HomeCategory] parameter [homeCategories]
+ *  - `filterableCategoriesModel` our [FilterableCategoriesModel] parameter
+ *  [filterableCategoriesModel]
+ *  - `podcastCategoryFilterResult` our [PodcastCategoryFilterResult] parameter
+ *  [podcastCategoryFilterResult]
+ *  - `library` our [LibraryInfo] parameter [library]
+ *  - `modifier` our [Modifier] parameter [modifier]
+ *  - `onHomeAction` our lambda parameter [onHomeAction]
+ *  - `navigateToPodcastDetails` our lambda parameter [navigateToPodcastDetails]
+ *  - `navigateToPlayer` our lambda parameter [navigateToPlayer]
  *
  * @param showHomeCategoryTabs [Boolean] indicating whether to show the category tabs at the top.
  * @param featuredPodcasts A [PersistentList] of [PodcastInfo] of the featured podcasts to display
@@ -804,8 +838,8 @@ private fun HomeContent(
     val pagerState: PagerState = rememberPagerState { featuredPodcasts.size }
     LaunchedEffect(key1 = pagerState, key2 = featuredPodcasts) {
         snapshotFlow { pagerState.currentPage }
-            .collect {
-                val podcast: PodcastInfo? = featuredPodcasts.getOrNull(it)
+            .collect { pageNumber: Int ->
+                val podcast: PodcastInfo? = featuredPodcasts.getOrNull(pageNumber)
                 onHomeAction(HomeAction.LibraryPodcastSelected(podcast = podcast))
             }
     }
