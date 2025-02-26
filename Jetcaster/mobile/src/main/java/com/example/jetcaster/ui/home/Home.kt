@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -108,6 +109,7 @@ import com.example.jetcaster.R
 import com.example.jetcaster.core.domain.testing.PreviewCategories
 import com.example.jetcaster.core.domain.testing.PreviewPodcastEpisodes
 import com.example.jetcaster.core.domain.testing.PreviewPodcasts
+import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.EpisodeInfo
 import com.example.jetcaster.core.model.FilterableCategoriesModel
 import com.example.jetcaster.core.model.LibraryInfo
@@ -860,6 +862,67 @@ private fun HomeContent(
     )
 }
 
+/**
+ * Displays the main content grid for the home screen.
+ *
+ * This composable manages the layout and content display for the home screen,
+ * including featured podcasts, category tabs, and category-specific content
+ * (Library or Discover). It uses a [LazyVerticalGrid] to efficiently render
+ * the potentially large amount of content.
+ *
+ * Our root composable is a [LazyVerticalGrid] whose `columns` argument is a [GridCells.Adaptive]
+ * whose `minSize` argument is 362.dp. The `modifier` argument of [LazyVerticalGrid] chains a
+ * [Modifier.fillMaxSize] to our [Modifier] parameter [modifier]. In the [LazyGridScope] `content`
+ * composable lambda if our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts] is not
+ * empty we compose a [fullWidthItem] which Composes a [FollowedPodcastItem] whose `pagerState`
+ * argument is our [PagerState] variable `pagerState`, `items` argument is our [PersistentList] of
+ * [PodcastInfo] parameter [featuredPodcasts], `onPodcastUnfollowed` argument is a lambda which
+ * calls our lambda parameter [onHomeAction] with a [HomeAction.PodcastUnfollowed] whose `podcast`
+ * argument is the [PodcastInfo] passed the lambda, `navigateToPodcastDetails` argument is our
+ * lambda parameter [navigateToPodcastDetails], and `modifier` argument is a [Modifier.fillMaxWidth].
+ *
+ * Then if our [Boolean] parameter [showHomeCategoryTabs] is `true` we compose a [fullWidthItem]
+ * that holds a [Row] whose [RowScope] `content` composable lambda argument is a [HomeCategoryTabs]
+ * whose `categories` argument is our [List] of [HomeCategory] parameter [homeCategories], whose
+ * `selectedCategory` argument is our [HomeCategory] parameter [selectedHomeCategory], whose
+ * `showHorizontalLine` argument is `false`, whose `onCategorySelected` argument is a lambda which
+ * calls our lambda parameter [onHomeAction] with a [HomeAction.HomeCategorySelected] whose
+ * `category` argument is the [HomeCategory] passed the lambda, and whose `modifier` argument is
+ * a [Modifier.width] whose `width` argument is 240.dp.
+ *
+ * Then we use a when statement to determine which content to display based on the value of our
+ * [HomeCategory] parameter [selectedHomeCategory]. If it is [HomeCategory.Library] we compose a
+ * [libraryItems] whose `library` argument is our [LibraryInfo] parameter [library], whose
+ * `navigateToPlayer` argument is our lambda parameter [navigateToPlayer], and whose
+ * `onQueueEpisode` argument is a lambda which calls our lambda parameter [onHomeAction] with a
+ * [HomeAction.QueueEpisode] whose `episode` argument is the [EpisodeInfo] passed the lambda. If
+ * [selectedHomeCategory] is [HomeCategory.Discover] we compose a [discoverItems] whose
+ * `filterableCategoriesModel` argument is our [FilterableCategoriesModel] parameter
+ * [filterableCategoriesModel], whose `podcastCategoryFilterResult` argument is our
+ * [PodcastCategoryFilterResult] parameter [podcastCategoryFilterResult], whose `navigateToPodcastDetails`
+ * is our lambda parameter [navigateToPodcastDetails], whose `navigateToPlayer` argument is our
+ * lambda parameter [navigateToPlayer], whose `onCategorySelected` argument is a lambda which calls
+ * our lambda parameter [onHomeAction] with a [HomeAction.CategorySelected] whose `category` is the
+ * [CategoryInfo] passed the lambda, whose `onTogglePodcastFollowed` argument is a lambda which
+ * calls our lambda parameter [onHomeAction] with a [HomeAction.TogglePodcastFollowed] whose
+ * `podcast` argument is the [PodcastInfo] passed the lambda, and whose `onQueueEpisode` argument
+ * is a lambda which calls our lambda parameter [onHomeAction] with a [HomeAction.QueueEpisode]
+ * with the [EpisodeInfo] passed the lambda.
+ *
+ * @param showHomeCategoryTabs [Boolean] indicating whether to show the home category tabs.
+ * @param pagerState The state of the pager for the featured podcasts.
+ * @param featuredPodcasts A list of featured podcasts to display in the carousel.
+ * @param selectedHomeCategory The currently selected home category (Library or Discover).
+ * @param homeCategories The list of available home categories.
+ * @param filterableCategoriesModel The model for managing filterable categories.
+ * @param podcastCategoryFilterResult The result of filtering podcasts by category.
+ * @param library Information about the user's library (e.g., downloaded episodes).
+ * @param modifier Modifier for the root layout of the grid.
+ * @param onHomeAction Callback for handling actions triggered from the home screen, such as
+ * selecting a category, unfollowing a podcast, queueing an episode, etc.
+ * @param navigateToPodcastDetails Callback to navigate to the podcast details screen.
+ * @param navigateToPlayer Callback to navigate to the episode player screen.
+ */
 @Composable
 private fun HomeContentGrid(
     showHomeCategoryTabs: Boolean,
@@ -876,7 +939,7 @@ private fun HomeContentGrid(
     navigateToPlayer: (EpisodeInfo) -> Unit,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(362.dp),
+        columns = GridCells.Adaptive(minSize = 362.dp),
         modifier = modifier.fillMaxSize()
     ) {
         if (featuredPodcasts.isNotEmpty()) {
@@ -932,6 +995,30 @@ private fun HomeContentGrid(
     }
 }
 
+/**
+ * Composable function that displays a list of followed podcasts within a Column layout.
+ *
+ * This function wraps the [FollowedPodcasts] composable, adding spacing and handling the
+ * pager state, list of podcasts, and actions for unfollowing and navigating to details.
+ *
+ * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we first compose a
+ * [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is 16.dp.
+ * Then we compose a [FollowedPodcasts] whose `pagerState` argument is our [PagerState] parameter
+ * [pagerState]`, `items` argument is our [PersistentList] of [PodcastInfo] parameter [items], whose
+ * `onPodcastUnfollowed` argument our lambda parameter [onPodcastUnfollowed], whose
+ * `navigateToPodcastDetails` argument is our lambda parameter [navigateToPodcastDetails], and whose
+ * `modifier` argument is a [Modifier.fillMaxWidth]. Below that we compose a [Spacer] whose
+ * `modifier` argument is a [Modifier.height] whose `height` argument is 16.dp.
+ *
+ * @param pagerState The state object to be used to control the pager.
+ * @param items The list of [PodcastInfo] representing the followed podcasts.
+ * @param onPodcastUnfollowed Lambda function to be invoked when a podcast is unfollowed.
+ * It takes the [PodcastInfo] of the unfollowed podcast as a parameter.
+ * @param navigateToPodcastDetails Lambda function to be invoked when a podcast item is clicked
+ * to navigate to its details. It takes the [PodcastInfo] of the selected podcast as a parameter.
+ * @param modifier Modifier to be applied to the root Column.
+ */
 @Composable
 private fun FollowedPodcastItem(
     pagerState: PagerState,
@@ -941,7 +1028,7 @@ private fun FollowedPodcastItem(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
 
         FollowedPodcasts(
             pagerState = pagerState,
@@ -951,10 +1038,32 @@ private fun FollowedPodcastItem(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(height = 16.dp))
     }
 }
 
+/**
+ * Displays a horizontal row of category tabs for the home screen. TODO: Add more documentation.
+ *
+ * This composable displays a [TabRow] that allows the user to switch between different
+ * categories within the home screen, such as "Library" and "Discover". It highlights the
+ * currently selected category with an indicator and provides visual feedback when a tab is tapped.
+ *
+ * Note:
+ * - If the [categories] list is empty, nothing will be displayed.
+ * - The `selectedIndex` is calculated based on the [selectedCategory].
+ * - The `indicator` argument for the [TabRow] uses a custom composable, [HomeCategoryTabIndicator].
+ * - The text displayed in each tab is determined by the [HomeCategory] value and loaded from
+ * resources.
+ * - If [showHorizontalLine] is true, a [HorizontalDivider] will be shown below the tabs.
+ *
+ * @param categories A list of [HomeCategory] representing the available categories.
+ * @param selectedCategory The currently selected [HomeCategory].
+ * @param onCategorySelected A callback function that is invoked when a new category is selected.
+ * It receives the newly selected [HomeCategory] as a parameter.
+ * @param showHorizontalLine Whether to display a horizontal line divider below the tabs.
+ * @param modifier Modifier to be applied to the [TabRow].
+ */
 @Suppress("SameParameterValue")
 @Composable
 private fun HomeCategoryTabs(
