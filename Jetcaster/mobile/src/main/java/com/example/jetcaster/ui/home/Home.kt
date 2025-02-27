@@ -873,9 +873,9 @@ private fun HomeContent(
  * Our root composable is a [LazyVerticalGrid] whose `columns` argument is a [GridCells.Adaptive]
  * whose `minSize` argument is 362.dp. The `modifier` argument of [LazyVerticalGrid] chains a
  * [Modifier.fillMaxSize] to our [Modifier] parameter [modifier]. In the [LazyGridScope] `content`
- * composable lambda if our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts] is not
- * empty we compose a [fullWidthItem] which Composes a [FollowedPodcastItem] whose `pagerState`
- * argument is our [PagerState] variable `pagerState`, `items` argument is our [PersistentList] of
+ * composable lambda argument if our [PersistentList] of [PodcastInfo] parameter [featuredPodcasts]
+ * is not empty we compose a [fullWidthItem] which Composes a [FollowedPodcastItem] whose `pagerState`
+ * argument is our [PagerState] parameter [pagerState], `items` argument is our [PersistentList] of
  * [PodcastInfo] parameter [featuredPodcasts], `onPodcastUnfollowed` argument is a lambda which
  * calls our lambda parameter [onHomeAction] with a [HomeAction.PodcastUnfollowed] whose `podcast`
  * argument is the [PodcastInfo] passed the lambda, `navigateToPodcastDetails` argument is our
@@ -910,14 +910,17 @@ private fun HomeContent(
  * with the [EpisodeInfo] passed the lambda.
  *
  * @param showHomeCategoryTabs [Boolean] indicating whether to show the home category tabs.
- * @param pagerState The state of the pager for the featured podcasts.
- * @param featuredPodcasts A list of featured podcasts to display in the carousel.
- * @param selectedHomeCategory The currently selected home category (Library or Discover).
+ * @param pagerState The [PagerState] used for the [HorizontalPager] that holds the featured podcasts.
+ * @param featuredPodcasts A list of featured podcasts to display in the [FollowedPodcastItem].
+ * @param selectedHomeCategory The currently selected home category (`Library` or `Discover`).
  * @param homeCategories The list of available home categories.
  * @param filterableCategoriesModel The model for managing filterable categories.
  * @param podcastCategoryFilterResult The result of filtering podcasts by category.
  * @param library Information about the user's library (e.g., downloaded episodes).
- * @param modifier Modifier for the root layout of the grid.
+ * @param modifier [Modifier] for the root layout of the grid. Our caller [HomeContent] passes us
+ * its own `modifier` parameter which traces back to its [HomeScreen] caller which passes a
+ * [Modifier.padding] with the [PaddingValues] passed the `content` lambda of the [Scaffold] it
+ * composes [HomeContent] into.
  * @param onHomeAction Callback for handling actions triggered from the home screen, such as
  * selecting a category, unfollowing a podcast, queueing an episode, etc.
  * @param navigateToPodcastDetails Callback to navigate to the podcast details screen.
@@ -963,7 +966,7 @@ private fun HomeContentGrid(
                         selectedCategory = selectedHomeCategory,
                         showHorizontalLine = false,
                         onCategorySelected = { onHomeAction(HomeAction.HomeCategorySelected(it)) },
-                        modifier = Modifier.width(240.dp)
+                        modifier = Modifier.width(width = 240.dp)
                     )
                 }
             }
@@ -1011,13 +1014,15 @@ private fun HomeContentGrid(
  * `modifier` argument is a [Modifier.fillMaxWidth]. Below that we compose a [Spacer] whose
  * `modifier` argument is a [Modifier.height] whose `height` argument is 16.dp.
  *
- * @param pagerState The state object to be used to control the pager.
+ * @param pagerState The state object to be used to control the [HorizontalPager].
  * @param items The list of [PodcastInfo] representing the followed podcasts.
  * @param onPodcastUnfollowed Lambda function to be invoked when a podcast is unfollowed.
  * It takes the [PodcastInfo] of the unfollowed podcast as a parameter.
  * @param navigateToPodcastDetails Lambda function to be invoked when a podcast item is clicked
  * to navigate to its details. It takes the [PodcastInfo] of the selected podcast as a parameter.
- * @param modifier Modifier to be applied to the root Column.
+ * @param modifier Modifier to be applied to the root Column. This traces back to [HomeScreen] which
+ * passes a [Modifier.padding] with the [PaddingValues] passed the `content` lambda of the
+ * [Scaffold] it composes [HomeContent] into.
  */
 @Composable
 private fun FollowedPodcastItem(
@@ -1043,7 +1048,7 @@ private fun FollowedPodcastItem(
 }
 
 /**
- * Displays a horizontal row of category tabs for the home screen. TODO: Add more documentation.
+ * Displays a horizontal row of category tabs for the home screen.
  *
  * This composable displays a [TabRow] that allows the user to switch between different
  * categories within the home screen, such as "Library" and "Discover". It highlights the
@@ -1077,7 +1082,7 @@ private fun HomeCategoryTabs(
         return
     }
 
-    val selectedIndex = categories.indexOfFirst { it == selectedCategory }
+    val selectedIndex: Int = categories.indexOfFirst { it == selectedCategory }
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         HomeCategoryTabIndicator(
             Modifier.tabIndicatorOffset(tabPositions[selectedIndex])
@@ -1095,7 +1100,7 @@ private fun HomeCategoryTabs(
             }
         }
     ) {
-        categories.forEachIndexed { index, category ->
+        categories.forEachIndexed { index: Int, category: HomeCategory ->
             Tab(
                 selected = index == selectedIndex,
                 onClick = { onCategorySelected(category) },
@@ -1144,7 +1149,7 @@ private fun FollowedPodcasts(
     BoxWithConstraints(
         modifier = modifier.background(Color.Transparent)
     ) {
-        val horizontalPadding = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
+        val horizontalPadding: Dp = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
         HorizontalPager(
             state = pagerState,
             contentPadding = PaddingValues(
@@ -1153,8 +1158,8 @@ private fun FollowedPodcasts(
             ),
             pageSpacing = 24.dp,
             pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP)
-        ) { page ->
-            val podcast = items[page]
+        ) { page: Int ->
+            val podcast: PodcastInfo = items[page]
             FollowedPodcastCarouselItem(
                 podcastImageUrl = podcast.imageUrl,
                 podcastTitle = podcast.title,
