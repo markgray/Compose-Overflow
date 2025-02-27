@@ -65,6 +65,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
@@ -1085,7 +1086,7 @@ private fun HomeCategoryTabs(
     val selectedIndex: Int = categories.indexOfFirst { it == selectedCategory }
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         HomeCategoryTabIndicator(
-            Modifier.tabIndicatorOffset(tabPositions[selectedIndex])
+            modifier = Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[selectedIndex])
         )
     }
 
@@ -1118,6 +1119,20 @@ private fun HomeCategoryTabs(
     }
 }
 
+/**
+ * A composable function that displays a horizontal tab indicator for the home category.
+ *
+ * This function creates a thin, rounded rectangle that serves as a visual cue
+ * to indicate which tab in a category selection is currently selected.
+ * It's placed below the row of category labels.
+ *
+ * @param modifier The modifier to apply to the indicator. This can be used to adjust
+ * padding, size, or other visual properties of the indicator. Our caller [HomeCategoryTabs] passes
+ * us a [TabRowDefaults.tabIndicatorOffset] whose `currentTabPosition` argument is the [TabPosition]
+ * of the selected tab.
+ * @param color The color of the indicator. Defaults to the [ColorScheme.onSurface] of our custom
+ * [MaterialTheme.colorScheme].
+ */
 @Composable
 private fun HomeCategoryTabIndicator(
     modifier: Modifier = Modifier,
@@ -1126,13 +1141,38 @@ private fun HomeCategoryTabIndicator(
     Spacer(
         modifier
             .padding(horizontal = 24.dp)
-            .height(4.dp)
-            .background(color, RoundedCornerShape(topStartPercent = 100, topEndPercent = 100))
+            .height(height = 4.dp)
+            .background(
+                color = color,
+                shape = RoundedCornerShape(topStartPercent = 100, topEndPercent = 100)
+            )
     )
 }
 
+/**
+ * The size of the featured podcast image in density-independent pixels (dp). This constant defines
+ * the width and height of the image used to represent a featured podcast in the UI. Using a fixed
+ * size ensures consistency across different screen densities. A size of 160.dp typically corresponds
+ * to a moderately large image, suitable for prominent display.
+ */
 private val FEATURED_PODCAST_IMAGE_SIZE_DP = 160.dp
 
+/**
+ * Displays a horizontal carousel of followed podcasts.
+ *
+ * This composable uses a [HorizontalPager] to display a list of [PodcastInfo] items. Each item in
+ * the carousel represents a followed podcast and displays the podcast's image, title, and last
+ * episode date. Users can unfollow a podcast or navigate to its details screen.
+ *
+ * @param pagerState The state object to be used to control or observe the list's state.
+ * @param items The list of followed podcasts to display.
+ * @param onPodcastUnfollowed Callback invoked when the user unfollows a podcast. It receives the
+ * [PodcastInfo] of the unfollowed podcast.
+ * @param navigateToPodcastDetails Callback invoked when the user clicks on a podcast item. It
+ * receives the [PodcastInfo] of the selected podcast.
+ * @param modifier [Modifier] to be applied to the carousel container. Our caller [FollowedPodcastItem]
+ * passes us a [Modifier.fillMaxWidth].
+ */
 @Composable
 private fun FollowedPodcasts(
     pagerState: PagerState,
@@ -1175,6 +1215,22 @@ private fun FollowedPodcasts(
     }
 }
 
+/**
+ * Displays a single podcast item in a horizontal carousel of followed podcasts.
+ *
+ * This composable shows a podcast's image, title, and optionally the last episode's
+ * release date. It also includes a button to unfollow the podcast.
+ *
+ * @param podcastTitle The title of the podcast. This is used as the content description for the image.
+ * @param podcastImageUrl The URL of the podcast's image.
+ * @param modifier Modifier to be applied to the root Column layout. Our caller [FollowedPodcasts]
+ * passes us a [Modifier.fillMaxSize] with a [Modifier.clickable] chained to that which will
+ * navigate to the podcast details screen for the podcast when clicked.
+ * @param lastEpisodeDateText Optional text representing the last episode's release date.
+ * If null, the date text will not be displayed. Example: "2 days ago", "Yesterday", "1 week ago".
+ * @param onUnfollowedClick Callback to be invoked when the unfollow button is clicked.
+ * Used to update the underlying data source.
+ */
 @Composable
 private fun FollowedPodcastCarouselItem(
     podcastTitle: String,
@@ -1186,21 +1242,21 @@ private fun FollowedPodcastCarouselItem(
     Column(modifier) {
         Box(
             Modifier
-                .size(FEATURED_PODCAST_IMAGE_SIZE_DP)
-                .align(Alignment.CenterHorizontally)
+                .size(size = FEATURED_PODCAST_IMAGE_SIZE_DP)
+                .align(alignment = Alignment.CenterHorizontally)
         ) {
             PodcastImage(
                 podcastImageUrl = podcastImageUrl,
                 contentDescription = podcastTitle,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(MaterialTheme.shapes.medium),
+                    .clip(shape = MaterialTheme.shapes.medium),
             )
 
             ToggleFollowPodcastIconButton(
                 onClick = onUnfollowedClick,
                 isFollowed = true, /* All podcasts are followed in this feed */
-                modifier = Modifier.align(Alignment.BottomEnd)
+                modifier = Modifier.align(alignment = Alignment.BottomEnd)
             )
         }
 
@@ -1212,12 +1268,28 @@ private fun FollowedPodcastCarouselItem(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .padding(top = 8.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .align(alignment = Alignment.CenterHorizontally)
             )
         }
     }
 }
 
+/**
+ * Formats the time elapsed since the last update as a user-friendly string.
+ *
+ * This function calculates the difference in days between the provided [updated]
+ * time and the current time. Based on the duration, it returns a string
+ * indicating when the last update occurred. The output strings are localized
+ * using string resources.
+ *
+ * @param updated The [OffsetDateTime] representing the time of the last update.
+ * @return A `String` describing the time elapsed since the last update.
+ * - "Updated a while ago" (more than 28 days ago)
+ * - "Updated X week(s) ago" (between 7 and 28 days ago)
+ * - "Updated yesterday" (one day ago)
+ * - "Updated X days ago" (between 2 and 6 days ago)
+ * - "Updated today" (less than 1 day ago)
+ */
 @Composable
 private fun lastUpdated(updated: OffsetDateTime): String {
     val duration = Duration.between(updated.toLocalDateTime(), LocalDateTime.now())
@@ -1235,6 +1307,9 @@ private fun lastUpdated(updated: OffsetDateTime): String {
     }
 }
 
+/**
+ * Preview of the [HomeAppBar] composable.
+ */
 @Preview
 @Composable
 private fun HomeAppBarPreview() {
@@ -1245,8 +1320,35 @@ private fun HomeAppBarPreview() {
     }
 }
 
-private val CompactWindowSizeClass = WindowSizeClass.compute(360f, 780f)
+/**
+ * Represents the compact window size class based on a fixed width and height.
+ *
+ * This property defines a [WindowSizeClass] instance that is specifically configured
+ * to represent a compact window. In this context, "compact" typically refers to
+ * smaller screen sizes, such as those found on most smartphones.
+ *
+ * The dimensions used to determine this compact window are:
+ * - Width: 360 density-independent pixels (dp)
+ * - Height: 780 density-independent pixels (dp)
+ *
+ * This is a common baseline for a compact window size and can be used for UI layout
+ * decisions that need to adapt based on screen size availability. For example, if your
+ * window's dimensions are less than or equal to these, then you should consider
+ * using a compact UI layout.
+ *
+ * Note: This is a pre-calculated, fixed size class. For dynamic window size class
+ * detection based on the current window's actual dimensions, the system APIs should
+ * be used to observe window changes. This property is useful in scenarios where
+ * a fixed compact size is needed, for example, for preview layouts or when testing.
+ */
+private val CompactWindowSizeClass: WindowSizeClass = WindowSizeClass.compute(
+    dpWidth = 360f,
+    dpHeight = 780f
+)
 
+/**
+ * Previews of the [HomeScreen] composable.
+ */
 @DevicePreviews
 @Composable
 private fun PreviewHome() {
@@ -1273,6 +1375,9 @@ private fun PreviewHome() {
     }
 }
 
+/**
+ * Preview of the [FollowedPodcastCarouselItem] composable.
+ */
 @Composable
 @Preview
 private fun PreviewPodcastCard() {
