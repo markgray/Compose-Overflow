@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,6 +44,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.PagerScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,6 +61,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -68,6 +71,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.Posture
 import androidx.compose.material3.adaptive.WindowAdaptiveInfo
@@ -97,6 +101,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -1059,8 +1064,8 @@ private fun FollowedPodcastItem(
  * - If the [categories] list is empty, nothing will be displayed.
  * - The `selectedIndex` is calculated based on the [selectedCategory].
  * - The `indicator` argument for the [TabRow] uses a custom composable, [HomeCategoryTabIndicator].
- * - The text displayed in each tab is determined by the [HomeCategory] value and loaded from
- * resources.
+ * - The text displayed in each tab is determined by the [HomeCategory] value it represents and
+ * loaded from resources.
  * - If [showHorizontalLine] is true, a [HorizontalDivider] will be shown below the tabs.
  *
  * @param categories A list of [HomeCategory] representing the available categories.
@@ -1068,7 +1073,8 @@ private fun FollowedPodcastItem(
  * @param onCategorySelected A callback function that is invoked when a new category is selected.
  * It receives the newly selected [HomeCategory] as a parameter.
  * @param showHorizontalLine Whether to display a horizontal line divider below the tabs.
- * @param modifier Modifier to be applied to the [TabRow].
+ * @param modifier Modifier to be applied to the [TabRow]. Our caller [HomeContentGrid] passes us
+ * a [Modifier.width] whose `width` if 240dp.
  */
 @Suppress("SameParameterValue")
 @Composable
@@ -1120,11 +1126,17 @@ private fun HomeCategoryTabs(
 }
 
 /**
- * A composable function that displays a horizontal tab indicator for the home category.
+ * A composable function that displays a horizontal tab indicator for the selected [HomeCategory].
  *
- * This function creates a thin, rounded rectangle that serves as a visual cue
- * to indicate which tab in a category selection is currently selected.
- * It's placed below the row of category labels.
+ * This function creates a thin, rounded rectangle that serves as a visual cue to indicate
+ * which tab in the category [TabRow] is currently selected. It's placed below the row of
+ * category labels.
+ *
+ * Our root composable is a [Spacer] whose `modifier` argument is a [Modifier.padding] that adds
+ * 24.dp padding to each `horizontal` side, with a [Modifier.height] that sets its `height` to
+ * 4.dp chained to that, followed by a [Modifier.background] whose `color` argument is our [Color]
+ * parameter [color] and whose `shape` argument is a [RoundedCornerShape] whose `topStartPercent`
+ * is `100` and whose `topEndPercent` is `100`.
  *
  * @param modifier The modifier to apply to the indicator. This can be used to adjust
  * padding, size, or other visual properties of the indicator. Our caller [HomeCategoryTabs] passes
@@ -1139,7 +1151,7 @@ private fun HomeCategoryTabIndicator(
     color: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Spacer(
-        modifier
+        modifier = modifier
             .padding(horizontal = 24.dp)
             .height(height = 4.dp)
             .background(
@@ -1164,14 +1176,41 @@ private val FEATURED_PODCAST_IMAGE_SIZE_DP = 160.dp
  * the carousel represents a followed podcast and displays the podcast's image, title, and last
  * episode date. Users can unfollow a podcast or navigate to its details screen.
  *
- * @param pagerState The state object to be used to control or observe the list's state.
+ * Our root composable is a [BoxWithConstraints] whose `modifier` argument is the result of chaining
+ * a [Modifier.background] whose `color` argument is [Color.Transparent] to our [Modifier] parameter
+ * [modifier]. Inside the [BoxWithConstraintsScope] `content` Composable lambda argument of the
+ * [BoxWithConstraints] we start by initializing our [Dp] variable `val horizontalPadding` to the
+ * [BoxWithConstraintsScope.minWidth] of the [BoxWithConstraints] minus [FEATURED_PODCAST_IMAGE_SIZE_DP]
+ * all divided by 2.
+ *
+ * Then we compose a [HorizontalPager] whose `state` argument is our [PagerState] parameter
+ * [pagerState], whose `contentPadding` argument is a [PaddingValues] whose `horizontal` padding
+ * is our [Dp] variable `horizontalPadding` and whose `vertical` padding is 16.dp. The `pageSpacing`
+ * argument of the [HorizontalPager] is `24.dp` and its `pageSize` is a [PageSize.Fixed] whose
+ * `pageSize` is [FEATURED_PODCAST_IMAGE_SIZE_DP]. In the [PagerScope] `pageContent` composable
+ * lambda argument of the [HorizontalPager] we acceps the [Int] passed the lambda in our variable
+ * `page` then initialize our [PodcastInfo] variable `val podcast` to the [PodcastInfo] at index
+ * `page` in our [PersistentList] of [PodcastInfo] parameter [items] and finally compose a
+ * [FollowedPodcastCarouselItem] whose arguments are:
+ *  - `podcastImageUrl` is the [PodcastInfo.imageUrl] of [PodcastInfo] variable `podcast`.
+ *  - `podcastTitle` is the [PodcastInfo.title] of [PodcastInfo] variable `podcast`.
+ *  - `onUnfollowedClick` is a lambda that calls our lambda parameter [onPodcastUnfollowed] with
+ *  [PodcastInfo] variable `podcast`.
+ *  - `lastEpisodeDateText` if [PodcastInfo.lastEpisodeDate] of `podcast` is not `null` we pass
+ *  the [String] returned by the [lastUpdated] method when called with [PodcastInfo.lastEpisodeDate]
+ *  as its `updated` argument.
+ *  - `modifier` is [Modifier.fillMaxSize] with a [Modifier.clickable] chained to that which calls
+ *  our lambda parameter [navigateToPodcastDetails] with [PodcastInfo] variable `podcast` when the
+ *  [FollowedPodcastCarouselItem] is clicked.
+ *
+ * @param pagerState The state object to be used to control or observe the [HorizontalPager] state.
  * @param items The list of followed podcasts to display.
  * @param onPodcastUnfollowed Callback invoked when the user unfollows a podcast. It receives the
  * [PodcastInfo] of the unfollowed podcast.
  * @param navigateToPodcastDetails Callback invoked when the user clicks on a podcast item. It
  * receives the [PodcastInfo] of the selected podcast.
- * @param modifier [Modifier] to be applied to the carousel container. Our caller [FollowedPodcastItem]
- * passes us a [Modifier.fillMaxWidth].
+ * @param modifier [Modifier] to be applied to the [BoxWithConstraints] container holding the
+ * [HorizontalPager]. Our caller [FollowedPodcastItem] passes us a [Modifier.fillMaxWidth].
  */
 @Composable
 private fun FollowedPodcasts(
@@ -1187,7 +1226,7 @@ private fun FollowedPodcasts(
     // which solves this problem and avoids this calculation altogether. Once 1.7.0 is
     // stable, this implementation can be updated.
     BoxWithConstraints(
-        modifier = modifier.background(Color.Transparent)
+        modifier = modifier.background(color = Color.Transparent)
     ) {
         val horizontalPadding: Dp = (this.maxWidth - FEATURED_PODCAST_IMAGE_SIZE_DP) / 2
         HorizontalPager(
@@ -1197,14 +1236,14 @@ private fun FollowedPodcasts(
                 vertical = 16.dp,
             ),
             pageSpacing = 24.dp,
-            pageSize = PageSize.Fixed(FEATURED_PODCAST_IMAGE_SIZE_DP)
+            pageSize = PageSize.Fixed(pageSize = FEATURED_PODCAST_IMAGE_SIZE_DP)
         ) { page: Int ->
             val podcast: PodcastInfo = items[page]
             FollowedPodcastCarouselItem(
                 podcastImageUrl = podcast.imageUrl,
                 podcastTitle = podcast.title,
                 onUnfollowedClick = { onPodcastUnfollowed(podcast) },
-                lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(it) },
+                lastEpisodeDateText = podcast.lastEpisodeDate?.let { lastUpdated(updated = it) },
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
@@ -1216,14 +1255,37 @@ private fun FollowedPodcasts(
 }
 
 /**
- * Displays a single podcast item in a horizontal carousel of followed podcasts.
+ * Displays a single podcast item in a [HorizontalPager] of followed podcasts.
  *
  * This composable shows a podcast's image, title, and optionally the last episode's
  * release date. It also includes a button to unfollow the podcast.
  *
+ * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we first compose a
+ * [Box] whose [Modifier] `modifier` argument is a [Modifier.size] whose `size` argument is
+ * [FEATURED_PODCAST_IMAGE_SIZE_DP], chained to a [ColumnScope.align] whose `alignment` argument is
+ * [Alignment.CenterHorizontally] (centers the [Box] in the [Column]. In the [BoxScope] `content`
+ * lambda argument of the [Box] we compose a [PodcastImage] whose `podcastImageUrl` argument is our
+ * [String] parameter [podcastImageUrl], whose `contentDescription` argument is our [String] parameter
+ * [podcastTitle] and whose [Modifier] `modifier` argument is a [Modifier.fillMaxSize] with a
+ * [Modifier.clip] chained to that whose `shape` is the [Shapes.medium] of our custom
+ * [MaterialTheme.shapes]. Composed on top of the [PodcastImage] is a [ToggleFollowPodcastIconButton]
+ * whose `onClick` argument is our lambda parameter [onUnfollowedClick] whose `isFollowed` argument
+ * is `true` (All podcasts are followed in this feed) and whose [Modifier] `modifier` argument is
+ * a [BoxScope.align] whose `alignment` argument is [Alignment.BottomEnd] to place the
+ * [ToggleFollowPodcastIconButton] at the bottom end of the [Box].
+ *
+ * Next in the [Column] if our [String] parameter [lastEpisodeDateText] is not `null` we compose
+ * a [Text] whose `text` argument is our [String] parameter [lastEpisodeDateText], whose [TextStyle]
+ * `style` argument is the [Typography.bodySmall] of our [MaterialTheme.typography], whose `maxLines`
+ * argument is `1`, whose `overflow` argument is [TextOverflow.Ellipsis], and whose [Modifier]
+ * `modifier` argument is a [Modifier.padding] that adds `8.dp` padding to its `top`, with a
+ * [ColumnScope.align] chained to that whose `alignment` argument of [Alignment.CenterHorizontally]
+ * centers the [Text] in the center of the [Column].
+ *
  * @param podcastTitle The title of the podcast. This is used as the content description for the image.
  * @param podcastImageUrl The URL of the podcast's image.
- * @param modifier Modifier to be applied to the root Column layout. Our caller [FollowedPodcasts]
+ * @param modifier [Modifier] to be applied to the root Column layout. Our caller [FollowedPodcasts]
  * passes us a [Modifier.fillMaxSize] with a [Modifier.clickable] chained to that which will
  * navigate to the podcast details screen for the podcast when clicked.
  * @param lastEpisodeDateText Optional text representing the last episode's release date.
@@ -1239,9 +1301,9 @@ private fun FollowedPodcastCarouselItem(
     lastEpisodeDateText: String? = null,
     onUnfollowedClick: () -> Unit,
 ) {
-    Column(modifier) {
+    Column(modifier = modifier) {
         Box(
-            Modifier
+            modifier = Modifier
                 .size(size = FEATURED_PODCAST_IMAGE_SIZE_DP)
                 .align(alignment = Alignment.CenterHorizontally)
         ) {
