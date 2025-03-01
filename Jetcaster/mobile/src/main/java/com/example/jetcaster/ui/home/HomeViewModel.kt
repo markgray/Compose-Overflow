@@ -106,8 +106,9 @@ class HomeViewModel @Inject constructor(
      * reflect that selection. When the user deselects the podcast or navigates away from the
      * library view, this state should be set back to `null` or a suitable default.
      *
-     * The type of the stored value is [PodcastInfo], which presumably contains the podcast's
-     * metadata (title, author, description, etc.).
+     * The type of the stored value is [PodcastInfo], which contains the podcast's [PodcastInfo.uri],
+     * [PodcastInfo.title], [PodcastInfo.author], [PodcastInfo.imageUrl], [PodcastInfo.description],
+     * [PodcastInfo.isSubscribed], and [PodcastInfo.lastEpisodeDate].
      */
     private val selectedLibraryPodcast: MutableStateFlow<PodcastInfo?> =
         MutableStateFlow(value = null)
@@ -131,7 +132,7 @@ class HomeViewModel @Inject constructor(
     /**
      * Holds the currently available home categories. Represents the available categories for the
      * "home" section of the app. This is an enum class, providing a type-safe way to handle
-     * category options.
+     * category options. Consists of [HomeCategory.Library] and [HomeCategory.Discover].
      */
     private val homeCategories: MutableStateFlow<EnumEntries<HomeCategory>> =
         MutableStateFlow(value = HomeCategory.entries)
@@ -156,7 +157,7 @@ class HomeViewModel @Inject constructor(
      * It's used to manage the internal state of the HomeScreen's UI and is exposed
      * externally as a read-only [StateFlow] through the [state] property.
      *
-     * Changes to the UI state should be made by updating this `_state` flow.
+     * Changes to the UI state should be made by updating this [_state] flow.
      *
      * Initial Value:
      * - It starts with a default state of [HomeScreenUiState] which represents the initial
@@ -262,8 +263,8 @@ class HomeViewModel @Inject constructor(
                         errorMessage = throwable.message
                     )
                 )
-            }.collect {
-                _state.value = it
+            }.collect { homeScreenUiState: HomeScreenUiState ->
+                _state.value = homeScreenUiState
             }
         }
 
@@ -278,14 +279,15 @@ class HomeViewModel @Inject constructor(
      * asynchronously and manages a `refreshing` state to indicate when the process is in progress.
      *
      * **Side Effects:**
-     *   - Sets the `refreshing` value to `true` before starting the update.
-     *   - Sets the `refreshing` value to `false` after the update completes (either successfully or with an error).
+     *   - Sets the [refreshing] value to `true` before starting the update.
+     *   - Sets the [refreshing] value to `false` after the update completes (either successfully or
+     *   with an error).
      *   - May update the underlying podcast data managed by `podcastsRepository`.
-     *   - There's a TODO to handle errors, so currently exceptions might not be properly surfaced to the caller.
      *
      * **Threading:**
      *   - This function must be called from the main thread, as it utilizes `viewModelScope.launch`.
-     *   - The `podcastsRepository.updatePodcasts(force)` method will likely be executed on a background thread.
+     *   - The `podcastsRepository.updatePodcasts(force)` method will be executed on a background
+     *   thread.
      *
      * @param force Determines whether to force a network refresh or rely on cached data if
      * available. Defaults to `true`, which means a network refresh will be attempted. If set to
@@ -361,7 +363,7 @@ class HomeViewModel @Inject constructor(
      * [CategoryInfo] property [_selectedCategory]  to the provided [category].
      *
      * @param category The [CategoryInfo] object representing the category that has been selected.
-     * This should be a non-null object.
+     * This should be a non-`null` object.
      */
     private fun onCategorySelected(category: CategoryInfo) {
         _selectedCategory.value = category
@@ -386,12 +388,12 @@ class HomeViewModel @Inject constructor(
      * This function is triggered when a user unfollows a podcast. It performs the following actions:
      *  1. Launches a coroutine within the ViewModel's scope. This ensures that the unfollow operation
      *  is performed asynchronously and does not block the main thread.
-     *  2. Calls the [PodcastStore.unfollowPodcast] function of [PodcastStore] property [podcastStore].
+     *  2. Calls the [PodcastStore.unfollowPodcast] function of [PodcastStore] property [podcastStore]
      *  to remove the specified podcast from the user's followed podcasts list.
      *
      * @param podcast The [PodcastInfo]` object representing the podcast that the user has unfollowed.
      * It contains information about the podcast, including its unique URI, which is used to identify
-     * it in [podcastStore]..
+     * it in [podcastStore].
      *
      * @see PodcastInfo
      * @see PodcastStore.unfollowPodcast
@@ -399,7 +401,7 @@ class HomeViewModel @Inject constructor(
      */
     private fun onPodcastUnfollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
-            podcastStore.unfollowPodcast(podcast.uri)
+            podcastStore.unfollowPodcast(podcastUri = podcast.uri)
         }
     }
 
@@ -418,7 +420,7 @@ class HomeViewModel @Inject constructor(
      */
     private fun onTogglePodcastFollowed(podcast: PodcastInfo) {
         viewModelScope.launch {
-            podcastStore.togglePodcastFollowed(podcast.uri)
+            podcastStore.togglePodcastFollowed(podcastUri = podcast.uri)
         }
     }
 
@@ -499,7 +501,7 @@ sealed interface HomeAction {
      * Represents an action where a category has been selected by the user.
      *
      * This data class encapsulates the information about the selected category,
-     * including its details. It is used as a type of `HomeAction` to signal
+     * including its details. It is used as a type of [HomeAction] to signal
      * that a user has interacted with a category in the home screen or similar
      * context.
      *
@@ -551,9 +553,9 @@ sealed interface HomeAction {
      * Represents an action where a specific podcast has been selected from the library.
      *
      * This data class encapsulates the selected podcast's information. It's used within the
-     * `HomeAction` hierarchy to signal that a user has chosen a podcast from their library.
+     * [HomeAction] hierarchy to signal that a user has chosen a podcast from their library.
      *
-     * @property podcast The `PodcastInfo` object representing the selected podcast. It can be
+     * @property podcast The [PodcastInfo] object representing the selected podcast. It can be
      * `null` if, for example, the podcast was in a state where it's temporarily unavailable or
      * has been removed from the library. In such cases, the UI could reflect this state to the
      * user (e.g., by showing a placeholder or an error message).
@@ -586,17 +588,17 @@ sealed interface HomeAction {
  * @property isLoading Indicates whether the screen is currently loading data. Defaults to `true`.
  * @property errorMessage An optional error message to display if an error occurred. `null` if
  * no error.
- * @property featuredPodcasts A list of featured podcasts to display. Defaults to an empty
- * persistent list.
+ * @property featuredPodcasts A [PersistentList] of featured podcasts to display. Defaults to an
+ * empty [PersistentList].
  * @property selectedHomeCategory The currently selected category in the Home screen. Defaults to
  * [HomeCategory.Discover].
- * @property homeCategories The list of available categories to choose from on the Home screen.
- * Defaults to an empty list.
- * @property filterableCategoriesModel Model containing the data necessary for category filtering
+ * @property homeCategories The [List] of available categories to choose from on the Home screen.
+ * Defaults to an empty [List].
+ * @property filterableCategoriesModel Model containing the data necessary for category filtering.
  * @property podcastCategoryFilterResult The results of a podcast category filter, including the
  * filtered list of podcasts and the applied filter.
  * @property library Information about the user's library (e.g., subscriptions, downloaded episodes).
- * Defaults to an empty `LibraryInfo` object.
+ * Defaults to an empty [LibraryInfo] object.
  */
 @Immutable
 data class HomeScreenUiState(
