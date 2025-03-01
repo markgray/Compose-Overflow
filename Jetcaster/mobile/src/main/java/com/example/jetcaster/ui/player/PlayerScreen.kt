@@ -67,6 +67,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.DisposableEffectScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -107,11 +108,66 @@ import com.example.jetcaster.util.verticalGradientScrim
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
+import kotlinx.coroutines.CoroutineScope
 import java.time.Duration
 import kotlinx.coroutines.launch
 
 /**
  * Stateful version of the Podcast player
+ *
+ * This function displays the user interface for playing audio or video content. It utilizes
+ * the provided [PlayerViewModel] to manage the playback state and control actions.
+ * It also adapts its layout based on the [windowSizeClass] and [displayFeatures] for optimal
+ * presentation across different screen sizes and foldable devices.
+ *
+ * We start by initializing our [PlayerUiState] variable `uiState` with the current value of the
+ * [PlayerViewModel]'s `uiState` property. Then we compose the Stateless version of the Player
+ * screen, with its arguments:
+ *  - `uiState`: The current state of the player, our [PlayerUiState] variable `uiState`
+ *  - `windowSizeClass`: The current window size class representing the current screen size, our
+ *  [WindowSizeClass] parameter [windowSizeClass].
+ *  - `displayFeatures`: A list of [DisplayFeature]s representing the physical characteristics, of
+ *  the display, such as folds or hinges, our [List] of [DisplayFeature] parameter [displayFeatures].
+ *  - `onBackPress`: Callback invoked when the user presses the back button, our lambda parameter
+ *  [onBackPress].
+ *  - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, a function
+ *  reference to the [PlayerViewModel.onAddToQueue] method of our [PlayerViewModel] parameter
+ *  [viewModel].
+ *  - `onStop`: Callback invoked when the user stops the playback, a function reference to the
+ *  [PlayerViewModel.onStop] method of our [PlayerViewModel] parameter [viewModel].
+ *  - `playerControlActions`: A [PlayerControlActions] object representing the actions available
+ *  for the player controls. We pass a new instance of [PlayerControlActions] with its arguments:
+ *      - `onPlayPress`: Callback invoked when the user presses the play button, a function
+ *      reference to the [PlayerViewModel.onPlay] method of our [PlayerViewModel] parameter
+ *      [viewModel].
+ *      - `onPausePress`: Callback invoked when the user presses the pause button, a function
+ *      reference to the [PlayerViewModel.onPause] method of our [PlayerViewModel] parameter
+ *      [viewModel].
+ *      - `onAdvanceBy`: Callback invoked when the user advances the playback by a specified
+ *      [Duration], a function reference to the [PlayerViewModel.onAdvanceBy] method of our
+ *      [PlayerViewModel] parameter [viewModel].
+ *      - `onRewindBy`: Callback invoked when the user rewinds the playback by a specified
+ *      [Duration], a function reference to the [PlayerViewModel.onRewindBy] method of our
+ *      [PlayerViewModel] parameter [viewModel].
+ *      - `onSeekingStarted`: Callback invoked when the user starts seeking the playback, a
+ *      function reference to the [PlayerViewModel.onSeekingStarted] method of our [PlayerViewModel]
+ *      parameter [viewModel].
+ *      - `onSeekingFinished`: Callback invoked when the user finishes seeking the playback, a
+ *      function reference to the [PlayerViewModel.onSeekingFinished] method of our [PlayerViewModel]
+ *      parameter [viewModel].
+ *      - `onNext`: Callback invoked when the user presses the next button, a function reference to
+ *      the [PlayerViewModel.onNext] method of our [PlayerViewModel] parameter [viewModel].
+ *      - `onPrevious`: Callback invoked when the user presses the previous button, a function
+ *      reference to the [PlayerViewModel.onPrevious] method of our [PlayerViewModel] parameter
+ *      [viewModel].
+ *
+ * @param windowSizeClass The window size class representing the current screen size. Used to
+ * determine the appropriate layout.
+ * @param displayFeatures A list of [DisplayFeature]s representing the physical characteristics
+ * of the display, such as folds or hinges. Used for adapting the UI for foldable devices.
+ * @param onBackPress Callback invoked when the user presses the back button.
+ * @param viewModel The [PlayerViewModel] responsible for managing the player state and actions.
+ * By default it uses a [hiltViewModel]
  */
 @Composable
 fun PlayerScreen(
@@ -120,7 +176,7 @@ fun PlayerScreen(
     onBackPress: () -> Unit,
     viewModel: PlayerViewModel = hiltViewModel(),
 ) {
-    val uiState = viewModel.uiState
+    val uiState: PlayerUiState = viewModel.uiState
     PlayerScreen(
         uiState = uiState,
         windowSizeClass = windowSizeClass,
@@ -142,7 +198,61 @@ fun PlayerScreen(
 }
 
 /**
- * Stateless version of the Player screen
+ * Stateless version of the Player screen, displays the UI for playing an episode.
+ *
+ * It handles the overall layout, including the background, playback controls, and
+ * loading state. It also manages side effects such as adding an episode to the queue
+ * and cleaning up when the screen is no longer visible.
+ *
+ * First we compose a [DisposableEffect] whose `key1` argument is `Unit`, and in its
+ * [DisposableEffectScope] `effect` lambda we use [DisposableEffectScope.onDispose] to
+ * register a call to our lambda parameter [onStop] to be run when the [DisposableEffect]
+ * leaves the composition. Next we initialize and remember our [CoroutineScope] variable
+ * `coroutineScope` to a new instance of [CoroutineScope] using [rememberCoroutineScope],
+ * initialize our [String] variable `snackBarText` to the [String] with resource ID
+ * `R.string.episode_added_to_your_queue` ("Episode added to your queue") using [stringResource],
+ * and initialize and remember our [SnackbarHostState] variable `snackbarHostState` to a new
+ * instance.
+ *
+ * Our root Composable is a [Scaffold] whose `snackbarHost` argument is a lambda that composes
+ * a [SnackbarHost] with the `hostState` parameter set to our [SnackbarHostState] variable
+ * `snackbarHostState`, and whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In the `content` composable lambda argument we accept the [PaddingValues] passed the lambda
+ * in our variable `contentPadding`. The if the [EpisodePlayerState.currentEpisode] of the
+ * [PlayerUiState.episodePlayerState] property of our [PlayerUiState] parameter [uiState] is not
+ * `null` we compose a [PlayerContentWithBackground] with the arguments:
+ *  - `uiState`: The current state of the player, our [PlayerUiState] parameter [uiState].
+ *  - `windowSizeClass`: The current window size class representing the current screen size, our
+ *  [WindowSizeClass] parameter [windowSizeClass].
+ *  - `displayFeatures`: A list of [DisplayFeature]s representing the physical characteristics, of
+ *  the display, such as folds or hinges, our [List] of [DisplayFeature] parameter [displayFeatures].
+ *  - `onBackPress`: Callback invoked when the user presses the back button, our lambda parameter
+ *  [onBackPress].
+ *  - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, lambda that uses
+ *  our [CoroutineScope] variable `coroutineScope` to launch a coroutine that shows a snackbar
+ *  by calling the [SnackbarHostState.showSnackbar] method of our [SnackbarHostState] variable
+ *  `snackbarHostState` with the [String] variable `snackBarText` as its argument, then calls our
+ *  lambda parameter [onAddToQueue].
+ *  - `playerControlActions`: A [PlayerControlActions] object representing the actions available
+ *  to control the player, our [PlayerControlActions] parameter [playerControlActions].
+ *  - `contentPadding`: The [PaddingValues] passed to the lambda in our variable `contentPadding`.
+ *
+ * If the [EpisodePlayerState.currentEpisode] of the [PlayerUiState.episodePlayerState] property
+ * is `null` on the otherhand, we compose a [FullScreenLoading] composable.
+ *
+ * @param uiState The current UI state of the player, including the episode being played,
+ * playback status, and any errors.
+ * @param windowSizeClass The window size class that represents the screen size.
+ * @param displayFeatures A list of display features, which can be used for handling
+ * foldable or dual-screen devices.
+ * @param onBackPress A callback triggered when the user presses the back button.
+ * @param onAddToQueue A callback triggered when the user requests to add the current
+ * episode to the playback queue.
+ * @param onStop A callback triggered when the screen is disposed or the playback is stopped.
+ * This is typically used for cleanup operations like releasing resources.
+ * @param playerControlActions An object containing actions to control the player like play,
+ * pause, seek etc.
+ * @param modifier Modifier for styling and layout of the screen.
  */
 @Composable
 private fun PlayerScreen(
@@ -155,21 +265,21 @@ private fun PlayerScreen(
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
-    DisposableEffect(Unit) {
+    DisposableEffect(key1 = Unit) {
         onDispose {
             onStop()
         }
     }
 
-    val coroutineScope = rememberCoroutineScope()
-    val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
-    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val snackBarText: String = stringResource(id = R.string.episode_added_to_your_queue)
+    val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
         modifier = modifier
-    ) { contentPadding ->
+    ) { contentPadding: PaddingValues ->
         if (uiState.episodePlayerState.currentEpisode != null) {
             PlayerContentWithBackground(
                 uiState = uiState,
@@ -178,7 +288,7 @@ private fun PlayerScreen(
                 onBackPress = onBackPress,
                 onAddToQueue = {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar(snackBarText)
+                        snackbarHostState.showSnackbar(message = snackBarText)
                     }
                     onAddToQueue()
                 },
@@ -191,6 +301,18 @@ private fun PlayerScreen(
     }
 }
 
+/**
+ * Displays a background image scrim for the player screen.
+ *
+ * This composable uses the podcast image URL from the provided [episode] to display a background
+ * image. It applies a semi-transparent scrim (90% opaque surface color) over the image to ensure
+ * text and other UI elements on top are legible. If no episode or podcast image URL is available,
+ * it will default to displaying a solid color background.
+ *
+ * @param episode The [PlayerEpisode] containing the podcast image URL. If null, a default solid
+ * background will be displayed.
+ * @param modifier Modifier to be applied to the background image.
+ */
 @Composable
 private fun PlayerBackground(
     episode: PlayerEpisode?,
@@ -203,6 +325,22 @@ private fun PlayerBackground(
     )
 }
 
+/**
+ * Displays the player content overlaid on a background derived from the current episode.
+ *
+ * This composable combines the [PlayerBackground] and [PlayerContent] composables to provide a
+ * visually rich player experience. It handles the background display and overlays the interactive
+ * player controls and information on top.
+ *
+ * @param uiState The current UI state of the player.
+ * @param windowSizeClass The current window size class, used for adaptive layout.
+ * @param displayFeatures A list of [DisplayFeature]s, representing foldable/hinge features on the device.
+ * @param onBackPress Callback invoked when the user requests to navigate back.
+ * @param onAddToQueue Callback invoked when the user requests to add the current episode to the queue.
+ * @param playerControlActions Actions related to the player, such as play/pause, seek, etc.
+ * @param modifier Modifier to be applied to the root layout.
+ * @param contentPadding Padding to be applied around the background.
+ */
 @Composable
 fun PlayerContentWithBackground(
     uiState: PlayerUiState,
