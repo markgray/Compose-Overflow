@@ -215,10 +215,10 @@ fun PlayerScreen(
  * instance.
  *
  * Our root Composable is a [Scaffold] whose `snackbarHost` argument is a lambda that composes
- * a [SnackbarHost] with the `hostState` parameter set to our [SnackbarHostState] variable
+ * a [SnackbarHost] with the `hostState` argument set to our [SnackbarHostState] variable
  * `snackbarHostState`, and whose `modifier` argument is our [Modifier] parameter [modifier].
  * In the `content` composable lambda argument we accept the [PaddingValues] passed the lambda
- * in our variable `contentPadding`. The if the [EpisodePlayerState.currentEpisode] of the
+ * in our variable `contentPadding`. Then if the [EpisodePlayerState.currentEpisode] of the
  * [PlayerUiState.episodePlayerState] property of our [PlayerUiState] parameter [uiState] is not
  * `null` we compose a [PlayerContentWithBackground] with the arguments:
  *  - `uiState`: The current state of the player, our [PlayerUiState] parameter [uiState].
@@ -228,8 +228,8 @@ fun PlayerScreen(
  *  the display, such as folds or hinges, our [List] of [DisplayFeature] parameter [displayFeatures].
  *  - `onBackPress`: Callback invoked when the user presses the back button, our lambda parameter
  *  [onBackPress].
- *  - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, lambda that uses
- *  our [CoroutineScope] variable `coroutineScope` to launch a coroutine that shows a snackbar
+ *  - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, a lambda that
+ *  uses our [CoroutineScope] variable `coroutineScope` to launch a coroutine that shows a snackbar
  *  by calling the [SnackbarHostState.showSnackbar] method of our [SnackbarHostState] variable
  *  `snackbarHostState` with the [String] variable `snackBarText` as its argument, then calls our
  *  lambda parameter [onAddToQueue].
@@ -240,19 +240,21 @@ fun PlayerScreen(
  * If the [EpisodePlayerState.currentEpisode] of the [PlayerUiState.episodePlayerState] property
  * is `null` on the otherhand, we compose a [FullScreenLoading] composable.
  *
- * @param uiState The current UI state of the player, including the episode being played,
- * playback status, and any errors.
+ * @param uiState The current UI state of the player, including the episode being played, playback
+ * queue, playback, playback status (is it playing?), and time elapsed.
  * @param windowSizeClass The window size class that represents the screen size.
- * @param displayFeatures A list of display features, which can be used for handling
- * foldable or dual-screen devices.
- * @param onBackPress A callback triggered when the user presses the back button.
- * @param onAddToQueue A callback triggered when the user requests to add the current
+ * @param displayFeatures A list of display features, which can be used for handling foldable or
+ * dual-screen devices.
+ * @param onBackPress A callback to be triggered when the user presses the back button.
+ * @param onAddToQueue A callback to be triggered when the user requests to add the current
  * episode to the playback queue.
- * @param onStop A callback triggered when the screen is disposed or the playback is stopped.
+ * @param onStop A callback to be triggered when the screen is disposed or the playback is stopped.
  * This is typically used for cleanup operations like releasing resources.
  * @param playerControlActions An object containing actions to control the player like play,
  * pause, seek etc.
- * @param modifier Modifier for styling and layout of the screen.
+ * @param modifier [Modifier] for styling and layout of the screen. Our caller, the Stateful version
+ * of the Podcast player, does not pass us any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 private fun PlayerScreen(
