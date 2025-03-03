@@ -16,7 +16,6 @@
 
 package com.example.jetcaster.ui.player
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -68,6 +67,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.DisposableEffectScope
@@ -112,8 +112,8 @@ import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 import com.google.accompanist.adaptive.VerticalTwoPaneStrategy
 import kotlinx.coroutines.CoroutineScope
-import java.time.Duration
 import kotlinx.coroutines.launch
+import java.time.Duration
 
 /**
  * Stateful version of the Podcast player
@@ -751,6 +751,36 @@ private fun PlayerContentRegular(
 
 /**
  * The UI for the top pane of a tabletop layout.
+ *
+ * This function renders the top part of the player UI, including a gradient scrim, window insets
+ * padding, and the podcast image associated with the currently playing episode. It fetches the
+ * necessary data from its [PlayerUiState] parameter [uiState].
+ *
+ * We start by initializing our [PlayerEpisode] variable `currentEpisode` to the
+ * [EpisodePlayerState.currentEpisode] of the [PlayerUiState.episodePlayerState] property of our
+ * parameter [uiState], returning without doing anything more if that is `null`.
+ *
+ * Our root composable is a [Column] whose [Modifier] `modifier` argument chains a
+ * [Modifier.fillMaxWidth] to our [Modifier] parameter [modifier], to which it chains a
+ * [Modifier.verticalGradientScrim] whose `color` is a copy of the [ColorScheme.primary] of the
+ * [ColorScheme.primary] of our custom [MaterialTheme.colorScheme] with its `alpha` set to 0.50f,
+ * whose `startYPercentage` is 1f, and whose `endYPercentage` is 0f, to which is chained a
+ * [Modifier.windowInsetsPadding] whose `insets` is the [WindowInsets.Companion.systemBars] with
+ * `only` the [WindowInsetsSides.Companion.Horizontal] and [WindowInsetsSides.Companion.Top] sides,
+ * and at the end of the chain is a [Modifier.padding] that adds 32.dp to each `all` sides. The
+ * `horizontalAlignment` argument of the [Column] is [Alignment.CenterHorizontally]. In the
+ * [ColumnScope] `content` composable lambda argument we compose a [PlayerImage] whose
+ * `podcastImageUrl` argument is the [PlayerEpisode.podcastImageUrl] of our [PlayerEpisode] variable
+ * `episode`.
+ *
+ * @param uiState The current UI state of the player, containing information about the currently
+ * playing episode.
+ * @param modifier Modifier to be applied to the root layout of this composable.
+ * Defaults to [Modifier].
+ *
+ * @throws IllegalStateException if the `currentEpisode` in `PlayerEpisodeState` is null. This will
+ * only happen if there is no episode loaded, in this case the function returns before it throws the
+ * exception.
  */
 @Composable
 private fun PlayerContentTableTopTop(
@@ -768,7 +798,7 @@ private fun PlayerContentTableTopTop(
                 endYPercentage = 0f
             )
             .windowInsetsPadding(
-                WindowInsets.systemBars.only(
+                insets = WindowInsets.systemBars.only(
                     sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Top
                 )
             )
@@ -781,6 +811,77 @@ private fun PlayerContentTableTopTop(
 
 /**
  * The UI for the bottom pane of a tabletop layout.
+ *
+ * This composable is responsible for rendering:
+ *  - The top app bar with back and add-to-queue actions.
+ *  - The podcast episode title and podcast name.
+ *  - The player control buttons (play/pause, next, previous, rewind, forward).
+ *  - The player progress slider.
+ *
+ * It arranges these elements vertically, with the app bar and episode information at the top,
+ * followed by a spacer and then the control buttons and slider at the bottom.
+ *
+ * Our root composable is a [Column] whose [Modifier] `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.windowInsetsPadding] whose `insets` argument is the
+ * [WindowInsets.Companion.systemBars] with `only` the [WindowInsetsSides.Companion.Horizontal] and
+ * [WindowInsetsSides.Companion.Bottom] sides, and at the end of the chain is a [Modifier.padding]
+ * that adds 32.dp to each `horizontal` side, and 8.dp to each `vertical` side, and its
+ * `horizontalAlignment` is [Alignment.CenterHorizontally]. In the [ColumnScope] `content`
+ * composable lambda argument we compose:
+ *  - a [TopAppBar] whose `onBackPress` argument is our lambda parameter [onBackPress] and whose
+ *  `onAddToQueue` argument is our [onAddToQueue] lambda parameter.
+ *  - a [PodcastDescription] whose `title` argument is the [PlayerEpisode.title] of our
+ *  [PlayerEpisode] variable `episode`, whose `podcastName` argument is the [PlayerEpisode.podcastName]
+ *  of our [PlayerEpisode] variable `episode`, and whose [TextStyle] `titleTextStyle` argument is the
+ *  [Typography.titleLarge] of our custom [MaterialTheme.typography].
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [ColumnScope.weight] whose `weight`
+ *  is `0.5f`.
+ *  - a [Column] whose `horizontalAlignment` argument is [Alignment.CenterHorizontally], and whose
+ *  [Modifier] `modifier` argument is a [ColumnScope.weight] whose `weight` is `10f`.
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the inner [Column] we compose a
+ * [PlayerButtons] and a [PlayerSlider]. The arguments of the [PlayerButtons] are:
+ *  - `hasNext`: `true` if the [EpisodePlayerState.queue] field of our [EpisodePlayerState] variable
+ *  `episodePlayerState` is not empty.
+ *  - `isPlaying`: The [EpisodePlayerState.isPlaying] property of our [EpisodePlayerState] variable
+ *  `episodePlayerState`.
+ *  - `onPlayPress`: The [PlayerControlActions.onPlayPress] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onPausePress`: The [PlayerControlActions.onPausePress] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `playerButtonSize` is 92.dp.
+ *  - `onAdvanceBy`: The [PlayerControlActions.onAdvanceBy] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onRewindBy`: The [PlayerControlActions.onRewindBy] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onNext`: The [PlayerControlActions.onNext] property of our [PlayerControlActions] parameter
+ *  parameter [playerControlActions].
+ *  - `onPrevious`: The [PlayerControlActions.onPrevious] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `modifier`: A [Modifier.padding] that adds 8.dp to the `top` side.
+ *
+ * The arguments of the [PlayerSlider] are:
+ *  - `timeElapsed`: The [EpisodePlayerState.timeElapsed] property of our [EpisodePlayerState]
+ *  variable `episodePlayerState`.
+ *  - `episodeDuration`: The [PlayerEpisode.duration] property of our [PlayerEpisode] variable
+ *  `episode`.
+ *  - `onSeekingStarted`: The [PlayerControlActions.onSeekingStarted] property of our
+ *  [PlayerControlActions] parameter [playerControlActions].
+ *  - `onSeekingFinished`: The [PlayerControlActions.onSeekingFinished] property of our
+ *  [PlayerControlActions] parameter [playerControlActions].
+ * 
+ *
+ * @param uiState The [PlayerUiState] containing the current state of the player, including the
+ * current episode and playback state.
+ * @param onBackPress Callback function to be invoked when the back button in the top app bar
+ * is pressed.
+ * @param onAddToQueue Callback function to be invoked when the add-to-queue button in the
+ * top app bar is pressed.
+ * @param playerControlActions An object containing callback functions for controlling the player
+ * (play, pause, next, previous, seek).
+ * @param modifier [Modifier] for styling and layout customization of the container [Column]. Our
+ * caller [PlayerContent] does not pass us any so the empty, default, or starter [Modifier] that
+ * contains no elements is used.
  */
 @Composable
 private fun PlayerContentTableTopBottom(
@@ -790,14 +891,14 @@ private fun PlayerContentTableTopBottom(
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
-    val episodePlayerState = uiState.episodePlayerState
-    val episode = uiState.episodePlayerState.currentEpisode ?: return
+    val episodePlayerState: EpisodePlayerState = uiState.episodePlayerState
+    val episode: PlayerEpisode = uiState.episodePlayerState.currentEpisode ?: return
     // Content for the table part of the screen
     Column(
         modifier = modifier
             .windowInsetsPadding(
-                WindowInsets.systemBars.only(
-                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                insets = WindowInsets.systemBars.only(
+                    sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
                 )
             )
             .padding(horizontal = 32.dp, vertical = 8.dp),
@@ -812,10 +913,10 @@ private fun PlayerContentTableTopBottom(
             podcastName = episode.podcastName,
             titleTextStyle = MaterialTheme.typography.titleLarge
         )
-        Spacer(modifier = Modifier.weight(0.5f))
+        Spacer(modifier = Modifier.weight(weight = 0.5f))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(10f)
+            modifier = Modifier.weight(weight = 10f)
         ) {
             PlayerButtons(
                 hasNext = episodePlayerState.queue.isNotEmpty(),
@@ -841,17 +942,42 @@ private fun PlayerContentTableTopBottom(
 
 /**
  * The UI for the start pane of a book layout.
+ *
+ * This composable shows the podcast information for the currently playing episode. It includes the
+ * episode title, podcast name, and episode summary. If no episode is currently playing, it will
+ * not render any content.
+ *
+ * We start by initializing our [PlayerEpisode] variable `episode` to the
+ * [EpisodePlayerState.currentEpisode] property of the [PlayerUiState.episodePlayerState] property
+ * of our [PlayerUiState] parameter [uiState], returning without doing anything more if that is
+ * `null`.
+ *
+ * Then our root composable is a [Column] whose [Modifier] `modifier` argument chains to our
+ * [Modifier] parameter [modifier] a [Modifier.fillMaxSize], to which it chains a
+ * [Modifier.verticalScroll] whose `state` is a [rememberScrollState], and at the end of the
+ * chain is a [Modifier.padding] that adds 40.dp to each `vertical` side, and 16.dp to each
+ * `horizontal` side, and the `horizontalAlignment` argument is [Alignment.CenterHorizontally].
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose a
+ * [PodcastInformation] whose arguments are:
+ *  - `title`: The [PlayerEpisode.title] property of our [PlayerEpisode] variable `episode`.
+ *  - `name`: The [PlayerEpisode.podcastName] property of our [PlayerEpisode] variable `episode`.
+ *  - `summary`: The [PlayerEpisode.summary] property of our [PlayerEpisode] variable `episode`.
+ *
+ * @param uiState The current UI state of the player, providing access to the episode data.
+ * @param modifier [Modifier] to be applied to the layout. Our caller [PlayerContent] does not pass
+ * us any so the empty, default, or starter [Modifier] that contains no elements is used.
  */
 @Composable
 private fun PlayerContentBookStart(
     uiState: PlayerUiState,
     modifier: Modifier = Modifier
 ) {
-    val episode = uiState.episodePlayerState.currentEpisode ?: return
+    val episode: PlayerEpisode = uiState.episodePlayerState.currentEpisode ?: return
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(state = rememberScrollState())
             .padding(
                 vertical = 40.dp,
                 horizontal = 16.dp
@@ -868,6 +994,17 @@ private fun PlayerContentBookStart(
 
 /**
  * The UI for the end pane of a book layout.
+ *
+ * This composable shows the player's main controls, including the podcast image, a slider for
+ * seeking, and buttons for play/pause, rewind/fast-forward, and navigating to the previous/next
+ * episodes. It is displayed when an episode is selected and ready to be played.
+ *
+ * @param uiState The current UI state of the player, containing information about the episode being
+ * played, the playback position, and the state of the queue.
+ * @param playerControlActions An object containing actions that can be performed on the player,
+ * such as play, pause, seek, and navigate to the next/previous episodes.
+ * @param modifier [Modifier] for styling and layout customization. Our caller [PlayerContent] does
+ * not pass us any so the empty, default, or starter [Modifier] that contains no elements is used.
  */
 @Composable
 private fun PlayerContentBookEnd(
@@ -954,7 +1091,6 @@ private fun PlayerImage(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PodcastDescription(
     title: String,
@@ -1012,6 +1148,9 @@ private fun PodcastInformation(
     }
 }
 
+/**
+ *
+ */
 fun Duration.formatString(): String {
     val minutes = this.toMinutes().toString().padStart(2, '0')
     val secondsLeft = (this.toSeconds() % 60).toString().padStart(2, '0')
@@ -1168,6 +1307,9 @@ private fun FullScreenLoading(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun TopAppBarPreview() {
@@ -1179,6 +1321,9 @@ fun TopAppBarPreview() {
     }
 }
 
+/**
+ *
+ */
 @Preview
 @Composable
 fun PlayerButtonsPreview() {
@@ -1196,6 +1341,10 @@ fun PlayerButtonsPreview() {
     }
 }
 
+/**
+ *
+ */
+@Suppress("RedundantValueArgument")
 @DevicePreviews
 @Composable
 fun PlayerScreenPreview() {
