@@ -352,21 +352,25 @@ private fun PlayerBackground(
  *  [WindowSizeClass] parameter [windowSizeClass].
  *  - `displayFeatures`: A list of [DisplayFeature]s representing the physical characteristics of
  *  the display, such as folds or hinges, our [List] of [DisplayFeature] parameter [displayFeatures].
- *  - `onBackPress`: Callback invoked when the user presses the back button, our lambda parameter
- *  [onBackPress].
- *  - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, our lambda
+ *  - `onBackPress`: Callback to be invoked when the user presses the back button, our lambda
+ *  parameter [onBackPress].
+ *  - `onAddToQueue`: Callback to be invoked when the user adds an episode to the queue, our lambda
  *  parameter [onAddToQueue].
  *  - `playerControlActions`: A [PlayerControlActions] object representing the actions available,
  *  our [PlayerControlActions] parameter [playerControlActions].
  *
- * @param uiState The current UI state of the player.
+ * @param uiState The current [PlayerUiState] UI state of the player.
  * @param windowSizeClass The current window size class, used for adaptive layout.
- * @param displayFeatures A list of [DisplayFeature]s, representing foldable/hinge features on the device.
- * @param onBackPress Callback invoked when the user requests to navigate back.
- * @param onAddToQueue Callback invoked when the user requests to add the current episode to the queue.
+ * @param displayFeatures A list of [DisplayFeature]s, representing foldable/hinge features on the
+ * device.
+ * @param onBackPress Callback to be invoked when the user requests to navigate back.
+ * @param onAddToQueue Callback to be invoked when the user requests to add the current episode to the queue.
  * @param playerControlActions Actions related to the player, such as play/pause, seek, etc.
- * @param modifier Modifier to be applied to the root layout.
- * @param contentPadding Padding to be applied around the background.
+ * @param modifier [Modifier] to be applied to the root layout. Our caller [PlayerScreen] does not
+ * pass us any so the empty, default, or starter [Modifier] that contains no elements is used.
+ * @param contentPadding Padding to be applied around the background. Our caller [PlayerScreen]
+ * passes us the [PaddingValues] that the [Scaffold] that holds us passes to its `content` lambda
+ * parameter.
  */
 @Composable
 fun PlayerContentWithBackground(
@@ -445,28 +449,29 @@ data class PlayerControlActions(
  * in our [List] of [DisplayFeature] parameter [displayFeatures] that is an instance of
  * [FoldingFeature] (or `null` if no such feature is found). Then if the
  * [WindowSizeClass.windowWidthSizeClass] of our [WindowSizeClass] parameter [windowSizeClass] is
- * [WindowWidthSizeClass.EXPANDED], or the [isBookPosture] of our [FoldingFeature] variable is `true`,
- * or the [isTableTopPosture] of our [FoldingFeature] variable is `true`, or the [isSeparatingPosture]
- * of our [FoldingFeature] variable is `true` we initialize our [Boolean] variable
- * `usingVerticalStrategy` to `true` if the [isTableTopPosture] of our [FoldingFeature] variable is
- * `true` or the [isSeparatingPosture] of our [FoldingFeature] variable is `true` and the
- * [FoldingFeature.orientation] of our [FoldingFeature] variable is [FoldingFeature.Orientation.HORIZONTAL].
- * Then if the [Boolean] variable `usingVerticalStrategy` is `true` we compose a [TwoPane] with the
- * arguments:
+ * [WindowWidthSizeClass.EXPANDED], or the [isBookPosture] of our [FoldingFeature] variable is
+ * `true`, or the [isTableTopPosture] of our [FoldingFeature] variable is `true`, or the
+ * [isSeparatingPosture] of our [FoldingFeature] variable is `true` we initialize our [Boolean]
+ * variable `usingVerticalStrategy` to `true` if the [isTableTopPosture] of our [FoldingFeature]
+ * variable is `true` or the [isSeparatingPosture] of our [FoldingFeature] variable is `true` and
+ * the [FoldingFeature.orientation] of our [FoldingFeature] variable is
+ * [FoldingFeature.Orientation.HORIZONTAL]. Then if the [Boolean] variable `usingVerticalStrategy`
+ * is `true` we compose a [TwoPane] with the arguments:
  *  - `first`: A lambda that composes the first pane of the two-pane layout, which is a
  *  [PlayerContentTableTopTop] whose `uiState` argument is our [PlayerUiState] parameter [uiState].
  *  - `second`: A lambda that composes the second pane of the two-pane layout, which is a
  *  [PlayerContentTableTopBottom] whose arguments are:
  *      - `uiState`: The current state of the player, our [PlayerUiState] parameter [uiState].
- *      - `onBackPress`: Callback invoked when the user presses the back button, our lambda
+ *      - `onBackPress`: Callback to be invoked when the user presses the back button, our lambda
  *      parameter [onBackPress].
- *      - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, our lambda
- *      parameter [onAddToQueue].
+ *      - `onAddToQueue`: Callback to be invoked when the user adds an episode to the queue, our
+ *      lambda parameter [onAddToQueue].
  *      - `playerControlActions`: A [PlayerControlActions] object representing the actions available
  *      our [PlayerControlActions] parameter [playerControlActions].
  *  - `strategy`: A [VerticalTwoPaneStrategy] with a `splitFraction` of 0.5f
  *  - `displayFeatures`: A [List] of [DisplayFeature]s representing the physical characteristics
- *  of the display, such as folds or hinges, our [List] of [DisplayFeature] parameter [displayFeatures].
+ *  of the display, such as folds or hinges, our [List] of [DisplayFeature] parameter
+ *  [displayFeatures].
  *  - `modifier`: Our [Modifier] parameter [modifier].
  *
  * If `usingVerticalStrategy` is `false` we compose a [Column] whose `modifier` argument is our
@@ -479,25 +484,24 @@ data class PlayerControlActions(
  * and its `onAddToQueue` argument set to our lambda parameter [onAddToQueue]. Then we compose a
  * [TwoPane] with the arguments:
  *   - `first`: A lambda that composes the first pane of the two-pane layout, which is a
- *   [PlayerContentBookStart] whose `uiState` argument is our [PlayerUiState] parameter [uiState],
- *   and whose `playerControlActions` argument is our [PlayerControlActions] parameter
- *   [playerControlActions].
+ *   [PlayerContentBookStart] whose `uiState` argument is our [PlayerUiState] parameter [uiState].
  *   - `second`: A lambda that composes the second pane of the two-pane layout, which is a
  *   [PlayerContentBookEnd] whose `uiState` argument is our [PlayerUiState] parameter [uiState], and
  *   whose `playerControlActions` argument is our [PlayerControlActions] parameter
  *   [playerControlActions].
  *   - `strategy`: A [HorizontalTwoPaneStrategy] with a `splitFraction` of 0.5f.
  *   - `displayFeatures`: A [List] of [DisplayFeature]s representing the physical characteristics
- *   of the display, such as folds or hinges, our [List] of [DisplayFeature] parameter [displayFeatures].
+ *   of the display, such as folds or hinges, our [List] of [DisplayFeature] parameter
+ *   [displayFeatures].
  *
  * On the other hand, if the display is not appropriate for a two-pane layout, we compose a
  * [PlayerContentRegular] with the arguments:
  *  - `uiState`: The current state of the player, our [PlayerUiState] parameter [uiState].
- *  - `onBackPress`: Callback invoked when the user presses the back button, our lambda parameter
- *  [onBackPress].
- *  - `onAddToQueue`: Callback invoked when the user adds an episode to the queue, our lambda
+ *  - `onBackPress`: Callback to be invoked when the user presses the back button, our lambda
+ *  parameter [onBackPress].
+ *  - `onAddToQueue`: Callback to be invoked when the user adds an episode to the queue, our lambda
  *  parameter [onAddToQueue].
- *  - `playerControlActions`: A [PlayerControlActions] object representing the actions available
+ *  - `playerControlActions`: A [PlayerControlActions] object representing the actions available,
  *  our [PlayerControlActions] parameter [playerControlActions].
  *  - `modifier`: Our [Modifier] parameter [modifier].
  *
@@ -611,14 +615,72 @@ fun PlayerContent(
  * Composable function that displays the player content for a phone screen.
  *
  * This function is responsible for rendering the main UI components of the player screen,
- * including the top app bar, podcast image, description, slider, and control buttons.
+ * including the top app bar, podcast image, description, slider, and control buttons when
+ * the device we are running on is a phone.
+ *
+ * We start by initializing our [EpisodePlayerState] variable `playerEpisode` to the
+ * [PlayerUiState.episodePlayerState] property of our [PlayerUiState] parameter [uiState], and
+ * initializing our [PlayerEpisode] variable `currentEpisode` to the
+ * [EpisodePlayerState.currentEpisode] of `playerEpisode`, returning without doing anything more
+ * if that is `null`. Our root composable is a [Column] whose [Modifier] `modifier` argument chains
+ * a [Modifier.fillMaxSize] to our [Modifier] parameter [modifier], to which it chains a
+ * [Modifier.verticalGradientScrim] whose `color` is a copy of the [ColorScheme.primary] of our
+ * custom [MaterialTheme.colorScheme] with its `alpha` set to 0.50f, whose `startYPercentage` is 1f,
+ * and whose `endYPercentage` is 0f, to which is chained a [Modifier.systemBarsPadding], and a
+ * [Modifier.padding] that adds 8.dp to each `horizontal` side.
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we first compose a
+ * [TopAppBar] whose `onBackPress` argument is our lambda parameter [onBackPress] and whose
+ * `onAddToQueue` argument is our [onAddToQueue] lambda parameter. Below the [TopAppBar] we compose
+ * another [Column] whose `horizontalAlignment` argument is [Alignment.CenterHorizontally] and whose
+ * [Modifier] `modifier` argument is a [Modifier.padding] that adds 8.dp to each `horizontal` side.
+ * In its [ColumnScope] `content` composable lambda argument we compose:
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [ColumnScope.weight] whose `weight` is 1f.
+ *  - a [PlayerImage] whose `podcastImageUrl` argument is the [PlayerEpisode.podcastImageUrl] property
+ *  of our [PlayerEpisode] variable `currentEpisode`, and whose [Modifier] `modifier` argument is a
+ *  [ColumnScope.weight] whose `weight` is `10f`.
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is 32.dp
+ *  - a [PodcastDescription] whose `title` argument is the [PlayerEpisode.title] property of our
+ *  [PlayerEpisode] variable `currentEpisode`, and whose `podcastName` is the
+ *  [PlayerEpisode.podcastName] property of our [PlayerEpisode] variable `currentEpisode`.
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [Modifier.height] whose `height` is 32.dp
+ *
+ * Underneath the above in the [Column] is yet another [Column] whose `horizontalAlignment` is
+ * [Alignment.CenterHorizontally], and whose [Modifier] `modifier` argument is a [ColumnScope.weight]
+ * whose `weight` is `10f`. In its [ColumnScope] `content` composable lambda argument we compose:
+ *  - a [PlayerSlider] whose `timeElapsed` argument is the [EpisodePlayerState.timeElapsed] property
+ *  of our [EpisodePlayerState] variable `playerEpisode`, whose `episodeDuration` is the
+ *  [PlayerEpisode.duration] of our [PlayerEpisode] variable `currentEpisode`, whose
+ *  `onSeekingStarted` argument is the [PlayerControlActions.onSeekingStarted] property of our
+ *  [PlayerControlActions] parameter [playerControlActions], and whose `onSeekingFinished` argument
+ *  is the [PlayerControlActions.onSeekingFinished] property of our [PlayerControlActions] parameter
+ *  [playerControlActions].
+ *  - a [PlayerButtons] whose `hasNext` argument is `true` if the [EpisodePlayerState.queue] field
+ *  of our [EpisodePlayerState] variable `playerEpisode` is not empty, whose `isPlaying` argument is
+ *  the [EpisodePlayerState.isPlaying] property of our [EpisodePlayerState] variable `playerEpisode`,
+ *  whose `onPlayPress` argument is the [PlayerControlActions.onPlayPress] property of our
+ *  [PlayerControlActions] parameter [playerControlActions], whose `onPausePress` argument is the
+ *  [PlayerControlActions.onPausePress] property of our [PlayerControlActions] parameter
+ *  [playerControlActions], whose `onAdvanceBy` argument is the [PlayerControlActions.onAdvanceBy]
+ *  property of our [PlayerControlActions] parameter [playerControlActions], whose `onRewindBy`
+ *  argument is the [PlayerControlActions.onRewindBy] property of our [PlayerControlActions] parameter
+ *  [playerControlActions], whose `onNext` argument is the [PlayerControlActions.onNext] property of
+ *  our [PlayerControlActions] parameter [playerControlActions], whose `onPrevious` argument is the
+ *  [PlayerControlActions.onPrevious] property of our [PlayerControlActions] parameter
+ *  [playerControlActions], and whose [Modifier] `modifier` argument is a [Modifier.padding] that
+ *  adds 8.dp to each vertical side.
+ *
+ * At the very bottom of the outermost [Column] is a [Spacer] whose [Modifier] `modifier` argument
+ * is a [ColumnScope.weight] whose `weight` is `1f`.
  *
  * @param uiState The current UI state of the player, including the current episode and playback
  * status.
  * @param onBackPress Callback to be triggered when the back button is pressed.
  * @param onAddToQueue Callback to be triggered when the add to queue button is pressed.
  * @param playerControlActions Actions that can be performed on the player (play, pause, seek, etc.).
- * @param modifier [Modifier] for styling and layout customization.
+ * @param modifier [Modifier] for styling and layout customization. Our caller [PlayerContent] passes
+ * us its own [Modifier] parameter which is the empty, default, or starter [Modifier] that contains
+ * no elements since its own caller does not pass it a [Modifier].
  */
 @Composable
 private fun PlayerContentRegular(
@@ -679,7 +741,7 @@ private fun PlayerContentRegular(
                     onRewindBy = playerControlActions.onRewindBy,
                     onNext = playerControlActions.onNext,
                     onPrevious = playerControlActions.onPrevious,
-                    Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
             Spacer(modifier = Modifier.weight(weight = 1f))
@@ -696,7 +758,7 @@ private fun PlayerContentTableTopTop(
     modifier: Modifier = Modifier
 ) {
     // Content for the top part of the screen
-    val episode = uiState.episodePlayerState.currentEpisode ?: return
+    val episode: PlayerEpisode = uiState.episodePlayerState.currentEpisode ?: return
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -707,13 +769,13 @@ private fun PlayerContentTableTopTop(
             )
             .windowInsetsPadding(
                 WindowInsets.systemBars.only(
-                    WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                    sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Top
                 )
             )
-            .padding(32.dp),
+            .padding(all = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PlayerImage(episode.podcastImageUrl)
+        PlayerImage(podcastImageUrl = episode.podcastImageUrl)
     }
 }
 
