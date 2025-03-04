@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -63,6 +64,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -997,6 +999,52 @@ private fun PlayerContentBookStart(
  * seeking, and buttons for play/pause, rewind/fast-forward, and navigating to the previous/next
  * episodes. It is displayed when an episode is selected and ready to be played.
  *
+ * We start by initializing our [EpisodePlayerState] variable `episodePlayerState` to the
+ * [PlayerUiState.episodePlayerState] property of our [PlayerUiState] parameter [uiState], and
+ * initializing our [PlayerEpisode] variable `episode` to the [EpisodePlayerState.currentEpisode]
+ * returning without doing anything more if that is `null`.
+ *
+ * Then our root composable is a [Column] whose [Modifier] `modifier` argument chains to our
+ * [Modifier] parameter [modifier] a [Modifier.fillMaxSize], to which it chains a [Modifier.padding]
+ * that adds 8.dp to `all` sides, the `horizontalAlignment` argument of the [Column] is
+ * [Alignment.CenterHorizontally], and the `verticalArrangement` argument of the [Column] is
+ * [Arrangement.SpaceAround]. In the [ColumnScope] `content` composable lambda argument of the
+ * [Column] we compose a [PlayerImage], a [PlayerSlider], and a [PlayerButtons]. The arguments of
+ * the [PlayerImage] are:
+ *  - `podcastImageUrl`: The [PlayerEpisode.podcastImageUrl] property of our [PlayerEpisode] variable
+ *  `episode`.
+ *  - `modifier`: A [Modifier.padding] that adds 16.dp to each `vertical` side, with a
+ *  [ColumnScope.weight] whose `weight` is 1f chained to that.
+ *
+ * The arguments of the [PlayerSlider] are:
+ *  - `timeElapsed`: The [EpisodePlayerState.timeElapsed] property of our [EpisodePlayerState]
+ *  `episodePlayerState`.
+ *  - `episodeDuration`: The [PlayerEpisode.duration] property of our [PlayerEpisode] variable
+ *  `episode`.
+ *  - `onSeekingStarted`: The [PlayerControlActions.onSeekingStarted] property of our
+ *  [PlayerControlActions] parameter [playerControlActions].
+ *  - `onSeekingFinished`: The [PlayerControlActions.onSeekingFinished] property of our
+ *  [PlayerControlActions] parameter [playerControlActions].
+ *
+ * The arguments of the [PlayerButtons] are:
+ *  - `hasNext`: `true` if the [EpisodePlayerState.queue] field of our [EpisodePlayerState]
+ *  `episodePlayerState` is not empty.
+ *  - `isPlaying`: The [EpisodePlayerState.isPlaying] property of our [EpisodePlayerState]
+ *  `episodePlayerState`.
+ *  - `onPlayPress`: The [PlayerControlActions.onPlayPress] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onPausePress`: The [PlayerControlActions.onPausePress] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onAdvanceBy`: The [PlayerControlActions.onAdvanceBy] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onRewindBy`: The [PlayerControlActions.onRewindBy] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `onNext`: The [PlayerControlActions.onNext] property of our [PlayerControlActions] parameter
+ *  [playerControlActions].
+ *  - `onPrevious`: The [PlayerControlActions.onPrevious] property of our [PlayerControlActions]
+ *  parameter [playerControlActions].
+ *  - `modifier`: A [Modifier.padding] that adds 8.dp to each `vertical` side.
+ *
  * @param uiState The current UI state of the player, containing information about the episode being
  * played, the playback position, and the state of the queue.
  * @param playerControlActions An object containing actions that can be performed on the player,
@@ -1010,12 +1058,12 @@ private fun PlayerContentBookEnd(
     playerControlActions: PlayerControlActions,
     modifier: Modifier = Modifier
 ) {
-    val episodePlayerState = uiState.episodePlayerState
-    val episode = episodePlayerState.currentEpisode ?: return
+    val episodePlayerState: EpisodePlayerState = uiState.episodePlayerState
+    val episode: PlayerEpisode = episodePlayerState.currentEpisode ?: return
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(8.dp),
+            .padding(all = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
     ) {
@@ -1023,7 +1071,7 @@ private fun PlayerContentBookEnd(
             podcastImageUrl = episode.podcastImageUrl,
             modifier = Modifier
                 .padding(vertical = 16.dp)
-                .weight(1f)
+                .weight(weight = 1f)
         )
         PlayerSlider(
             timeElapsed = episodePlayerState.timeElapsed,
@@ -1040,11 +1088,35 @@ private fun PlayerContentBookEnd(
             onRewindBy = playerControlActions.onRewindBy,
             onNext = playerControlActions.onNext,
             onPrevious = playerControlActions.onPrevious,
-            Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(vertical = 8.dp)
         )
     }
 }
 
+/**
+ * A custom top app bar composable.
+ *
+ * This composable displays a top app bar with a back button, an "add to queue" button,
+ * and a more options button.
+ *
+ * Our root composable is a [Row] whose [Modifier] `modifier` is a [Modifier.fillMaxWidth]. In its
+ * [RowScope] `content` composable lambda argument we compose:
+ *  - an [IconButton] whose `onClick` argument is our [onBackPress] lambda parameter, and in whose
+ *  `content` composable lambda argument we compose an [Icon] whose `imageVector` is
+ *  [Icons.AutoMirrored.Filled.ArrowBack], and whose `contentDescription` is the string resource
+ *  with ID [R.string.cd_back] ("Back").
+ *  - a [Spacer] whose [Modifier] `modifier` argument is a [RowScope.weight] whose `weight` is 1f.
+ *  - an [IconButton] whose `onClick` argument is our [onAddToQueue] lambda parameter, and in whose
+ *  `content` composable lambda argument we compose an [Icon] whose `imageVector` is
+ *  [Icons.AutoMirrored.Filled.PlaylistAdd], and whose `contentDescription` is the string resource
+ *  with ID [R.string.cd_add] ("Add").
+ *  - an [IconButton] whose `onClick` argument is an empty lambda, and in whose `content` composable
+ *  lambda argument we compose an [Icon] whose `imageVector` is [Icons.Filled.MoreVert], and whose
+ *  `contentDescription` is the string resource with ID [R.string.cd_more] ("More").
+ *
+ * @param onBackPress Callback to be invoked when the back button is clicked.
+ * @param onAddToQueue Callback to be invoked when the "add to queue" button is clicked.
+ */
 @Composable
 private fun TopAppBar(
     onBackPress: () -> Unit,
@@ -1054,25 +1126,46 @@ private fun TopAppBar(
         IconButton(onClick = onBackPress) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.cd_back)
+                contentDescription = stringResource(id = R.string.cd_back)
             )
         }
-        Spacer(Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
         IconButton(onClick = onAddToQueue) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                contentDescription = stringResource(R.string.cd_add)
+                contentDescription = stringResource(id = R.string.cd_add)
             )
         }
         IconButton(onClick = { /* TODO */ }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more)
+                contentDescription = stringResource(id = R.string.cd_more)
             )
         }
     }
 }
 
+/**
+ * Displays an image representing the current player's podcast.
+ *
+ * This composable shows the podcast's image using the provided URL. It applies
+ * specific styling to the image, such as a maximum size, aspect ratio, and rounded corners.
+ *
+ * Our root composable is a [PodcastImage] whose arguments are:
+ *  - `podcastImageUrl`: The URL of the podcast's image, our [String] parameter [podcastImageUrl]/
+ *  - `contentDescription`: A description of the podcast's image is `null`.
+ *  - `contentScale`: The content scale of the image is [ContentScale.Crop].
+ *  - `modifier`: The [Modifier] for styling and layout customization, chains to our [Modifier]
+ *  parameter [modifier] a [Modifier.sizeIn] that sets the maximum width and height of the
+ *  [PodcastImage] to 500.dp, with a [Modifier.aspectRatio] chained to that that sets the aspect
+ *  ratio of the [PodcastImage] to 1f, and at the end of the chain is a [Modifier.clip that applies
+ *  the [Shapes.medium] shape of our custom [MaterialTheme.shapes] to the [PodcastImage]. 
+ *
+ * @param podcastImageUrl The URL of the podcast's image.
+ * @param modifier Modifier for styling the image container. Defaults to an empty Modifier.
+ *
+ * @see PodcastImage
+ */
 @Composable
 private fun PlayerImage(
     podcastImageUrl: String,
@@ -1084,11 +1177,39 @@ private fun PlayerImage(
         contentScale = ContentScale.Crop,
         modifier = modifier
             .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
-            .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.medium)
+            .aspectRatio(ratio = 1f)
+            .clip(shape = MaterialTheme.shapes.medium)
     )
 }
 
+/**
+ * Composable function that displays the title and podcast name.
+ *
+ * This function renders two [Text] composables: one for the title and another for the podcast name.
+ * The title is displayed using a marquee effect for horizontal scrolling if it's too long.
+ *
+ * The arguments of the first [Text] composable are:
+ *  - `text`: The title of the podcast episode, our [String] parameter [title].
+ *  - `style`: The [TextStyle] style to be applied to the title, our [TextStyle] parameter
+ *  [titleTextStyle].
+ *  - `maxLines`: The maximum number of lines to display in the title is `1`.
+ *  - `color`: The color of the title text is the [ColorScheme.onSurface] of our custom
+ *  [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization is a [Modifier.basicMarquee].
+ *
+ * The arguments of the second [Text] composable are:
+ *  - `text`: The name of the podcast, our [String] parameter [podcastName].
+ *  - `style`: The [TextStyle] style to be applied to the podcast name, the [Typography.bodyMedium]
+ *  of our custom [MaterialTheme.typography].
+ *  - `color`: The color of the podcast name text is the [ColorScheme.onSurface] of our custom
+ *  [MaterialTheme.colorScheme].
+ *  - `maxLines`: The maximum number of lines to display in the podcast name is `1`.
+ *
+ * @param title The title of the podcast episode.
+ * @param podcastName The name of the podcast.
+ * @param titleTextStyle The text style to be applied to the title. Defaults to the
+ * [Typography.headlineSmall] of our custom [MaterialTheme.typography].
+ */
 @Composable
 private fun PodcastDescription(
     title: String,
@@ -1110,6 +1231,22 @@ private fun PodcastDescription(
     )
 }
 
+/**
+ * Displays the information about a podcast, including its name, title, and summary.
+ *
+ * This composable function arranges the podcast's name, title, and summary in a vertical column,
+ * ensuring they are aligned to the center horizontally. The name and title are displayed with
+ * ellipsis if they overflow, and the summary is rendered using the provided HtmlTextContainer.
+ *
+ * @param title The title of the podcast.
+ * @param name The name of the podcast host or creator.
+ * @param summary A brief summary or description of the podcast.
+ * @param modifier Modifier to be applied to the layout.
+ * @param titleTextStyle The [TextStyle] to be applied to the title text. Defaults to
+ * `MaterialTheme.typography.headlineSmall`.
+ * @param nameTextStyle The [TextStyle] to be applied to the name text. Defaults to
+ * `MaterialTheme.typography.displaySmall`.
+ */
 @Composable
 private fun PodcastInformation(
     title: String,
@@ -1121,7 +1258,7 @@ private fun PodcastInformation(
 ) {
     Column(
         modifier = modifier.padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
