@@ -607,10 +607,6 @@ fun PlayerContent(
     }
 }
 
-/*
- * The UI for the top pane of a tabletop layout?
- */
-
 /**
  * Composable function that displays the player content for a phone screen.
  *
@@ -775,12 +771,9 @@ private fun PlayerContentRegular(
  *
  * @param uiState The current UI state of the player, containing information about the currently
  * playing episode.
- * @param modifier Modifier to be applied to the root layout of this composable.
- * Defaults to [Modifier].
- *
- * @throws IllegalStateException if the `currentEpisode` in `PlayerEpisodeState` is null. This will
- * only happen if there is no episode loaded, in this case the function returns before it throws the
- * exception.
+ * @param modifier Modifier to be applied to the root layout of this composable. Our caller
+ * [PlayerContent] does not pass us any so the empty, default, or starter [Modifier] that contains
+ * no elements is used.
  */
 @Composable
 private fun PlayerContentTableTopTop(
@@ -821,13 +814,18 @@ private fun PlayerContentTableTopTop(
  * It arranges these elements vertically, with the app bar and episode information at the top,
  * followed by a spacer and then the control buttons and slider at the bottom.
  *
+ * We start by initializing our [EpisodePlayerState] variable `episodePlayerState` to the
+ * [PlayerUiState.episodePlayerState] property of our [PlayerUiState] parameter [uiState], and
+ * initializing our [PlayerEpisode] variable `episode` to the [EpisodePlayerState.currentEpisode]
+ * of `playerEpisode`, returning without doing anything more if that is `null`.
+ *
  * Our root composable is a [Column] whose [Modifier] `modifier` argument chains to our [Modifier]
  * parameter [modifier] a [Modifier.windowInsetsPadding] whose `insets` argument is the
  * [WindowInsets.Companion.systemBars] with `only` the [WindowInsetsSides.Companion.Horizontal] and
  * [WindowInsetsSides.Companion.Bottom] sides, and at the end of the chain is a [Modifier.padding]
- * that adds 32.dp to each `horizontal` side, and 8.dp to each `vertical` side, and its
- * `horizontalAlignment` is [Alignment.CenterHorizontally]. In the [ColumnScope] `content`
- * composable lambda argument we compose:
+ * that adds 32.dp to each `horizontal` side, and 8.dp to each `vertical` side, and the
+ * `horizontalAlignment` argument of the [Column] is [Alignment.CenterHorizontally]. In the
+ * [ColumnScope] `content` composable lambda argument we compose:
  *  - a [TopAppBar] whose `onBackPress` argument is our lambda parameter [onBackPress] and whose
  *  `onAddToQueue` argument is our [onAddToQueue] lambda parameter.
  *  - a [PodcastDescription] whose `title` argument is the [PlayerEpisode.title] of our
@@ -869,7 +867,6 @@ private fun PlayerContentTableTopTop(
  *  [PlayerControlActions] parameter [playerControlActions].
  *  - `onSeekingFinished`: The [PlayerControlActions.onSeekingFinished] property of our
  *  [PlayerControlActions] parameter [playerControlActions].
- * 
  *
  * @param uiState The [PlayerUiState] containing the current state of the player, including the
  * current episode and playback state.
@@ -956,7 +953,8 @@ private fun PlayerContentTableTopBottom(
  * [Modifier] parameter [modifier] a [Modifier.fillMaxSize], to which it chains a
  * [Modifier.verticalScroll] whose `state` is a [rememberScrollState], and at the end of the
  * chain is a [Modifier.padding] that adds 40.dp to each `vertical` side, and 16.dp to each
- * `horizontal` side, and the `horizontalAlignment` argument is [Alignment.CenterHorizontally].
+ * `horizontal` side, and the `horizontalAlignment` argument of the [Column] is
+ * [Alignment.CenterHorizontally].
  *
  * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose a
  * [PodcastInformation] whose arguments are:
