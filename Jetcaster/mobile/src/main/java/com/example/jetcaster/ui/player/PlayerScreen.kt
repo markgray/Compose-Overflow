@@ -1002,11 +1002,11 @@ private fun PlayerContentBookStart(
  * We start by initializing our [EpisodePlayerState] variable `episodePlayerState` to the
  * [PlayerUiState.episodePlayerState] property of our [PlayerUiState] parameter [uiState], and
  * initializing our [PlayerEpisode] variable `episode` to the [EpisodePlayerState.currentEpisode]
- * returning without doing anything more if that is `null`.
+ * of `episodePlayerState` returning without doing anything more if that is `null`.
  *
  * Then our root composable is a [Column] whose [Modifier] `modifier` argument chains to our
  * [Modifier] parameter [modifier] a [Modifier.fillMaxSize], to which it chains a [Modifier.padding]
- * that adds 8.dp to `all` sides, the `horizontalAlignment` argument of the [Column] is
+ * that adds 8.dp to `all` sides. The `horizontalAlignment` argument of the [Column] is
  * [Alignment.CenterHorizontally], and the `verticalArrangement` argument of the [Column] is
  * [Arrangement.SpaceAround]. In the [ColumnScope] `content` composable lambda argument of the
  * [Column] we compose a [PlayerImage], a [PlayerSlider], and a [PlayerButtons]. The arguments of
@@ -1018,7 +1018,7 @@ private fun PlayerContentBookStart(
  *
  * The arguments of the [PlayerSlider] are:
  *  - `timeElapsed`: The [EpisodePlayerState.timeElapsed] property of our [EpisodePlayerState]
- *  `episodePlayerState`.
+ *  variable `episodePlayerState`.
  *  - `episodeDuration`: The [PlayerEpisode.duration] property of our [PlayerEpisode] variable
  *  `episode`.
  *  - `onSeekingStarted`: The [PlayerControlActions.onSeekingStarted] property of our
@@ -1028,9 +1028,9 @@ private fun PlayerContentBookStart(
  *
  * The arguments of the [PlayerButtons] are:
  *  - `hasNext`: `true` if the [EpisodePlayerState.queue] field of our [EpisodePlayerState]
- *  `episodePlayerState` is not empty.
+ *  variable `episodePlayerState` is not empty.
  *  - `isPlaying`: The [EpisodePlayerState.isPlaying] property of our [EpisodePlayerState]
- *  `episodePlayerState`.
+ *  variable `episodePlayerState`.
  *  - `onPlayPress`: The [PlayerControlActions.onPlayPress] property of our [PlayerControlActions]
  *  parameter [playerControlActions].
  *  - `onPausePress`: The [PlayerControlActions.onPausePress] property of our [PlayerControlActions]
@@ -1102,17 +1102,17 @@ private fun PlayerContentBookEnd(
  * Our root composable is a [Row] whose [Modifier] `modifier` is a [Modifier.fillMaxWidth]. In its
  * [RowScope] `content` composable lambda argument we compose:
  *  - an [IconButton] whose `onClick` argument is our [onBackPress] lambda parameter, and in whose
- *  `content` composable lambda argument we compose an [Icon] whose `imageVector` is
- *  [Icons.AutoMirrored.Filled.ArrowBack], and whose `contentDescription` is the string resource
- *  with ID [R.string.cd_back] ("Back").
+ *  `content` composable lambda argument we compose an [Icon] whose `imageVector` argument is
+ *  [Icons.AutoMirrored.Filled.ArrowBack], and whose `contentDescription` argument is the string
+ *  resource with ID [R.string.cd_back] ("Back").
  *  - a [Spacer] whose [Modifier] `modifier` argument is a [RowScope.weight] whose `weight` is 1f.
  *  - an [IconButton] whose `onClick` argument is our [onAddToQueue] lambda parameter, and in whose
- *  `content` composable lambda argument we compose an [Icon] whose `imageVector` is
- *  [Icons.AutoMirrored.Filled.PlaylistAdd], and whose `contentDescription` is the string resource
- *  with ID [R.string.cd_add] ("Add").
+ *  `content` composable lambda argument we compose an [Icon] whose `imageVector` argument is
+ *  [Icons.AutoMirrored.Filled.PlaylistAdd], and whose `contentDescription` argument is the string
+ *  resource with ID [R.string.cd_add] ("Add").
  *  - an [IconButton] whose `onClick` argument is an empty lambda, and in whose `content` composable
- *  lambda argument we compose an [Icon] whose `imageVector` is [Icons.Filled.MoreVert], and whose
- *  `contentDescription` is the string resource with ID [R.string.cd_more] ("More").
+ *  lambda argument we compose an [Icon] whose `imageVector` argument is [Icons.Filled.MoreVert], and
+ *  whose `contentDescription` argument is the string resource with ID [R.string.cd_more] ("More").
  *
  * @param onBackPress Callback to be invoked when the back button is clicked.
  * @param onAddToQueue Callback to be invoked when the "add to queue" button is clicked.
@@ -1146,19 +1146,19 @@ private fun TopAppBar(
 }
 
 /**
- * Displays an image representing the current player's podcast.
+ * Displays an image representing the player's current podcast.
  *
  * This composable shows the podcast's image using the provided URL. It applies
  * specific styling to the image, such as a maximum size, aspect ratio, and rounded corners.
  *
  * Our root composable is a [PodcastImage] whose arguments are:
- *  - `podcastImageUrl`: The URL of the podcast's image, our [String] parameter [podcastImageUrl]/
+ *  - `podcastImageUrl`: The URL of the podcast's image, our [String] parameter [podcastImageUrl].
  *  - `contentDescription`: A description of the podcast's image is `null`.
  *  - `contentScale`: The content scale of the image is [ContentScale.Crop].
  *  - `modifier`: The [Modifier] for styling and layout customization, chains to our [Modifier]
  *  parameter [modifier] a [Modifier.sizeIn] that sets the maximum width and height of the
  *  [PodcastImage] to 500.dp, with a [Modifier.aspectRatio] chained to that that sets the aspect
- *  ratio of the [PodcastImage] to 1f, and at the end of the chain is a [Modifier.clip that applies
+ *  ratio of the [PodcastImage] to 1f, and at the end of the chain is a [Modifier.clip] that applies
  *  the [Shapes.medium] shape of our custom [MaterialTheme.shapes] to the [PodcastImage]. 
  *
  * @param podcastImageUrl The URL of the podcast's image.
