@@ -73,6 +73,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.DisposableEffectScope
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -1236,16 +1237,48 @@ private fun PodcastDescription(
  *
  * This composable function arranges the podcast's name, title, and summary in a vertical column,
  * ensuring they are aligned to the center horizontally. The name and title are displayed with
- * ellipsis if they overflow, and the summary is rendered using the provided HtmlTextContainer.
+ * ellipsis if they overflow, and the summary is rendered using the our custom [HtmlTextContainer].
+ *
+ * Our root composable is a [Column] whose [Modifier] `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.padding] that adds 8.dp to each `horizontal`. Its
+ * `verticalArrangement` argument is [Arrangement.spacedBy] whose `space` argument is 32.dp, and its
+ * `horizontalAlignment` argument is [Alignment.CenterHorizontally]. In the [ColumnScope] `content`
+ * composable lambda argument we compose two [Text]'s and a [HtmlTextContainer].
+ *
+ * The arguments of the first [Text] composable are:
+ *  - `text`: The name of the podcast, our [String] parameter [name].
+ *  - `style`: The [TextStyle] style to be applied to the name, our [TextStyle] parameter
+ *  [nameTextStyle].
+ *  - `maxLines`: The maximum number of lines to display in the name is `1`.
+ *  - `overflow`: The overflow behavior of the text is [TextOverflow.Ellipsis].
+ *
+ * The arguments of the second [Text] composable are:
+ *  - `text`: The title of the podcast, our [String] parameter [title].
+ *  - `style`: The [TextStyle] style to be applied to the title, our [TextStyle] parameter
+ *  [titleTextStyle].
+ *  - `maxLines`: The maximum number of lines to display in the title is `1`.
+ *  - `overflow`: The overflow behavior of the text is [TextOverflow.Ellipsis].
+ *
+ * The arguments of the [HtmlTextContainer] composable are:
+ *  - `text`: The summary of the podcast, our [String] parameter [summary].
+ *
+ * In the [HtmlTextContainer]'s `content` composable lambda argument we compose a [Text] whose
+ * arguments are:
+ *  - `text`: The summary of the podcast, our [String] parameter [summary] which is passed as the
+ *  argument to the lambda.
+ *  - `style`: The [TextStyle] style to be applied to the text, our the [Typography.bodyMedium] of
+ *  our custom [MaterialTheme.typography].
+ *  - `color`: The color of the text is the `current` [LocalContentColor].
  *
  * @param title The title of the podcast.
  * @param name The name of the podcast host or creator.
  * @param summary A brief summary or description of the podcast.
- * @param modifier Modifier to be applied to the layout.
- * @param titleTextStyle The [TextStyle] to be applied to the title text. Defaults to
- * `MaterialTheme.typography.headlineSmall`.
- * @param nameTextStyle The [TextStyle] to be applied to the name text. Defaults to
- * `MaterialTheme.typography.displaySmall`.
+ * @param modifier [Modifier] to be applied to the layout. Our caller [PlayerContentBookStart] does
+ * not pass us any so the empty, default, or starter [Modifier] that contains no elements is used.
+ * @param titleTextStyle The [TextStyle] to be applied to the title text. Defaults to the
+ * [Typography.headlineSmall] of our custom [MaterialTheme.typography].
+ * @param nameTextStyle The [TextStyle] to be applied to the name text. Defaults to the
+ * [Typography.displaySmall] of our custom [MaterialTheme.typography].
  */
 @Composable
 private fun PodcastInformation(
@@ -1284,14 +1317,65 @@ private fun PodcastInformation(
 }
 
 /**
+ * Formats its [Duration] receiver into a string representation in the format "MM:SS".
  *
+ * This function takes a [Duration] and converts it into a [String] showing the minutes and seconds
+ * in a digital clock format. It ensures that both minutes and seconds are always represented
+ * with two digits (e.g., "05:03" instead of "5:3").
+ *
+ * @receiver Duration The duration to format.
+ * @return A [String] representing the duration in "MM:SS" format.
  */
 fun Duration.formatString(): String {
-    val minutes = this.toMinutes().toString().padStart(2, '0')
-    val secondsLeft = (this.toSeconds() % 60).toString().padStart(2, '0')
+    val minutes = this.toMinutes().toString().padStart(length = 2, padChar = '0')
+    val secondsLeft = (this.toSeconds() % 60).toString().padStart(length = 2, padChar = '0')
     return "$minutes:$secondsLeft"
 }
 
+/**
+ * A composable function that displays a slider for controlling the playback position of an audio
+ * or video episode.
+ *
+ * Our root composable is a [Column] whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth]
+ * with a [Modifier.padding] that adds 16.dp to each `horizontal` side chained to that. In the
+ * [ColumnScope] `content` composable lambda argument we first initialize and remember keyed on
+ * the value or our [Duration] parameter [timeElapsed] our [MutableState] wrapped [Duration]
+ * variable `sliderValue` to an initial value of our [Duration] parameter [timeElapsed]. We then
+ * initialize our [Float] variable `maxRange` to the seconds value of our [Duration] parameter
+ * [episodeDuration]. We then compose a [Row] whose [Modifier] `modifier` argument is a
+ * [Modifier.fillMaxWidth]. In its [RowScope] `content` composable lambda argument we compose a
+ * [Text] whose arguments are:
+ *  - `text`: The current elapsed time of the episode, the formatted [String] of our [MutableState]
+ *  wrapped [Duration] variable `sliderValue`.
+ *  - `style`: The [TextStyle] style to be applied to the text, the [Typography.bodyMedium] of our
+ *  custom [MaterialTheme.typography].
+ *  - `color`: The color of the text is the [ColorScheme.onSurfaceVariant] of our custom
+ *  [MaterialTheme.colorScheme].
+ *
+ * Below that in the [ColumnScope] `content` composable lambda argument we compose a [Slider] whose
+ * arguments are:
+ *  - `value`: The current position of the slider, the [Float] value of our [MutableState] wrapped
+ *  variable `sliderValue`.
+ *  - `valueRange`: The range of values the slider can be set to, from 0f to our [Float] variable
+ *  `maxRange`.
+ *  - `onValueChange`: A callback function that is invoked when the value of the slider is changed,
+ *  a lambda that takes a [Float] as its parameter in `it`, calls our lambda parameter
+ *  [onSeekingStarted], then sets the value of our [MutableState] wrapped [Duration] variable
+ *  `sliderValue` to the [Duration] value of `it`.
+ *  - `onValueChangeFinished`: A callback function that is invoked when the user finishes interacting
+ *  with the slider, a lambda that takes no parameters and calls our lambda parameter
+ *  [onSeekingFinished] with the current value of our [MutableState] wrapped [Duration] variable
+ *  `sliderValue`.
+ *
+ * @param timeElapsed The current elapsed time of the episode.
+ * @param episodeDuration The total duration of the episode. If null, the slider will be disabled
+ * and set to 0.
+ * @param onSeekingStarted A callback function to be invoked when the user starts interacting with
+ * the slider. This is useful for pausing playback or showing a loading indicator.
+ * @param onSeekingFinished A callback function to be invoked when the user finishes interacting
+ * with the slider. It receives the new elapsed time as a [Duration] which should be applied to the
+ * media player.
+ */
 @Composable
 private fun PlayerSlider(
     timeElapsed: Duration,
@@ -1300,14 +1384,14 @@ private fun PlayerSlider(
     onSeekingFinished: (newElapsed: Duration) -> Unit,
 ) {
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        var sliderValue by remember(timeElapsed) { mutableStateOf(timeElapsed) }
-        val maxRange = (episodeDuration?.toSeconds() ?: 0).toFloat()
+        var sliderValue: Duration by remember(timeElapsed) { mutableStateOf(timeElapsed) }
+        val maxRange: Float = (episodeDuration?.toSeconds() ?: 0).toFloat()
 
-        Row(Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "${sliderValue.formatString()} • ${episodeDuration?.formatString()}",
                 style = MaterialTheme.typography.bodyMedium,
