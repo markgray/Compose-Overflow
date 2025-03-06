@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui.player
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -1266,8 +1267,8 @@ private fun PodcastDescription(
  * arguments are:
  *  - `text`: The summary of the podcast, our [String] parameter [summary] which is passed as the
  *  argument to the lambda.
- *  - `style`: The [TextStyle] style to be applied to the text, our the [Typography.bodyMedium] of
- *  our custom [MaterialTheme.typography].
+ *  - `style`: The [TextStyle] style to be applied to the text, the [Typography.bodyMedium] of our
+ *  custom [MaterialTheme.typography].
  *  - `color`: The color of the text is the `current` [LocalContentColor].
  *
  * @param title The title of the podcast.
@@ -1368,7 +1369,7 @@ fun Duration.formatString(): String {
  *  `sliderValue`.
  *
  * @param timeElapsed The current elapsed time of the episode.
- * @param episodeDuration The total duration of the episode. If null, the slider will be disabled
+ * @param episodeDuration The total duration of the episode. If `null`, the slider will be disabled
  * and set to 0.
  * @param onSeekingStarted A callback function to be invoked when the user starts interacting with
  * the slider. This is useful for pausing playback or showing a loading indicator.
@@ -1411,6 +1412,24 @@ private fun PlayerSlider(
     }
 }
 
+/**
+ * @param hasNext if `true` there is an episode after this one in the queue.
+ * @param isPlaying if `true` the player is playing.
+ * @param onPlayPress a lambda to be called when the "Play" button is pushed.
+ * @param onPausePress a lambda to be called when the "Pause" button is pushed.
+ * @param onAdvanceBy a lambda to be called with a [Duration] of 10 seconds when the "Forward 10
+ * seconds" button is pushed.
+ * @param onRewindBy a lambda to be called with a [Duration] of 10 seconds when when the "Replay 10
+ * seconds" button is pushed.
+ * @param onNext a lambda to be called when the "Skip next" button is pushed (if [hasNext] is `true`).
+ * @param onPrevious a lambda to be called when the "Skip previous" button is pushed.
+ * @param modifier a [Modifier] instance to be applied to the layout. Our callers call us with a
+ * [Modifier.padding] that adds `8.dp` to our `vertical` sides or just to our `top` side depending
+ * on their needs.
+ * @param playerButtonSize the size in [Dp] of our "Pause", and "Play" buttons.
+ * @param sideButtonSize the size in [Dp] of our "Skip previous", "Replay 10 seconds", "Forward 10
+ * seconds" and "Skip next" buttons.
+ */
 @Composable
 private fun PlayerButtons(
     hasNext: Boolean,
@@ -1527,7 +1546,7 @@ private fun FullScreenLoading(modifier: Modifier = Modifier) {
 }
 
 /**
- *
+ * Preview of our [TopAppBar] Composable.
  */
 @Preview
 @Composable
@@ -1541,7 +1560,7 @@ fun TopAppBarPreview() {
 }
 
 /**
- *
+ * Preview of our [PlayerButtons] Composable.
  */
 @Preview
 @Composable
@@ -1561,8 +1580,9 @@ fun PlayerButtonsPreview() {
 }
 
 /**
- *
+ * Preview of our [PlayerScreen] Composable.
  */
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("RedundantValueArgument")
 @DevicePreviews
 @Composable
@@ -1570,7 +1590,7 @@ fun PlayerScreenPreview() {
     JetcasterTheme {
         BoxWithConstraints {
             PlayerScreen(
-                PlayerUiState(
+                uiState = PlayerUiState(
                     episodePlayerState = EpisodePlayerState(
                         currentEpisode = PlayerEpisode(
                             title = "Title",
