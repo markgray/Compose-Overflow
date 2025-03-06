@@ -84,7 +84,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -1413,6 +1416,117 @@ private fun PlayerSlider(
 }
 
 /**
+ * Composable function that displays a row of player control buttons.
+ *
+ * These buttons include:
+ * - Skip Previous: Skips to the previous track/item.
+ * - Rewind 10 Seconds: Rewinds the playback by 10 seconds.
+ * - Play/Pause: Toggles between playing and pausing the media.
+ * - Forward 10 Seconds: Forwards the playback by 10 seconds.
+ * - Skip Next: Skips to the next track/item.
+ *
+ * The buttons are arranged in a horizontal row with appropriate spacing.
+ * The "Skip Previous" and "Skip Next" buttons are enabled/disabled based on [isPlaying] and
+ * [hasNext] respectively.
+ *
+ * Our root composable is a [Row] whose [Modifier] `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.fillMaxWidth], its `verticalAlignment` argument is
+ * [Alignment.CenterVertically], and its `horizontalArrangement` argument is
+ * [Arrangement.SpaceEvenly]. In the [RowScope] `content` composable lambda argument we first
+ * initialize our [Modifier] variable `sideButtonsModifier` to a [Modifier.size] that sets the `size`
+ * to our [Dp] parameter [sideButtonSize], with a [Modifier.background] chained to that whose [Color]
+ * `color` argument is the [ColorScheme.surfaceContainerHighest] of our custom
+ * [MaterialTheme.colorScheme], and whose [Shape] `shape` argument is [CircleShape]. At the end of
+ * the chain we apply a [Modifier.semantics] that sets the `role` to [Role.Button].
+ *
+ * Next we initialize our [Modifier] variable `primaryButtonModifier` to a [Modifier.size] that sets
+ * the `size` to our [Dp] parameter [playerButtonSize], with a [Modifier.background] chained to that
+ * whose [Color] `color` argument is the [ColorScheme.primaryContainer] of our custom
+ * [MaterialTheme.colorScheme], and whose [Shape] `shape` argument is [CircleShape]. At the end of
+ * the chain we apply a [Modifier.semantics] that sets the `role` to [Role.Button].
+ *
+ * The first widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * arguments are:
+ *  - `imageVector`: The vector image for the "Skip Previous" button, the [ImageVector] drawn ty
+ *  [Icons.Filled.SkipPrevious].
+ *  - `contentDescription`: A description of the "Skip Previous" button, the string resource with
+ *  ID `R.string.cd_skip_previous` ("Skip previous").
+ *  - `contentScale`: The content scale of the image is [ContentScale.Inside].
+ *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
+ *  [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization chains to our [Modifier]
+ *  variable `sideButtonsModifier` a [Modifier.clickable] whose `enabled` argument is our [Boolean]
+ *  parameter [isPlaying], and whose `onClick` argument our lambda parameter [onPrevious]. At the
+ *  end of the chain is a [Modifier.alpha] that sets the `alpha` to `1f` if our [Boolean] parameter
+ *  [isPlaying] is `true`, and `0.25f` if it is `false`.
+ *
+ * The second widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * arguments are:
+ *  - `imageVector`: The vector image for the "Play" button, the [ImageVector] drawn by
+ *  [Icons.Filled.Replay10].
+ *  - `contentDescription`: A description of the "Play" button, the string resource with ID
+ *  `R.string.cd_play` ("Replay 10 seconds").
+ *  - `contentScale`: The content scale of the image is [ContentScale.Inside].
+ *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
+ *  [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization chains to our [Modifier]
+ *  variable `sideButtonsModifier` a [Modifier.clickable] whose `onClick` argument is a lambda
+ *  that calls our lambda parameter [onRewindBy] with a [Duration] of `10` seconds.
+ *
+ * If our [Boolean] parameter [isPlaying] is `true` we compose a [Image] whose arguments are:
+ *  - `imageVector`: The vector image for the "Pause" button, the [ImageVector] drawn by
+ *  [Icons.Outlined.Pause].
+ *  - `contentDescription`: A description of the "Pause" button, the string resource with ID
+ *  `R.string.cd_pause` ("Pause").
+ *  - `contentScale`: The content scale of the image is [ContentScale.Fit].
+ *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
+ *  [ColorScheme.onPrimaryContainer] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization chains to our [Modifier]
+ *  variable `primaryButtonModifier` a [Modifier.padding] that adds 8.dp to `all` sides, to which
+ *  is chained a [Modifier.clickable] whose `onClick` argument is a lambda that calls our lambda
+ *  parameter [onPausePress].
+ *
+ * If our [Boolean] parameter [isPlaying] is `false` we compose a [Image] whose arguments are:
+ *  - `imageVector`: The vector image for the "Play" button, the [ImageVector] drawn by
+ *  [Icons.Outlined.PlayArrow].
+ *  - `contentDescription`: A description of the "Play" button, the string resource with ID
+ *  `R.string.cd_play` ("Play").
+ *  - `contentScale`: The content scale of the image is [ContentScale.Fit].
+ *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
+ *  [ColorScheme.onPrimaryContainer] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization chains to our [Modifier]
+ *  variable `primaryButtonModifier` a [Modifier.padding] that adds 8.dp to `all` sides, to which
+ *  is chained a [Modifier.clickable] whose `onClick` argument is a lambda that calls our lambda
+ *  parameter [onPlayPress].
+ *
+ * The next widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * arguments are:
+ *  - `imageVector`: The vector image for the "Forward 10 seconds" button, the [ImageVector] drawn
+ *  by [Icons.Filled.Forward10].
+ *  - `contentDescription`: A description of the "Forward 10 seconds" button, the string resource
+ *  `R.string.cd_forward10` ("Forward 10 seconds").
+ *  - `contentScale`: The content scale of the image is [ContentScale.Inside].
+ *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
+ *  [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization chains to our [Modifier]
+ *  variable `sideButtonsModifier` a [Modifier.clickable] whose `onClick` argument is a lambda
+ *  that calls our lambda parameter [onAdvanceBy] with a [Duration] of `10` seconds.
+ *
+ * The last widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * arguments are:
+ *  - `imageVector`: The vector image for the "Skip next" button, the [ImageVector] drawn by
+ *  [Icons.Filled.SkipNext].
+ *  - `contentDescription`: A description of the "Skip next" button, the string resource with ID
+ *  `R.string.cd_skip_next` ("Skip next").
+ *  - `contentScale`: The content scale of the image is [ContentScale.Inside].
+ *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
+ *  [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
+ *  - `modifier`: The [Modifier] for styling and layout customization chains to our [Modifier]
+ *  variable `sideButtonsModifier` a [Modifier.clickable] whose `enabled` argument is our [Boolean]
+ *  parameter [hasNext], and whose `onClick` argument our lambda parameter [onNext]. At the end of
+ *  the chain is a [Modifier.alpha] that sets the `alpha` to `1f` if our [Boolean] parameter
+ *  [hasNext] is `true`, and `0.25f` if it is `false`.
+ *
  * @param hasNext if `true` there is an episode after this one in the queue.
  * @param isPlaying if `true` the player is playing.
  * @param onPlayPress a lambda to be called when the "Play" button is pushed.
@@ -1449,16 +1563,16 @@ private fun PlayerButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        val sideButtonsModifier = Modifier
-            .size(sideButtonSize)
+        val sideButtonsModifier: Modifier = Modifier
+            .size(size = sideButtonSize)
             .background(
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 shape = CircleShape
             )
             .semantics { role = Role.Button }
 
-        val primaryButtonModifier = Modifier
-            .size(playerButtonSize)
+        val primaryButtonModifier: Modifier = Modifier
+            .size(size = playerButtonSize)
             .background(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = CircleShape
@@ -1469,7 +1583,7 @@ private fun PlayerButtons(
             imageVector = Icons.Filled.SkipPrevious,
             contentDescription = stringResource(R.string.cd_skip_previous),
             contentScale = ContentScale.Inside,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
             modifier = sideButtonsModifier
                 .clickable(enabled = isPlaying, onClick = onPrevious)
                 .alpha(if (isPlaying) 1f else 0.25f)
@@ -1491,7 +1605,7 @@ private fun PlayerButtons(
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
                 modifier = primaryButtonModifier
-                    .padding(8.dp)
+                    .padding(all = 8.dp)
                     .clickable {
                         onPausePress()
                     }
@@ -1503,7 +1617,7 @@ private fun PlayerButtons(
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer),
                 modifier = primaryButtonModifier
-                    .padding(8.dp)
+                    .padding(all = 8.dp)
                     .clickable {
                         onPlayPress()
                     }
@@ -1533,13 +1647,26 @@ private fun PlayerButtons(
 
 /**
  * Full screen circular progress indicator
+ *
+ * This composable presents a circular progress indicator centered within a box that occupies the
+ * entire screen. It is used to indicate that the application is performing a task and the user
+ * should wait.
+ *
+ * Our root composable is a [Box] whose [Modifier] `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.fillMaxSize] and a [Modifier.wrapContentSize] whose `align`
+ * argument is [Alignment.Center]. In the [BoxScope] `content` composable lambda argument we
+ * compose a [CircularProgressIndicator].
+ *
+ * @param modifier The modifier to apply to the loading indicator container. Our caller
+ * [PlayerScreen] does not pass us one so the empty, default, or starter Modifier that contains
+ * no elements is used.
  */
 @Composable
 private fun FullScreenLoading(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+            .wrapContentSize(align = Alignment.Center)
     ) {
         CircularProgressIndicator()
     }

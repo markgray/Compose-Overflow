@@ -26,6 +26,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.core.player.model.toPlayerEpisode
 import com.example.jetcaster.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,12 +37,42 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+/**
+ * Represents the UI state of the player.
+ *
+ * This class holds the current state of the player UI, including the state of the episode player.
+ * It encapsulates all the information needed to render the player UI components correctly.
+ *
+ * @property episodePlayerState The state of the episode player, providing information about the
+ * currently playing episode, playback position, buffering status, etc. Defaults to an empty
+ * [EpisodePlayerState] if no episode is being played or no state has been set.
+ */
 data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
 )
 
-/**
+/*
  * ViewModel that handles the business logic and screen state of the Player screen
+ */
+
+/**
+ * [PlayerViewModel] is the ViewModel responsible for managing the state and interactions
+ * of the audio player screen.
+ *
+ * It interacts with the [EpisodeStore] to retrieve episode and podcast data, and the
+ * [EpisodePlayer] to control the playback of episodes.
+ *
+ * The [PlayerViewModel] handles the following:
+ * - Retrieving episode data based on a provided URI.
+ * - Managing the playback state (playing, paused, stopped).
+ * - Handling user interactions like play, pause, stop, next, previous, seek, etc.
+ * - Maintaining and updating the [PlayerUiState] which reflects the current state of the player.
+ * - Adding the current episode to the queue.
+ *
+ * @property episodeStore The data store for retrieving episode and podcast information.
+ * @property episodePlayer The player responsible for controlling episode playback.
+ * @property savedStateHandle The SavedStateHandle for retrieving arguments passed to the screen,
+ * specifically the episode URI.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -51,12 +82,33 @@ class PlayerViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    // episodeUri should always be present in the PlayerViewModel.
-    // If that's not the case, fail crashing the app!
+    /**
+     * The URI of the episode being displayed.
+     *
+     * This value is retrieved from the saved state handle using the key [Screen.ARG_EPISODE_URI].
+     * It's expected to be a string representing a URI, which is then decoded using [Uri.decode].
+     * 
+     * [episodeUri] should always be present in the PlayerViewModel.
+     * If that's not the case, fail crashing the app!
+     *
+     * @see Screen.ARG_EPISODE_URI
+     * @see Uri.decode
+     */
     private val episodeUri: String =
         Uri.decode(savedStateHandle.get<String>(Screen.ARG_EPISODE_URI)!!)
 
-    var uiState by mutableStateOf(PlayerUiState())
+    /**
+     * The current state of the player's UI.
+     *
+     * This state object holds all the necessary information to render the player's UI,
+     * such as whether the player is playing, the current playback position, the duration of the media,
+     * and any other UI-related states.
+     *
+     * The UI recomposes whenever a property inside the [PlayerUiState] changes.
+     *
+     *  @see PlayerUiState for the details of the UI-related state properties.
+     */
+    var uiState: PlayerUiState by mutableStateOf(value = PlayerUiState())
         private set
 
     init {
@@ -72,14 +124,32 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Initiates playback of the currently loaded episode.
+     *
+     * This function calls the [EpisodePlayer.play] method of our [EpisodePlayer] field
+     * [episodePlayer] which starts or resumes the playback of the audio content.
+     */
     fun onPlay() {
         episodePlayer.play()
     }
 
+    /**
+     * Pauses the episode playback.
+     *
+     * This function calls the [EpisodePlayer.pause] method of our [EpisodePlayer] field
+     * [episodePlayer] which pauses the playback of the audio content.
+     */
     fun onPause() {
         episodePlayer.pause()
     }
 
+    /**
+     * Stops the episode player.
+     *
+     * This function calls the [EpisodePlayer.stop] method of our [EpisodePlayer] field
+     * [episodePlayer] which stops the playback of the audio content.
+     */
     fun onStop() {
         episodePlayer.stop()
     }
@@ -93,11 +163,11 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun onAdvanceBy(duration: Duration) {
-        episodePlayer.advanceBy(duration)
+        episodePlayer.advanceBy(duration = duration)
     }
 
     fun onRewindBy(duration: Duration) {
-        episodePlayer.rewindBy(duration)
+        episodePlayer.rewindBy(duration = duration)
     }
 
     fun onSeekingStarted() {
@@ -105,12 +175,12 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun onSeekingFinished(duration: Duration) {
-        episodePlayer.onSeekingFinished(duration)
+        episodePlayer.onSeekingFinished(duration = duration)
     }
 
     fun onAddToQueue() {
-        uiState.episodePlayerState.currentEpisode?.let {
-            episodePlayer.addToQueue(it)
+        uiState.episodePlayerState.currentEpisode?.let { newEpisode: PlayerEpisode ->
+            episodePlayer.addToQueue(episode = newEpisode)
         }
     }
 }
