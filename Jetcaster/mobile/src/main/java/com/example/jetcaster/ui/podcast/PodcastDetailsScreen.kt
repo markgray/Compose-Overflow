@@ -60,10 +60,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -79,8 +81,46 @@ import com.example.jetcaster.ui.shared.EpisodeListItem
 import com.example.jetcaster.ui.shared.Loading
 import com.example.jetcaster.ui.tooling.DevicePreviews
 import com.example.jetcaster.util.fullWidthItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * Displays the details of a podcast, including its description, episodes, and subscription status.
+ *
+ * This composable handles the different states of the podcast data (loading, ready) and displays
+ * the corresponding UI. It also provides callbacks for user interactions, such as navigating to
+ * the player, subscribing/unsubscribing, and navigating back.
+ *
+ * We start by initializing our [State] wrapped [PodcastUiState] variable `state` with the value
+ * that the [StateFlow.collectAsStateWithLifecycle] function of the [StateFlow] of [PodcastUiState]
+ * field [PodcastDetailsViewModel.state] of our [PodcastDetailsViewModel] field [viewModel] returns.
+ * Then we use a `when` to branch based on the types of `state` copy `s`:
+ *  - [PodcastUiState.Loading] -> We compose a [PodcastDetailsLoadingScreen] whose [Modifier]
+ *  `modifier` argument is [Modifier.fillMaxSize].
+ *  - [PodcastUiState.Ready] -> We compose a [PodcastDetailsScreen] whose arguments are:
+ *      - `podcast` is the [PodcastUiState.podcast] field of [s].
+ *      - `episodes` is the [PodcastUiState.episodes] field of [s].
+ *      - `toggleSubscribe` is the [PodcastDetailsViewModel.toggleSusbcribe] function of our
+ *      [PodcastDetailsViewModel] field [viewModel].
+ *      - `onQueueEpisode` is the [PodcastDetailsViewModel.onQueueEpisode] function of our
+ *      [PodcastDetailsViewModel] field [viewModel].
+ *      - `navigateToPlayer` is our lambda function that takes an [EpisodeInfo] parameter
+ *      [navigateToPlayer]
+ *      - `navigateBack` is our lambda function that takes no parameters [navigateBack]
+ *      - `showBackButton` is our [Boolean] parameter [showBackButton]
+ *      - `modifier` is our [Modifier] parameter [modifier]
+ *
+ * @param viewModel The [PodcastDetailsViewModel] responsible for providing the podcast data and
+ * handling user interactions.
+ * @param navigateToPlayer A lambda function that takes an [EpisodeInfo] and navigates to the player
+ * screen to play the selected episode.
+ * @param navigateBack A lambda function that navigates back to the previous screen.
+ * @param showBackButton A boolean indicating whether to display a back button in the UI.
+ * @param modifier The [Modifier] to be applied to the root composable. Our caller `HomeScreenReady`
+ * does not pass us any so the empty, default, or starter [Modifier] that contains no elements is
+ * used.
+ */
 @Composable
 fun PodcastDetailsScreen(
     viewModel: PodcastDetailsViewModel,
@@ -89,8 +129,8 @@ fun PodcastDetailsScreen(
     showBackButton: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    when (val s = state) {
+    val state: PodcastUiState by viewModel.state.collectAsStateWithLifecycle()
+    when (val s: PodcastUiState = state) {
         is PodcastUiState.Loading -> {
             PodcastDetailsLoadingScreen(
                 modifier = Modifier.fillMaxSize()
@@ -111,6 +151,16 @@ fun PodcastDetailsScreen(
     }
 }
 
+/**
+ * Displays a loading screen for the podcast details.
+ *
+ * This composable function shows our [Loading] composable while the podcast details are being
+ * fetched. We just call [Loading] and pass it our [Modifier] parameter [modifier] as its [Modifier]
+ * `modifier` argument.
+ *
+ * @param modifier Modifier to be applied to the loading screen container. Our caller
+ * [PodcastDetailsScreen] passes us a [Modifier.fillMaxSize].
+ */
 @Composable
 private fun PodcastDetailsLoadingScreen(
     modifier: Modifier = Modifier
@@ -118,6 +168,26 @@ private fun PodcastDetailsLoadingScreen(
     Loading(modifier = modifier)
 }
 
+/**
+ * Displays the details of a podcast, including its information and a list of episodes. (This is the
+ * stateless overload of the stateful [PodcastDetailsScreen] which calls us).
+ *
+ * @param podcast The [PodcastInfo] object containing the details of the podcast.
+ * @param episodes A list of [EpisodeInfo] objects representing the episodes of the podcast.
+ * @param toggleSubscribe A callback function that is invoked when the user wants to subscribe or
+ * unsubscribe from the podcast. It takes the [PodcastInfo] as a parameter.
+ * @param onQueueEpisode A callback function that is invoked when the user wants to add an episode
+ * to the playback queue. It takes a [PlayerEpisode] as a parameter. It also displays a snackbar to
+ * inform the user.
+ * @param navigateToPlayer A callback function to be invoked when the user wants to navigate to the
+ * player screen for a specific episode. It takes an [EpisodeInfo] as a parameter.
+ * @param navigateBack A callback function to be invoked when the user wants to navigate back to
+ * the previous screen.
+ * @param showBackButton A [Boolean] indicating whether to show the back button in the top app bar.
+ * @param modifier The [Modifier] to be applied to the layout. Our caller, the stateful overload of
+ * [PodcastDetailsScreen], passes us its own [Modifier] parameter which traces back to the empty,
+ * default, or starter [Modifier] that contains no elements.
+ */
 @Composable
 fun PodcastDetailsScreen(
     podcast: PodcastInfo,
@@ -129,9 +199,9 @@ fun PodcastDetailsScreen(
     showBackButton: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val snackBarText = stringResource(id = R.string.episode_added_to_your_queue)
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    val snackBarText: String = stringResource(id = R.string.episode_added_to_your_queue)
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -172,8 +242,8 @@ fun PodcastDetailsContent(
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(362.dp),
-        modifier.fillMaxSize()
+        columns = GridCells.Adaptive(minSize = 362.dp),
+        modifier = modifier.fillMaxSize()
     ) {
         fullWidthItem {
             PodcastDetailsHeaderItem(
@@ -182,7 +252,7 @@ fun PodcastDetailsContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        items(episodes, key = { it.uri }) { episode ->
+        items(episodes, key = { it.uri }) { episode: EpisodeInfo ->
             EpisodeListItem(
                 episode = episode,
                 podcast = podcast,
@@ -203,10 +273,10 @@ fun PodcastDetailsHeaderItem(
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(
-        modifier = modifier.padding(Keyline1)
+        modifier = modifier.padding(all = Keyline1)
     ) {
-        val maxImageSize = this.maxWidth / 2
-        val imageSize = min(maxImageSize, 148.dp)
+        val maxImageSize: Dp = this.maxWidth / 2
+        val imageSize: Dp = min(maxImageSize, 148.dp)
         Column {
             Row(
                 verticalAlignment = Alignment.Bottom,
@@ -214,8 +284,8 @@ fun PodcastDetailsHeaderItem(
             ) {
                 PodcastImage(
                     modifier = Modifier
-                        .size(imageSize)
-                        .clip(MaterialTheme.shapes.large),
+                        .size(size = imageSize)
+                        .clip(shape = MaterialTheme.shapes.large),
                     podcastImageUrl = podcast.imageUrl,
                     contentDescription = podcast.title
                 )
@@ -229,7 +299,7 @@ fun PodcastDetailsHeaderItem(
                         style = MaterialTheme.typography.headlineMedium
                     )
                     PodcastDetailsHeaderItemButtons(
-                        isSubscribed = podcast.isSubscribed ?: false,
+                        isSubscribed = podcast.isSubscribed == true,
                         onClick = {
                             toggleSubscribe(podcast)
                         },
@@ -252,8 +322,8 @@ fun PodcastDetailsDescription(
     podcast: PodcastInfo,
     modifier: Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-    var showSeeMore by remember { mutableStateOf(false) }
+    var isExpanded: Boolean by remember { mutableStateOf(false) }
+    var showSeeMore: Boolean by remember { mutableStateOf(false) }
     Box(
         modifier = modifier.clickable { isExpanded = !isExpanded }
     ) {
@@ -262,7 +332,7 @@ fun PodcastDetailsDescription(
             style = MaterialTheme.typography.bodyMedium,
             maxLines = if (isExpanded) Int.MAX_VALUE else 3,
             overflow = TextOverflow.Ellipsis,
-            onTextLayout = { result ->
+            onTextLayout = { result: TextLayoutResult ->
                 showSeeMore = result.hasVisualOverflow
             },
             modifier = Modifier.animateContentSize(
@@ -275,8 +345,8 @@ fun PodcastDetailsDescription(
         if (showSeeMore) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .align(alignment = Alignment.BottomEnd)
+                    .background(color = MaterialTheme.colorScheme.surface)
             ) {
                 // TODO: Add gradient effect
                 Text(
@@ -298,7 +368,7 @@ fun PodcastDetailsHeaderItemButtons(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier.padding(top = 16.dp)) {
+    Row(modifier = modifier.padding(top = 16.dp)) {
         Button(
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(
@@ -325,7 +395,7 @@ fun PodcastDetailsHeaderItemButtons(
             )
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(weight = 1f))
 
         IconButton(
             onClick = { /* TODO */ },
@@ -333,7 +403,7 @@ fun PodcastDetailsHeaderItemButtons(
         ) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.cd_more)
+                contentDescription = stringResource(id = R.string.cd_more)
             )
         }
     }
@@ -359,6 +429,9 @@ fun PodcastDetailsTopAppBar(
     )
 }
 
+/**
+ * Preview of [PodcastDetailsHeaderItem].
+ */
 @Preview
 @Composable
 fun PodcastDetailsHeaderItemPreview() {
@@ -368,6 +441,9 @@ fun PodcastDetailsHeaderItemPreview() {
     )
 }
 
+/**
+ * * Previews of [PodcastDetailsScreen].
+ */
 @DevicePreviews
 @Composable
 fun PodcastDetailsScreenPreview() {

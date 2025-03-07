@@ -436,8 +436,6 @@ class MockEpisodePlayer(
      * going backward beyond the start.
      *
      * @param duration The duration to rewind by. Must be a non-negative duration.
-     *
-     * @throws IllegalArgumentException if duration is negative
      */
     override fun rewindBy(duration: Duration) {
         timeElapsed.update {

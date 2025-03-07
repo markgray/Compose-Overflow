@@ -31,7 +31,7 @@ fun Loading(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxSize()
         ) {
             CircularProgressIndicator(
-                Modifier.align(Alignment.Center)
+                modifier = Modifier.align(alignment = Alignment.Center)
             )
         }
     }

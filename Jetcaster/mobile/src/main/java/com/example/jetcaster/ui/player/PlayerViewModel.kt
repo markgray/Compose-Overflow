@@ -150,30 +150,96 @@ class PlayerViewModel @Inject constructor(
         episodePlayer.stop()
     }
 
+    /**
+     * Navigates to the previous episode in the playback queue.
+     *
+     * This function calls the [EpisodePlayer.previous] method of our [EpisodePlayer] field
+     * [episodePlayer] which will play the previous episode in the queue, or if an episode is
+     * currently playing this will start the episode from the beginning.
+     *
+     * @see EpisodePlayer.previous
+     */
     fun onPrevious() {
         episodePlayer.previous()
     }
 
+    /**
+     * Advances the episode player to the next episode in the playlist.
+     *
+     * This function calls the [EpisodePlayer.next] method of our [EpisodePlayer] field
+     * [episodePlayer] which will play the next episode in the queue (if available).
+     */
     fun onNext() {
         episodePlayer.next()
     }
 
+    /**
+     * Advances the episode player's playback position by the [Duration] parameter [duration].
+     *
+     * This function calls the [EpisodePlayer.advanceBy] method of our [EpisodePlayer] field
+     * [episodePlayer] which will advance the playback position of the currently played episode
+     * by the time interval specified by [Duration] 
+     *
+     * @param duration The [Duration] by which to advance the playback position. This can be a
+     * positive or negative duration. A positive duration will advance the playback forward,
+     * while a negative duration will rewind the playback.
+     */
     fun onAdvanceBy(duration: Duration) {
         episodePlayer.advanceBy(duration = duration)
     }
 
+    /**
+     * Rewinds the currently playing episode by the [Duration] parameter [duration].
+     *
+     * This function calls the [EpisodePlayer.rewindBy] method of our [EpisodePlayer] field
+     * [episodePlayer] which will rewind the playback position of the currently played episode
+     * by the time interval specified by [Duration] argument [duration].
+     *
+     * @param duration The [Duration] to rewind by.
+     */
     fun onRewindBy(duration: Duration) {
         episodePlayer.rewindBy(duration = duration)
     }
 
+    /**
+     * Called when the user starts seeking within the audio playback.
+     *
+     * This function calls the [EpisodePlayer.onSeekingStarted] method of our [EpisodePlayer] field
+     * [episodePlayer] when the user starts seeking within the audio playback.
+     *
+     * This event can be useful for:
+     * - Pausing any visualizations or animations that should be synchronized with the audio.
+     * - Showing a loading indicator or other feedback to the user that the position is changing.
+     * - Updating the UI to reflect the seeking state.
+     *
+     * @see EpisodePlayer.onSeekingStarted
+     */
     fun onSeekingStarted() {
         episodePlayer.onSeekingStarted()
     }
 
+    /**
+     * Called when the user has finished seeking to a new position in the episode.
+     *
+     * This function is a delegate that forwards the seeking finished event and the new
+     * duration to the [EpisodePlayer.onSeekingFinished] method of our [EpisodePlayer] field
+     * [episodePlayer]. It should be invoked after the user interaction related to seeking
+     * (e.g., dragging a seek bar, skipping forward/backward) has completed, and the playback
+     * is expected to resume from the newly selected position.
+     *
+     * @param duration The new playback position that the user has seeked to.
+     */
     fun onSeekingFinished(duration: Duration) {
         episodePlayer.onSeekingFinished(duration = duration)
     }
 
+    /**
+     * Adds the currently selected episode to the playback queue.
+     *
+     * If the [EpisodePlayerState.currentEpisode] of our [PlayerUiState] is not `null`, we use the
+     * [let] extension function to add it to the playback queue using the [EpisodePlayer.addToQueue]
+     * method of our [EpisodePlayer] field [episodePlayer].
+     */
     fun onAddToQueue() {
         uiState.episodePlayerState.currentEpisode?.let { newEpisode: PlayerEpisode ->
             episodePlayer.addToQueue(episode = newEpisode)
