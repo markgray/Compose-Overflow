@@ -51,13 +51,9 @@ data class PlayerUiState(
     val episodePlayerState: EpisodePlayerState = EpisodePlayerState()
 )
 
-/*
- * ViewModel that handles the business logic and screen state of the Player screen
- */
-
 /**
- * [PlayerViewModel] is the ViewModel responsible for managing the state and interactions
- * of the audio player screen.
+ * [PlayerViewModel] is the ViewModel that handles the business logic and screen state of the
+ * Player screen.
  *
  * It interacts with the [EpisodeStore] to retrieve episode and podcast data, and the
  * [EpisodePlayer] to control the playback of episodes.
@@ -100,8 +96,8 @@ class PlayerViewModel @Inject constructor(
     /**
      * The current state of the player's UI.
      *
-     * This state object holds all the necessary information to render the player's UI,
-     * such as whether the player is playing, the current playback position, the duration of the media,
+     * This state object holds all the necessary information to render the player's UI, such as
+     * whether the player is playing, the current playback position, the duration of the media,
      * and any other UI-related states.
      *
      * The UI recomposes whenever a property inside the [PlayerUiState] changes.

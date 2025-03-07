@@ -1445,7 +1445,7 @@ private fun PlayerSlider(
  * [MaterialTheme.colorScheme], and whose [Shape] `shape` argument is [CircleShape]. At the end of
  * the chain we apply a [Modifier.semantics] that sets the `role` to [Role.Button].
  *
- * The first widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * The first widget in the [RowScope] `content` composable lambda argument is an [Image] whose
  * arguments are:
  *  - `imageVector`: The vector image for the "Skip Previous" button, the [ImageVector] drawn ty
  *  [Icons.Filled.SkipPrevious].
@@ -1460,12 +1460,12 @@ private fun PlayerSlider(
  *  end of the chain is a [Modifier.alpha] that sets the `alpha` to `1f` if our [Boolean] parameter
  *  [isPlaying] is `true`, and `0.25f` if it is `false`.
  *
- * The second widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * The second widget in the [RowScope] `content` composable lambda argument is an [Image] whose
  * arguments are:
  *  - `imageVector`: The vector image for the "Play" button, the [ImageVector] drawn by
  *  [Icons.Filled.Replay10].
- *  - `contentDescription`: A description of the "Play" button, the string resource with ID
- *  `R.string.cd_play` ("Replay 10 seconds").
+ *  - `contentDescription`: A description of the "Replay 10 seconds" button, the string resource
+ *  with ID `R.string.cd_play` ("Replay 10 seconds").
  *  - `contentScale`: The content scale of the image is [ContentScale.Inside].
  *  - `colorFilter`: The color filter of the image is a [ColorFilter.tint] whose `color` is the
  *  [ColorScheme.onSurface] of our custom [MaterialTheme.colorScheme].
@@ -1473,7 +1473,7 @@ private fun PlayerSlider(
  *  variable `sideButtonsModifier` a [Modifier.clickable] whose `onClick` argument is a lambda
  *  that calls our lambda parameter [onRewindBy] with a [Duration] of `10` seconds.
  *
- * If our [Boolean] parameter [isPlaying] is `true` we compose a [Image] whose arguments are:
+ * If our [Boolean] parameter [isPlaying] is `true` we compose an [Image] whose arguments are:
  *  - `imageVector`: The vector image for the "Pause" button, the [ImageVector] drawn by
  *  [Icons.Outlined.Pause].
  *  - `contentDescription`: A description of the "Pause" button, the string resource with ID
@@ -1486,7 +1486,7 @@ private fun PlayerSlider(
  *  is chained a [Modifier.clickable] whose `onClick` argument is a lambda that calls our lambda
  *  parameter [onPausePress].
  *
- * If our [Boolean] parameter [isPlaying] is `false` we compose a [Image] whose arguments are:
+ * If our [Boolean] parameter [isPlaying] is `false` we compose an [Image] whose arguments are:
  *  - `imageVector`: The vector image for the "Play" button, the [ImageVector] drawn by
  *  [Icons.Outlined.PlayArrow].
  *  - `contentDescription`: A description of the "Play" button, the string resource with ID
@@ -1499,7 +1499,7 @@ private fun PlayerSlider(
  *  is chained a [Modifier.clickable] whose `onClick` argument is a lambda that calls our lambda
  *  parameter [onPlayPress].
  *
- * The next widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * The next widget in the [RowScope] `content` composable lambda argument is an [Image] whose
  * arguments are:
  *  - `imageVector`: The vector image for the "Forward 10 seconds" button, the [ImageVector] drawn
  *  by [Icons.Filled.Forward10].
@@ -1512,7 +1512,7 @@ private fun PlayerSlider(
  *  variable `sideButtonsModifier` a [Modifier.clickable] whose `onClick` argument is a lambda
  *  that calls our lambda parameter [onAdvanceBy] with a [Duration] of `10` seconds.
  *
- * The last widget in the [RowScope] `content` composable lambda argument is a [Image] whose
+ * The last widget in the [RowScope] `content` composable lambda argument is an [Image] whose
  * arguments are:
  *  - `imageVector`: The vector image for the "Skip next" button, the [ImageVector] drawn by
  *  [Icons.Filled.SkipNext].
