@@ -178,7 +178,7 @@ class PlayerViewModel @Inject constructor(
      *
      * This function calls the [EpisodePlayer.advanceBy] method of our [EpisodePlayer] field
      * [episodePlayer] which will advance the playback position of the currently played episode
-     * by the time interval specified by [Duration] 
+     * by the time interval specified by its [Duration] argument `duration`.
      *
      * @param duration The [Duration] by which to advance the playback position. This can be a
      * positive or negative duration. A positive duration will advance the playback forward,
@@ -226,6 +226,9 @@ class PlayerViewModel @Inject constructor(
      * [episodePlayer]. It should be invoked after the user interaction related to seeking
      * (e.g., dragging a seek bar, skipping forward/backward) has completed, and the playback
      * is expected to resume from the newly selected position.
+     *
+     * We just call the [EpisodePlayer.onSeekingFinished] method of our [EpisodePlayer] field
+     * [episodePlayer] with our [Duration] parameter [duration] as its `duration` argument.
      *
      * @param duration The new playback position that the user has seeked to.
      */

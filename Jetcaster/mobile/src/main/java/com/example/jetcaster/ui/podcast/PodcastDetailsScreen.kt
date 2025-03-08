@@ -24,6 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -95,19 +96,19 @@ import kotlinx.coroutines.launch
  * We start by initializing our [State] wrapped [PodcastUiState] variable `state` with the value
  * that the [StateFlow.collectAsStateWithLifecycle] function of the [StateFlow] of [PodcastUiState]
  * field [PodcastDetailsViewModel.state] of our [PodcastDetailsViewModel] field [viewModel] returns.
- * Then we use a `when` to branch based on the types of `state` copy `s`:
+ * Then we use a `when` to branch based on the types of `state` that a copy in `s` is:
  *  - [PodcastUiState.Loading] -> We compose a [PodcastDetailsLoadingScreen] whose [Modifier]
  *  `modifier` argument is [Modifier.fillMaxSize].
  *  - [PodcastUiState.Ready] -> We compose a [PodcastDetailsScreen] whose arguments are:
- *      - `podcast` is the [PodcastUiState.podcast] field of [s].
- *      - `episodes` is the [PodcastUiState.episodes] field of [s].
+ *      - `podcast` is the [PodcastUiState.podcast] field of `s`.
+ *      - `episodes` is the [PodcastUiState.episodes] field of `s`.
  *      - `toggleSubscribe` is the [PodcastDetailsViewModel.toggleSusbcribe] function of our
  *      [PodcastDetailsViewModel] field [viewModel].
  *      - `onQueueEpisode` is the [PodcastDetailsViewModel.onQueueEpisode] function of our
  *      [PodcastDetailsViewModel] field [viewModel].
  *      - `navigateToPlayer` is our lambda function that takes an [EpisodeInfo] parameter
  *      [navigateToPlayer]
- *      - `navigateBack` is our lambda function that takes no parameters [navigateBack]
+ *      - `navigateBack` is our lambda parameter that takes no parameters [navigateBack]
  *      - `showBackButton` is our [Boolean] parameter [showBackButton]
  *      - `modifier` is our [Modifier] parameter [modifier]
  *
@@ -172,6 +173,34 @@ private fun PodcastDetailsLoadingScreen(
  * Displays the details of a podcast, including its information and a list of episodes. (This is the
  * stateless overload of the stateful [PodcastDetailsScreen] which calls us).
  *
+ * We start by initializing and remembering our [CoroutineScope] variable `val coroutineScope` to
+ * the instance returned by [rememberCoroutineScope], initializing and remembering our
+ * [SnackbarHostState] variable `val snackbarHostState` to a new instance, and initializing our
+ * [String] variable `val snackBarText` to the [String] with resource ID
+ * `R.string.episode_added_to_your_queue` ("R.string.episode_added_to_your_queue").
+ *
+ * Our root composable is a [Scaffold] whose [Modifier] argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.fillMaxSize]. Its `topBar` argument is a lambda which if our [Boolean]
+ * parameter [showBackButton] is `true` will compose a [PodcastDetailsTopAppBar] whose `navigateBack`
+ * argument is our lambda parameter [navigateBack], and whose [Modifier] `modifier` argument is a
+ * [Modifier.fillMaxWidth]. Its `snackbarHost` argument is a lambda which composes a [SnackbarHost]
+ * whose `hostState` argument is our [SnackbarHostState] variable `snackbarHostState`.
+ *
+ * In its `content` Composable lambda argument we accept the [PaddingValues] passed the lambda in
+ * our `contentPadding` variable, then compose a [PodcastDetailsContent] whose arguments are:
+ *  - `podcast`: is our [PodcastInfo] parameter [podcast].
+ *  - `episodes`: is our [List] of [EpisodeInfo] parameter [episodes].
+ *  - `toggleSubscribe`: is our lambda parameter [toggleSubscribe].
+ *  - `onQueueEpisode`: is a lambda which accepts the [PlayerEpisode] passed the lambda in variable
+ *  `newEpisode` then it calls the [CoroutineScope.launch] method of [CoroutineScope] variable
+ *  `coroutineScope` to launch a coroutine which calls the [SnackbarHostState.showSnackbar] method
+ *  of [SnackbarHostState] variable `snackbarHostState` with the `message` argument our [String]
+ *  variable `snackBarText`. It then calls our lambda parameter [onQueueEpisode] with [PlayerEpisode]
+ *  variable `newEpisode` to enqueue the episode.
+ *  - `navigateToPlayer`: is our lambda parameter [navigateToPlayer].
+ *  - `modifier`: is a [Modifier.padding] whose `paddingValues` argument is our [PaddingValues]
+ *  variable `contentPadding`.
+ *
  * @param podcast The [PodcastInfo] object containing the details of the podcast.
  * @param episodes A list of [EpisodeInfo] objects representing the episodes of the podcast.
  * @param toggleSubscribe A callback function that is invoked when the user wants to subscribe or
@@ -215,19 +244,19 @@ fun PodcastDetailsScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
-    ) { contentPadding ->
+    ) { contentPadding: PaddingValues ->
         PodcastDetailsContent(
             podcast = podcast,
             episodes = episodes,
             toggleSubscribe = toggleSubscribe,
-            onQueueEpisode = {
+            onQueueEpisode = { newEpisode: PlayerEpisode ->
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(snackBarText)
+                    snackbarHostState.showSnackbar(message = snackBarText)
                 }
-                onQueueEpisode(it)
+                onQueueEpisode(newEpisode)
             },
             navigateToPlayer = navigateToPlayer,
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier.padding(paddingValues = contentPadding)
         )
     }
 }
@@ -252,7 +281,7 @@ fun PodcastDetailsContent(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        items(episodes, key = { it.uri }) { episode: EpisodeInfo ->
+        items(items = episodes, key = { it.uri }) { episode: EpisodeInfo ->
             EpisodeListItem(
                 episode = episode,
                 podcast = podcast,
