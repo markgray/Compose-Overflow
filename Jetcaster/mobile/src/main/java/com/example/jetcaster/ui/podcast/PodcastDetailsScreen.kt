@@ -22,16 +22,22 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
@@ -41,16 +47,20 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Typography
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,9 +69,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -261,6 +273,44 @@ fun PodcastDetailsScreen(
     }
 }
 
+/**
+ * Composable function that displays the content of a podcast details screen.
+ *
+ * This function uses a [LazyVerticalGrid] to display a list of podcast episodes
+ * along with a header containing podcast information.
+ *
+ * Our root composable is a [LazyVerticalGrid] whose `columns` argument is a [GridCells.Adaptive]
+ * whose `minSize` argument is 362.dp, and its `modifier` argument chains a [Modifier.fillMaxSize]
+ * to our [Modifier] parameter [modifier]. In its [LazyGridScope] `content` Composable lambda
+ * argument we first compose a [fullWidthItem] in whose [LazyGridItemScope] `content` Composable
+ * lambda argument we compose a [PodcastDetailsHeaderItem] whose arguments are:
+ *  - `podcast`: is our [PodcastInfo] parameter [podcast].
+ *  - `toggleSubscribe`: is our lambda parameter [toggleSubscribe].
+ *  - `modifier`: is a [Modifier.fillMaxWidth].
+ *
+ * Then we compose a [LazyGridScope.items], whose `items` argument is our [List] of [EpisodeInfo]
+ * parameter [episodes] and its `key` argument is a lambda which returns the [EpisodeInfo.uri] of
+ * each [EpisodeInfo] in [episodes]. In its [LazyGridItemScope] `itemContent` Composable lambda
+ * argument accept the [EpisodeInfo] passed the lambda in variable `episode` then we compose a
+ * [EpisodeListItem] whose arguments are:
+ *  - `episode`: is the [EpisodeInfo] passed the lambda in variable `episode`.
+ *  - `podcast`: is our [PodcastInfo] parameter [podcast].
+ *  - `onClick`: is our lambda parameter [navigateToPlayer].
+ *  - `onQueueEpisode`: is our lambda parameter [onQueueEpisode].
+ *  - `modifier`: is a [Modifier.fillMaxWidth].
+ *  - `showPodcastImage`: is `false`.
+ *  - `showSummary`: is `true`.
+ *
+ * @param podcast The [PodcastInfo] object containing details about the podcast.
+ * @param episodes A list of [EpisodeInfo] objects representing the podcast's episodes.
+ * @param toggleSubscribe A lambda function to be called when the user wants to subscribe/unsubscribe
+ * to the podcast. It takes the [PodcastInfo] as a parameter.
+ * @param onQueueEpisode A lambda function to be called when the user wants to queue an episode.
+ * It takes a [PlayerEpisode] as a parameter.
+ * @param navigateToPlayer A lambda function to be called when the user wants to navigate to the
+ * episode player screen. It takes the selected [EpisodeInfo] as a parameter.
+ * @param modifier Modifier to be applied to the root of the composable.
+ */
 @Composable
 fun PodcastDetailsContent(
     podcast: PodcastInfo,
@@ -295,6 +345,58 @@ fun PodcastDetailsContent(
     }
 }
 
+/**
+ * Displays the header section of the podcast details screen.
+ *
+ * This composable displays the podcast's image, title, and subscription status,
+ * along with a button to toggle the subscription. It also displays the podcast's
+ * description.
+ *
+ * Our root composable is a [BoxWithConstraints] whose `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.padding] that adds [Keyline1] padding to `all` sides. In the
+ * [BoxWithConstraintsScope] `content` Composable lambda argument we first initialize our [Dp]
+ * variable `val maxImageSize` to one half of the [BoxWithConstraintsScope.maxWidth] of our
+ * [BoxWithConstraints] and initialize our [Dp] variable `val imageSize` to the minimum of
+ * `maxImageSize` and 148.dp. Then we compose a [Column] in whose [ColumnScope] `content` Composable
+ * lambda argument we first compose a [Row] whose `verticalAlignment` argument is [Alignment.Bottom]
+ * and whose [Modifier] `modifier` argument is a [Modifier.fillMaxWidth]. In its [RowScope] `content`
+ * Composable lambda argument we first compose a [PodcastImage] whose arguments are:
+ *  - `modifier`: is a [Modifier.size] whose `size` argument is our [Dp] variable `imageSize`, to
+ *  which is chained a [Modifier.clip] whose `shape` argument is the [Shapes.large] of our custom
+ *  [MaterialTheme.shapes].
+ *  - `podcastImageUrl`: is the [PodcastInfo.imageUrl] of our [PodcastInfo] parameter [podcast].
+ *  - `contentDescription`: is the [PodcastInfo.title] of our [PodcastInfo] parameter [podcast].
+ *
+ * Next in the [RowScope] `content` Composable lambda argument we compose a [Column] whose `modifier`
+ * argument is a [Modifier.padding] that adds 16.dp padding to the `start` side. In its [ColumnScope]
+ * `content` Composable lambda argument we first compose a [Text] whose arguments are:
+ *  - `text`: is the [PodcastInfo.title] of our [PodcastInfo] parameter [podcast].
+ *  - `maxLines`: is `2`.
+ *  - `overflow`: is [TextOverflow.Ellipsis].
+ *  - `style`: is the [TextStyle] of [Typography.headlineMedium] of our custom 
+ *  [MaterialTheme.typography].
+ *
+ * Below that in the [ColumnScope] `content` Composable lambda argument we compose a
+ * [PodcastDetailsHeaderItemButtons] whose arguments are:
+ *  - `isSubscribed`: is `true` if the [PodcastInfo.isSubscribed] of our [PodcastInfo] parameter
+ *  [podcast] is `true`, and `false` otherwise.
+ *  - `onClick`: is our lambda parameter [toggleSubscribe] called with our [PodcastInfo] parameter
+ *  [podcast].
+ *  - `modifier`: is a [Modifier.fillMaxWidth].
+ *
+ * Next in the [RowScope] `content` Composable lambda argument of the [Row] we compose a
+ * [PodcastDetailsDescription] whose arguments are:
+ *  - `podcast`: is our [PodcastInfo] parameter [podcast].
+ *  - `modifier`: is a [Modifier.fillMaxWidth] and a [Modifier.padding] that adds 16.dp padding to
+ *  each vertical side.
+ *
+ * @param podcast The [PodcastInfo] object containing the podcast's details.
+ * @param toggleSubscribe A lambda function that takes a [PodcastInfo] and is called when the
+ * subscription button is clicked. This function should handle toggle the subscription status
+ * of the podcast.
+ * @param modifier [Modifier] to be applied to the layout. Our caller [PodcastDetailsContent] passes
+ * us a [Modifier.fillMaxWidth].
+ */
 @Composable
 fun PodcastDetailsHeaderItem(
     podcast: PodcastInfo,
@@ -346,6 +448,45 @@ fun PodcastDetailsHeaderItem(
     }
 }
 
+/**
+ * Displays the description of a podcast, allowing the user to expand and collapse
+ * the text if it exceeds a certain number of lines.
+ *
+ * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable
+ * `var isExpanded` to an initial value of `false`, and initializing and remembering our
+ * [MutableState] wrapped [Boolean] variable `var showSeeMore` to an initial value of `false`.
+ *
+ * Our root composable is a [Box] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.clickable] whose `onClick` lambda argument is a lambda which toggles the
+ * value of our [MutableState] wrapped [Boolean] variable `isExpanded`. In the [BoxScope] `content`
+ * Composable lambda argument we compose a [Text] whose arguments are:
+ *  - `text`: is the [PodcastInfo.description] of our [PodcastInfo] parameter [podcast].
+ *  - `style`: is the [TextStyle] of [Typography.bodyMedium] of our custom [MaterialTheme.typography].
+ *  - `maxLines`: `if` the value of our [MutableState] wrapped [Boolean] variable `isExpanded` is
+ *  `true` then [Int.MAX_VALUE] otherwise `3`.
+ *  - `overflow`: is [TextOverflow.Ellipsis].
+ *  - `onTextLayout`: is a lambda which accepts a [TextLayoutResult] passed the lambda in variable
+ *  `result` then it sets the value of our [MutableState] wrapped [Boolean] variable `showSeeMore`
+ *  to the value of the [TextLayoutResult.hasVisualOverflow] property of `result`.
+ *  - `modifier`: is a [Modifier.animateContentSize] whose `animationSpec` argument is a [tween]
+ *  whose `durationMillis` argument is `200` and whose `easing` argument is [EaseOutExpo].
+ *
+ * If the value of our [MutableState] wrapped [Boolean] variable `showSeeMore` is `true` then we
+ * also compose a [Box] whose `modifier` argument is a [BoxScope.align] whose `alignment` argument
+ * is [Alignment.BottomEnd] to which is chained a [Modifier.background] whose `color` argument is
+ * the [Color] of [ColorScheme.surface] of our custom [MaterialTheme.colorScheme]. In the [BoxScope]
+ * `content` Composable lambda argument we compose a [Text] whose arguments are:
+ *  - `text`: is the string resource with resource ID `R.string.see_more` ("see more")
+ *  - `style`: is the [TextStyle] of a copy of [Typography.bodyMedium] of our custom
+ *  [MaterialTheme.typography] with its [TextStyle.textDecoration] property set to
+ *  [TextDecoration.Underline], and its [TextStyle.fontWeight] property set to [FontWeight.Bold].
+ *  - `modifier`: is a [Modifier.padding] whose `start` argument is 16.dp.
+ *
+ * @param podcast The [PodcastInfo] object containing the podcast's details, including the description.
+ * @param modifier The [Modifier] to be applied to the container of the description. Our caller
+ * [PodcastDetailsHeaderItem] passes us a [Modifier.fillMaxWidth] and a [Modifier.padding] that adds
+ * 16.dp padding to each vertical side.
+ */
 @Composable
 fun PodcastDetailsDescription(
     podcast: PodcastInfo,
@@ -391,6 +532,51 @@ fun PodcastDetailsDescription(
     }
 }
 
+/**
+ * Composable function that displays the header item buttons for a podcast details screen.
+ *
+ * This composable displays two buttons:
+ * - A "Subscribe" or "Subscribed" button, depending on the [isSubscribed] state.
+ * - A "More Options" button, represented by a vertical ellipsis icon.
+ *
+ * Our root composable is a [Row] whose `modifier` argument chains to our [Modifier] parameter
+ * [modifier] a [Modifier.padding] whose `top` argument is 16.dp. In the [RowScope] `content`
+ * Composable lambda argument we first compose a [Button] whose arguments are:
+ *  - `onClick`: is our lambda parameter [onClick].
+ *  - `colors`: is a [ButtonDefaults.buttonColors] whose `containerColor` argument is the
+ *  [Color] of [ColorScheme.tertiary] if the [isSubscribed] parameter is `true`, and the
+ *  [Color] of [ColorScheme.secondary] if it is `false`.
+ *  - `modifier`: is a [Modifier.semantics] whose `mergeDescendants` argument is `true`.
+ *
+ * In the [RowScope] `content` Composable lambda argument of the [Button] we compose an [Icon] whose
+ * arguments are:
+ *  - `imageVector`: is an [Icons.Filled.Check] if the [isSubscribed] parameter is `true`, and
+ *  [Icons.Filled.Add] otherwise.
+ *  - `contentDescription`: is the `null`.
+ *
+ * Next in the [RowScope] `content` Composable lambda argument of the [Button] we compose a [Text]
+ * whose arguments are:
+ *  - `text`: is the string resource with resource ID `R.string.subscribed` ("subscribed") if our
+ *  [Boolean] parameter [isSubscribed] is `true`, and the string resource with resource ID
+ *  `R.string.subscribe` ("subscribe") otherwise.
+ *  - `modifier`: is a [Modifier.padding] whose `start` argument is 8.dp.
+ *
+ * Next in the [RowScope] `content` Composable lambda argument of the [Row] root composabe we
+ * compose a [Spacer] whose `modifier` argument is a [RowScope.weight] whose `weight` argument is
+ * `1f`. And then we compose a [IconButton] whose arguments are:
+ *  - `onClick`: is a do nothing lambda.
+ *  - `modifier`: is a [Modifier.padding] whose `start` argument is 8.dp.
+ *
+ * In the [IconButton] `content` Composable lambda argument we compose an [Icon] whose arguments
+ * are:
+ *  - `imageVector`: is [Icons.Filled.MoreVert].
+ *  - `contentDescription`: is the string resource with resource ID `R.string.cd_more` ("More").
+ *
+ * @param isSubscribed [Boolean] indicating whether the user is subscribed to the podcast.
+ * @param onClick Lambda function to be invoked when the "Subscribe" or "Subscribed" button is clicked.
+ * @param modifier [Modifier] to be applied to the Row containing the buttons. Our caller
+ * [PodcastDetailsHeaderItem] passes us a [Modifier.fillMaxWidth].
+ */
 @Composable
 fun PodcastDetailsHeaderItemButtons(
     isSubscribed: Boolean,
