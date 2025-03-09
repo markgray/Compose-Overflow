@@ -21,17 +21,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -61,6 +66,52 @@ import com.example.jetcaster.ui.theme.JetcasterTheme
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+/**
+ * A composable function that displays a single episode in a list.
+ *
+ * This function renders a card-like item that represents an episode, including
+ * its title, podcast information, and actions. It uses [EpisodeListItemHeader]
+ * and [EpisodeListItemFooter] for rendering subcomponents of the item.
+ *
+ * Our root composable is a [Box] whose [Modifier] `modifier` argument chains to our [Modifier]
+ * parameter [modifier] a [Modifier.padding] that adds 8.dp to the `vertical` sides and 16.dp to the
+ * to the `horizontal` sides. In the [BoxScope] `content` Comosable lambda argument of the [Box]
+ * we compose a [Surface] whose arguments are:
+ *  - `shape` the [Shapes.large] of our custom [MaterialTheme.shapes].
+ *  - `color` the [ColorScheme.surfaceContainer] of our custom [MaterialTheme.colorScheme].
+ *  - `onClick` is a lambda that calls our lambda parameter [onClick] with our [EpisodeInfo] parameter
+ *  [episode].
+ *
+ * In the `content` Composable lambda argument of the [Surface] we compose a [Column] whose [Modifier]
+ * `modifier` argument is a [Modifier.padding] that adds 16.dp to the `horizontal` sides and 8.dp to
+ * the `vertical` sides. In the [ColumnScope] `content` Composable lambda argument of the [Column]
+ * we compose our [EpisodeListItemHeader] and [EpisodeListItemFooter].
+ *
+ * The arguments of the [EpisodeListItemHeader] are:
+ *  - `episode` our [EpisodeInfo] parameter [episode].
+ *  - `podcast` our [PodcastInfo] parameter [podcast].
+ *  - `showPodcastImage` our [Boolean] parameter [showPodcastImage].
+ *  - `showSummary` our [Boolean] parameter [showSummary].
+ *  - `modifier` a [Modifier.padding] that adds 8.dp to the `bottom` side.
+ *
+ * The arguments of the [EpisodeListItemFooter] are:
+ *  - `episode` our [EpisodeInfo] parameter [episode].
+ *  - `podcast` our [PodcastInfo] parameter [podcast].
+ *  - `onQueueEpisode` our lambda parameter [onQueueEpisode].
+ *
+ * @param episode The [EpisodeInfo] object containing details about the episode.
+ * @param podcast The [PodcastInfo] object containing details about the podcast.
+ * @param onClick A callback function that is invoked when the user clicks on the episode item.
+ * It receives the [EpisodeInfo] as a parameter.
+ * @param onQueueEpisode A callback function that is invoked when the user wants to queue the
+ * episode for playback. It receives the [PlayerEpisode] as parameter.
+ * @param modifier Modifier to be applied to the root layout element. Our three callers all pass
+ * us a [Modifier.fillMaxWidth].
+ * @param showPodcastImage [Boolean] flag to control whether the podcast image is displayed.
+ * Defaults to `true`.
+ * @param showSummary [Boolean] flag to control whether the episode summary is displayed in the
+ * header. Defaults to `false`.
+ */
 @Composable
 fun EpisodeListItem(
     episode: EpisodeInfo,
@@ -100,6 +151,18 @@ fun EpisodeListItem(
     }
 }
 
+/**
+ * Displays the footer of an episode list item.
+ *
+ * This composable displays a row containing:
+ * - A play button to initiate playback (currently a placeholder).
+ * - Episode duration and/or published date.
+ * - An "Add to Queue" button.
+ * - A "More" options button (currently a placeholder).
+ *
+ * @param episode The [EpisodeInfo] containing data about the episode.
+ * @param podcast The [PodcastInfo] containing data about the podcast to which the episode belongs.
+ */
 @Composable
 private fun EpisodeListItemFooter(
     episode: EpisodeInfo,

@@ -626,6 +626,28 @@ fun PodcastDetailsHeaderItemButtons(
     }
 }
 
+/**
+ * A custom TopAppBar for the Podcast Details screen.
+ *
+ * This composable provides a [TopAppBar] with a back navigation button.
+ * It is designed to be used at the top of the Podcast Details screen to allow
+ * the user to navigate back to the previous screen.
+ *
+ * Our root composable is a [TopAppBar] whose `title` argument is an empty lambda, whose
+ * `navigationIcon` argument is a [IconButton] whose `onClick` lambda argument is our [navigateBack]
+ * lambda parameter. In the [IconButton] `content` Composable lambda argument we compose an [Icon]
+ * whose arguments are:
+ *  - `imageVector`: is [Icons.AutoMirrored.Filled.ArrowBack].
+ *  - `contentDescription`: is the string resource with resource ID `R.string.cd_back` ("Back").
+ *
+ * The [Modifier] `modifier` argument of the [TopAppBar] is our [Modifier] parameter [modifier].
+ *
+ *
+ * @param navigateBack A callback function that is invoked when the back button is clicked.
+ * This should handle the navigation back to the previous screen.
+ * @param modifier [Modifier] to be applied to the [TopAppBar]. Our caller [PodcastDetailsScreen]
+ * passes us a [Modifier.fillMaxWidth].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PodcastDetailsTopAppBar(
