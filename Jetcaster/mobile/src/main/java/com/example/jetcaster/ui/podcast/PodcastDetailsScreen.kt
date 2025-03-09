@@ -280,7 +280,7 @@ fun PodcastDetailsScreen(
  * along with a header containing podcast information.
  *
  * Our root composable is a [LazyVerticalGrid] whose `columns` argument is a [GridCells.Adaptive]
- * whose `minSize` argument is 362.dp, and its `modifier` argument chains a [Modifier.fillMaxSize]
+ * whose `minSize` argument is 362.dp, and whose `modifier` argument chains a [Modifier.fillMaxSize]
  * to our [Modifier] parameter [modifier]. In its [LazyGridScope] `content` Composable lambda
  * argument we first compose a [fullWidthItem] in whose [LazyGridItemScope] `content` Composable
  * lambda argument we compose a [PodcastDetailsHeaderItem] whose arguments are:
@@ -291,7 +291,7 @@ fun PodcastDetailsScreen(
  * Then we compose a [LazyGridScope.items], whose `items` argument is our [List] of [EpisodeInfo]
  * parameter [episodes] and its `key` argument is a lambda which returns the [EpisodeInfo.uri] of
  * each [EpisodeInfo] in [episodes]. In its [LazyGridItemScope] `itemContent` Composable lambda
- * argument accept the [EpisodeInfo] passed the lambda in variable `episode` then we compose a
+ * argument we accept the [EpisodeInfo] passed the lambda in variable `episode` then we compose a
  * [EpisodeListItem] whose arguments are:
  *  - `episode`: is the [EpisodeInfo] passed the lambda in variable `episode`.
  *  - `podcast`: is our [PodcastInfo] parameter [podcast].
@@ -309,7 +309,9 @@ fun PodcastDetailsScreen(
  * It takes a [PlayerEpisode] as a parameter.
  * @param navigateToPlayer A lambda function to be called when the user wants to navigate to the
  * episode player screen. It takes the selected [EpisodeInfo] as a parameter.
- * @param modifier Modifier to be applied to the root of the composable.
+ * @param modifier Modifier to be applied to the root of the composable. Our caller
+ * [PodcastDetailsScreen] passes us a [Modifier.padding] whose `paddingValues` argument is the
+ * [PaddingValues] that the [Scaffold] we are in passes to its `content` Composable lambda argument.
  */
 @Composable
 fun PodcastDetailsContent(
@@ -392,8 +394,8 @@ fun PodcastDetailsContent(
  *
  * @param podcast The [PodcastInfo] object containing the podcast's details.
  * @param toggleSubscribe A lambda function that takes a [PodcastInfo] and is called when the
- * subscription button is clicked. This function should handle toggle the subscription status
- * of the podcast.
+ * subscription button is clicked. This function should toggle the subscription status of the
+ * podcast.
  * @param modifier [Modifier] to be applied to the layout. Our caller [PodcastDetailsContent] passes
  * us a [Modifier.fillMaxWidth].
  */
@@ -552,13 +554,13 @@ fun PodcastDetailsDescription(
  * arguments are:
  *  - `imageVector`: is an [Icons.Filled.Check] if the [isSubscribed] parameter is `true`, and
  *  [Icons.Filled.Add] otherwise.
- *  - `contentDescription`: is the `null`.
+ *  - `contentDescription`: is `null`.
  *
  * Next in the [RowScope] `content` Composable lambda argument of the [Button] we compose a [Text]
  * whose arguments are:
- *  - `text`: is the string resource with resource ID `R.string.subscribed` ("subscribed") if our
+ *  - `text`: is the string resource with resource ID `R.string.subscribed` ("Subscribed") if our
  *  [Boolean] parameter [isSubscribed] is `true`, and the string resource with resource ID
- *  `R.string.subscribe` ("subscribe") otherwise.
+ *  `R.string.subscribe` ("Subscribe") otherwise.
  *  - `modifier`: is a [Modifier.padding] whose `start` argument is 8.dp.
  *
  * Next in the [RowScope] `content` Composable lambda argument of the [Row] root composabe we
