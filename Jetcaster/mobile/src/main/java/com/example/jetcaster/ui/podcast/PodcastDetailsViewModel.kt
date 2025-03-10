@@ -91,7 +91,7 @@ class PodcastDetailsViewModel @AssistedInject constructor(
     /**
      * This property is a [StateFlow] that represents the current state of the podcast screen.
      *
-     * We use the [combine] function to combine two [StateFlow]s:
+     * We use the [combine] function to combine two [Flow]s:
      *  - [PodcastStore.podcastWithExtraInfo] of [PodcastStore] field [podcastStore] for the podcast
      *  whose `podcastUri` is our [String] variable `decodedPodcastUri`. Returns a [Flow] containing
      *  the [PodcastWithExtraInfo] of the podcast.
@@ -135,8 +135,8 @@ class PodcastDetailsViewModel @AssistedInject constructor(
     /**
      * Toggles the podcast subscription status of its [PodcastInfo] parameter [podcast]. We use
      * [viewModelScope] to launch a coroutine that calls the [PodcastStore.togglePodcastFollowed]
-     * of the [PodcastStore] field [podcastStore] with the [PodcastInfo.uri] of the [PodcastInfo]
-     * parameter [podcast].
+     * method of the [PodcastStore] field [podcastStore] with the [PodcastInfo.uri] of the
+     * [PodcastInfo] parameter [podcast].
      */
     fun toggleSusbcribe(podcast: PodcastInfo) {
         viewModelScope.launch {
