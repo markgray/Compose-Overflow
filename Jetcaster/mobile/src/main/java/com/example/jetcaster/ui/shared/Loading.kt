@@ -17,13 +17,31 @@
 package com.example.jetcaster.ui.shared
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.jetcaster.ui.podcast.PodcastDetailsScreen
 
+/**
+ * A composable function that displays a full-screen loading indicator.
+ *
+ * This function shows a [CircularProgressIndicator] centered within a [Surface] that
+ * fills the available space.
+ *
+ * Our root composable is a [Surface] whose [Modifier] `modifier` is our [Modifier] parameter
+ * [modifier]. Its `content` Composable lambda argument is a [Box] whose `modifier` argument
+ * is a [Modifier.fillMaxSize]. In its [BoxScope] `content` Composable lambda argument we compose
+ * a [CircularProgressIndicator] whose [Modifier] `modifier` argument is a [BoxScope.align] whose
+ * `alignment` argument is [Alignment.Center].
+ *
+ * @param modifier The [Modifier] to be applied to the [Surface]. Our caller
+ * `PodcastDetailsLoadingScreen` passes us its own [Modifier] parameter [modifier], and its
+ * caller [PodcastDetailsScreen] passes it a [Modifier.fillMaxSize].
+ */
 @Composable
 fun Loading(modifier: Modifier = Modifier) {
     Surface(modifier = modifier) {

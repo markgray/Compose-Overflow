@@ -21,4 +21,5 @@ package com.example.jetcaster.ui.theme
  * surface color. These values are defined within the WCAG AA guidelines, and we use a value of
  * 3:1 which is the minimum for user-interface components.
  */
-const val MinContrastOfPrimaryVsSurface = 3f
+@Suppress("unused")
+const val MinContrastOfPrimaryVsSurface: Float = 3f

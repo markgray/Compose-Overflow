@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material3.Typography
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,11 +48,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,6 +68,7 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.HtmlTextContainer
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.ui.theme.JetcasterTheme
+import java.time.Duration
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -160,6 +166,50 @@ fun EpisodeListItem(
  * - An "Add to Queue" button.
  * - A "More" options button (currently a placeholder).
  *
+ * Our root composable is a [Row] whose `verticalAlignment` argument is [Alignment.CenterVertically],
+ * and whose [Modifier] `modifier` argument is our [Modifier] parameter [modifier]. In the [RowScope]
+ * `content` Composable lambda argument we compose an [Image] whose arguments are:
+ *  - `imageVector` is the [ImageVector] drawn by [Icons.Rounded.PlayCircleFilled].
+ *  - `contentDescription` is the string with resource ID "R.string.cd_play" ("Play").
+ *  - `contentScale` is [ContentScale.Fit].
+ *  - `colorFilter` is a [ColorFilter.tint] that uses the [ColorScheme.primary] of our custom
+ *  [MaterialTheme.colorScheme] as its `color` argument.
+ *  - `modifier` is a [Modifier.clickable] whose `interactionSource` is a remembered instance of
+ *  [MutableInteractionSource], whose `indication` is a [ripple] whose `bounded` argument is `false`,
+ *  and whose `radius` argument is 24.dp, and the `onClick` lambda argument is an empty lambda.
+ *  Chained to that is a [Modifier.size] whose `size` argument is 48.dp, and a [Modifier.padding]
+ *  that adds 6.dp to the `all` sides, and a [Modifier.semantics] that sets the [Role] of the [Image]
+ *  to [Role.Button].
+ *
+ * Next in the [RowScope] `content` Composable lambda argument we initialize our [Duration] variable
+ * `duration` to the [EpisodeInfo.duration] of our [EpisodeInfo] parameter [episode]. Then we compose
+ * a [Text] whose arguments are:
+ *  - `text` is if our [Duration] variable `duration` is not `null` the formatted string created
+ *  by our [String] format with resource ID `R.string.episode_date_duration` from the
+ *  [EpisodeInfo.published] and the [Duration.toMinutes] of our [Duration] variable `duration`,
+ *  otherwise the [String] formatted from [EpisodeInfo.published] using our [MediumDateFormatter].
+ *  - `maxLines` is 1.
+ *  - `overflow` is [TextOverflow.Ellipsis].
+ *  - `style` is the [TextStyle] of [Typography.bodySmall] from our custom [MaterialTheme.typography].
+ *  - `modifier` is a [Modifier.padding] that adds 8.dp to the `horizontal` sides, with a
+ *  [RowScope.weight] whose `weight` argument is 1f chained to that.
+ *
+ * Next in the [RowScope] `content` Composable lambda argument we compose an [IconButton] whose
+ * `onClick` lambda argument is a lambda that calls our lambda parameter [onQueueEpisode] with a
+ * [PlayerEpisode] whose `podcastInfo` argument is our [PodcastInfo] parameter [podcast] and whose
+ * `episodeInfo` argument is our [EpisodeInfo] parameter [episode]. In the `content` Composable
+ * lambda argument of the [IconButton] we compose an [Icon] whose arguments are:
+ *  - `imageVector` is the [ImageVector] drawn by [Icons.AutoMirrored.Filled.PlaylistAdd].
+ *  - `contentDescription` is the string with resource ID `R.string.cd_add` ("Add").
+ *  - `tint` is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
+ *
+ * Finally in the [RowScope] `content` Composable lambda argument we compose an [IconButton] whose
+ * `onClick` lambda argument is an empty lambda. In the `content` Composable lambda argument of the
+ * [IconButton] we compose an [Icon] whose arguments are:
+ *  - `imageVector` is the [ImageVector] drawn by [Icons.Filled.MoreVert].
+ *  - `contentDescription` is the string with resource ID `R.string.cd_more` ("More").
+ *  - `tint` is the [ColorScheme.onSurfaceVariant] of our custom [MaterialTheme.colorScheme].
+ *
  * @param episode The [EpisodeInfo] containing data about the episode.
  * @param podcast The [PodcastInfo] containing data about the podcast to which the episode belongs.
  */
@@ -176,20 +226,20 @@ private fun EpisodeListItemFooter(
     ) {
         Image(
             imageVector = Icons.Rounded.PlayCircleFilled,
-            contentDescription = stringResource(R.string.cd_play),
+            contentDescription = stringResource(id = R.string.cd_play),
             contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = ripple(bounded = false, radius = 24.dp)
                 ) { /* TODO */ }
-                .size(48.dp)
-                .padding(6.dp)
+                .size(size = 48.dp)
+                .padding(all = 6.dp)
                 .semantics { role = Role.Button }
         )
 
-        val duration = episode.duration
+        val duration: Duration? = episode.duration
         Text(
             text = when {
                 duration != null -> {
@@ -209,7 +259,7 @@ private fun EpisodeListItemFooter(
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(horizontal = 8.dp)
-                .weight(1f)
+                .weight(weight = 1f)
         )
 
         IconButton(
@@ -241,6 +291,55 @@ private fun EpisodeListItemFooter(
     }
 }
 
+/**
+ * Displays the header section of an episode list item.
+ *
+ * This composable shows the episode title and either the episode summary or the podcast title,
+ * along with an optional podcast image.
+ *
+ * Our root composable is a [Row] whose [Modifier] `modifier` argument is our [Modifier] parameter
+ * [modifier]. In the [RowScope] `content` Composable lambda argument we compose a [Column] whose
+ * [Modifier] `modifier` argument is a [RowScope.weight] whose `weight` argument is 1f chained to
+ * a [Modifier.padding] that adds 16.dp to the `end` side. In the [ColumnScope] `content` Composable
+ * lambda argument we compose a [Text] whose arguments are:
+ *  - `text` is the [EpisodeInfo.title] of our [EpisodeInfo] parameter [episode].
+ *  - `maxLines` is 2.
+ *  - `minLines` is 1.
+ *  - `overflow` is [TextOverflow.Ellipsis].
+ *  - `style` is the [TextStyle] of [Typography.titleMedium] from our custom [MaterialTheme.typography].
+ *  - `modifier` is a [Modifier.padding] that adds 2.dp to the `vertical` sides.
+ *
+ * Next in the [ColumnScope] `content` Composable lambda argument is our [Boolean] parameter [showSummary]
+ * is `true` we compose an [HtmlTextContainer] whose `text` argument is the [EpisodeInfo.summary],
+ * and in the `content` Composable lambda argument of the [HtmlTextContainer] we accept the
+ * [AnnotatedString] passed the lambda in `it`, then compose a [Text] whose arguments are:
+ *  - `text` is the [AnnotatedString] passed the lambda in `it`.
+ *  - `maxLines` is 2.
+ *  - `minLines` is 1.
+ *  - `overflow` is [TextOverflow.Ellipsis].
+ *  - `style` is the [TextStyle] of [Typography.titleSmall] from our custom [MaterialTheme.typography].
+ *
+ * Otherwise we compose a [Text] whose arguments are:
+ *  - `text` is the [PodcastInfo.title] of our [PodcastInfo] parameter [podcast].
+ *  - `maxLines` is 2.
+ *  - `minLines` is 1.
+ *  - `overflow` is [TextOverflow.Ellipsis].
+ *  - `style` is the [TextStyle] of [Typography.titleSmall] from our custom [MaterialTheme.typography].
+ *
+ * Next in the [ColumnScope] `content` Composable lambda argument if our [Boolean] parameter
+ * [showPodcastImage] is `true` we compose an [EpisodeListItemImage] whose arguments are:
+ *  - `podcast` is our [PodcastInfo] parameter [podcast].
+ *  - `modifier` is a [Modifier.size] whose `size` argument is 56.dp, with a [Modifier.clip] chained
+ *  to that whose `shape` argument is the [Shapes.medium] of our custom [MaterialTheme.shapes].
+ *
+ * @param episode The [EpisodeInfo] containing details about the episode.
+ * @param podcast The [PodcastInfo] containing details about the podcast.
+ * @param showPodcastImage [Boolean] indicating whether to display the podcast image.
+ * @param showSummary [Boolean] indicating whether to display the episode summary instead of the
+ * podcast title.
+ * @param modifier [Modifier] for styling and layout adjustments. Our caller [EpisodeListItem] passes
+ * us a [Modifier.padding] that adds 8.dp to the `bottom` side.
+ */
 @Composable
 private fun EpisodeListItemHeader(
     episode: EpisodeInfo,
@@ -251,9 +350,8 @@ private fun EpisodeListItemHeader(
 ) {
     Row(modifier = modifier) {
         Column(
-            modifier =
-            Modifier
-                .weight(1f)
+            modifier = Modifier
+                .weight(weight = 1f)
                 .padding(end = 16.dp)
         ) {
             Text(
@@ -289,13 +387,30 @@ private fun EpisodeListItemHeader(
             EpisodeListItemImage(
                 podcast = podcast,
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                    .size(size = 56.dp)
+                    .clip(shape = MaterialTheme.shapes.medium)
             )
         }
     }
 }
 
+/**
+ * Displays the image associated with an episode list item, using the podcast's image URL.
+ *
+ * This composable is a wrapper around [PodcastImage] that simplifies the display of a podcast's
+ * image in the context of an episode list. It automatically passes the podcast's image URL
+ * and sets the content description to null, since the image is primarily decorative in this context.
+ *
+ * Our root composable is a [PodcastImage] whose arguments are:
+ *  - `podcastImageUrl` is the [PodcastInfo.imageUrl] of our [PodcastInfo] parameter [podcast].
+ *  - `contentDescription` is null.
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * @param podcast The [PodcastInfo] object containing the image URL to display.
+ * @param modifier [Modifier] to be applied to the image. Our caller [EpisodeListItemHeader] passes
+ * us a [Modifier.size] whose `size` argument is 56.dp, with a [Modifier.clip] chained to that
+ * whose `shape` argument is the [Shapes.medium] of our custom [MaterialTheme.shapes].
+ */
 @Composable
 private fun EpisodeListItemImage(
     podcast: PodcastInfo,
@@ -308,6 +423,9 @@ private fun EpisodeListItemImage(
     )
 }
 
+/**
+ * Previews for [EpisodeListItem].
+ */
 @Preview(
     name = "Light Mode",
     showBackground = true,
@@ -331,6 +449,10 @@ private fun EpisodeListItemPreview() {
     }
 }
 
+/**
+ * A [DateTimeFormatter] for displaying dates in a medium format that is used to format the
+ * [EpisodeInfo.published] date in the [EpisodeListItemHeader] Composable.
+ */
 private val MediumDateFormatter by lazy {
     DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
 }
