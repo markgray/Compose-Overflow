@@ -177,8 +177,8 @@ fun EpisodeListItem(
  *  - `modifier` is a [Modifier.clickable] whose `interactionSource` is a remembered instance of
  *  [MutableInteractionSource], whose `indication` is a [ripple] whose `bounded` argument is `false`,
  *  and whose `radius` argument is 24.dp, and the `onClick` lambda argument is an empty lambda.
- *  Chained to that is a [Modifier.size] whose `size` argument is 48.dp, and a [Modifier.padding]
- *  that adds 6.dp to the `all` sides, and a [Modifier.semantics] that sets the [Role] of the [Image]
+ *  Chained to that is a [Modifier.size] whose `size` argument is 48.dp, a [Modifier.padding] that
+ *  adds 6.dp to the `all` sides, and a [Modifier.semantics] that sets the [Role] of the [Image]
  *  to [Role.Button].
  *
  * Next in the [RowScope] `content` Composable lambda argument we initialize our [Duration] variable
@@ -186,13 +186,15 @@ fun EpisodeListItem(
  * a [Text] whose arguments are:
  *  - `text` is if our [Duration] variable `duration` is not `null` the formatted string created
  *  by our [String] format with resource ID `R.string.episode_date_duration` from the
- *  [EpisodeInfo.published] and the [Duration.toMinutes] of our [Duration] variable `duration`,
- *  otherwise the [String] formatted from [EpisodeInfo.published] using our [MediumDateFormatter].
+ *  [EpisodeInfo.published] property of our [EpisodeInfo] parameter [episode] and the
+ *  [Duration.toMinutes] of our [Duration] variable `duration`, and if `duration` is `null the
+ *  [String] formatted from the [EpisodeInfo.published] property of [EpisodeInfo] parameter [episode]
+ *  using our [MediumDateFormatter].
  *  - `maxLines` is 1.
  *  - `overflow` is [TextOverflow.Ellipsis].
  *  - `style` is the [TextStyle] of [Typography.bodySmall] from our custom [MaterialTheme.typography].
  *  - `modifier` is a [Modifier.padding] that adds 8.dp to the `horizontal` sides, with a
- *  [RowScope.weight] whose `weight` argument is 1f chained to that.
+ *  [RowScope.weight] whose `weight` argument is `1f` chained to that.
  *
  * Next in the [RowScope] `content` Composable lambda argument we compose an [IconButton] whose
  * `onClick` lambda argument is a lambda that calls our lambda parameter [onQueueEpisode] with a
@@ -299,7 +301,7 @@ private fun EpisodeListItemFooter(
  *
  * Our root composable is a [Row] whose [Modifier] `modifier` argument is our [Modifier] parameter
  * [modifier]. In the [RowScope] `content` Composable lambda argument we compose a [Column] whose
- * [Modifier] `modifier` argument is a [RowScope.weight] whose `weight` argument is 1f chained to
+ * [Modifier] `modifier` argument is a [RowScope.weight] whose `weight` argument is `1f` chained to
  * a [Modifier.padding] that adds 16.dp to the `end` side. In the [ColumnScope] `content` Composable
  * lambda argument we compose a [Text] whose arguments are:
  *  - `text` is the [EpisodeInfo.title] of our [EpisodeInfo] parameter [episode].
@@ -309,17 +311,18 @@ private fun EpisodeListItemFooter(
  *  - `style` is the [TextStyle] of [Typography.titleMedium] from our custom [MaterialTheme.typography].
  *  - `modifier` is a [Modifier.padding] that adds 2.dp to the `vertical` sides.
  *
- * Next in the [ColumnScope] `content` Composable lambda argument is our [Boolean] parameter [showSummary]
- * is `true` we compose an [HtmlTextContainer] whose `text` argument is the [EpisodeInfo.summary],
- * and in the `content` Composable lambda argument of the [HtmlTextContainer] we accept the
- * [AnnotatedString] passed the lambda in `it`, then compose a [Text] whose arguments are:
+ * Next in the [ColumnScope] `content` Composable lambda argument if our [Boolean] parameter
+ * [showSummary] is `true` we compose an [HtmlTextContainer] whose `text` argument is the
+ * [EpisodeInfo.summary] of our [EpisodeInfo] parameter [episode], and in the `content` Composable
+ * lambda argument of the [HtmlTextContainer] we accept the [AnnotatedString] passed the lambda in
+ * `it`, then compose a [Text] whose arguments are:
  *  - `text` is the [AnnotatedString] passed the lambda in `it`.
  *  - `maxLines` is 2.
  *  - `minLines` is 1.
  *  - `overflow` is [TextOverflow.Ellipsis].
  *  - `style` is the [TextStyle] of [Typography.titleSmall] from our custom [MaterialTheme.typography].
  *
- * Otherwise we compose a [Text] whose arguments are:
+ * And if [showSummary] is `false` we compose a [Text] whose arguments are:
  *  - `text` is the [PodcastInfo.title] of our [PodcastInfo] parameter [podcast].
  *  - `maxLines` is 2.
  *  - `minLines` is 1.
@@ -398,12 +401,12 @@ private fun EpisodeListItemHeader(
  * Displays the image associated with an episode list item, using the podcast's image URL.
  *
  * This composable is a wrapper around [PodcastImage] that simplifies the display of a podcast's
- * image in the context of an episode list. It automatically passes the podcast's image URL
- * and sets the content description to null, since the image is primarily decorative in this context.
+ * image in the context of an episode list. It automatically passes the podcast's image URL and
+ * sets the content description to `null`, since the image is primarily decorative in this context.
  *
  * Our root composable is a [PodcastImage] whose arguments are:
  *  - `podcastImageUrl` is the [PodcastInfo.imageUrl] of our [PodcastInfo] parameter [podcast].
- *  - `contentDescription` is null.
+ *  - `contentDescription` is `null`.
  *  - `modifier` is our [Modifier] parameter [modifier].
  *
  * @param podcast The [PodcastInfo] object containing the image URL to display.
