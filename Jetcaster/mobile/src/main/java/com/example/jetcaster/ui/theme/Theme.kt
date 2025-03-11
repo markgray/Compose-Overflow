@@ -487,6 +487,20 @@ val unspecified_scheme: ColorFamily = ColorFamily(
     Color.Unspecified, Color.Unspecified, Color.Unspecified, Color.Unspecified
 )
 
+/**
+ * JetcasterTheme is a custom theme for the Jetcaster app, built on top of Material Design 3.
+ *
+ * It provides a unified look and feel across the application, allowing you to easily switch
+ * between light and dark themes, and utilize dynamic color theming on supported devices.
+ *
+ * @param darkTheme [Boolean] indicating whether to use the dark theme. Defaults to the system's
+ * dark theme setting.
+ * @param dynamicColor [Boolean] indicating whether to use dynamic color theming. Defaults to `false`.
+ * Dynamic color is only available on Android 12 (API level 31) and higher. When `true`, it will use
+ * the user's current wallpaper to generate a color scheme. When `false`, it falls back to the static
+ * light/dark color schemes defined in the app.
+ * @param content The composable content to be themed.
+ */
 @Composable
 fun JetcasterTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
