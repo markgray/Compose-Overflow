@@ -86,7 +86,7 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
 
     /**
      * This method sets the [Email] whose [Email.id] is our [Long] parameter [emailId] to be the
-     * opened email. We start by using the [List.find] method of the [List] of [Email]s in the
+     * opened email. We start by using the [Iterable.find] method of the [List] of [Email]s in the
      * [ReplyHomeUIState.emails] property of the [StateFlow.value] of our field [uiState] to find the
      * [Email] whose [Email.id] matches our [Long] parameter [emailId] in order to initialize our
      * [Email] variable `val email` to that [Email]. Then we set the [MutableStateFlow.value] of our
@@ -137,7 +137,6 @@ class ReplyHomeViewModel(private val emailsRepository: EmailsRepository = Emails
      * property [ReplyHomeUIState.emails].
      */
     fun closeDetailScreen() {
-        @Suppress("RedundantValueArgument")
         _uiState.value = _uiState
             .value.copy(
                 isDetailOnlyOpen = false,
