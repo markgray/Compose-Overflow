@@ -38,13 +38,42 @@ import kotlin.math.min
 import kotlin.math.pow
 
 /**
- * Applies a radial gradient scrim in the foreground emanating from the top
+ * Applies a radial gradient scrim effect in the foreground emanating from the top
  * center quarter of the element.
+ *
+ * This modifier creates a radial gradient that starts with the specified [color] at the center
+ * and fades to transparent towards the edges. The center of the gradient is slightly offset
+ * vertically towards the top of the composable. The gradient's radius is half of the larger
+ * dimension (width or height) of the composable.
+ *
+ * The gradient effect provides a visual cue, often used to highlight a central area or to
+ * softly obscure the edges of a composable.
+ *
+ * @param color The color to use for the center of the radial gradient. The gradient will transition
+ * from this color to transparent.
+ * @return A [Modifier] that draws a radial gradient scrim as a background.
  */
 fun Modifier.radialGradientScrim(color: Color): Modifier {
-    val radialGradient = object : ShaderBrush() {
+    val radialGradient: ShaderBrush = object : ShaderBrush() {
+        /**
+         * Creates a radial gradient shader for a given size.
+         *
+         * This function generates a shader that creates a radial gradient effect, emanating
+         * from a center point slightly above the vertical center of the provided size.
+         * The gradient transitions from a specified color to transparent, with a smooth
+         * fade-out towards the edges.
+         *
+         * @param size The size (width and height) of the area where the shader will be applied.
+         *   This determines the center, radius, and overall dimensions of the gradient.
+         * @return A [Shader] object representing the radial gradient. This can be used
+         *   to fill shapes or backgrounds with the defined gradient effect.
+         *
+         * @see RadialGradientShader
+         * @see Size
+         * @see Color
+         */
         override fun createShader(size: Size): Shader {
-            val largerDimension = max(size.height, size.width)
+            val largerDimension: Float = max(size.height, size.width)
             return RadialGradientShader(
                 center = size.center.copy(y = size.height / 4),
                 colors = listOf(color, Color.Transparent),
@@ -53,7 +82,7 @@ fun Modifier.radialGradientScrim(color: Color): Modifier {
             )
         }
     }
-    return this.background(radialGradient)
+    return this.background(brush = radialGradient)
 }
 
 /**
@@ -75,7 +104,13 @@ fun Modifier.verticalGradientScrim(
     @FloatRange(from = 0.0, to = 1.0) endYPercentage: Float = 1f,
     decay: Float = 1.0f,
     numStops: Int = 16
-) = this then VerticalGradientElement(color, startYPercentage, endYPercentage, decay, numStops)
+): Modifier = this then VerticalGradientElement(
+    color = color,
+    startYPercentage = startYPercentage,
+    endYPercentage = endYPercentage,
+    decay = decay,
+    numStops = numStops
+)
 
 private data class VerticalGradientElement(
     var color: Color,

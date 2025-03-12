@@ -121,43 +121,131 @@ fun rememberJetcasterAppState(
     JetcasterAppState(navController = navController, context = context)
 }
 
+/**
+ *  [JetcasterAppState] manages the overall state and navigation of the Jetcaster application.
+ *
+ *  It encapsulates the application's navigation controller, online status, and
+ *  provides methods for navigating between different screens within the app.
+ *
+ *  @property navController The [NavHostController] responsible for managing navigation within the app.
+ *  @property context The application [Context], used for accessing system services like the
+ *  [ConnectivityManager].
+ */
 class JetcasterAppState(
     val navController: NavHostController,
     private val context: Context
 ) {
-    var isOnline: Boolean by mutableStateOf(checkIfOnline())
+    /**
+     * Indicates whether the device is currently connected to the internet.
+     *
+     * This property reflects the online status of the device based on the result of [checkIfOnline].
+     * It's updated as a mutable state, allowing UI components to react to changes in connectivity.
+     *
+     * @see checkIfOnline
+     */
+    var isOnline: Boolean by mutableStateOf(value = checkIfOnline())
         private set
 
+    /**
+     * Refreshes the online status of the application.
+     *
+     * This function updates the [isOnline] property by calling the [checkIfOnline] function.
+     * It essentially checks the current network connectivity and updates the internal state
+     * to reflect whether the application is currently online or offline.
+     *
+     * Call this function whenever you need to re-evaluate the network connection status.
+     */
     fun refreshOnline() {
         isOnline = checkIfOnline()
     }
 
+    /**
+     * Navigates to the player screen for the given episode URI.
+     *
+     * This function handles navigation to the player screen, ensuring that duplicate navigation
+     * events are discarded by checking the lifecycle state of the calling navigation entry.
+     *
+     * @param episodeUri The URI of the episode to be played. This URI should identify the
+     * audio/video content.
+     * @param from The [NavBackStackEntry] from which the navigation is initiated. This is used to
+     * check the lifecycle state and prevent duplicate navigation.
+     *
+     * @see NavHostController.navigate
+     * @see NavBackStackEntry.lifecycleIsResumed
+     * @see Screen.Player.createRoute
+     */
     fun navigateToPlayer(episodeUri: String, from: NavBackStackEntry) {
         // In order to discard duplicated navigation events, we check the Lifecycle
         if (from.lifecycleIsResumed()) {
-            val encodedUri = Uri.encode(episodeUri)
-            navController.navigate(Screen.Player.createRoute(encodedUri))
+            val encodedUri: String = Uri.encode(episodeUri)
+            navController.navigate(route = Screen.Player.createRoute(episodeUri = encodedUri))
         }
     }
 
+    /**
+     * Navigates the user to the Podcast Details screen.
+     *
+     * This function takes a podcast URI and the current navigation back stack entry as input.
+     * It first checks if the current navigation back stack entry's lifecycle is resumed.
+     * If it is, it encodes the podcast URI to ensure it's safe for use in a URL and then
+     * navigates to the Podcast Details screen using the provided URI.
+     *
+     * @param podcastUri The URI of the podcast to display details for. This should be a string
+     * representing the podcast's unique identifier or resource locator.
+     * @param from The current [NavBackStackEntry] from which the navigation is triggered. This is
+     * used to check if the lifecycle is in a resumed state before navigation, preventing potential
+     * issues with navigating from a non-active screen.
+     *
+     * @see NavHostController.navigate
+     * @see NavBackStackEntry.lifecycleIsResumed
+     * @see Uri.encode
+     * @see Screen.PodcastDetails.createRoute
+     */
     @Suppress("unused")
     fun navigateToPodcastDetails(podcastUri: String, from: NavBackStackEntry) {
         if (from.lifecycleIsResumed()) {
-            val encodedUri = Uri.encode(podcastUri)
-            navController.navigate(Screen.PodcastDetails.createRoute(encodedUri))
+            val encodedUri: String = Uri.encode(podcastUri)
+            navController.navigate(route = Screen.PodcastDetails.createRoute(podcastUri = encodedUri))
         }
     }
 
+    /**
+     * Navigates back to the previous destination in the navigation stack.
+     *
+     * This function utilizes the [NavHostController.popBackStack] method to remove the
+     * current destination from the back stack and navigate to the immediately
+     * preceding destination. If the back stack is empty, this function will do nothing.
+     *
+     * @see NavHostController.popBackStack
+     */
     fun navigateBack() {
         navController.popBackStack()
     }
 
+    /**
+     * Checks if the device is currently online.
+     *
+     * This function determines the device's online status by checking for an active internet connection.
+     * It uses different approaches based on the Android SDK version:
+     *
+     * - **Android Marshmallow (API 23) and above:**
+     *   It utilizes the `NetworkCapabilities` API to check if the active network has both the
+     *   `NET_CAPABILITY_INTERNET` and `NET_CAPABILITY_VALIDATED` capabilities. This ensures that
+     *   the network can access the internet and has been validated as a functional connection.
+     *
+     * - **Below Android Marshmallow (API < 23):**
+     *   It uses the deprecated `activeNetworkInfo` API to check if the active network is
+     *   connected or connecting.
+     *
+     * @return `true` if the device is online (has a valid internet connection), `false` otherwise.
+     */
     @Suppress("DEPRECATION")
     private fun checkIfOnline(): Boolean {
-        val cm = getSystemService(context, ConnectivityManager::class.java)
+        val cm: ConnectivityManager? = getSystemService(context, ConnectivityManager::class.java)
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val capabilities = cm?.getNetworkCapabilities(cm.activeNetwork) ?: return false
+            val capabilities: NetworkCapabilities =
+                cm?.getNetworkCapabilities(cm.activeNetwork) ?: return false
             capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                 capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
         } else {
