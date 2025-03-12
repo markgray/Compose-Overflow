@@ -488,7 +488,7 @@ val unspecified_scheme: ColorFamily = ColorFamily(
 )
 
 /**
- * JetcasterTheme is a custom theme for the Jetcaster app, built on top of Material Design 3.
+ * [JetcasterTheme] is a custom theme for the Jetcaster app, built on top of Material Design 3.
  *
  * It provides a unified look and feel across the application, allowing you to easily switch
  * between light and dark themes, and utilize dynamic color theming on supported devices.

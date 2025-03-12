@@ -41,8 +41,7 @@ sealed class Screen(val route: String) {
      * Represents the "Home" screen in the application.
      *
      * This object encapsulates the route and any other screen-specific
-     * configurations for the Home screen.  It's designed to be used within
-     * a navigation system, likely with Jetpack Compose's Navigation library.
+     * configurations for the Home screen.
      *
      * @property route The unique route associated with the Home screen. In this case, it's "home".
      */
@@ -59,7 +58,7 @@ sealed class Screen(val route: String) {
      * @property route The base route for the Player screen, including a placeholder for the episode
      * URI. It is defined as "player/{$ARG_EPISODE_URI}".
      */
-    object Player : Screen("player/{$ARG_EPISODE_URI}") {
+    object Player : Screen(route = "player/{$ARG_EPISODE_URI}") {
         fun createRoute(episodeUri: String): String = "player/$episodeUri"
     }
 
@@ -93,7 +92,6 @@ sealed class Screen(val route: String) {
 
         /**
          *  The key used to pass the episode's URI as a String argument in a bundle or intent.
-         *  This URI typically points to the audio file of the episode.
          */
         const val ARG_EPISODE_URI: String = "episodeUri"
     }
@@ -119,8 +117,8 @@ sealed class Screen(val route: String) {
 fun rememberJetcasterAppState(
     navController: NavHostController = rememberNavController(),
     context: Context = LocalContext.current
-): JetcasterAppState = remember(navController, context) {
-    JetcasterAppState(navController, context)
+): JetcasterAppState = remember(key1 = navController, key2 = context) {
+    JetcasterAppState(navController = navController, context = context)
 }
 
 class JetcasterAppState(

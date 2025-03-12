@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.ui
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -48,14 +49,15 @@ import com.example.jetcaster.ui.player.PlayerScreen
  * of [appState], and whose `startDestination` is the [Screen.route] of [Screen.Home].
  *
  * Then in the [NavGraphBuilder] `builder` lambda argument of the [NavHost], we first add a
- * [composable] whose `route` is the [Screen.route] of [Screen.Home] and in whose `content`
- * Composable lambda argument accepts the [NavBackStackEntry] passed the lambda in variable
- * `backStackEntry`. Then we compose a [MainScreen] composable whose `windowSizeClass` argument is
- * the [WindowAdaptiveInfo.windowSizeClass] property of [WindowAdaptiveInfo] variable `adaptiveInfo`,
- * and whose `navigateToPlayer` argument is a lambda that accepts an [EpisodeInfo] object in variable
+ * [composable] whose `route` is the [Screen.route] of [Screen.Home] and in whose
+ * [AnimatedContentScope] `content` Composable lambda argument we accept the [NavBackStackEntry]
+ * passed the lambda in variable `backStackEntry`. Then we compose a [MainScreen] composable whose
+ * `windowSizeClass` argument is the [WindowAdaptiveInfo.windowSizeClass] property of
+ * [WindowAdaptiveInfo] variable `adaptiveInfo`, and whose `navigateToPlayer` argument is a lambda
+ * that accepts an [EpisodeInfo] object in variable
  * `episode` and calls the [JetcasterAppState.navigateToPlayer] method of [appState] with the
- * [EpisodeInfo.uri] property of the [EpisodeInfo] object as its `episodeUri` argument and the
- * [NavBackStackEntry] in `backStackEntry` as its `from` argument.
+ * [EpisodeInfo.uri] property of the [EpisodeInfo] object as its `episodeUri` argument and
+ * [NavBackStackEntry] variable `backStackEntry` as its `from` argument.
  *
  * Next in the [NavGraphBuilder] `builder` lambda argument of the [NavHost], we add another
  * [composable] whose `route` is the [Screen.route] of [Screen.Player] and in whose `content`
