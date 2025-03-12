@@ -284,9 +284,9 @@ fun Cart(
  *  our [SpringSpec] of [Float] variable `itemAnimationSpecFade`, whose `fadeOutSpec` argument is
  *  our [SpringSpec] of [Float] variable `itemAnimationSpecFade`, and whose `placementSpec` argument
  *  is our [SpringSpec] of [IntOffset] variable `itemPlacementSpec`. The [Long] `subtotal` argument
- *  is the [List.sumOf] the [Snack.price] of the [OrderLine.snack]'s times the [OrderLine.count] of
- *  all of the [OrderLine] in our [List] of [OrderLine] parameter [orderLines], and the `shippingCosts`
- *  argument is the constant 369.
+ *  is the [Iterable.sumOf] the [Snack.price] of the [OrderLine.snack]'s times the [OrderLine.count]
+ *  of all of the [OrderLine] in our [List] of [OrderLine] parameter [orderLines], and the
+ *  `shippingCosts` argument is the constant 369.
  *
  *  - Last in the [LazyColumn] is a [LazyListScope.item] whose `key` argument is the constant [String]
  *  "inspiredByCart", and in its [LazyItemScope] `content` lambda argument we have:
@@ -477,7 +477,7 @@ private fun SwipeDismissItemBackground(progress: Float) {
                 modifier = Modifier
                     .padding(all = padding)
                     .fillMaxWidth()
-                    .height(height = maxWidth)
+                    .height(height = this.maxWidth)
                     .align(alignment = Alignment.Center),
                 shape = RoundedCornerShape(percent = ((1 - progress) * 100).roundToInt()),
                 color = JetsnackTheme.colors.error

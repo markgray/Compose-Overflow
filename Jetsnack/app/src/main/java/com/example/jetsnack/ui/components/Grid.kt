@@ -40,25 +40,25 @@ import com.example.jetsnack.model.SearchCategoryCollection
  * divided by our [Int] parameter [columns]. We then initialize our [Constraints] variable
  * `val itemConstraints` to a copy of `constraints` with the overridden values `minWidth` =
  * `itemWidth` and `maxWidth` = `itemWidth`. We initialize our [List] of [Placeable] variable
- * `val placeables` by using the [List.map] method of [List] of [Measurable] variable `measurables`
- * to apply [Measurable.measure] using `itemConstraints` as the `constraints` argument to each of
- * the [Measurable] in the [List]. We initialize our [Array] of [Int] variable `val columnHeights`
- * to an [Int] parameter [columns] sized array initialized to all zeros. We use the [List.forEachIndexed]
- * method of `placeables` to loop over its contents accepting the index in [Int] variable `index`
- * and the [Placeable] in [Placeable] variable `placeable`. We initialize our [Int] variable
- * `val column` to `index` modulo our [Int] parameter [columns] and add the [Placeable.height] of
- * `placeable` to the `column` index of `columnHeights`. When done we initialize our [Int] variable
- * `val height` to the maximum value in `columnHeights` coerced to at most the [Constraints.maxHeight]
- * of `constraints`. Then we call the [MeasureScope.layout] method with its `width` argument the
- * [Constraints.maxWidth] of `constraints` and its `height` argument our [Int] variable `height`.
- * In the `placementBlock` lambda we initialize our [Array] of [Int] variable `val columnY` to an
- * [Array] to an [Int] parameter [columns] sized array initialized to all zeros. Then we use the
- * [List.forEachIndexed] method of `placeables` to loop through all its entries accepting the
- * index in [Int] variable `index` and the [Placeable] in [Placeable] variable `placeable`. Then we
- * use the [Placeable.PlacementScope.placeRelative] method of `placeable` to place it at `x` coordinate
- * `column` times `itemWidth` and `y` coordinate of the `column` entry of array `columnY`. Then we
- * add the [Placeable.height] of `placeable` to the value of the `column` entry in `columnY` and loop
- * around for the next [Placeable].
+ * `val placeables` by using the [Iterable.map] method of [List] of [Measurable] variable
+ * `measurables` to apply [Measurable.measure] using `itemConstraints` as the `constraints` argument
+ * to each of the [Measurable] in the [List]. We initialize our [Array] of [Int] variable
+ * `val columnHeights` to an [Int] parameter [columns] sized array initialized to all zeros. We use
+ * the [Iterable.forEachIndexed] method of `placeables` to loop over its contents accepting the index
+ * in [Int] variable `index` and the [Placeable] in [Placeable] variable `placeable`. We initialize
+ * our [Int] variable `val column` to `index` modulo our [Int] parameter [columns] and add the
+ * [Placeable.height] of `placeable` to the `column` index of `columnHeights`. When done we initialize
+ * our [Int] variable `val height` to the maximum value in `columnHeights` coerced to at most the
+ * [Constraints.maxHeight] of `constraints`. Then we call the [MeasureScope.layout] method with its
+ * `width` argument the [Constraints.maxWidth] of `constraints` and its `height` argument our [Int]
+ * variable `height`. In the `placementBlock` lambda we initialize our [Array] of [Int] variable
+ * `val columnY` to an [Array] to an [Int] parameter [columns] sized array initialized to all zeros.
+ * Then we use the [Iterable.forEachIndexed] method of `placeables` to loop through all its entries
+ * accepting the index in [Int] variable `index` and the [Placeable] in [Placeable] variable `placeable`.
+ * Then we use the [Placeable.PlacementScope.placeRelative] method of `placeable` to place it at `x`
+ * coordinate `column` times `itemWidth` and `y` coordinate of the `column` entry of array `columnY`.
+ * Then we add the [Placeable.height] of `placeable` to the value of the `column` entry in `columnY`
+ * and loop around for the next [Placeable].
  *
  * @param modifier a [Modifier] instance that our caller can use to modify our appearance and/or
  * behavior. Our caller passes us a [Modifier.padding] that adds `16.dp` to each of our horizontal

@@ -426,7 +426,7 @@ fun JetsnackBottomBar(
  * we initialize and remember our [List] of [Animatable] of `size` [itemCount] variable
  * `val selectionFractions` to a [List] which has an [Animatable] whose `initialValue` argument is
  * `1f` if the list index is equal to our [Int] parameter [selectedIndex], or `0f` if it is not.
- * Then we use the [List.forEachIndexed] method of `selectionFractions` to loop over its members
+ * Then we use the [Iterable.forEachIndexed] method of `selectionFractions` to loop over its members
  * setting [Float] variable `val target` to `1f` if the list index is equal to our [Int] parameter
  * [selectedIndex] or to `0f` if it is not. Then we launch a [LaunchedEffect] for each of its members
  * whose `key1` argument is our `target` variable and whose `key2` argument is our [AnimationSpec]
@@ -463,8 +463,8 @@ fun JetsnackBottomBar(
  * [Measurable.layoutId] is "indicator".
  *
  * Next we initialize our [List] of [Placeable] variable `val itemPlaceables` to a [List] which uses
- * the [List.filterNot] method of `measurables` to filter out the [Measurable] variable
- * `indicatorMeasurable`, and then uses the [List.mapIndexed] method of the remaining [List] of
+ * the [Iterable.filterNot] method of `measurables` to filter out the [Measurable] variable
+ * `indicatorMeasurable`, and then uses the [Iterable.mapIndexed] method of the remaining [List] of
  * [Placeable] capturing the [Int] index in the `index` variable, and the [Measurable] in the
  * `measurable` variable. In the `action` lambda argument we initialize our [Int] variable `val width`
  * to the [lerp] of `unselectedWidth` and `selectedWidth` linearly interpolated based upon the

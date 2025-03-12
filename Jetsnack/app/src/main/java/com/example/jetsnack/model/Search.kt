@@ -45,7 +45,7 @@ object SearchRepo {
      * contains its [String] parameter [query], and returns the result as a [List] of [Snack].
      * We call [withContext] with its coroutine `context` argument [Dispatchers.Default] which
      * exectutes its `block` lambda argument suspending until it completes. In that lambda we
-     * [delay] for 200ms, then call the [List.filter] method of our [List] of [Snack] parameter
+     * [delay] for 200ms, then call the [Iterable.filter] method of our [List] of [Snack] parameter
      * [snacks] to build a [List] of [Snack] whose [Snack.name] constains our [String] parameter
      * [query] and then [withContext] resume and returns this result.
      *

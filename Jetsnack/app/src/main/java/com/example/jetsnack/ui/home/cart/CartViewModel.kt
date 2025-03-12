@@ -135,11 +135,11 @@ class CartViewModel(
 
     /**
      * This method removes the [OrderLine] whose [OrderLine.snack] has a [Snack.id] equal to its
-     * [Long] parameter [snackId]. We use the [List.filter] extension function of the [MutableStateFlow]
-     * wrapped [List] of [OrderLine] field [_orderLines] to create a [List] of [OrderLine] from that
-     * [List] whose members have an [OrderLine.snack] whose [Snack.id] is not equal to our [Long]
-     * parameter [snackId] and asign the resulting [List] to the [MutableStateFlow.value] of
-     * [_orderLines].
+     * [Long] parameter [snackId]. We use the [Iterable.filter] extension function of the
+     * [MutableStateFlow] wrapped [List] of [OrderLine] field [_orderLines] to create a [List] of
+     * [OrderLine] from that [List] whose members have an [OrderLine.snack] whose [Snack.id] is not
+     * equal to our [Long] parameter [snackId] and asign the resulting [List] to the
+     * [MutableStateFlow.value] of [_orderLines].
      *
      * @param snackId the [Snack.id] of the [OrderLine.snack] of the [OrderLine] we wish to remove
      * from our [MutableStateFlow] wrapped [List] of [OrderLine] field [_orderLines].
@@ -151,12 +151,12 @@ class CartViewModel(
     /**
      * This method updates the [OrderLine.count] of the [OrderLine] whose [OrderLine.snack] has a
      * [Snack.id] equal to our [Long] parameter [snackId] to our [Int] parameter [count]. We use the
-     * [List.map] extension function of the [MutableStateFlow] wrapped [List] of [OrderLine] field
-     * [_orderLines] to create a [List] of [OrderLine] from that [List] in which the [OrderLine]
-     * whose [OrderLine.snack] has a [Snack.id] equal to our [Long] parameter [snackId] is a copy
-     * of the of the original [OrderLine] with its [OrderLine.count] set to our [Int] parameter
-     * [count] and all other [OrderLine]'s included unmodified and asign the resulting [List] to the
-     * [MutableStateFlow.value] of [_orderLines].
+     * [Iterable.map] extension function of the [MutableStateFlow] wrapped [List] of [OrderLine]
+     * field [_orderLines] to create a [List] of [OrderLine] from that [List] in which the
+     * [OrderLine] whose [OrderLine.snack] has a [Snack.id] equal to our [Long] parameter [snackId]
+     * is a copy of the of the original [OrderLine] with its [OrderLine.count] set to our [Int]
+     * parameter [count] and all other [OrderLine]'s included unmodified and asign the resulting
+     * [List] to the [MutableStateFlow.value] of [_orderLines].
      *
      * @param snackId the [Snack.id] of the [OrderLine.snack] of the [OrderLine] whose [OrderLine.count]
      * we should set to our [Int] parameter [count].
