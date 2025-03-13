@@ -112,6 +112,26 @@ fun Modifier.verticalGradientScrim(
     numStops = numStops
 )
 
+/**
+ * The [ModifierNodeElement] that manages the [Modifier.Node] instance [VerticalGradientModifier]
+ * which is used to draw a vertical gradient scrim.
+ *
+ * This element defines the properties and behavior for drawing a vertical gradient
+ * overlay on a composable. It supports linear and non-linear (decaying) gradients,
+ * allowing for various visual effects.
+ *
+ * @property color The base color of the gradient. The gradient will transition from transparent
+ * (alpha = 0) to this color.
+ * @property startYPercentage The starting percentage of the gradient along the vertical axis
+ * (0.0f - top, 1.0f - bottom). Defaults to 0f.
+ * @property endYPercentage The ending percentage of the gradient along the vertical axis
+ * (0.0f - top, 1.0f - bottom). Defaults to 1f.
+ * @property decay The decay factor controlling the non-linearity of the gradient. A value of 1.0f
+ * represents a linear gradient. Values greater than 1.0f will result in a faster fade-out from the
+ * `color`. Values less than 1 will result in a slower fade out. Defaults to 1.0f.
+ * @property numStops The number of color stops used to create the gradient when `decay` is not 1.0f
+ * (non-linear). More stops result in a smoother gradient. Defaults to 16.
+ */
 private data class VerticalGradientElement(
     var color: Color,
     var startYPercentage: Float = 0f,
@@ -119,14 +139,36 @@ private data class VerticalGradientElement(
     var decay: Float = 1.0f,
     var numStops: Int = 16
 ) : ModifierNodeElement<VerticalGradientModifier>() {
+    /**
+     * Creates a lambda function that defines how to draw a vertical gradient within a [DrawScope].
+     *
+     * This function generates a vertical gradient brush based on the provided parameters
+     * and returns a lambda that can be used with Compose's `drawBehind` or other drawing
+     * modifiers. The gradient can have either linear or non-linear decay, controlled by
+     * the `decay` parameter.
+     *
+     * @param color The base color of the gradient. The alpha value will be modified to create the
+     * gradient effect.
+     * @param numStops The number of color stops to use in the gradient when `decay` is not 1.
+     * Ignored if `decay` is 1. Must be at least 2.
+     * @param decay The decay exponent that controls the non-linearity of the gradient's alpha
+     * change. A value of 1 represents linear decay. Values greater than 1 result in slower initial
+     * decay, while values less than 1 result in faster initial decay. Must be greater than 0.
+     * @param startYPercentage The starting Y-coordinate of the gradient as a percentage of the
+     * total height (0.0 to 1.0).
+     * @param endYPercentage The ending Y-coordinate of the gradient as a percentage of the total
+     * height (0.0 to 1.0).
+     * @return A lambda function of type `DrawScope.() -> Unit` that, when invoked, draws a
+     * vertical gradient within the provided `DrawScope`.
+     */
     fun createOnDraw(): DrawScope.() -> Unit {
-        val colors = if (decay != 1f) {
+        val colors: List<Color> = if (decay != 1f) {
             // If we have a non-linear decay, we need to create the color gradient steps
             // manually
-            val baseAlpha = color.alpha
-            List(numStops) { i ->
-                val x = i * 1f / (numStops - 1)
-                val opacity = x.pow(decay)
+            val baseAlpha: Float = color.alpha
+            List(numStops) { i: Int ->
+                val x: Float = i * 1f / (numStops - 1)
+                val opacity: Float = x.pow(decay)
                 color.copy(alpha = baseAlpha * opacity)
             }
         } else {
@@ -134,7 +176,7 @@ private data class VerticalGradientElement(
             listOf(color.copy(alpha = 0f), color)
         }
 
-        val brush =
+        val brush: Brush =
             // Reverse the gradient if decaying downwards
             Brush.verticalGradient(
                 colors = if (startYPercentage < endYPercentage) colors else colors.reversed(),
@@ -147,21 +189,38 @@ private data class VerticalGradientElement(
 
             drawRect(
                 topLeft = topLeft,
-                size = Rect(topLeft, bottomRight).size,
+                size = Rect(topLeft = topLeft, bottomRight = bottomRight).size,
                 brush = brush
             )
         }
     }
 
-    override fun create() = VerticalGradientModifier(createOnDraw())
+    /**
+     * Creates a [VerticalGradientModifier] with the specified drawing logic.
+     *
+     * This function is responsible for creating a modifier that applies a vertical gradient to the
+     * composable it modifies. It achieves this by leveraging the [VerticalGradientModifier] class
+     * and delegating the actual drawing operation to the function returned by [createOnDraw].
+     *
+     * @return A [VerticalGradientModifier] instance configured with the drawing logic from
+     * [createOnDraw].
+     */
+    override fun create() = VerticalGradientModifier(onDraw = createOnDraw())
 
+    /**
+     * Called when a modifier is applied to a Layout whose inputs have changed from the previous
+     * application. This function will have the current node instance passed in as a parameter,
+     * and it is expected that the node will be brought up to date.
+     *
+     * @param node The current node instance.
+     */
     override fun update(node: VerticalGradientModifier) {
         node.onDraw = createOnDraw()
     }
 
     /**
      * Allow this custom modifier to be inspected in the layout inspector
-     **/
+     */
     override fun InspectorInfo.inspectableProperties() {
         name = "verticalGradientScrim"
         properties["color"] = color
@@ -172,6 +231,19 @@ private data class VerticalGradientElement(
     }
 }
 
+/**
+ * A modifier that draws a vertical gradient before drawing the content.
+ *
+ * This modifier utilizes a `DrawModifierNode` to efficiently apply a custom
+ * drawing operation within the composition. It allows for custom gradient
+ * drawing logic to be defined via the `onDraw` lambda, which is invoked
+ * within the drawing scope. The existing content is then drawn on top of the
+ * gradient.
+ *
+ * @property onDraw A lambda function that provides the drawing instructions for
+ * the vertical gradient. It receives a [DrawScope] instance as its context,
+ * enabling access to drawing primitives and the current drawing canvas.
+ */
 private class VerticalGradientModifier(
     var onDraw: DrawScope.() -> Unit
 ) : Modifier.Node(), DrawModifierNode {
