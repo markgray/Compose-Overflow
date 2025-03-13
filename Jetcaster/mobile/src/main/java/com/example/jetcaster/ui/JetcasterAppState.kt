@@ -104,9 +104,9 @@ sealed class Screen(val route: String) {
  * It provides a centralized place to manage the application's global state, including the
  * navigation controller and the application context.
  *
- * It uses [remember] to cache the [JetcasterAppState] instance across recompositions.
- * This prevents the creation of new instances on every recomposition, which can be
- * expensive and lead to unintended side effects.
+ * It uses [remember] to cache a new instance of [JetcasterAppState] across recompositions.
+ * This prevents the creation of new instances on every recomposition, which can be expensive
+ * and lead to unintended side effects.
  *
  * @param navController The [NavHostController] used for navigating between destinations in the
  * application. Defaults to a new [rememberNavController] if not provided.
@@ -188,7 +188,7 @@ class JetcasterAppState(
      * This function takes a podcast URI and the current navigation back stack entry as input.
      * It first checks if the current navigation back stack entry's lifecycle is resumed.
      * If it is, it encodes the podcast URI to ensure it's safe for use in a URL and then
-     * navigates to the Podcast Details screen using the provided URI.
+     * navigates to the Podcast Details screen using the encoded URI.
      *
      * @param podcastUri The URI of the podcast to display details for. This should be a string
      * representing the podcast's unique identifier or resource locator.

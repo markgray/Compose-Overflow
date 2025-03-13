@@ -31,8 +31,8 @@ import dagger.hilt.android.AndroidEntryPoint
  * This activity serves as the entry point for the application and is responsible for:
  * - Setting up the application's UI using Jetpack Compose.
  * - Enabling edge-to-edge display for immersive experience.
- * - Initializing the root composable, `JetcasterApp`, which manages the main navigation.
- * - Calculating and passing display features to `JetcasterApp` for adapting to different screen
+ * - Initializing the root composable, [JetcasterApp], which manages the main navigation.
+ * - Calculating and passing display features to [JetcasterApp] for adapting to different screen
  * configurations (e.g., foldables).
  */
 @AndroidEntryPoint

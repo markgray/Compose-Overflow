@@ -19,6 +19,8 @@ package com.example.jetcaster.util
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -72,16 +75,17 @@ import com.example.jetcaster.R
  *  [MaterialTheme.shapes]. To this is chained a [Modifier.background] whose `color` argument is the
  *  animated [State] wrapped [Color] returned by [animateColorAsState] whose initial value is
  *  The [ColorScheme.primary] of our custom [MaterialTheme.colorScheme] if [isFollowed] is `true`,
- *  or [ColorScheme.surfaceContainerHighest] if it's `false`, and whose `shape` is [CircleShape].
- *  At the end of the [Modifier] chain is a [Modifier.padding] whose `padding` that adds `4.dp`
+ *  or [ColorScheme.surfaceContainerHighest] if it's `false`, and whose [Shape] `shape` argument is
+ *  [CircleShape]. At the end of the [Modifier] chain is a [Modifier.padding] that adds `4.dp`
  *  padding to `all` sides.
  *
  * @param isFollowed A boolean indicating whether the podcast is currently followed (true) or not
  * (false). This determines the icon, text, and color displayed.
  * @param onClick A lambda function that is invoked when the button is clicked.
  * This function should handle the logic for toggling the follow state.
- * @param modifier Optional [Modifier] to be applied to the [IconButton].
- * Allows for customization of layout, styling, and behavior.
+ * @param modifier Optional [Modifier] to be applied to the [IconButton]. Allows for customization
+ * of layout, styling, and behavior. Our callers pass us a [BoxScope.align] which aligns us to the
+ * `Alignment.BottomEnd` of the [Box] we are composed in.
  */
 @Composable
 fun ToggleFollowPodcastIconButton(

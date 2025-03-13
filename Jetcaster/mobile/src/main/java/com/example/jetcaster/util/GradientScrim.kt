@@ -86,7 +86,7 @@ fun Modifier.radialGradientScrim(color: Color): Modifier {
 }
 
 /**
- * Draws a vertical gradient scrim in the foreground.
+ * Draws a vertical gradient scrim in the foreground using [VerticalGradientElement].
  *
  * @param color The color of the gradient scrim.
  * @param startYPercentage The start y value, in percentage of the layout's height (0f to 1f)
