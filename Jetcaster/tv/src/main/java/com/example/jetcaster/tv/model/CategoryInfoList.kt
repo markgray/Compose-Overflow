@@ -21,9 +21,31 @@ import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.asExternalModel
 
+/**
+ * Represents a list of [CategoryInfo] objects.
+ *
+ * This class is an immutable wrapper around a list of [CategoryInfo] instances. It leverages the
+ * delegated `List` interface to provide direct access to the underlying list's functionality.
+ *
+ * @property member The underlying list of [CategoryInfo] objects.
+ * @constructor Creates a new `CategoryInfoList` with the given list of [CategoryInfo].
+ */
 @Immutable
 data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo> by member {
 
+    /**
+     * Transforms a list of CategoryInfo objects (implicitly available in the context) into a list
+     * of Category objects.
+     *
+     * This function utilizes the `map` higher-order function to iterate over the collection of
+     * `CategoryInfo` instances and apply the `intoCategory` transformation function to each element.
+     * This results in a new list containing `Category` objects, each derived from the corresponding
+     * `CategoryInfo` object.
+     *
+     * @return A new list containing `Category` objects, derived from the `CategoryInfo` objects
+     * in the original collection.
+     * @see CategoryInfo.intoCategory
+     */
     fun intoCategoryList(): List<Category> {
         return map(CategoryInfo::intoCategory)
     }

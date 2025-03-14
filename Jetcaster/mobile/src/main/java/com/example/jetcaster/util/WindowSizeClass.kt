@@ -21,7 +21,16 @@ import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 
 /**
- * Returns true if the width or height size classes are compact.
+ * Indicates whether the current window size class is considered "compact".
+ *
+ * A window is considered compact if either its width or its height falls within the
+ * [WindowWidthSizeClass.COMPACT] or [WindowHeightSizeClass.COMPACT] categories, respectively.
+ * This typically represents smaller screens, like those found on most phones in portrait
+ * or smaller landscape orientations.
+ *
+ * @see WindowSizeClass
+ * @see WindowWidthSizeClass
+ * @see WindowHeightSizeClass
  */
 val WindowSizeClass.isCompact: Boolean
     get() = windowWidthSizeClass == WindowWidthSizeClass.COMPACT ||
