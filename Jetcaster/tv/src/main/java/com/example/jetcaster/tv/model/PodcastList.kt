@@ -18,4 +18,7 @@ package com.example.jetcaster.tv.model
 
 import com.example.jetcaster.core.model.PodcastInfo
 
+/**
+ * Type alias for a [List] of [PodcastInfo] objects.
+ */
 typealias PodcastList = List<PodcastInfo>

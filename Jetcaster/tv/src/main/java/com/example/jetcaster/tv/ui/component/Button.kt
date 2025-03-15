@@ -29,6 +29,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ButtonDefaults
@@ -37,6 +38,16 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
 import com.example.jetcaster.tv.R
 
+/**
+ * A composable function that creates a Play button with an icon and label.
+ *
+ * This button displays a "Play" icon and the label "Play". When clicked, it triggers the
+ * provided `onClick` lambda.
+ *
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param modifier Modifier to be applied to the button.
+ * @param scale The scaling configuration for the button. Defaults to [ButtonDefaults.scale].
+ */
 @Composable
 internal fun PlayButton(
     onClick: () -> Unit,
@@ -45,12 +56,20 @@ internal fun PlayButton(
 ) =
     ButtonWithIcon(
         icon = Icons.Outlined.PlayArrow,
-        label = stringResource(R.string.label_play),
+        label = stringResource(id = R.string.label_play),
         onClick = onClick,
         modifier = modifier,
         scale = scale
     )
 
+/**
+ * A composable function that creates a button for enqueueing items to a playlist.
+ *
+ * This button displays a playlist add icon and triggers the provided [onClick] action when clicked.
+ *
+ * @param onClick The callback function to be invoked when the button is clicked.
+ * @param modifier The modifier to be applied to the button.
+ */
 @Composable
 internal fun EnqueueButton(
     onClick: () -> Unit,
@@ -58,12 +77,22 @@ internal fun EnqueueButton(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            Icons.AutoMirrored.Filled.PlaylistAdd,
-            contentDescription = stringResource(R.string.label_add_playlist),
+            imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+            contentDescription = stringResource(id = R.string.label_add_playlist),
         )
     }
 }
 
+/**
+ * A composable function that displays an information button.
+ *
+ * This button, when clicked, triggers the provided `onClick` lambda. It visually
+ * represents the information icon, making it suitable for scenarios where users need
+ * access to more details or contextual help.
+ *
+ * @param onClick The callback that will be executed when the button is clicked.
+ * @param modifier Modifiers to be applied to the underlying [IconButton].
+ */
 @Composable
 internal fun InfoButton(
     onClick: () -> Unit,
@@ -71,12 +100,22 @@ internal fun InfoButton(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            Icons.Outlined.Info,
-            contentDescription = stringResource(R.string.label_info),
+            imageVector = Icons.Outlined.Info,
+            contentDescription = stringResource(id = R.string.label_info),
         )
     }
 }
 
+/**
+ * A composable function that creates a button to navigate to the previous episode.
+ *
+ * This button displays a "Skip Previous" icon and triggers the provided [onClick]
+ * lambda when clicked. It's typically used within a media player or episode list
+ * UI to allow users to quickly jump to the previous item.
+ *
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param modifier Modifier to apply to this button.
+ */
 @Composable
 internal fun PreviousButton(
     onClick: () -> Unit,
@@ -84,12 +123,21 @@ internal fun PreviousButton(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            Icons.Default.SkipPrevious,
-            contentDescription = stringResource(R.string.label_previous_episode)
+            imageVector = Icons.Default.SkipPrevious,
+            contentDescription = stringResource(id = R.string.label_previous_episode)
         )
     }
 }
 
+/**
+ * A composable function that creates a button with a "Next" icon.
+ *
+ * This button is typically used to navigate to the next item in a sequence,
+ * such as the next episode in a series.
+ *
+ * @param onClick The callback that is triggered when the button is clicked.
+ * @param modifier Modifier to be applied to the button.
+ */
 @Composable
 internal fun NextButton(
     onClick: () -> Unit,
@@ -97,8 +145,8 @@ internal fun NextButton(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            Icons.Default.SkipNext,
-            contentDescription = stringResource(R.string.label_next_episode)
+            imageVector = Icons.Default.SkipNext,
+            contentDescription = stringResource(id = R.string.label_next_episode)
         )
     }
 }
@@ -109,13 +157,13 @@ internal fun PlayPauseButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (icon, description) = if (isPlaying) {
-        Icons.Default.Pause to stringResource(R.string.label_pause)
+    val (icon: ImageVector, description: String) = if (isPlaying) {
+        Icons.Default.Pause to stringResource(id = R.string.label_pause)
     } else {
-        Icons.Default.PlayArrow to stringResource(R.string.label_play)
+        Icons.Default.PlayArrow to stringResource(id = R.string.label_play)
     }
     IconButton(onClick = onClick, modifier = modifier) {
-        Icon(icon, description, modifier = Modifier.size(48.dp))
+        Icon(imageVector = icon, contentDescription = description, modifier = Modifier.size(48.dp))
     }
 }
 
@@ -126,8 +174,8 @@ internal fun RewindButton(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            Icons.Default.Replay10,
-            contentDescription = stringResource(R.string.label_rewind)
+            imageVector = Icons.Default.Replay10,
+            contentDescription = stringResource(id = R.string.label_rewind)
         )
     }
 }
@@ -139,8 +187,8 @@ internal fun SkipButton(
 ) {
     IconButton(onClick = onClick, modifier = modifier) {
         Icon(
-            Icons.Default.Forward10,
-            contentDescription = stringResource(R.string.label_skip)
+            imageVector = Icons.Default.Forward10,
+            contentDescription = stringResource(id = R.string.label_skip)
         )
     }
 }

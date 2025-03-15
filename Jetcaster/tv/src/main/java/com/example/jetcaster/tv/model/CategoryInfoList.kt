@@ -51,6 +51,17 @@ data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo>
     }
 
     companion object {
+        /**
+         * Converts a list of internal `Category` objects to a `CategoryInfoList` containing
+         * external `CategoryInfo` models.
+         *
+         * This function iterates through a list of `Category` objects, transforms each `Category`
+         * into its external representation using the `asExternalModel()` method, and then wraps
+         * the resulting list of external models into a `CategoryInfoList`.
+         *
+         * @param list The list of internal `Category` objects to be converted.
+         * @return A `CategoryInfoList` containing the corresponding external `CategoryInfo` models.
+         */
         fun from(list: List<Category>): CategoryInfoList {
             val member = list.map(Category::asExternalModel)
             return CategoryInfoList(member)
@@ -58,6 +69,19 @@ data class CategoryInfoList(val member: List<CategoryInfo>) : List<CategoryInfo>
     }
 }
 
+/**
+ * Converts a [CategoryInfo] object into a [Category] object.
+ *
+ * This function takes a [CategoryInfo] instance and extracts its `id` and `name` properties
+ * to construct a new [Category] object. This allows for a convenient transformation
+ * between the data representation of a category (CategoryInfo) and the domain
+ * representation (Category).
+ *
+ * @receiver The [CategoryInfo] object to convert.
+ * @return A new [Category] object with the `id` and `name` from the [CategoryInfo].
+ * @see CategoryInfo
+ * @see Category
+ */
 private fun CategoryInfo.intoCategory(): Category {
     return Category(id, name)
 }

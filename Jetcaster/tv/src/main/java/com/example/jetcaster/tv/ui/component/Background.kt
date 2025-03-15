@@ -27,6 +27,20 @@ import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.ImageBackgroundRadialGradientScrim
 
+/**
+ * Composable function that provides a background container with an image derived from a
+ * [PlayerEpisode].
+ *
+ * This function is a convenience wrapper around the other `BackgroundContainer` function,
+ * simplifying the call when the background image URL is derived from a `PlayerEpisode` object.
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the podcast image URL to be used as the background.
+ * @param modifier Modifier to be applied to the container.
+ * @param contentAlignment The alignment of the content within the container. Defaults to
+ * [Alignment.Center].
+ * @param content The composable content to be placed within the container, allowing access
+ * to [BoxScope].
+ */
 @Composable
 internal fun BackgroundContainer(
     playerEpisode: PlayerEpisode,
@@ -36,11 +50,25 @@ internal fun BackgroundContainer(
 ) =
     BackgroundContainer(
         imageUrl = playerEpisode.podcastImageUrl,
-        modifier,
-        contentAlignment,
-        content
+        modifier = modifier,
+        contentAlignment = contentAlignment,
+        content = content
     )
 
+/**
+ * Composable function that provides a background container with an image derived from [PodcastInfo]
+ * parameter [podcastInfo].
+ *
+ * This function acts as a convenience wrapper around the more general `BackgroundContainer`
+ * function that takes an image URL directly. It simplifies the use case where you have a
+ * `PodcastInfo` object and want to display its image as a background.
+ *
+ * @param podcastInfo The [PodcastInfo] object containing the image URL to be used as the background.
+ * @param modifier Modifier to be applied to the background container.
+ * @param contentAlignment The alignment of the content within the container.
+ * Defaults to [Alignment.Center].
+ * @param content The composable content to be placed within the container.
+ */
 @Composable
 internal fun BackgroundContainer(
     podcastInfo: PodcastInfo,
@@ -48,8 +76,36 @@ internal fun BackgroundContainer(
     contentAlignment: Alignment = Alignment.Center,
     content: @Composable BoxScope.() -> Unit
 ) =
-    BackgroundContainer(imageUrl = podcastInfo.imageUrl, modifier, contentAlignment, content)
+    BackgroundContainer(
+        imageUrl = podcastInfo.imageUrl,
+        modifier = modifier,
+        contentAlignment = contentAlignment,
+        content = content
+    )
 
+/**
+ * A composable function that creates a container with a background image and allows content to be
+ * placed on top.
+ *
+ * This function provides a `Box` layout with an image set as the background and then overlays
+ * the provided content on top of it. The background image will fill the entire container.
+ *
+ * @param imageUrl The URL of the background image to display.
+ * @param modifier Modifiers to be applied to the container. This allows customization of the
+ * size, padding, and other layout properties of the container.
+ * @param contentAlignment The alignment of the content within the container. Defaults to
+ * `Alignment.Center`. This determines where the content will be placed relative to the
+ * container's bounds.
+ * @param content The composable content to be placed on top of the background image. This
+ * lambda function provides access to the `BoxScope`, allowing the use of `Modifier.align`
+ * and other `BoxScope` modifiers.
+ *
+ * @see Background
+ * @see Box
+ * @see Modifier
+ * @see Alignment
+ * @see BoxScope
+ */
 @Composable
 internal fun BackgroundContainer(
     imageUrl: String,
@@ -63,6 +119,18 @@ internal fun BackgroundContainer(
     }
 }
 
+/**
+ * Composable function that displays a background image with a radial gradient scrim.
+ *
+ * This function utilizes the [ImageBackgroundRadialGradientScrim] composable to display an
+ * image fetched from the provided URL. A radial gradient is applied on top of the image,
+ * transitioning from black at the center to transparent towards the edges. This creates a
+ * visually appealing effect that helps to highlight content placed over the background.
+ *
+ * @param imageUrl The URL of the image to be displayed as the background.
+ * @param modifier Optional [Modifier] to apply to the background image. This can be used
+ * to customize the layout, size, and appearance of the background.
+ */
 @Composable
 private fun Background(
     imageUrl: String,
