@@ -151,6 +151,19 @@ internal fun NextButton(
     }
 }
 
+/**
+ * A composable button that toggles between play and pause states.
+ *
+ * This button displays either a play arrow or a pause icon, depending on the `isPlaying` state.
+ * Clicking the button triggers the `onClick` lambda.
+ *
+ * @param isPlaying A boolean indicating whether the media is currently playing.
+ *                  If `true`, the pause icon will be displayed.
+ *                  If `false`, the play arrow icon will be displayed.
+ * @param onClick A lambda function to be invoked when the button is clicked.
+ *                This is typically used to start or pause the media playback.
+ * @param modifier Optional [Modifier] to be applied to the button.
+ */
 @Composable
 internal fun PlayPauseButton(
     isPlaying: Boolean,
@@ -167,6 +180,16 @@ internal fun PlayPauseButton(
     }
 }
 
+/**
+ * A composable function that renders a rewind button.
+ *
+ * This button, when clicked, triggers the provided [onClick] callback. It displays a rewind icon
+ * (specifically, the "Replay10" icon) and includes a content description for accessibility.
+ *
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param modifier Modifier to be applied to the IconButton. This can be used to adjust
+ *                 layout properties such as padding, size, or alignment.
+ */
 @Composable
 internal fun RewindButton(
     onClick: () -> Unit,
@@ -180,6 +203,16 @@ internal fun RewindButton(
     }
 }
 
+/**
+ * A composable function that renders a skip button.
+ *
+ * This button is typically used to skip forward in a media player or similar context.
+ * It displays a forward arrow icon and has a configurable click action.
+ *
+ * @param onClick The callback to be invoked when the button is clicked.
+ *                This should typically trigger the skipping action.
+ * @param modifier Modifiers to be applied to the button.
+ */
 @Composable
 internal fun SkipButton(
     onClick: () -> Unit,

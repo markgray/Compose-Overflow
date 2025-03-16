@@ -22,11 +22,26 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.tv.material3.Typography
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * Displays the details of an episode, including a thumbnail, author, title, and custom content.
+ * It also supports optional controls.
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the episode's information.
+ * @param modifier Modifier for styling and layout adjustments of the episode details container.
+ * @param controls An optional composable function that can be used to add controls below the
+ * episode content. For example, playback controls or other interactive elements.
+ * @param verticalArrangement The vertical arrangement of the content within the details column.
+ * Defaults to [Arrangement.spacedBy] using `JetcasterAppDefaults.gap.item`.
+ * @param content A composable lambda that allows you to add custom content within the episode
+ * details column. This lambda is called within a [ColumnScope], providing access to column-specific
+ * layout options.
+ */
 @Composable
 internal fun EpisodeDetails(
     playerEpisode: PlayerEpisode,
@@ -39,7 +54,7 @@ internal fun EpisodeDetails(
         modifier = modifier,
         first = {
             Thumbnail(
-                playerEpisode,
+                episode = playerEpisode,
                 size = JetcasterAppDefaults.thumbnailSize.episodeDetails
             )
         },
@@ -59,6 +74,20 @@ internal fun EpisodeDetails(
     )
 }
 
+/**
+ * Displays the author of a given [PlayerEpisode].
+ *
+ * This composable renders the author's name from the provided [playerEpisode] data.
+ * It utilizes a [Text] composable for display and allows for customization through
+ * the [modifier] and [style] parameters.
+ *
+ * @param playerEpisode The [PlayerEpisode] containing the author's name to display.
+ * @param modifier Modifier to be applied to the [Text] composable. This can be used
+ * to adjust the layout, size, and other visual aspects of the text.
+ * @param style The [TextStyle] to be applied to the author's name. Defaults to the
+ * [Typography.bodySmall] of our custom [MaterialTheme.typography]. This allows for
+ * customization  of font, color, size, etc.
+ */
 @Composable
 internal fun EpisodeAuthor(
     playerEpisode: PlayerEpisode,
@@ -68,6 +97,24 @@ internal fun EpisodeAuthor(
     Text(text = playerEpisode.author, modifier = modifier, style = style)
 }
 
+/**
+ * Displays the title of a [PlayerEpisode].
+ *
+ * This composable function renders the title of a given [PlayerEpisode] using a [Text] composable.
+ * It allows customization of the text's appearance through a [Modifier] and [TextStyle].
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the title to be displayed.
+ * @param modifier Optional [Modifier] to apply to the underlying [Text] composable for layout and
+ * styling. Defaults to [Modifier].
+ * @param style Optional [TextStyle] to apply to the text. Defaults to the [Typography.headlineLarge]
+ * of our custom [MaterialTheme.typography]. This allows for customization of font, color, size, etc.
+ *
+ * @see PlayerEpisode
+ * @see Text
+ * @see Modifier
+ * @see TextStyle
+ * @see MaterialTheme.typography
+ */
 @Composable
 internal fun EpisodeTitle(
     playerEpisode: PlayerEpisode,

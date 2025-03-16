@@ -38,7 +38,24 @@ import androidx.tv.material3.Text
 import androidx.tv.material3.WideCardContainer
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
+import java.time.Duration
 
+/**
+ * A composable function that displays a card representing an episode.
+ *
+ * This card displays an episode's thumbnail and metadata, including title,
+ * publication date, and optionally a play/pause button. It's designed to be
+ * a visually consistent element for showing episodes in a list or grid.
+ *
+ * @param playerEpisode The [PlayerEpisode] data object containing information about the episode to
+ * be displayed. This includes the episode's title, description, publication date, and thumbnail image.
+ * @param onClick A callback function that is invoked when the user clicks on the episode card.
+ * This is typically used to navigate to the episode's detail screen or start playback.
+ * @param modifier An optional [Modifier] to customize the layout behavior and appearance of the card.
+ * By default, it uses a basic layout configuration.
+ * @param cardSize The size of the card's thumbnail. Defaults to `JetcasterAppDefaults.thumbnailSize.episode`.
+ * You can adjust this to change the dimensions of the thumbnail image within the card.
+ */
 @Composable
 internal fun EpisodeCard(
     playerEpisode: PlayerEpisode,
@@ -48,20 +65,36 @@ internal fun EpisodeCard(
 ) {
     WideCardContainer(
         imageCard = {
-            EpisodeThumbnail(playerEpisode, onClick = onClick, modifier = Modifier.size(cardSize))
+            EpisodeThumbnail(
+                playerEpisode = playerEpisode,
+                onClick = onClick,
+                modifier = Modifier.size(cardSize)
+            )
         },
         title = {
             EpisodeMetaData(
                 playerEpisode = playerEpisode,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .width(JetcasterAppDefaults.cardWidth.small * 2)
+                    .width(width = JetcasterAppDefaults.cardWidth.small * 2)
             )
         },
         modifier = modifier
     )
 }
 
+/**
+ * Displays a thumbnail for an episode.
+ *
+ * This composable renders a clickable card that displays the thumbnail of a given
+ * [PlayerEpisode]. It uses the [Thumbnail] composable to display the actual image.
+ *
+ * @param playerEpisode The [PlayerEpisode] data containing the thumbnail information.
+ * @param onClick The callback to be invoked when the thumbnail is clicked.
+ * @param modifier Modifier to be applied to the root card.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of Interactions
+ * for the card. Defaults to a new remembered [MutableInteractionSource].
+ */
 @Composable
 private fun EpisodeThumbnail(
     playerEpisode: PlayerEpisode,
@@ -73,19 +106,26 @@ private fun EpisodeThumbnail(
         onClick = onClick,
         interactionSource = interactionSource,
         scale = CardScale.None,
-        shape = CardDefaults.shape(RoundedCornerShape(12.dp)),
+        shape = CardDefaults.shape(shape = RoundedCornerShape(size = 12.dp)),
         modifier = modifier,
     ) {
         Thumbnail(episode = playerEpisode, size = JetcasterAppDefaults.thumbnailSize.episode)
     }
 }
 
+/**
+ * Displays the metadata for a podcast episode, including the title, podcast name,
+ * publish date, and duration (if available).
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the metadata.
+ * @param modifier Modifier for styling the layout.
+ */
 @Composable
 private fun EpisodeMetaData(
     playerEpisode: PlayerEpisode,
     modifier: Modifier = Modifier
 ) {
-    val duration = playerEpisode.duration
+    val duration: Duration? = playerEpisode.duration
     Column(modifier = modifier) {
         Text(
             text = playerEpisode.title,
@@ -96,7 +136,7 @@ private fun EpisodeMetaData(
         Text(text = playerEpisode.podcastName, style = MaterialTheme.typography.bodySmall)
         if (duration != null) {
             Spacer(
-                modifier = Modifier.height(JetcasterAppDefaults.gap.podcastRow * 0.8f)
+                modifier = Modifier.height(height = JetcasterAppDefaults.gap.podcastRow * 0.8f)
             )
             EpisodeDataAndDuration(offsetDateTime = playerEpisode.published, duration = duration)
         }

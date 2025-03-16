@@ -28,6 +28,19 @@ import androidx.tv.material3.ButtonScale
 import androidx.tv.material3.Icon
 import androidx.tv.material3.Text
 
+/**
+ * A composable function that creates a button with an icon and a text label.
+ *
+ * This button displays an icon on the left and a text label on the right.
+ * It's designed for actions that can be visually represented by an icon.
+ *
+ * @param label The text label to display on the button.
+ * @param icon The [ImageVector] to display as an icon on the button.
+ * @param onClick The callback to be invoked when the button is clicked.
+ * @param modifier Optional [Modifier] to apply to the button.
+ * @param scale Optional [ButtonScale] to control the button's scaling behavior on interaction.
+ * Defaults to [ButtonDefaults.scale].
+ */
 @Composable
 internal fun ButtonWithIcon(
     label: String,
@@ -38,10 +51,10 @@ internal fun ButtonWithIcon(
 ) {
     Button(onClick = onClick, modifier = modifier, scale = scale) {
         Icon(
-            icon,
+            imageVector = icon,
             contentDescription = null,
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(width = 6.dp))
         Text(text = label)
     }
 }
