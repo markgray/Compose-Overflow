@@ -33,28 +33,37 @@ import androidx.tv.material3.Text
 import com.example.jetcaster.tv.R
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * Displays an error state screen with a message and a button to return to the home screen.
+ *
+ * @param backToHome A lambda function that is invoked when the "Back to Home" button is clicked.
+ * This function should handle the navigation back to the home screen.
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param focusRequester A [FocusRequester] used to request focus on the "Back to Home" button when
+ * the screen is displayed. Defaults to a newly created [FocusRequester].
+ */
 @Composable
 fun ErrorState(
     backToHome: () -> Unit,
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()
     }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Column {
             Text(
-                text = stringResource(R.string.display_error_state),
+                text = stringResource(id = R.string.display_error_state),
                 style = MaterialTheme.typography.displayMedium
             )
             Button(
                 onClick = backToHome,
-                modifier
+                modifier = modifier
                     .padding(top = JetcasterAppDefaults.gap.podcastRow)
-                    .focusRequester(focusRequester)
+                    .focusRequester(focusRequester = focusRequester)
             ) {
-                Text(text = stringResource(R.string.label_back_to_home))
+                Text(text = stringResource(id = R.string.label_back_to_home))
             }
         }
     }

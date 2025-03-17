@@ -35,6 +35,25 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * Displays a horizontal row of [EpisodeCard]s representing a list of podcast episodes.
+ *
+ * This composable presents a scrollable row of episode cards, allowing users to browse and select
+ * from a list of available podcast episodes. It manages focus navigation within the row and
+ * handles restoring the focused item when the list is re-rendered with the same data.
+ *
+ * @param playerEpisodeList The list of [PlayerEpisode]s to display.
+ * @param onSelected Callback invoked when an episode is selected. It receives the selected
+ * [PlayerEpisode] as a parameter.
+ * @param modifier Modifier for styling and layout customization of the row.
+ * @param horizontalArrangement The arrangement of the episode cards along the horizontal axis.
+ * Defaults to [Arrangement.spacedBy] with a predefined gap.
+ * @param contentPadding The padding to apply to the content within the row. Defaults to predefined
+ * padding values.
+ * @param focusRequester The [FocusRequester] used to manage focus for the entire row.
+ * @param lazyListState The [LazyListState] used to manage the scroll position of the row.
+ * It's automatically remembered based on the `playerEpisodeList`.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun EpisodeRow(
@@ -47,9 +66,9 @@ internal fun EpisodeRow(
     focusRequester: FocusRequester = remember { FocusRequester() },
     lazyListState: LazyListState = remember(playerEpisodeList) { LazyListState() }
 ) {
-    val firstItem = remember { FocusRequester() }
-    var previousEpisodeListHash by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
-    val isSameList = previousEpisodeListHash == playerEpisodeList.hashCode()
+    val firstItem: FocusRequester = remember { FocusRequester() }
+    var previousEpisodeListHash: Int by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
+    val isSameList: Boolean = previousEpisodeListHash == playerEpisodeList.hashCode()
 
     LazyRow(
         state = lazyListState,
@@ -73,8 +92,8 @@ internal fun EpisodeRow(
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
     ) {
-        itemsIndexed(playerEpisodeList) { index, item ->
-            val cardModifier = if (index == 0) {
+        itemsIndexed(items = playerEpisodeList) { index: Int, item: PlayerEpisode ->
+            val cardModifier: Modifier = if (index == 0) {
                 Modifier.focusRequester(firstItem)
             } else {
                 Modifier

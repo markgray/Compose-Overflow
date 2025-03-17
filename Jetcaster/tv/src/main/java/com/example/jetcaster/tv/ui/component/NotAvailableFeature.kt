@@ -22,10 +22,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.tv.material3.Text
 import com.example.jetcaster.tv.R
 
+/**
+ * Displays a message indicating that a particular feature is not yet available.
+ *
+ * This composable is used to inform the user that a specific feature or functionality
+ * is not currently implemented or accessible. It displays a simple text message to convey this.
+ *
+ * @param modifier The modifier to be applied to the Text composable. Allows for customization
+ * of the layout and appearance of the message. Defaults to Modifier.
+ * @param message The text message to be displayed. By default, it uses a string resource whose ID
+ * is `R.string.message_not_available_feature` ("This feature is not available yet"). This allows
+ * for easy localization and customization of the message.
+ */
 @Composable
 internal fun NotAvailableFeature(
     modifier: Modifier = Modifier,
     message: String = stringResource(id = R.string.message_not_available_feature)
 ) {
-    Text(message, modifier = modifier)
+    Text(text = message, modifier = modifier)
 }
