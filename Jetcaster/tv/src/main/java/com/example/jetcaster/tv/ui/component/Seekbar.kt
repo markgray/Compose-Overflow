@@ -21,6 +21,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,9 +37,28 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.ColorScheme
 import androidx.tv.material3.MaterialTheme
 import java.time.Duration
 
+/**
+ * A custom Seekbar composable that displays a line with a movable knob representing a time elapsed
+ * within a total duration. It allows for keyboard navigation using the left and right arrow keys.
+ *
+ * @param timeElapsed The duration of time that has elapsed.
+ * @param length The total duration of the content.
+ * @param modifier Modifier for styling and layout adjustments of the Seekbar. Our caller
+ * `ElapsedTimeIndicator` passes us a [Modifier.fillMaxWidth]
+ * @param onMoveLeft Callback function invoked when the left arrow key is pressed.
+ * Typically used to move the knob to the left.
+ * @param onMoveRight Callback function invoked when the right arrow key is pressed.
+ * Typically used to move the knob to the right.
+ * @param knobSize The size of the draggable knob in Dp. Defaults to 8.dp.
+ * @param interactionSource The [MutableInteractionSource] representing the stream of Interactions
+ * for this Seekbar. Can be used to detect if the seekbar is focused.
+ * @param color The color of the seekbar line and knob. Defaults to the [ColorScheme.onSurface] of
+ * our custom [MaterialTheme.colorScheme].
+ */
 @Composable
 internal fun Seekbar(
     timeElapsed: Duration,
@@ -50,33 +70,35 @@ internal fun Seekbar(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     color: Color = MaterialTheme.colorScheme.onSurface,
 ) {
-    val brush = SolidColor(color)
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    val outlineSize = knobSize * 1.5f
+    val brush = SolidColor(value = color)
+    val isFocused: Boolean by interactionSource.collectIsFocusedAsState()
+    val outlineSize: Dp = knobSize * 1.5f
     Box(
-        modifier
+        modifier = modifier
             .drawWithCache {
                 onDrawBehind {
-                    val knobRadius = knobSize.toPx() / 2
-
-                    val start = Offset.Zero.copy(y = knobRadius)
-                    val end = start.copy(x = size.width)
-
-                    val knobCenter = start.copy(
+                    val knobRadius: Float = knobSize.toPx() / 2
+                    val start: Offset = Offset.Zero.copy(y = knobRadius)
+                    val end: Offset = start.copy(x = size.width)
+                    val knobCenter: Offset = start.copy(
                         x = timeElapsed.seconds.toFloat() / length.seconds.toFloat() * size.width
                     )
                     drawLine(
-                        brush, start, end,
+                        brush = brush, start = start, end = end,
                     )
                     if (isFocused) {
-                        val outlineColor = color.copy(alpha = 0.6f)
-                        drawCircle(outlineColor, outlineSize.toPx() / 2, knobCenter)
+                        val outlineColor: Color = color.copy(alpha = 0.6f)
+                        drawCircle(
+                            color = outlineColor,
+                            radius = outlineSize.toPx() / 2,
+                            center = knobCenter
+                        )
                     }
-                    drawCircle(brush, knobRadius, knobCenter)
+                    drawCircle(brush = brush, radius = knobRadius, center = knobCenter)
                 }
             }
-            .height(outlineSize)
-            .focusable(true, interactionSource)
+            .height(height = outlineSize)
+            .focusable(enabled = true, interactionSource = interactionSource)
             .onKeyEvent {
                 when {
                     it.type == KeyEventType.KeyUp && it.key == Key.DirectionLeft -> {

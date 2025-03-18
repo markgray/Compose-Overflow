@@ -29,6 +29,15 @@ import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * A composable function that displays a card representing a podcast.
+ *
+ * This card displays the podcast's thumbnail image and title, and is clickable.
+ *
+ * @param podcastInfo The [PodcastInfo] object containing the data for the podcast to display.
+ * @param onClick The callback function to be executed when the card is clicked.
+ * @param modifier The modifier to be applied to the card container.
+ */
 @Composable
 internal fun PodcastCard(
     podcastInfo: PodcastInfo,
@@ -41,7 +50,7 @@ internal fun PodcastCard(
                 onClick = onClick,
                 interactionSource = it,
                 scale = CardScale.None,
-                shape = CardDefaults.shape(RoundedCornerShape(12.dp))
+                shape = CardDefaults.shape(shape = RoundedCornerShape(size = 12.dp))
             ) {
                 Thumbnail(
                     podcastInfo = podcastInfo,

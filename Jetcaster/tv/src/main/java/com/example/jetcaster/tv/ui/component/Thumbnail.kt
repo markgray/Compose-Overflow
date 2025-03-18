@@ -29,60 +29,89 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.designsystem.component.PodcastImage
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * Displays a thumbnail image for a podcast, using the podcast's image URL.
+ *
+ * This composable provides a convenient way to display a podcast thumbnail with
+ * customizable appearance options. It delegates the actual image loading and
+ * display to the lower-level [Thumbnail] composable, passing in the image URL
+ * from the provided [PodcastInfo].
+ *
+ * @param podcastInfo The [PodcastInfo] object containing the image URL to be displayed.
+ * @param modifier Modifier to be applied to the thumbnail image. Our callers do not pass us any so
+ * the empty, default, or starter [Modifier] that contains no elements is used.
+ * @param shape The shape of the thumbnail image. Defaults to a rounded rectangle.
+ * @param size The desired size of the thumbnail. Defaults to a medium-sized square.
+ * @param contentScale How the image should be scaled to fit within the given size.
+ * Defaults to [ContentScale.Crop].
+ */
 @Composable
 fun Thumbnail(
     podcastInfo: PodcastInfo,
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(12.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(size = 12.dp),
     size: DpSize = DpSize(
-        JetcasterAppDefaults.cardWidth.medium,
-        JetcasterAppDefaults.cardWidth.medium
+        width = JetcasterAppDefaults.cardWidth.medium,
+        height = JetcasterAppDefaults.cardWidth.medium
     ),
     contentScale: ContentScale = ContentScale.Crop
-) =
+): Unit =
     Thumbnail(
-        podcastInfo.imageUrl,
-        modifier,
-        shape,
-        size,
-        contentScale
+        url = podcastInfo.imageUrl,
+        modifier = modifier,
+        shape = shape,
+        size = size,
+        contentScale = contentScale
     )
 
+/**
+ * Displays a thumbnail image for a given [PlayerEpisode], fetching the image from the episode's
+ * podcast image URL.
+ *
+ * @param episode The [PlayerEpisode] containing the podcast image URL to display.
+ * @param modifier [Modifier] to be applied to the thumbnail image. Our callers do not pass us any
+ * so the empty, default, or starter [Modifier] that contains no elements is used.
+ * @param shape The shape of the thumbnail. Defaults to a rounded rectangle with 12.dp corner radius.
+ * @param size The size of the thumbnail. Defaults to a square with width and height equal to
+ * `JetcasterAppDefaults.cardWidth.medium` (`196.dp`).
+ * @param contentScale How the image should be scaled to fit the thumbnail's bounds.
+ * Defaults to [ContentScale.Crop].
+ */
 @Composable
 fun Thumbnail(
     episode: PlayerEpisode,
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(12.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(size = 12.dp),
     size: DpSize = DpSize(
-        JetcasterAppDefaults.cardWidth.medium,
-        JetcasterAppDefaults.cardWidth.medium
+        width = JetcasterAppDefaults.cardWidth.medium,
+        height = JetcasterAppDefaults.cardWidth.medium
     ),
     contentScale: ContentScale = ContentScale.Crop
-) =
+): Unit =
     Thumbnail(
-        episode.podcastImageUrl,
-        modifier,
-        shape,
-        size,
-        contentScale
+        url = episode.podcastImageUrl,
+        modifier = modifier,
+        shape = shape,
+        size = size,
+        contentScale = contentScale
     )
 
 @Composable
 fun Thumbnail(
     url: String,
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(12.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(size = 12.dp),
     size: DpSize = DpSize(
-        JetcasterAppDefaults.cardWidth.medium,
-        JetcasterAppDefaults.cardWidth.medium
+        width = JetcasterAppDefaults.cardWidth.medium,
+        height = JetcasterAppDefaults.cardWidth.medium
     ),
     contentScale: ContentScale = ContentScale.Crop
-) =
+): Unit =
     PodcastImage(
         podcastImageUrl = url,
         contentDescription = null,
         contentScale = contentScale,
         modifier = modifier
-            .clip(shape)
-            .size(size),
+            .clip(shape = shape)
+            .size(size = size),
     )
