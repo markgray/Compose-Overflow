@@ -52,7 +52,7 @@ import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
  * padding values.
  * @param focusRequester The [FocusRequester] used to manage focus for the entire row.
  * @param lazyListState The [LazyListState] used to manage the scroll position of the row.
- * It's automatically remembered based on the `playerEpisodeList`.
+ * It's automatically remembered keyed on the `playerEpisodeList`.
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -61,10 +61,10 @@ internal fun EpisodeRow(
     onSelected: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
     horizontalArrangement: Arrangement.Horizontal =
-        Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
+        Arrangement.spacedBy(space = JetcasterAppDefaults.gap.item),
     contentPadding: PaddingValues = JetcasterAppDefaults.padding.episodeRowContentPadding,
     focusRequester: FocusRequester = remember { FocusRequester() },
-    lazyListState: LazyListState = remember(playerEpisodeList) { LazyListState() }
+    lazyListState: LazyListState = remember(key1 = playerEpisodeList) { LazyListState() }
 ) {
     val firstItem: FocusRequester = remember { FocusRequester() }
     var previousEpisodeListHash: Int by remember { mutableIntStateOf(playerEpisodeList.hashCode()) }
@@ -73,7 +73,7 @@ internal fun EpisodeRow(
     LazyRow(
         state = lazyListState,
         modifier = Modifier
-            .focusRequester(focusRequester)
+            .focusRequester(focusRequester = focusRequester)
             .focusProperties {
                 enter = {
                     when {
@@ -88,13 +88,13 @@ internal fun EpisodeRow(
                     FocusRequester.Default
                 }
             }
-            .then(modifier),
+            .then(other = modifier),
         contentPadding = contentPadding,
         horizontalArrangement = horizontalArrangement,
     ) {
         itemsIndexed(items = playerEpisodeList) { index: Int, item: PlayerEpisode ->
             val cardModifier: Modifier = if (index == 0) {
-                Modifier.focusRequester(firstItem)
+                Modifier.focusRequester(focusRequester = firstItem)
             } else {
                 Modifier
             }

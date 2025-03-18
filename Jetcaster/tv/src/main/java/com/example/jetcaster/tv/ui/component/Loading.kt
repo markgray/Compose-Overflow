@@ -63,8 +63,8 @@ import kotlin.math.max
  * progress indicator and a text message. It's highly customizable through its parameters.
  *
  * @param modifier The modifier to be applied to the layout.
- * @param message The text message to display alongside the loading indicator. Defaults to a string
- * resource "R.string.message_loading".
+ * @param message The text message to display alongside the loading indicator. Defaults to the
+ * string with resource ID `R.string.message_loading` ("Loading").
  * @param contentAlignment The alignment of the content within the Box.
  * Defaults to [Alignment.Center].
  * @param style The text style to apply to the message. Defaults to the [Typography.displaySmall]
@@ -97,7 +97,8 @@ fun Loading(
  * This composable provides a customizable, animated circular progress indicator with a
  * moving head and tail, simulating an indeterminate loading state.
  *
- * @param modifier The modifier to be applied to the indicator.
+ * @param modifier The modifier to be applied to the indicator. Our caller [Loading] does not pass
+ * us any so the empty, default, or starter [Modifier] that contains no elements is used.
  * @param color The color of the animated indicator arc. Defaults to the primary color
  * from the MaterialTheme.
  * @param strokeWidth The width of the indicator arc's stroke. Defaults to 4.dp.
