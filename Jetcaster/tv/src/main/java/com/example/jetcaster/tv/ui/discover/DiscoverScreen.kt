@@ -44,6 +44,21 @@ import com.example.jetcaster.tv.ui.component.Catalog
 import com.example.jetcaster.tv.ui.component.Loading
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * The main composable function for the Discover screen.
+ *
+ * This screen displays a list of podcasts, categorized by different topics.
+ * It allows the user to browse through podcasts, select categories, and play episodes.
+ *
+ * @param showPodcastDetails A lambda function that is invoked when a podcast is selected.
+ * It takes a [PodcastInfo] object as a parameter and navigates to the podcast details screen.
+ * @param playEpisode A lambda function that is invoked when an episode is selected for playback.
+ * It takes a [PlayerEpisode] object as a parameter, representing the episode to be played.
+ * @param modifier Modifier for styling and layout of the Discover screen. Our caller the `Route`
+ * method of `JetcasterApp` passes us a [Modifier.fillMaxSize].
+ * @param discoverScreenViewModel The ViewModel associated with the Discover screen, using Hilt
+ * for dependency injection. Defaults to a new [DiscoverScreenViewModel] if not provided.
+ */
 @Composable
 fun DiscoverScreen(
     showPodcastDetails: (PodcastInfo) -> Unit,
@@ -51,14 +66,14 @@ fun DiscoverScreen(
     modifier: Modifier = Modifier,
     discoverScreenViewModel: DiscoverScreenViewModel = hiltViewModel()
 ) {
-    val uiState by discoverScreenViewModel.uiState.collectAsState()
+    val uiState: DiscoverScreenUiState by discoverScreenViewModel.uiState.collectAsState()
 
-    when (val s = uiState) {
+    when (val s: DiscoverScreenUiState = uiState) {
         DiscoverScreenUiState.Loading -> {
             Loading(
                 modifier = Modifier
                     .fillMaxSize()
-                    .then(modifier)
+                    .then(other = modifier)
             )
         }
 
@@ -76,7 +91,7 @@ fun DiscoverScreen(
                 },
                 modifier = Modifier
                     .fillMaxSize()
-                    .then(modifier)
+                    .then(other = modifier)
             )
         }
     }
@@ -87,7 +102,6 @@ fun DiscoverScreen(
 private fun CatalogWithCategorySelection(
     categoryInfoList: CategoryInfoList,
     podcastList: PodcastList,
-
     selectedCategory: CategoryInfo,
     latestEpisodeList: EpisodeList,
     onPodcastSelected: (PodcastInfo) -> Unit,
@@ -96,13 +110,13 @@ private fun CatalogWithCategorySelection(
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState(),
 ) {
-    val (focusRequester, selectedTab) = remember {
+    val (focusRequester: FocusRequester, selectedTab: FocusRequester) = remember {
         FocusRequester.createRefs()
     }
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()
     }
-    val selectedTabIndex = categoryInfoList.indexOf(selectedCategory)
+    val selectedTabIndex: Int = categoryInfoList.indexOf(element = selectedCategory)
 
     Catalog(
         podcastList = podcastList,
@@ -115,7 +129,7 @@ private fun CatalogWithCategorySelection(
             focusRequester.saveFocusedChild()
             onEpisodeSelected(it)
         },
-        modifier = modifier.focusRequester(focusRequester),
+        modifier = modifier.focusRequester(focusRequester = focusRequester),
         state = state,
     ) {
         TabRow(
@@ -126,9 +140,9 @@ private fun CatalogWithCategorySelection(
                 }
             }
         ) {
-            categoryInfoList.forEachIndexed { index, category ->
-                val tabModifier = if (selectedTabIndex == index) {
-                    Modifier.focusRequester(selectedTab)
+            categoryInfoList.forEachIndexed { index: Int, category: CategoryInfo ->
+                val tabModifier: Modifier = if (selectedTabIndex == index) {
+                    Modifier.focusRequester(focusRequester = selectedTab)
                 } else {
                     Modifier
                 }
@@ -142,7 +156,7 @@ private fun CatalogWithCategorySelection(
                 ) {
                     Text(
                         text = category.name,
-                        modifier = Modifier.padding(JetcasterAppDefaults.padding.tab)
+                        modifier = Modifier.padding(paddingValues = JetcasterAppDefaults.padding.tab)
                     )
                 }
             }

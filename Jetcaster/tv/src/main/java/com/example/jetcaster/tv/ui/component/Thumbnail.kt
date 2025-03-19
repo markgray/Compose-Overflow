@@ -96,6 +96,21 @@ fun Thumbnail(
         contentScale = contentScale
     )
 
+/**
+ * Displays a thumbnail image from a given URL.
+ *
+ * This composable provides a convenient way to display a thumbnail image with customizable
+ * shape, size, and content scaling. It utilizes the [PodcastImage] composable internally to
+ * handle image loading and display.
+ *
+ * @param url The URL of the thumbnail image.
+ * @param modifier Modifier to be applied to the thumbnail.
+ * @param shape The shape of the thumbnail. Defaults to a rounded rectangle with 12.dp corner radius.
+ * @param size The size of the thumbnail. Defaults to a square with medium card width from
+ * [JetcasterAppDefaults].
+ * @param contentScale How the image should be scaled to fit the thumbnail bounds. Defaults to
+ * [ContentScale.Crop].
+ */
 @Composable
 fun Thumbnail(
     url: String,

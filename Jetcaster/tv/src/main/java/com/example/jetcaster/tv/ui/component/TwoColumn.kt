@@ -23,6 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
 
+/**
+ * Displays two composable functions side-by-side in a row.
+ *
+ * This composable provides a simple way to arrange two distinct UI elements horizontally,
+ * with control over their horizontal spacing.
+ *
+ * @param first The first composable function to display. This will be placed on the left.
+ * @param second The second composable function to display. This will be placed on the right.
+ * @param modifier Optional [Modifier] to apply to the underlying [Row].
+ * @param horizontalArrangement The horizontal arrangement of the two composables within the [Row].
+ * Defaults to [Arrangement.spacedBy] with a spacing defined by `JetcasterAppDefaults.gap.twoColumn`
+ * (`36.dp` in this case).
+ */
 @Composable
 internal fun TwoColumn(
     first: (@Composable RowScope.() -> Unit),
