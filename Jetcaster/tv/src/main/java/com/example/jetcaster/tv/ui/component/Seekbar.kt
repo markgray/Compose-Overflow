@@ -26,10 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -44,6 +46,11 @@ import java.time.Duration
 /**
  * A custom Seekbar composable that displays a line with a movable knob representing a time elapsed
  * within a total duration. It allows for keyboard navigation using the left and right arrow keys.
+ *
+ * Our root composable is a [Box], but all the work is done in a [Modifier.drawWithCache] in its
+ * [CacheDrawScope] `onBuildDrawCache` lambda argument in the [DrawScope] `block` lambda argument of
+ * a [CacheDrawScope.onDrawBehind] call (which issues drawing commands to be executed before the
+ * layout content is drawn).
  *
  * @param timeElapsed The duration of time that has elapsed.
  * @param length The total duration of the content.
