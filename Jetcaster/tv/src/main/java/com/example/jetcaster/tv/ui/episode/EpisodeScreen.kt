@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.player.model.PlayerEpisode
@@ -42,7 +43,31 @@ import com.example.jetcaster.tv.ui.component.PlayButton
 import com.example.jetcaster.tv.ui.component.Thumbnail
 import com.example.jetcaster.tv.ui.component.TwoColumn
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
+import kotlinx.coroutines.flow.StateFlow
+import java.time.Duration
 
+/**
+ *  Composable function representing the Episode Screen.
+ *
+ *  This screen displays the details of a selected episode and allows the user to interact with it.
+ *  It handles different UI states such as loading, error, and ready, and delegates actions
+ *  like playing the episode and adding to a playlist to the provided callbacks and ViewModel.
+ *
+ * @param playEpisode Callback function to be executed when the user initiates playing the episode.
+ * This function is typically responsible for starting the audio/video player.
+ * @param backToHome Callback function to be executed when the user wants to navigate back to the
+ * home screen.
+ * @param modifier [Modifier] for styling and layout of the EpisodeScreen. Defaults to [Modifier].
+ * @param episodeScreenViewModel [ViewModel] instance responsible for managing the state and business
+ * logic of the [EpisodeScreen]. It is injected using Hilt. Defaults to a new instance provided by
+ * [hiltViewModel].
+ *
+ * @see EpisodeScreenUiState for the possible UI states of the screen.
+ * @see EpisodeScreenViewModel for the business logic and state management.
+ * @see EpisodeDetailsWithBackground for the composable used to display the episode details.
+ * @see Loading for the composable to display when the episode is loading.
+ * @see ErrorState for the composable to display when there's an error fetching episode data.
+ */
 @Composable
 fun EpisodeScreen(
     playEpisode: () -> Unit,
@@ -51,16 +76,25 @@ fun EpisodeScreen(
     episodeScreenViewModel: EpisodeScreenViewModel = hiltViewModel()
 ) {
 
-    val uiState by episodeScreenViewModel.uiStateFlow.collectAsState()
+    /**
+     * Collects the current UI state from the [StateFlow] of [EpisodeScreenUiState] emitted by the
+     * [EpisodeScreenViewModel.uiStateFlow] of [episodeScreenViewModel] and converts it to a [State]
+     * wrapped [EpisodeScreenUiState] which it assigns it to [uiState].
+     */
+    val uiState: EpisodeScreenUiState by episodeScreenViewModel.uiStateFlow.collectAsState()
 
-    val screenModifier = modifier.fillMaxSize()
-    when (val s = uiState) {
+    /**
+     * [Modifier] for styling and layout of the various screens in the [EpisodeScreen], an
+     * [Modifier.fillMaxSize] is used to fill the entire screen.
+     */
+    val screenModifier: Modifier = modifier.fillMaxSize()
+    when (val s: EpisodeScreenUiState = uiState) {
         EpisodeScreenUiState.Loading -> Loading(modifier = screenModifier)
         EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = screenModifier)
         is EpisodeScreenUiState.Ready -> EpisodeDetailsWithBackground(
             playerEpisode = s.playerEpisode,
             playEpisode = {
-                episodeScreenViewModel.play(it)
+                episodeScreenViewModel.play(playerEpisode = it)
                 playEpisode()
             },
             addPlayList = episodeScreenViewModel::addPlayList,
@@ -86,7 +120,7 @@ private fun EpisodeDetailsWithBackground(
             playEpisode = playEpisode,
             addPlayList = addPlayList,
             modifier = Modifier
-                .padding(JetcasterAppDefaults.overScanMargin.episode.intoPaddingValues())
+                .padding(paddingValues = JetcasterAppDefaults.overScanMargin.episode.intoPaddingValues())
         )
     }
 }
@@ -110,7 +144,7 @@ private fun EpisodeDetails(
                 playerEpisode = playerEpisode,
                 playEpisode = { playEpisode(playerEpisode) },
                 addPlayList = { addPlayList(playerEpisode) },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(weight = 1f)
             )
         },
         modifier = modifier,
@@ -124,22 +158,22 @@ private fun EpisodeInfo(
     addPlayList: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val duration = playerEpisode.duration
+    val duration: Duration? = playerEpisode.duration
 
-    Column(modifier) {
+    Column(modifier = modifier) {
         Text(text = playerEpisode.author, style = MaterialTheme.typography.bodySmall)
         Text(text = playerEpisode.title, style = MaterialTheme.typography.headlineLarge)
         if (duration != null) {
             EpisodeDataAndDuration(offsetDateTime = playerEpisode.published, duration = duration)
         }
-        Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
+        Spacer(modifier = Modifier.height(height = JetcasterAppDefaults.gap.paragraph))
         Text(
             text = playerEpisode.summary,
             softWrap = true,
             maxLines = 5,
             overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.height(JetcasterAppDefaults.gap.paragraph))
+        Spacer(modifier = Modifier.height(height = JetcasterAppDefaults.gap.paragraph))
         Controls(playEpisode = playEpisode, addPlayList = addPlayList)
     }
 }
@@ -151,7 +185,7 @@ private fun Controls(
     modifier: Modifier = Modifier
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(JetcasterAppDefaults.gap.item),
+        horizontalArrangement = Arrangement.spacedBy(space = JetcasterAppDefaults.gap.item),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {

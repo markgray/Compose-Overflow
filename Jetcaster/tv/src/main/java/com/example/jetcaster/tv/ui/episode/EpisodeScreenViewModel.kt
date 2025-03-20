@@ -29,6 +29,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -58,7 +59,7 @@ class EpisodeScreenViewModel @Inject constructor(
         null
     )
 
-    val uiStateFlow = episodeToPodcastFlow.map {
+    val uiStateFlow: StateFlow<EpisodeScreenUiState> = episodeToPodcastFlow.map {
         if (it != null) {
             EpisodeScreenUiState.Ready(it.toPlayerEpisode())
         } else {

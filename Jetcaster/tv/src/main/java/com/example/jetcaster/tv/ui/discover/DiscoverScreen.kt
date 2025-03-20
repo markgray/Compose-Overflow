@@ -97,6 +97,27 @@ fun DiscoverScreen(
     }
 }
 
+/**
+ * Displays a catalog of podcasts and latest episodes, along with a tab row for category selection.
+ *
+ * This composable provides a UI for browsing podcasts and episodes, categorized by different
+ * categories. It utilizes a tab row for category selection, allowing users to switch between
+ * different categories and view the corresponding podcasts and episodes.
+ *
+ * @param categoryInfoList A list of [CategoryInfo] representing the available categories.
+ * @param podcastList A list of [PodcastInfo] to be displayed in the catalog.
+ * @param selectedCategory The currently selected [CategoryInfo].
+ * @param latestEpisodeList A list of [PlayerEpisode] representing the latest episodes.
+ * @param onPodcastSelected Callback to be invoked with the selected [PodcastInfo] when a podcast
+ * is selected.
+ * @param onEpisodeSelected Callback to be invoked with the selected [PlayerEpisode] when an episode
+ * is selected.
+ * @param onCategorySelected Callback to be invoked with the selected [CategoryInfo] when a category
+ * is selected.
+ * @param modifier Modifier for styling and layout of the catalog. Our caller [DiscoverScreen] passes
+ * us a [Modifier.fillMaxSize] to which it chains its own [Modifier] parameter.
+ * @param state The [LazyListState] controlling the scroll position of the catalog.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun CatalogWithCategorySelection(
