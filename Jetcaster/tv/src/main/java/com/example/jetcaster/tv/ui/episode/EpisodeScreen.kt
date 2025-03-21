@@ -18,7 +18,9 @@ package com.example.jetcaster.tv.ui.episode
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -103,6 +105,21 @@ fun EpisodeScreen(
     }
 }
 
+/**
+ * Displays episode details with a background.
+ *
+ * This composable combines a [BackgroundContainer] with [EpisodeDetails] to
+ * display information about a [PlayerEpisode] with a visually appealing background.
+ * It also provides actions to play the episode and add it to a playlist.
+ *
+ * @param playerEpisode The [PlayerEpisode] containing the details to display.
+ * @param playEpisode A lambda function to be invoked when the user wants to play the episode.
+ * It takes the [PlayerEpisode] as a parameter.
+ * @param addPlayList A lambda function to be invoked when the user wants to add the episode
+ * to a playlist. It takes the [PlayerEpisode] as a parameter.
+ * @param modifier [Modifier] to apply to the outer container. Our caller [EpisodeScreen] passes us
+ * a [Modifier.fillMaxSize].
+ */
 @Composable
 private fun EpisodeDetailsWithBackground(
     playerEpisode: PlayerEpisode,
@@ -125,6 +142,24 @@ private fun EpisodeDetailsWithBackground(
     }
 }
 
+/**
+ * Displays the details of an episode, including a thumbnail and episode information.
+ *
+ * This composable presents a two-column layout:
+ * - The first column displays a thumbnail representing the episode.
+ * - The second column shows detailed information about the episode,
+ *   including the title, description, and actions to play the episode or add it to a playlist.
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the episode's data.
+ * @param playEpisode A lambda function to be called when the user wants to play the episode.
+ * It receives the [PlayerEpisode] to be played as a parameter.
+ * @param addPlayList A lambda function to be called when the user wants to add the episode to a
+ * playlist. It receives the [PlayerEpisode] to be added as a parameter.
+ * @param modifier [Modifier] to be applied to the layout. Our caller [EpisodeDetailsWithBackground]
+ * passes us [Modifier.fillMaxSize] to which it chains a [Modifier.padding] with a constant
+ * [PaddingValues] `JetcasterAppDefaults.overScanMargin.episode.intoPaddingValues` (which adds 80.dp
+ * to our `start` and 80.dp to our `end`).
+ */
 @Composable
 private fun EpisodeDetails(
     playerEpisode: PlayerEpisode,
@@ -151,6 +186,17 @@ private fun EpisodeDetails(
     )
 }
 
+/**
+ * Displays detailed information about an episode, including its author, title,
+ * publication date, duration, summary, and playback controls.
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the episode's details.
+ * @param playEpisode A lambda function to be executed when the "play" action is triggered.
+ * @param addPlayList A lambda function to be executed when the "add to playlist" action is triggered.
+ * @param modifier [Modifier] to be applied to the outer Column. Our caller [EpisodeDetails] passes
+ * us a [RowScope.weight] with a `weight` of 1f which causes us to take up the remaining space after
+ * our sibling [Thumbnail] is measured and placed.
+ */
 @Composable
 private fun EpisodeInfo(
     playerEpisode: PlayerEpisode,
