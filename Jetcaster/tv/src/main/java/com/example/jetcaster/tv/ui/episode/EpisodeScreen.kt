@@ -47,11 +47,11 @@ import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 
 /**
- *  Composable function representing the Episode Screen.
+ * Composable function representing the Episode Screen.
  *
- *  This screen displays the details of a selected episode and allows the user to interact with it.
- *  It handles different UI states such as loading, error, and ready, and delegates actions
- *  like playing the episode and adding to a playlist to the provided callbacks and ViewModel.
+ * This screen displays the details of a selected episode and allows the user to interact with it.
+ * It handles different UI states such as loading, error, and ready, and delegates actions
+ * like playing the episode and adding to a playlist to the provided callbacks and ViewModel.
  *
  * @param playEpisode Callback function to be executed when the user initiates playing the episode.
  * This function is typically responsible for starting the audio/video player.

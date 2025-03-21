@@ -16,6 +16,8 @@
 
 package com.example.jetcaster.tv.ui.discover
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
@@ -28,11 +30,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.FocusRequester.Companion.FocusRequesterFactory.component1
+import androidx.compose.ui.focus.FocusRequester.Companion.FocusRequesterFactory.component2
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
+import androidx.tv.material3.TabRowScope
 import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.CategoryInfo
 import com.example.jetcaster.core.model.PodcastInfo
@@ -103,6 +108,52 @@ fun DiscoverScreen(
  * This composable provides a UI for browsing podcasts and episodes, categorized by different
  * categories. It utilizes a tab row for category selection, allowing users to switch between
  * different categories and view the corresponding podcasts and episodes.
+ *
+ * We start by initializing and remembering two [FocusRequester] variables `focusRequester` and
+ * `selectedTab` using the [FocusRequester.createRefs] method. Then we use [LaunchedEffect] with
+ * a `key1` of [Unit] to launch a coroutine that calls the [FocusRequester.requestFocus] method of
+ * [FocusRequester] variable `focusRequester` when the [LaunchedEffect] enters the composition. We
+ * then initialize our [Int] variable `selectedTabIndex` using the [List.indexOf] method of
+ * [CategoryInfoList] parameter [categoryInfoList] to find the index of the `element` which is
+ * [CategoryInfo] parameter [selectedCategory].
+ *
+ * Our root composable is a [Catalog] whose arguments are:
+ *  - `podcastList` is our [PodcastList] parameter [podcastList].
+ *  - `latestEpisodeList` is our [EpisodeList] parameter [latestEpisodeList]
+ *  - `onPodcastSelected` is a lambda that accepts the [PodcastInfo] passed the lambda in variable
+ *  `it`, then calls the [FocusRequester.saveFocusedChild] method of [FocusRequester] variable
+ *  `focusRequester`, then calls our lambda paramter [onPodcastSelected] with the [PodcastInfo]
+ *  passed the lambda in `it`.
+ *  - `onEpisodeSelected` is a lambda that accepts the [PlayerEpisode] passed the lambda in variable
+ *  `it`, then calls the [FocusRequester.saveFocusedChild] method of [FocusRequester] variable
+ *  `focusRequester`, then calls our lambda paramter [onEpisodeSelected] with the [PlayerEpisode]
+ *  passed the lambda in `it`.
+ *  - `modifier` chains a [Modifier.focusRequester] to our [Modifier] parameter [modifier] whose
+ *  `focusRequester` argument is our [FocusRequester] variable `focusRequester`
+ *  - `state` is our [LazyListState] parameter [state].
+ *
+ * In the `header` Composable lambda argument of the [Catalog] we compose a [TabRow] whose
+ * `selectedTabIndex` argument is our [Int] variable `selectedTabIndex`, and whose `modifier`
+ * argument is a [Modifier.focusProperties] whose `enter` is a lambda that returns our [FocusRequester]
+ * variable `selectedTab`.
+ *
+ * In the [TabRowScope] `tabs` composable lambda argument of the [TabRow] we use the
+ * [Iterable.forEachIndexed] method of [CategoryInfoList] parameter [categoryInfoList] to loop
+ * through all of its elements capturing the index in [Int] variable `index` and the [CategoryInfo]
+ * in variable `category` and in the `action` lambda argument we initialize our [Modifier] variable
+ * `tabModifier` to a [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester]
+ * variable `selectedTab` if `selectedTabIndex` is equal to `index` or to an empty [Modifier] is it
+ * is not. We then compose a [Tab] whose arguments are:
+ *  - `selected` is `true` if `index` is equal to `selectedTabIndex`
+ *  - `onFocus` is a lambda that calls our lambda parameter [onCategorySelected] with the current
+ *  [CategoryInfo] in varible `category`
+ *  - `modifier` is our [Modifier] variable `tabModifier`,
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Tab] we compose a [Text] whose
+ * `text` argument is the [CategoryInfo.name] of the [CategoryInfo] in variable `category` and
+ * whose `modifier` argument is a [Modifier.padding] that adds the [PaddingValues] constant
+ * `JetcasterAppDefaults.padding.tab` (a [PaddingValues] that adds 16.dp to the `horizontal` sides
+ * and 5.dp to the `vertical` sides).
  *
  * @param categoryInfoList A list of [CategoryInfo] representing the available categories.
  * @param podcastList A list of [PodcastInfo] to be displayed in the catalog.

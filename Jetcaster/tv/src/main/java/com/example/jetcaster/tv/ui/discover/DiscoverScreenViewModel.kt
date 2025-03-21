@@ -46,6 +46,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * [ViewModel] used by [DiscoverScreen]. It is injected by Hilt, which also supplies the dependencies
+ * required by its constructor thanks to the [Inject] annotation.
+ *
+ * @param podcastsRepository the [PodcastsRepository] to be used for managing podcasts, episodes,
+ * and categories.
+ * @param categoryStore the [CategoryStore] to be used for managing categories and their
+ * relationships with podcasts and episodes.
+ * @param episodePlayer the [EpisodePlayer] to use to play a [PlayerEpisode].
+ */
 @HiltViewModel
 class DiscoverScreenViewModel @Inject constructor(
     private val podcastsRepository: PodcastsRepository,
