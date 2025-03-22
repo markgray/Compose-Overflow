@@ -248,6 +248,17 @@ private fun EpisodeInfo(
     }
 }
 
+/**
+ * Displays a row of control buttons for an episode, specifically a play button and an enqueue button.
+ *
+ * @param playEpisode A callback function invoked when the play button is clicked. It is expected to
+ * handle the logic for starting playback of the episode.
+ * @param addPlayList A callback function invoked when the enqueue button is clicked. It is expected
+ * to handle the logic for adding the episode to a playlist.
+ * @param modifier The modifier to be applied to the Row layout containing the controls. Our caller
+ * [EpisodeInfo] does not pass us any so we use the empty, default, or starter [Modifier] that
+ * contains no elements.
+ */
 @Composable
 private fun Controls(
     playEpisode: () -> Unit,
