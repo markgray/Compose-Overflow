@@ -55,6 +55,29 @@ import java.time.Duration
  * It handles different UI states such as loading, error, and ready, and delegates actions
  * like playing the episode and adding to a playlist to the provided callbacks and ViewModel.
  *
+ * First we initialize our [State] wrapped [EpisodeScreenUiState] variable `uiState` by using the
+ * [StateFlow.collectAsState] method of the [EpisodeScreenViewModel.uiStateFlow] property of our
+ * [EpisodeScreenViewModel] parameter [episodeScreenViewModel] to collect its latest value as a
+ * [State]. Then we initialize our [Modifier] variable `screenModifier` by chaining a
+ * [Modifier.fillMaxSize] to our [Modifier] parameter [modifier].
+ *
+ * We copy our [State] wrapped [EpisodeScreenUiState] variable `uiState` to our [EpisodeScreenUiState]
+ * variable `s` to initialize it then use a `when` statement to branch on the type of `s`:
+ *  - [EpisodeScreenUiState.Loading] -> we compose a [Loading] composable with its `modifier`
+ *  argument our [Modifier] variable `screenModifier` (the UI is in a loading state, so we display a
+ *  circular indeterminate progress screen).
+ *  - [EpisodeScreenUiState.Error] -> we compose an [ErrorState] composable whose `backToHome`
+ *  argument is our [backToHome] lambda parameter, and whose `modifier` argument us our [Modifier]
+ *  variable `screenModifier`.
+ *  - [EpisodeScreenUiState.Ready] -> we compose an [EpisodeDetailsWithBackground] composable whose
+ *  whose `playerEpisode` is the [EpisodeScreenUiState.Ready.playerEpisode] of `s`, whose
+ *  `playEpisode` argument is a lambda that calls the [EpisodeScreenViewModel.play] method of
+ *  [EpisodeScreenViewModel] parameter [episodeScreenViewModel] with the [PlayerEpisode] passed the
+ *  lambda and calls our [playEpisode] lambda parameter. The `addPlayList` argument of the
+ *  [EpisodeDetailsWithBackground] is a function reference to the [EpisodeScreenViewModel.addPlayList]
+ *  method of our [EpisodeScreenViewModel] parameter [episodeScreenViewModel], and its `modifer`
+ *  argument is our [Modifier] variable `screenModifier`.
+ *
  * @param playEpisode Callback function to be executed when the user initiates playing the episode.
  * This function is typically responsible for starting the audio/video player.
  * @param backToHome Callback function to be executed when the user wants to navigate back to the
@@ -90,6 +113,7 @@ fun EpisodeScreen(
      * [Modifier.fillMaxSize] is used to fill the entire screen.
      */
     val screenModifier: Modifier = modifier.fillMaxSize()
+
     when (val s: EpisodeScreenUiState = uiState) {
         EpisodeScreenUiState.Loading -> Loading(modifier = screenModifier)
         EpisodeScreenUiState.Error -> ErrorState(backToHome = backToHome, modifier = screenModifier)
