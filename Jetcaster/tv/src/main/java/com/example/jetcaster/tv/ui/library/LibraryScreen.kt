@@ -18,6 +18,7 @@ package com.example.jetcaster.tv.ui.library
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,7 +44,38 @@ import com.example.jetcaster.tv.model.PodcastList
 import com.example.jetcaster.tv.ui.component.Catalog
 import com.example.jetcaster.tv.ui.component.Loading
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
+import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * Displays the Library screen, which shows the user's subscribed podcasts and the latest episodes.
+ *
+ * We start by initializing our [State] wrapped [LibraryScreenUiState] variable `val uiState` using
+ * the [StateFlow.collectAsState] method of the [LibraryScreenViewModel.uiState] property of our
+ * [LibraryScreenViewModel] parameter [libraryScreenViewModel]. We then copy this [LibraryScreenUiState]
+ * to variable `s` and use a when statement to handle different states:
+ *  - [LibraryScreenUiState.Loading]: We show a loading indicator using the [Loading] composable with
+ *  its `modifier` argument our [Modifier] parameter [modifier].
+ *  - [LibraryScreenUiState.NoSubscribedPodcast]: We call compose a [NavigateToDiscover] composable
+ *  with its `onNavigationRequested` argument our [navigateToDiscover] lambda parameter and
+ *  its `modifier` argument our [Modifier] parameter [modifier].
+ *  - [LibraryScreenUiState.Ready]: We compose a [Library] composable with its `podcastList` argument
+ *  the [LibraryScreenUiState.Ready.subscribedPodcastList] property of `s`, its `episodeList`
+ *  tje [LibraryScreenUiState.Ready.latestEpisodeList] property of `s`, its `showPodcastDetails`
+ *  argument our [showPodcastDetails] lambda parameter, its `onEpisodeSelected` argument a lambda
+ *  that calls the [LibraryScreenViewModel.playEpisode] method of [libraryScreenViewModel] with
+ *  the [PlayerEpisode] parameter `it`, and call our [playEpisode] lambda parameter with its
+ *  `playerEpisode` argument `it`, and the `modifier` argument our [Modifier] parameter [modifier].
+ *
+ * @param modifier [Modifier] for styling the Library screen. Our caller the `Route` method of
+ * `JetcasterApp` passes us a [Modifier.fillMaxSize] instance.
+ * @param navigateToDiscover Callback to navigate to the Discover screen.
+ * @param showPodcastDetails Callback to show the details of a specific podcast. It takes a
+ * [PodcastInfo] object as a parameter.
+ * @param playEpisode Callback to play a selected episode. It takes a [PlayerEpisode] object
+ * as a parameter.
+ * @param libraryScreenViewModel The [LibraryScreenViewModel] instance responsible for managing
+ * the Library screen's data and state. Defaults to a Hilt-injected instance.
+ */
 @Composable
 fun LibraryScreen(
     modifier: Modifier = Modifier,
@@ -52,8 +84,8 @@ fun LibraryScreen(
     playEpisode: (PlayerEpisode) -> Unit,
     libraryScreenViewModel: LibraryScreenViewModel = hiltViewModel()
 ) {
-    val uiState by libraryScreenViewModel.uiState.collectAsState()
-    when (val s = uiState) {
+    val uiState: LibraryScreenUiState by libraryScreenViewModel.uiState.collectAsState()
+    when (val s: LibraryScreenUiState = uiState) {
         LibraryScreenUiState.Loading -> Loading(modifier = modifier)
         LibraryScreenUiState.NoSubscribedPodcast -> {
             NavigateToDiscover(onNavigationRequested = navigateToDiscover, modifier = modifier)
@@ -64,7 +96,7 @@ fun LibraryScreen(
             episodeList = s.latestEpisodeList,
             showPodcastDetails = showPodcastDetails,
             onEpisodeSelected = {
-                libraryScreenViewModel.playEpisode(it)
+                libraryScreenViewModel.playEpisode(playerEpisode = it)
                 playEpisode(it)
             },
             modifier = modifier,
@@ -82,7 +114,7 @@ private fun Library(
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()
     }
 
@@ -92,7 +124,7 @@ private fun Library(
         onPodcastSelected = showPodcastDetails,
         onEpisodeSelected = onEpisodeSelected,
         modifier = modifier
-            .focusRequester(focusRequester)
+            .focusRequester(focusRequester = focusRequester)
             .focusRestorer()
     )
 }
@@ -102,8 +134,8 @@ private fun NavigateToDiscover(
     onNavigationRequested: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val focusRequester = remember { FocusRequester() }
-    LaunchedEffect(Unit) {
+    val focusRequester: FocusRequester = remember { FocusRequester() }
+    LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()
     }
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -117,7 +149,7 @@ private fun NavigateToDiscover(
                 onClick = onNavigationRequested,
                 modifier = Modifier
                     .padding(top = JetcasterAppDefaults.gap.podcastRow)
-                    .focusRequester(focusRequester)
+                    .focusRequester(focusRequester = focusRequester)
             ) {
                 Text(text = stringResource(id = R.string.label_navigate_to_discover))
             }

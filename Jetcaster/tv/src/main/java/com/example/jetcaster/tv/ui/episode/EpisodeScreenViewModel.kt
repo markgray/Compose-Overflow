@@ -104,6 +104,22 @@ class EpisodeScreenViewModel @Inject constructor(
         initialValue = null
     )
 
+    /**
+     * A [StateFlow] of [EpisodeScreenUiState] that is derived from [episodeToPodcastFlow]. It uses
+     * the [Flow.map] method of [episodeToPodcastFlow] to transform the [EpisodeToPodcast] returned
+     * ensuring that only the latest value is processed and any ongoing [Flow] is canceled when it
+     * changes value. In the `map` lambda argument it accepts the [EpisodeToPodcast] instance passed
+     * the lambda in variable `it` and branches on the value of `it`:
+     *  - If `it` is `null`, it emits a [EpisodeScreenUiState.Error] instance.
+     *  - If `it` is not `null`, it calls the [EpisodeToPodcast.toPlayerEpisode] method of `it` for
+     *  conversion to a [PlayerEpisode] and returns a [EpisodeScreenUiState.Ready] instance with the
+     *  `playerEpisode` parameter set to the converted [PlayerEpisode].
+     *
+     * This is chained to a call to the [Flow.stateIn] method to create a [StateFlow] whose `scope`
+     * is the [viewModelScope], its `started` parameter is set to [SharingStarted.WhileSubscribed]
+     * with a 5 second `stopTimeoutMillis` value, and the `initialValue` parameter is set to
+     * [EpisodeScreenUiState.Loading].
+     */
     val uiStateFlow: StateFlow<EpisodeScreenUiState> = episodeToPodcastFlow.map {
         if (it != null) {
             EpisodeScreenUiState.Ready(playerEpisode = it.toPlayerEpisode())
@@ -116,14 +132,39 @@ class EpisodeScreenViewModel @Inject constructor(
         initialValue = EpisodeScreenUiState.Loading
     )
 
+    /**
+     * Adds a new episode to the playback queue.
+     *
+     * This function takes a [PlayerEpisode] object and appends it to the end of the queue managed
+     * by our [EpisodePlayer] property [episodePlayer]. Subsequent playback will include this added
+     * episode.
+     *
+     * @param episode The [PlayerEpisode] object to be added to the queue.
+     */
     fun addPlayList(episode: PlayerEpisode) {
         episodePlayer.addToQueue(episode = episode)
     }
 
+    /**
+     * Initiates playback of a given episode.
+     *
+     * This function delegates the actual playback operation to our [EpisodePlayer] property
+     * [episodePlayer].
+     *
+     * @param playerEpisode The [PlayerEpisode] object containing the necessary information
+     * to play the episode (e.g., media URL, episode ID, etc.).
+     *
+     * @see PlayerEpisode
+     * @see EpisodePlayer.play
+     */
     fun play(playerEpisode: PlayerEpisode) {
         episodePlayer.play(playerEpisode = playerEpisode)
     }
 
+    /**
+     * Initializes the ViewModel by updating podcasts using the [PodcastsRepository.updatePodcasts]
+     * method of our [PodcastsRepository] property [podcastsRepository].
+     */
     init {
         viewModelScope.launch {
             podcastsRepository.updatePodcasts(force = false)
@@ -131,8 +172,41 @@ class EpisodeScreenViewModel @Inject constructor(
     }
 }
 
+/**
+ * Represents the UI state of the episode screen.
+ *
+ * This sealed interface defines the possible states the episode screen can be in,
+ * including loading, error, and ready with the episode data.
+ */
 sealed interface EpisodeScreenUiState {
+    /**
+     * Represents the loading state of the episode screen.
+     *
+     * This object indicates that data for the episode screen is currently being fetched
+     * and is not yet available to be displayed. It is one of the possible states
+     * of the [EpisodeScreenUiState] sealed interface.
+     */
     data object Loading : EpisodeScreenUiState
+
+    /**
+     * Represents an error state in the Episode Screen UI.
+     * This state indicates that an error occurred while fetching or processing
+     * episode data. It can be used to display an error message or a retry button.
+     *
+     * This is a sealed data object, part of the [EpisodeScreenUiState] sealed interface,
+     * meaning it represents one of the possible states the UI can be in.
+     */
     data object Error : EpisodeScreenUiState
+
+    /**
+     * Represents the UI state when the player is ready to start playing an episode.
+     *
+     * This state indicates that all necessary data for playing the episode has been loaded
+     * and the player is prepared to begin playback. It contains information about the
+     * specific episode that is ready to be played.
+     *
+     * @property playerEpisode The [PlayerEpisode] instance representing the episode that is
+     * ready to play.
+     */
     data class Ready(val playerEpisode: PlayerEpisode) : EpisodeScreenUiState
 }
