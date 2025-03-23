@@ -88,8 +88,8 @@ class EpisodeScreenViewModel @Inject constructor(
      *  the [Flow] of [EpisodeToPodcast] returned by the method to the `transform` lambda.
      *
      * This is chained to a call to the [Flow.stateIn] method to create a [StateFlow] whose `scope`
-     * is the [viewModelScope]. The `started` parameter is set to [SharingStarted.WhileSubscribed]
-     * with a 5 second `stopTimeoutMillis` value. The `initialValue` parameter is set to `null`.
+     * is the [viewModelScope], its `started` parameter is set to [SharingStarted.WhileSubscribed]
+     * with a 5 second `stopTimeoutMillis` value, and the `initialValue` parameter is set to `null`.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private val episodeToPodcastFlow: StateFlow<EpisodeToPodcast?> = episodeUriFlow.flatMapLatest {

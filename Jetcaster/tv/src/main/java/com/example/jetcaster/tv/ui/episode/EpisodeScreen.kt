@@ -251,6 +251,13 @@ private fun EpisodeInfo(
 /**
  * Displays a row of control buttons for an episode, specifically a play button and an enqueue button.
  *
+ * Our root composable is a [Row] whose `horizontalArrangement` argument is an [Arrangement.spacedBy]
+ * whose `space` is the constant `JetcasterAppDefaults.gap.item` (16.dp), whose `verticalAlignment`
+ * is [Alignment.CenterVertically] vertically center its children, and its `modifier` argument is our
+ * [Modifier] parameter [modifier]. In its [RowScope] `content` composable lambda argument we compose:
+ *  - a [PlayButton] whose `onClick` argument is our lambda parameter [playEpisode].
+ *  - an [EnqueueButton] whose `onClick` argument is our lambda parameter [playEpisode].
+ *
  * @param playEpisode A callback function invoked when the play button is clicked. It is expected to
  * handle the logic for starting playback of the episode.
  * @param addPlayList A callback function invoked when the enqueue button is clicked. It is expected
