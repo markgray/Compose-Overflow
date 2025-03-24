@@ -759,7 +759,7 @@ private fun InterestsTabRowContent(
  * argument the [Constraints.constrainHeight] method of `outerConstraints` called with its `height`
  * argument `layoutHeight`. In its [Placeable.PlacementScope] lambda argument we:
  *  - initialize our [Int] variable `var yPosition` to `topPaddingPx`
- *  - we use the [List.chunked] extension function on our [List] of [Placeable] variable `placeables`
+ *  - we use the [Iterable.chunked] extension function on our [List] of [Placeable] variable `placeables`
  *  to split it into `columns` [List] of [List]'s (ie. one [List] of [List] for 1 `columns` or two
  *  [List] of [List] of [Placeable] for 2 `columns`)
  *  - we then use [forEachIndexed] to loop through the one or two [List] of [List] or [Placeable]

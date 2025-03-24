@@ -18,10 +18,10 @@ package com.example.jetnews.utils
 
 /**
  * This extension function of a [Set] "toggles" the presence of an [element] in a [Set], ie. if
- * using new [MutableSet] created from our [Set] receiver using [Set.toMutableSet] we find that its
+ * using new [MutableSet] created from our [Set] receiver using [Iterable.toMutableSet] we find that its
  * [MutableSet.add] method returns `false` (the element is already contained in the set) we call the
  * [MutableSet.remove] method to remove it. Having toggled the presence of an [element] in the
- * [MutableSet] we use the [MutableSet.toSet] method to convert the [MutableSet] to a [Set] and
+ * [MutableSet] we use the [Iterable.toSet] method to convert the [MutableSet] to a [Set] and
  * return it to the caller.
  *
  * @param element the [E] whose presence in our receiver [Set] we wish to "toggle".
