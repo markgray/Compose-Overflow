@@ -17,7 +17,10 @@
 package com.example.jetcaster.tv.ui.library
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -32,6 +35,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.Button
 import androidx.tv.material3.MaterialTheme
@@ -39,6 +43,7 @@ import androidx.tv.material3.Text
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.R
+import androidx.tv.material3.Typography
 import com.example.jetcaster.tv.model.EpisodeList
 import com.example.jetcaster.tv.model.PodcastList
 import com.example.jetcaster.tv.ui.component.Catalog
@@ -105,6 +110,43 @@ fun LibraryScreen(
     }
 }
 
+/**
+ * Displays the user's library, showing a catalog of podcasts and their latest episodes.
+ *
+ * This composable function acts as a wrapper for the [Catalog] composable, managing focus
+ * and passing the necessary data and callbacks for displaying and interacting with the library.
+ *
+ * We start by composing a [LaunchedEffect] to run a corroutine to request focus on the library
+ * when it's first rendered using the [FocusRequester.requestFocus] method of our [FocusRequester]
+ * parameter [focusRequester] (this will explicitly request focus on the composable that is linked
+ * with  [focusRequester]. In this case, it ensures that [Catalog] will gain focus when the screen
+ * is loaded).
+ *
+ * Our root Composable [Catalog] is then composed with its `podcastList` argument our [PodcastList]
+ * parameter [podcastList], its `latestEpisodeList` argument our [EpisodeList] parameter [episodeList],
+ * its `onPodcastSelected` argument our [showPodcastDetails] lambda parameter, its `onEpisodeSelected`
+ * argument our [onEpisodeSelected] lambda parameter, and its `modifier` argument chains to our
+ * [Modifier] parameter [modifier] a [Modifier.focusRequester] whose `focusRequester` argument is our
+ * [FocusRequester] parameter [focusRequester] (links the [Catalog] composable with the [FocusRequester]
+ * instance) and at the end of the chain we add [Modifier.focusRestorer] to restore focus to the
+ * [Catalog] when it becomes part of the composition tree (useful when navigating back and forth
+ * between screens).
+ *
+ * @param podcastList A list of [PodcastInfo] representing the user's subscribed podcasts.
+ * @param episodeList A list of [PlayerEpisode] representing the latest episodes from the
+ * subscribed podcasts.
+ * @param showPodcastDetails A lambda function that is called when a podcast is selected.
+ * It receives the selected [PodcastInfo] as a parameter.
+ * @param onEpisodeSelected A lambda function that is called when an episode is selected.
+ * It receives the selected [PlayerEpisode] as a parameter.
+ * @param modifier Modifier for styling and layout of the library. Our caller, [LibraryScreen],
+ * passes us its own [Modifier] parameter which traces back to a [Modifier.fillMaxSize].
+ * @param focusRequester A [FocusRequester] used to programmatically request focus on the library.
+ *
+ * @see Catalog
+ * @see PodcastInfo
+ * @see PlayerEpisode
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun Library(
@@ -130,11 +172,58 @@ private fun Library(
     )
 }
 
+/**
+ * Displays a message indicating that the user has no subscribed podcasts and
+ * provides a button to navigate to the discover screen.
+ *
+ * We start by initializing and remembering our [FocusRequester] variable `val focusRequester` to a
+ * new instance of [FocusRequester] (This will be used to programmatically request focus on our
+ * [Button]). Then we compose a [LaunchedEffect] to run a corroutine to request focus on the button
+ * when it's first rendered using the [FocusRequester.requestFocus] method of our [FocusRequester]
+ * variable `focusRequester` (to which it is linked by a [Modifier.focusRequester]).
+ *
+ * Our root Composable [Box] is then composed with its `modifier` argument our [Modifier] parameter
+ * [modifier], and its `contentAlignment` argument [Alignment.Center] (centers the content of the
+ * [Box] vertically and horizontally). In the [BoxScope] `content` Composable argument of the [Box]
+ * we compose a [Column] and in its [ColumnScope] `content` Composable argument we compose two
+ * [Text]s and a [Button].
+ *
+ * The arguments of the first [Text] are:
+ *  - `text`: The text to display in the first [Text], the [String] with resource ID
+ *  `R.string.display_no_subscribed_podcast` ("Let's discover the podcasts!")
+ *  - `style`: The [TextStyle] to apply to the text, the [Typography.displayMedium] of our custom
+ *  [MaterialTheme.typography].
+ *
+ * The arguments of the second [Text] are:
+ *  - `text`: The text to display in the second [Text], the [String] with resource ID
+ *  `R.string.message_no_subscribed_podcast` ("You subscribe no podcast yet. Let's discover the
+ *  podcasts and subscribe them!")
+ *
+ * The arguments of the [Button] are:
+ *  - `onClick`: The callback to invoke when the button is clicked, our [onNavigationRequested]
+ *  lambda parameter.
+ *  - `modifier`: The [Modifier] to apply to the [Button], a [Modifier.padding] whose `top` is the
+ *  constant `JetcasterAppDefaults.gap.podcastRow` (12.dp), with a [Modifier.focusRequester] chained
+ *  to that whose `focusRequester` is our [FocusRequester] variable `focusRequester` (links the
+ *  [Button] to the [FocusRequester] variable `focusRequester`).
+ *
+ * In the [RowScope] `content` Composable argument of the [Button] we compose a [Text] with its
+ * `text` argument the [String] with resource ID `R.string.label_navigate_to_discover` ("Discover
+ * the podcasts").
+ *
+ * @param onNavigationRequested A callback function invoked when the "Discover" button is clicked.
+ * This function should handle the navigation to the discover screen.
+ * @param modifier Modifier to be applied to the outer [Box]. Our caller, [LibraryScreen], passes
+ * us its own [Modifier] parameter which traces back to a [Modifier.fillMaxSize].
+ */
 @Composable
 private fun NavigateToDiscover(
     onNavigationRequested: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    /**
+     * A [FocusRequester] used to programmatically request focus on our [Button].
+     */
     val focusRequester: FocusRequester = remember { FocusRequester() }
     LaunchedEffect(key1 = Unit) {
         focusRequester.requestFocus()

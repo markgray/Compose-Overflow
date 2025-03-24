@@ -18,9 +18,12 @@ package com.example.jetcaster.tv.ui.library
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.jetcaster.core.data.database.model.EpisodeToPodcast
+import com.example.jetcaster.core.data.database.model.PodcastWithExtraInfo
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.data.repository.PodcastStore
 import com.example.jetcaster.core.data.repository.PodcastsRepository
+import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.model.PlayerEpisode
@@ -30,7 +33,9 @@ import com.example.jetcaster.tv.model.PodcastList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -38,6 +43,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for the Library screen, responsible for managing the UI state
+ * and interacting with the data layer to fetch and update podcast and episode information.
+ *
+ * This ViewModel fetches the list of followed podcasts and their latest episodes,
+ * combines them into a single UI state, and exposes it to the UI layer. It also
+ * handles user actions like playing an episode.
+ *
+ * @property podcastsRepository Repository for fetching and updating podcast information.
+ * @property episodeStore Data store for accessing and managing episode data.
+ * @property podcastStore Data store for accessing and managing podcast data, including followed podcasts.
+ * @property episodePlayer Component responsible for playing audio episodes.
+ */
 @HiltViewModel
 class LibraryScreenViewModel @Inject constructor(
     private val podcastsRepository: PodcastsRepository,
@@ -46,15 +64,15 @@ class LibraryScreenViewModel @Inject constructor(
     private val episodePlayer: EpisodePlayer,
 ) : ViewModel() {
 
-    private val followingPodcastListFlow =
-        podcastStore.followedPodcastsSortedByLastEpisode().map { list ->
+    private val followingPodcastListFlow: Flow<List<PodcastInfo>> =
+        podcastStore.followedPodcastsSortedByLastEpisode().map { list: List<PodcastWithExtraInfo> ->
             list.map { it.asExternalModel() }
         }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val latestEpisodeListFlow = podcastStore
+    private val latestEpisodeListFlow: Flow<EpisodeList> = podcastStore
         .followedPodcastsSortedByLastEpisode()
-        .flatMapLatest { podcastList ->
+        .flatMapLatest { podcastList: List<PodcastWithExtraInfo> ->
             if (podcastList.isNotEmpty()) {
                 combine(podcastList.map { episodeStore.episodesInPodcast(it.podcast.uri, 1) }) {
                     it.map { episodes ->
@@ -62,33 +80,39 @@ class LibraryScreenViewModel @Inject constructor(
                     }
                 }
             } else {
-                flowOf(emptyList())
+                flowOf(value = emptyList())
             }
-        }.map { list ->
-            EpisodeList(list.map { it.toPlayerEpisode() })
+        }.map { list: List<EpisodeToPodcast> ->
+            EpisodeList(member = list.map { it.toPlayerEpisode() })
         }
 
-    val uiState =
-        combine(followingPodcastListFlow, latestEpisodeListFlow) { podcastList, episodeList ->
+    val uiState: StateFlow<LibraryScreenUiState> =
+        combine(
+            flow = followingPodcastListFlow,
+            flow2 = latestEpisodeListFlow
+        ) { podcastList: List<PodcastInfo>, episodeList: EpisodeList ->
             if (podcastList.isEmpty()) {
                 LibraryScreenUiState.NoSubscribedPodcast
             } else {
-                LibraryScreenUiState.Ready(podcastList, episodeList)
+                LibraryScreenUiState.Ready(
+                    subscribedPodcastList = podcastList,
+                    latestEpisodeList = episodeList
+                )
             }
         }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
-            LibraryScreenUiState.Loading
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = LibraryScreenUiState.Loading
         )
 
     init {
         viewModelScope.launch {
-            podcastsRepository.updatePodcasts(false)
+            podcastsRepository.updatePodcasts(force = false)
         }
     }
 
     fun playEpisode(playerEpisode: PlayerEpisode) {
-        episodePlayer.play(playerEpisode)
+        episodePlayer.play(playerEpisode = playerEpisode)
     }
 }
 
