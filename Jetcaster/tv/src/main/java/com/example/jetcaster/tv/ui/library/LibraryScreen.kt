@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.StateFlow
  * We start by initializing our [State] wrapped [LibraryScreenUiState] variable `val uiState` using
  * the [StateFlow.collectAsState] method of the [LibraryScreenViewModel.uiState] property of our
  * [LibraryScreenViewModel] parameter [libraryScreenViewModel]. We then copy this [LibraryScreenUiState]
- * to variable `s` and use a when statement to handle different states:
+ * to variable `s` and use a `when` statement to handle different states:
  *  - [LibraryScreenUiState.Loading]: We show a loading indicator using the [Loading] composable with
  *  its `modifier` argument our [Modifier] parameter [modifier].
  *  - [LibraryScreenUiState.NoSubscribedPodcast]: We call compose a [NavigateToDiscover] composable
@@ -64,10 +64,11 @@ import kotlinx.coroutines.flow.StateFlow
  *  argument our [showPodcastDetails] lambda parameter, its `onEpisodeSelected` argument a lambda
  *  that calls the [LibraryScreenViewModel.playEpisode] method of [libraryScreenViewModel] with
  *  the [PlayerEpisode] parameter `it`, and call our [playEpisode] lambda parameter with its
- *  `playerEpisode` argument `it`, and the `modifier` argument our [Modifier] parameter [modifier].
+ *  `playerEpisode` argument `it`, and the `modifier` argument of the [Library] is our [Modifier]
+ *  parameter [modifier].
  *
- * @param modifier [Modifier] for styling the Library screen. Our caller the `Route` method of
- * `JetcasterApp` passes us a [Modifier.fillMaxSize] instance.
+ * @param modifier [Modifier] for styling the Library screen. Our caller, the `Route` method of
+ * `JetcasterApp`, passes us a [Modifier.fillMaxSize] instance.
  * @param navigateToDiscover Callback to navigate to the Discover screen.
  * @param showPodcastDetails Callback to show the details of a specific podcast. It takes a
  * [PodcastInfo] object as a parameter.

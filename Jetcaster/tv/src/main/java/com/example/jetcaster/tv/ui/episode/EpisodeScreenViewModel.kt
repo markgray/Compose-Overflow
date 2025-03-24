@@ -116,8 +116,8 @@ class EpisodeScreenViewModel @Inject constructor(
      *  `playerEpisode` parameter set to the converted [PlayerEpisode].
      *
      * This is chained to a call to the [Flow.stateIn] method to create a [StateFlow] whose `scope`
-     * is the [viewModelScope], its `started` parameter is set to [SharingStarted.WhileSubscribed]
-     * with a 5 second `stopTimeoutMillis` value, and the `initialValue` parameter is set to
+     * is the [viewModelScope], its `started` argument is set to [SharingStarted.WhileSubscribed]
+     * with a 5 second `stopTimeoutMillis` value, and the `initialValue` argument is set to
      * [EpisodeScreenUiState.Loading].
      */
     val uiStateFlow: StateFlow<EpisodeScreenUiState> = episodeToPodcastFlow.map {
@@ -137,7 +137,8 @@ class EpisodeScreenViewModel @Inject constructor(
      *
      * This function takes a [PlayerEpisode] object and appends it to the end of the queue managed
      * by our [EpisodePlayer] property [episodePlayer]. Subsequent playback will include this added
-     * episode.
+     * episode. We just call the [EpisodePlayer.addToQueue] method of our [EpisodePlayer] property
+     * [episodePlayer] with our [PlayerEpisode] parameter [episode] as its `episode` argument.
      *
      * @param episode The [PlayerEpisode] object to be added to the queue.
      */
@@ -148,11 +149,11 @@ class EpisodeScreenViewModel @Inject constructor(
     /**
      * Initiates playback of a given episode.
      *
-     * This function delegates the actual playback operation to our [EpisodePlayer] property
-     * [episodePlayer].
+     * This function delegates the actual playback operation to the [EpisodePlayer.play] method of
+     * our [EpisodePlayer] property [episodePlayer].
      *
      * @param playerEpisode The [PlayerEpisode] object containing the necessary information
-     * to play the episode (e.g., media URL, episode ID, etc.).
+     * to play the episode (media URL, episode ID, etc.).
      *
      * @see PlayerEpisode
      * @see EpisodePlayer.play
