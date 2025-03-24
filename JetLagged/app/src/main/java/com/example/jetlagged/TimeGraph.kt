@@ -65,14 +65,14 @@ import kotlin.math.roundToInt
  * [Measurable.measure] method of the [List.first] of `hoursHeaderMeasurables` for [Constraints]
  * variable `constraints`.
  *
- * We initialize our [List] of [Placeable] variable `val dayLabelPlaceables` using the [List.map]
+ * We initialize our [List] of [Placeable] variable `val dayLabelPlaceables` using the [Iterable.map]
  * method of `dayLabelMeasurables` to loop through all of the [Measurable] in [List] of [Measurable]
  * `dayLabelMeasurables` calling their [Measurable.measure] method to produce a [Placeable] for that
  * [Measurable] given [Constraints] variable `constraints`.
  *
  * We initialize our [Int] variable `var totalHeight` to the [Placeable.height] of `hoursHeaderPlaceable`.
  *
- * We initialize our [List] of [Placeable] variable `val barPlaceables` using the [List.map] method
+ * We initialize our [List] of [Placeable] variable `val barPlaceables` using the [Iterable.map] method
  * of `dayLabelMeasurables` to loop through all of the [Measurable] in [List] of [Measurable] variable
  * `barMeasureables` and perform the following steps on the [Measurable] variable `measurable` passed
  * the map's `transform` lambda to create each [Placeable] variable `val barPlaceable` that is added
@@ -88,7 +88,7 @@ import kotlin.math.roundToInt
  *  - add the [Placeable.height] of our [Placeable] variable `barPlaceable` to our `totalHeight`
  *  variable.
  *  - return the [Placeable] variable `barPlaceable` to have it added to the [List] of [Placeable]
- *  being formed by the [List.map] method of [List] of [Measurable] variable `barMeasureables`.
+ *  being formed by the [Iterable.map] method of [List] of [Measurable] variable `barMeasureables`.
  *
  * Next we initialize our [Int] variable `val totalWidth` to the [Placeable.width] of the [List.first]
  * of [List] of [Placeable] variable `dayLabelPlaceables` plus the [Placeable.width] of [Placeable]
@@ -103,12 +103,12 @@ import kotlin.math.roundToInt
  *  - call the [Placeable.PlacementScope.place] method of [Placeable] variable `hoursHeaderPlaceable`
  *  to place it at `x` coordinate `xPosition` and `y` coordinate 0.
  *
- * Then still in the [Placeable.PlacementScope] block we use the [List.forEachIndexed] method of
+ * Then still in the [Placeable.PlacementScope] block we use the [Iterable.forEachIndexed] method of
  * [List] of [Placeable] variable `barPlaceables` to loop through all the [Placeable]'s in it
  * assigning the index to [Int] variable `index` and the [Placeable] to [Placeable] variable
  * `barPlaceable` performing the following:
  *  - initialize our [TimeGraphParentData] variable `val barParentData` to the [Placeable.parentData]
- *  of the [Placeable] passed the `action` lambda of the [List.forEachIndexed]
+ *  of the [Placeable] passed the `action` lambda of the [Iterable.forEachIndexed]
  *  - initialize our [Int] variable `val barOffset` to the [TimeGraphParentData.offset] of the
  *  `barParentData` variable time the [Placeable.width] of [Placeable] variable `hoursHeaderPlaceable`
  *  all rounded to [Int].
@@ -218,10 +218,10 @@ object TimeGraphScope {
      * its parameters. We start by initializing our [LocalTime] variable `val earliestTime` to the
      * [LocalTime.of] the `hour` of the [List.first] of [List] of [Int] parameter [hours] and the
      * `minute` of 0. We initialize our [Float] variable `val durationInHours` to the value of
-     * minutes returned by the [ChronoUnit.MINUTES.between] method for [LocalDateTime] parameters
+     * minutes returned by the `ChronoUnit.MINUTES.between` method for [LocalDateTime] parameters
      * [start] and [end] divided by 60f. We initialize our [Float] variable
      * `val durationFromEarliestToStartInHours` to the value of the minutes returned by the
-     * [ChronoUnit.MINUTES.between] method for [LocalDateTime] our [LocalDateTime] variable
+     * `ChronoUnit.MINUTES.between` method for [LocalDateTime] our [LocalDateTime] variable
      * `earliestTime` and the [LocalDateTime.toLocalTime] method of [LocalDateTime] parameter
      * [start] divided by 60f. We initialize our [Float] variable `val offsetInHours` to
      * `durationFromEarliestToStartInHours` plus 0.5f (we add extra half of an hour as hour label
