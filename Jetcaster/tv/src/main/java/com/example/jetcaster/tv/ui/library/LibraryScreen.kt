@@ -65,10 +65,10 @@ import kotlinx.coroutines.flow.StateFlow
  *  its `modifier` argument our [Modifier] parameter [modifier].
  *  - [LibraryScreenUiState.Ready]: We compose a [Library] composable with its `podcastList` argument
  *  the [LibraryScreenUiState.Ready.subscribedPodcastList] property of `s`, its `episodeList`
- *  tje [LibraryScreenUiState.Ready.latestEpisodeList] property of `s`, its `showPodcastDetails`
+ *  the [LibraryScreenUiState.Ready.latestEpisodeList] property of `s`, its `showPodcastDetails`
  *  argument our [showPodcastDetails] lambda parameter, its `onEpisodeSelected` argument a lambda
  *  that calls the [LibraryScreenViewModel.playEpisode] method of [libraryScreenViewModel] with
- *  the [PlayerEpisode] parameter `it`, and call our [playEpisode] lambda parameter with its
+ *  the [PlayerEpisode] parameter `it`, and calls our [playEpisode] lambda parameter with its
  *  `playerEpisode` argument `it`, and the `modifier` argument of the [Library] is our [Modifier]
  *  parameter [modifier].
  *
@@ -184,9 +184,9 @@ private fun Library(
  *
  * Our root Composable [Box] is then composed with its `modifier` argument our [Modifier] parameter
  * [modifier], and its `contentAlignment` argument [Alignment.Center] (centers the content of the
- * [Box] vertically and horizontally). In the [BoxScope] `content` Composable argument of the [Box]
- * we compose a [Column] and in its [ColumnScope] `content` Composable argument we compose two
- * [Text]s and a [Button].
+ * [Box] vertically and horizontally). In the [BoxScope] `content` Composable lambda argument of
+ * the [Box] we compose a [Column] and in its [ColumnScope] `content` Composable argument we compose
+ * two [Text]s and a [Button].
  *
  * The arguments of the first [Text] are:
  *  - `text`: The text to display in the first [Text], the [String] with resource ID
