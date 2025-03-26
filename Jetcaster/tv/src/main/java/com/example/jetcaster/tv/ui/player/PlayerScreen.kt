@@ -20,6 +20,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -157,6 +158,59 @@ fun PlayerScreen(
     }
 }
 
+/**
+ * A composable function that renders the player UI for an audio episode.
+ *
+ * This function manages the playback state and renders the player controls and information
+ * based on the provided [episodePlayerState]. It also handles actions such as play, pause,
+ * skip, rewind, and navigation to the next or previous episode.
+ *
+ * We start by composing a [LaunchedEffect] keyed on our [Boolean] parameter [autoStart] (Compose
+ * will re-launch the effect if the [autoStart] parameter changes) and in its [CoroutineScope]
+ * `block` we call our [play] lambda parameter if [autoStart] is `true` and the
+ * [EpisodePlayerState.isPlaying] property of our [EpisodePlayerState] parameter [episodePlayerState]
+ * is `false`.
+ *
+ * Then we initialize our [PlayerEpisode] variable `currentEpisode` to the value of the
+ * [EpisodePlayerState.currentEpisode] property of our [EpisodePlayerState] parameter
+ * [episodePlayerState].
+ *
+ * If `currentEpisode` is not `null` we compose a [EpisodePlayerWithBackground] whose arguments are:
+ *  - `playerEpisode` is our [PlayerEpisode] variable `currentEpisode`.
+ *  - `queue` is an [EpisodeList] constructed from the [EpisodePlayerState.queue] property of our
+ *  [EpisodePlayerState] parameter [episodePlayerState].
+ *  - `isPlaying` is the value of the [EpisodePlayerState.isPlaying] property of our
+ *  [EpisodePlayerState] parameter [episodePlayerState].
+ *  - `timeElapsed` is the value of the [EpisodePlayerState.timeElapsed] property of our
+ *  [EpisodePlayerState] parameter [episodePlayerState].
+ *  - `play` is our [play] lambda parameter.
+ *  - `pause` is our [pause] lambda parameter.
+ *  - `previous` is our [previous] lambda parameter.
+ *  - `next` is our [next] lambda parameter.
+ *  - `skip` is our [skip] lambda parameter.
+ *  - `rewind` is our [rewind] lambda parameter.
+ *  - `enqueue` is our [enqueue] lambda parameter.
+ *  - `showDetails` is our [showDetails] lambda parameter.
+ *  - `playEpisode` is our [playEpisode] lambda parameter.
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * @param episodePlayerState The current state of the episode player, including the current
+ * episode, playback status, queue, and time elapsed.
+ * @param play A callback function to start or resume playback.
+ * @param pause A callback function to pause playback.
+ * @param previous A callback function to play the previous episode in the queue.
+ * @param next A callback function to play the next episode in the queue.
+ * @param skip A callback function to skip forward in the current episode.
+ * @param rewind A callback function to rewind in the current episode.
+ * @param enqueue A callback function to add an episode to the playback queue.
+ * @param showDetails A callback function to display the detailed information of an episode.
+ * @param playEpisode A callback function to start playing a specific episode.
+ * @param modifier Modifier for styling and layout customization of the player UI. Our caller,
+ * [PlayerScreen], does not pass us any so the empty, default, or starter [Modifier] that contains
+ * no elements is used.
+ * @param autoStart A boolean indicating whether playback should automatically start when the
+ * composable is first rendered. Defaults to `true`.
+ */
 @Composable
 private fun Player(
     episodePlayerState: EpisodePlayerState,
@@ -183,7 +237,7 @@ private fun Player(
     if (currentEpisode != null) {
         EpisodePlayerWithBackground(
             playerEpisode = currentEpisode,
-            queue = EpisodeList(episodePlayerState.queue),
+            queue = EpisodeList(member = episodePlayerState.queue),
             isPlaying = episodePlayerState.isPlaying,
             timeElapsed = episodePlayerState.timeElapsed,
             play = play,
@@ -200,6 +254,68 @@ private fun Player(
     }
 }
 
+/**
+ * Displays the episode player with a background, overlayed with a queue of episodes.
+ *
+ * This composable combines the [BackgroundContainer] and [EpisodePlayer] to create a
+ * full-screen player experience. It also includes a [PlayerQueueOverlay] to display
+ * and interact with the current episode queue.
+ *
+ * We start by initializing and remembering our [FocusRequester] variable `episodePlayer` to a new
+ * instance (this will be used by our [EpisodePlayer] composable to request focus). Then we compose
+ * a [LaunchedEffect] keys on `Unit` (means this effect will only run once when this composable is
+ * first composed) and in its [CoroutineScope] `block` argument we call the
+ * [FocusRequester.requestFocus] of our [FocusRequester] variablr `episodePlayer` to immediately
+ * request focus on our [EpisodePlayer].
+ *
+ * Our root composable is a [BackgroundContainer] whose arguments are:
+ *  - `playerEpisode` is our [PlayerEpisode] parameter [playerEpisode].
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *  - `contentAlignment` is [Alignment.Center].
+ *
+ * In the [BoxScope] `content` composable lambe argument of the [BackgroundContainer] we compose an
+ * [EpisodePlayer] whose arguments are:
+ *  - `playerEpisode` is our [PlayerEpisode] parameter [playerEpisode].
+ *  - `isPlaying` is our [Boolean] parameter [isPlaying].
+ *  - `timeElapsed` is our [Duration] parameter [timeElapsed].
+ *  - `play` is our [play] lambda parameter.
+ *  - `pause` is our [pause] lambda parameter.
+ *  - `previous` is our [previous] lambda parameter.
+ *  - `next` is our [next] lambda parameter.
+ *  - `skip` is our [skip] lambda parameter.
+ *  - `rewind` is our [rewind] lambda parameter.
+ *  - `enqueue` is our [enqueue] lambda parameter.
+ *  - `showDetails` is our [showDetails] lambda parameter.
+ *  - `focusRequester` is our [FocusRequester] variable `episodePlayer`.
+ *  - `modifier` is a [Modifier.padding] whose `paddingValues` argument is the constant
+ *  `JetcasterAppDefaults.overScanMargin.player` converted to [PaddingValues] (top = 40.dp,
+ *  bottom = 40.dp, start = 80.dp, end = 80.dp).
+ *
+ * On top of the [EpisodePlayer] we compose a [PlayerQueueOverlay] whose arguments are;
+ *  - `playerEpisodeList` is our [EpisodeList] parameter [queue].
+ *  - `onSelected` is our [playEpisode] lambda parameter.
+ *  - `modifier` is a [Modifier.fillMaxSize].
+ *  - `contentPadding` is the a copy of the constant `JetcasterAppDefaults.overScanMargin.player`
+ *  converted to [PaddingValues] with its `top` overridden to be 0.dp (top = 0.dp, bottom = 40.dp,
+ *  start = 80.dp, end = 80.dp).
+ *
+ * @param playerEpisode The currently playing episode.
+ * @param queue The list of episodes in the current queue.
+ * @param isPlaying Whether the episode is currently playing.
+ * @param timeElapsed The elapsed playback time of the current episode.
+ * @param play Callback to start or resume playback.
+ * @param pause Callback to pause playback.
+ * @param previous Callback to skip to the previous episode in the queue.
+ * @param next Callback to skip to the next episode in the queue.
+ * @param skip Callback to skip forward in the current episode.
+ * @param rewind Callback to rewind in the current episode.
+ * @param enqueue Callback to add an episode to the queue.
+ * @param showDetails Callback to display more details about the given episode.
+ * @param playEpisode Callback to start playing the given episode.
+ * @param modifier Modifier for styling and layout customization. Our caller, [Player], passes us
+ * its own [Modifier] parameter which is the empty, default, or starter [Modifier] that contains no
+ * elements.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun EpisodePlayerWithBackground(
