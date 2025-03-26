@@ -104,22 +104,24 @@ import kotlinx.coroutines.launch
  *  parameter [modifier].
  *  - [PlayerScreenUiState.Ready] -> we compose a [Player] whose `episodePlayerState` argument is
  *  the value of the [PlayerScreenUiState.Ready] property [PlayerScreenUiState.Ready.playerState]
- *  of `s`, whose `play` argument is the [PlayerScreenViewModel.play] method of our [PlayerScreenViewModel]
- *  parameter [playScreenViewModel], whose `pause` argument is the [PlayerScreenViewModel.pause]
- *  method of our [PlayerScreenViewModel] parameter [playScreenViewModel], whose `previous` argument
- *  is the [PlayerScreenViewModel.previous] method of our [PlayerScreenViewModel] parameter
- *  [playScreenViewModel], whose `next` argument is the [PlayerScreenViewModel.next] method of our
- *  [PlayerScreenViewModel] parameter [playScreenViewModel], whose `skip` argument is the
- *  [PlayerScreenViewModel.skip] method of our [PlayerScreenViewModel] parameter [playScreenViewModel],
- *  whose `rewind` argument is the [PlayerScreenViewModel.rewind] method of our [PlayerScreenViewModel]
- *  parameter [playScreenViewModel], whose `enqueue` argument is the [PlayerScreenViewModel.enqueue]
- *  method of our [PlayerScreenViewModel] parameter [playScreenViewModel], and whose `showDetails`
+ *  of `s`, whose `play` argument is the [PlayerScreenViewModel.play] method of our
+ *  [PlayerScreenViewModel] parameter [playScreenViewModel], whose `pause` argument is the
+ *  [PlayerScreenViewModel.pause] method of our [PlayerScreenViewModel] parameter
+ *  [playScreenViewModel], whose `previous` argument is the [PlayerScreenViewModel.previous] method
+ *  of our [PlayerScreenViewModel] parameter [playScreenViewModel], whose `next` argument is the
+ *  [PlayerScreenViewModel.next] method of our [PlayerScreenViewModel] parameter
+ *  [playScreenViewModel], whose `skip` argument is the [PlayerScreenViewModel.skip] method of our
+ *  [PlayerScreenViewModel] parameter [playScreenViewModel], whose `rewind` argument is the
+ *  [PlayerScreenViewModel.rewind] method of our [PlayerScreenViewModel] parameter
+ *  [playScreenViewModel], whose `enqueue` argument is the [PlayerScreenViewModel.enqueue] method
+ *  of our [PlayerScreenViewModel] parameter [playScreenViewModel], and whose `showDetails`
  *  argument is our lambda parameter [showDetails].
  *
  * @param backToHome A lambda function that is called to navigate back to the home screen.
  * @param showDetails A lambda function that is called to show the details of a specific
  * [PlayerEpisode]. It receives the [PlayerEpisode] as a parameter.
- * @param modifier Modifier for styling the composable.
+ * @param modifier Modifier for styling the composable. Our caller, the `Route` method of
+ * `JetcasterApp`, passes us a  [Modifier.fillMaxSize] instance.
  * @param playScreenViewModel The [PlayerScreenViewModel] instance. By default it uses
  * hiltViewModel() to get it by dependency injection.
  */

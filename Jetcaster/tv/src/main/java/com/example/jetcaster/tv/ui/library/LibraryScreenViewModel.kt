@@ -70,8 +70,8 @@ class LibraryScreenViewModel @Inject constructor(
      *
      * This flow is derived from the underlying [PodcastStore] property [podcastStore], specifically
      * from the [PodcastStore.followedPodcastsSortedByLastEpisode] method, which provides a list of
-     * [PodcastWithExtraInfo]. This internal model is then mapped to the
-     * external representation [PodcastInfo].
+     * [PodcastWithExtraInfo]. This internal model is then mapped to the external representation
+     * [PodcastInfo].
      *
      * The flow will emit a new list whenever the underlying data in the [PodcastStore] changes,
      * i.e. when a user follows/unfollows a podcast, or when the last episode of a followed podcast
@@ -181,10 +181,10 @@ class LibraryScreenViewModel @Inject constructor(
     /**
      * Plays the specified episode using the episode player ([EpisodePlayer] property [episodePlayer]).
      *
-     * This function takes a [PlayerEpisode] object as input, which encapsulates the
-     * information needed to play a specific episode (e.g., media URL, episode ID, etc.).
-     * It then delegates the actual playback to the [EpisodePlayer] property [episodePlayer],
-     *  [PlayerEpisode] data.
+     * This function takes a [PlayerEpisode] object as input, which encapsulates the information
+     * needed to play a specific episode (e.g., media URL, episode ID, etc.). It then delegates the
+     * actual playback to the [EpisodePlayer.play] method of our [EpisodePlayer] property
+     * [episodePlayer], with its `playerEpisode` argument our [PlayerEpisode] parameter [playEpisode].
      *
      * @param playerEpisode The [PlayerEpisode] object representing the episode to be played.
      * Must not be `null`.
@@ -227,7 +227,7 @@ sealed interface LibraryScreenUiState {
      * Represents the UI state when the library screen is fully loaded and ready to display content.
      *
      * This state indicates that both the list of subscribed podcasts and the list of latest
-     *  have been successfully fetched and are available for rendering.
+     * episodes have been successfully fetched and are available for rendering.
      *
      * @property subscribedPodcastList The list of podcasts that the user is subscribed to.
      * @property latestEpisodeList The list of the latest episodes from the subscribed podcasts.
