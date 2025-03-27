@@ -161,9 +161,9 @@ fun PlayerScreen(
 /**
  * A composable function that renders the player UI for an audio episode.
  *
- * This function manages the playback state and renders the player controls and information
- * based on the provided [episodePlayerState]. It also handles actions such as play, pause,
- * skip, rewind, and navigation to the next or previous episode.
+ * This function manages the playback state and renders the player controls and information based
+ * on the [EpisodePlayerState] parameter [episodePlayerState]. It also handles actions such as play,
+ * pause, skip, rewind, and navigation to the next or previous episode.
  *
  * We start by composing a [LaunchedEffect] keyed on our [Boolean] parameter [autoStart] (Compose
  * will re-launch the effect if the [autoStart] parameter changes) and in its [CoroutineScope]
@@ -263,9 +263,9 @@ private fun Player(
  *
  * We start by initializing and remembering our [FocusRequester] variable `episodePlayer` to a new
  * instance (this will be used by our [EpisodePlayer] composable to request focus). Then we compose
- * a [LaunchedEffect] keys on `Unit` (means this effect will only run once when this composable is
+ * a [LaunchedEffect] keyed on `Unit` (means this effect will only run once when this composable is
  * first composed) and in its [CoroutineScope] `block` argument we call the
- * [FocusRequester.requestFocus] of our [FocusRequester] variablr `episodePlayer` to immediately
+ * [FocusRequester.requestFocus] of our [FocusRequester] variable `episodePlayer` to immediately
  * request focus on our [EpisodePlayer].
  *
  * Our root composable is a [BackgroundContainer] whose arguments are:
