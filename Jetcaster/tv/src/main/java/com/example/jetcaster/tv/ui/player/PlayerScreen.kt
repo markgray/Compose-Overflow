@@ -22,8 +22,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.BlendMode
@@ -54,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -374,6 +378,70 @@ private fun EpisodePlayerWithBackground(
     }
 }
 
+/**
+ * Displays the episode player UI, including episode details and playback controls.
+ *
+ * This composable provides a UI for playing an episode, displaying its details,
+ * and interacting with playback controls. It handles focus management to ensure the
+ * player is visible when focused.
+ *
+ * Our root composable is a [Column] whose arguments are:
+ *  - `verticalArrangement` is [Arrangement.spacedBy] whose `space` argument is the constant
+ *  `JetcasterAppDefaults.gap.section` (40.dp)
+ *  - `modifier` is a [Modifier.bringIntoViewRequester] whose `bringIntoViewRequester` argument is
+ *  our [BringIntoViewRequester] parameter [bringIntoViewRequester], to which is chained a
+ *  [Modifier.onFocusChanged] whose `onFocused` lambda argument checks whether the
+ *  [FocusState.isFocused] property of the [FocusState] passed the lambda argument is `true` and
+ *  if it is `true` it calls the [CoroutineScope.launch] method of our [CoroutineScope] parameter
+ *  [coroutineScope] and in its [CoroutineScope] `block` it calls the
+ *  [BringIntoViewRequester.bringIntoView] method of our [BringIntoViewRequester] parameter
+ *  [bringIntoViewRequester] to bring this item into bounds by making all the scrollable parents
+ *  scroll appropriately. and at the end of the [Modifier] chain we use `then` to chain our [Modifier]
+ *  parameter [modifier] into the chain.
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose a
+ * [EpisodeDetails] whose arguments are:
+ *  - `playerEpisode` is our [PlayerEpisode] parameter [playerEpisode].
+ *  - `content` is an empty lambda.
+ *  - `controls` is a lambda whose content is a [EpisodeControl] whose `showDetails` argument is
+ *  a lambda that calls our [showDetails] lambda parameter with our [PlayerEpisode] parameter
+ *  [playerEpisode], and whose `enqueue` argument is a lambda that calls our [enqueue] lambda
+ *  parameter with our [PlayerEpisode] parameter [playerEpisode].
+ *
+ * Below the [EpisodeDetails] we compose a [PlayerControl] whose arguments are:
+ *  - `isPlaying` is our [Boolean] parameter [isPlaying].
+ *  - `timeElapsed` is our [Duration] parameter [timeElapsed].
+ *  - `length` is the value of the [Duration] property [PlayerEpisode.duration] of our
+ *  [PlayerEpisode] parameter [playerEpisode].
+ *  - `play` is our [play] lambda parameter.
+ *  - `pause` is our [pause] lambda parameter.
+ *  - `previous` is our [previous] lambda parameter.
+ *  - `next` is our [next] lambda parameter.
+ *  - `skip` is our [skip] lambda parameter.
+ *  - `rewind` is our [rewind] lambda parameter.
+ *  - `focusRequester` is our [FocusRequester] parameter [focusRequester].
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the details of the episode to be played.
+ * @param isPlaying A boolean indicating whether the episode is currently playing.
+ * @param timeElapsed The [Duration] representing the amount of time that has elapsed in the current
+ * episode during playback.
+ * @param play A callback function to start or resume playback.
+ * @param pause A callback function to pause playback.
+ * @param previous A callback function to go to the previous episode.
+ * @param next A callback function to go to the next episode.
+ * @param skip A callback function to skip forward in the episode.
+ * @param rewind A callback function to rewind the episode.
+ * @param enqueue A callback function to enqueue an episode for later playback.
+ * @param showDetails A callback function to show the detailed information of the episode.
+ * @param modifier The [Modifier] to be applied to the layout. Our caller, [EpisodePlayerWithBackground],
+ * passes us a [Modifier.padding] whose `paddingValues` argument is the constant
+ * `JetcasterAppDefaults.overScanMargin.player` converted to [PaddingValues] (top = 40.dp,
+ * bottom = 40.dp, start = 80.dp, end = 80.dp).
+ * @param bringIntoViewRequester The [BringIntoViewRequester] used to bring the player into view
+ * when focused.
+ * @param coroutineScope The [CoroutineScope] used for launching coroutines.
+ * @param focusRequester The [FocusRequester] used to request focus on the player controls.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun EpisodePlayer(
@@ -397,14 +465,14 @@ private fun EpisodePlayer(
         verticalArrangement = Arrangement.spacedBy(space = JetcasterAppDefaults.gap.section),
         modifier = Modifier
             .bringIntoViewRequester(bringIntoViewRequester = bringIntoViewRequester)
-            .onFocusChanged {
-                if (it.hasFocus) {
+            .onFocusChanged { focusState: FocusState ->
+                if (focusState.hasFocus) {
                     coroutineScope.launch {
                         bringIntoViewRequester.bringIntoView()
                     }
                 }
             }
-            .then(modifier)
+            .then(other = modifier)
     ) {
         EpisodeDetails(
             playerEpisode = playerEpisode,
@@ -431,6 +499,36 @@ private fun EpisodePlayer(
     }
 }
 
+/**
+ * A composable function that provides controls for managing an episode.
+ *
+ * This function renders a horizontal row containing buttons for enqueuing an episode
+ * and viewing episode details.
+ *
+ * Our root composable is a [Row] whose arguments are:
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *  - `horizontalArrangement` is [Arrangement.spacedBy] whose `space` argument is the constant
+ *  `JetcasterAppDefaults.gap.item` (16.dp)
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Row] we first compose an
+ * [EnqueueButton] whose arguments are:
+ *  - `onClick` is our [enqueue] lambda parameter.
+ *  - `modifier` is a [Modifier.size] whose `size` argument is the constant
+ *  `JetcasterAppDefaults.iconButtonSize.default` converted to [DpSize] (28.dp by 28.dp).
+ *
+ * Next in the [Row] we compose an [InfoButton] whose arguments are:
+ *  - `onClick` is our [showDetails] lambda parameter.
+ *  - `modifier` is a [Modifier.size] whose `size` argument is the constant
+ *  `JetcasterAppDefaults.iconButtonSize.default` converted to [DpSize] (28.dp by 28.dp).
+ *
+ * @param showDetails A lambda function to be invoked when the info button is clicked.
+ * This should typically navigate to a screen displaying the episode's details.
+ * @param enqueue A lambda function to be invoked when the enqueue button is clicked.
+ * This should typically add the episode to a playback queue.
+ * @param modifier Optional [Modifier] to apply to the row containing the control buttons. Our caller,
+ * [EpisodePlayer] does not pass us any so the empty, default, or starter [Modifier] that contains
+ * no elements is used.
+ */
 @Composable
 private fun EpisodeControl(
     showDetails: () -> Unit,
@@ -452,6 +550,82 @@ private fun EpisodeControl(
     }
 }
 
+/**
+ * A Composable function that provides controls for a media player.
+ *
+ * This composable displays buttons for play/pause, skip, rewind, previous, and next,
+ * along with an elapsed time indicator if the media length is provided.
+ *
+ * We start by initializing and remembering our [FocusRequester] variable `playPauseButton` to a new
+ * instance (this will be used by our [PlayPauseButton] composable to request focus).
+ *
+ * Our root composable is a [Column] whose arguments are:
+ *  - `verticalArrangement` is a [Arrangement.spacedBy] whose `space` argument is the constant
+ *  `JetcasterAppDefaults.gap.item` (16.dp)
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * At the top of the [ColumnScope] `content` lambda argument of the [Column] we compose a [Row] whose
+ * arguments are:
+ *  - `horizontalArrangement` is a [Arrangement.spacedBy] whose `space` argument is the constant
+ * `JetcasterAppDefaults.gap.default` (16.dp), and whose `alignment` argument is
+ * [Alignment.CenterHorizontally].
+ *  - `verticalAlignment` is [Alignment.CenterVertically].
+ *  - `modifier` is a [Modifier.fillMaxWidth] to which is chained a [Modifier.focusRequester] whose
+ *  `focusRequester` argument is our [FocusRequester] parameter [focusRequester], chained to a
+ *  [Modifier.onFocusChanged] whose `onFocused` lambda argument checks whether the [FocusState]
+ *  passed the lambda argument is `true` and if it is `true` it calls the [FocusRequester.requestFocus]
+ *  method of our [FocusRequester] variable `playPauseButton` to request focus on our [PlayPauseButton],
+ *  and at the end of the chain is a [Modifier.focusable].
+ *
+ * In the [RowScope] `content` composable lambda argument of the [Row] we compose a [PreviousButton],
+ * whose `onClick` argument is our [previous] lambda parameter, and whose `modifier` argument is a
+ * [Modifier.size] whose `size` argument is the constant `JetcasterAppDefaults.iconButtonSize.medium`
+ * converted to [DpSize] (40.dp by 40.dp).
+ *
+ * Next in the [Row] we compose a [RewindButton], whose `onClick` argument is our [rewind] lambda
+ * parameter, and whose `modifier` argument is a [Modifier.size] whose `size` argument is the
+ * constant `JetcasterAppDefaults.iconButtonSize.medium` converted to [DpSize] (40.dp by 40.dp).
+ *
+ * Next in the [Row] we compose a [PlayPauseButton], whose arguments are:
+ *  - `isPlaying` is our [Boolean] parameter [isPlaying].
+ *  - `onClick` is a lambda that checks whether the [Boolean] parameter [isPlaying] is `true` and
+ *  if it is `true` it calls our [pause] lambda parameter, otherwise it calls our [play] lambda
+ *  parameter.
+ *  - `modifier` is a [Modifier.size] whose `size` argument is the constant
+ *  `JetcasterAppDefaults.iconButtonSize.large` converted to [DpSize] (56.dp by 56.dp), to which is
+ *  chained a [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester]
+ *  variable `playPauseButton`.
+ *
+ * Next in the [Row] we compose a [SkipButton], whose `onClick` argument is our [skip] lambda
+ * parameter, and whose `modifier` argument is a [Modifier.size] whose `size` argument is the
+ * constant `JetcasterAppDefaults.iconButtonSize.medium` converted to [DpSize] (40.dp by 40.dp).
+ *
+ * Finally in the [Row] we compose a [NextButton], whose `onClick` argument is our [next] lambda
+ * parameter, and whose `modifier` argument is a [Modifier.size] whose `size` argument is the
+ * constant `JetcasterAppDefaults.iconButtonSize.medium` converted to [DpSize] (40.dp by 40.dp).
+ *
+ * Below the [Row] in the [Column] if our [Duration] parameter [length] is not `null` we compose an
+ * [ElapsedTimeIndicator] whose arguments are:
+ *  - `timeElapsed` is our [Duration] parameter [timeElapsed].
+ *  - `length` is our [Duration] parameter [length].
+ *  - `skip` is our [skip] lambda parameter.
+ *  - `rewind` is our [rewind] lambda parameter.
+ *
+ * @param isPlaying Boolean indicating whether the media is currently playing.
+ * @param timeElapsed [Duration] representing the elapsed time of the media playback.
+ * @param length Optional [Duration] representing the total length of the media. If null, the
+ * elapsed time indicator is not shown.
+ * @param play Callback function invoked when the play button is clicked.
+ * @param pause Callback function invoked when the pause button is clicked.
+ * @param previous Callback function invoked when the previous track button is clicked.
+ * @param next Callback function invoked when the next track button is clicked.
+ * @param skip Callback function invoked when the skip button is clicked.
+ * @param rewind Callback function invoked when the rewind button is clicked.
+ * @param modifier Modifier to be applied to the container of the controls. Our caller, [EpisodePlayer],
+ * does not pass us any so the empty, default, or starter [Modifier] that contains no elements is used.
+ * @param focusRequester [FocusRequester] used to control focus within the player controls.
+ * Defaults to a new [FocusRequester].
+ */
 @Composable
 private fun PlayerControl(
     isPlaying: Boolean,
@@ -481,8 +655,8 @@ private fun PlayerControl(
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(focusRequester = focusRequester)
-                .onFocusChanged {
-                    if (it.isFocused) {
+                .onFocusChanged { focusState: FocusState ->
+                    if (focusState.isFocused) {
                         playPauseButton.requestFocus()
                     }
                 }

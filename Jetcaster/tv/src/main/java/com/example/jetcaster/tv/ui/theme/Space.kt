@@ -81,10 +81,10 @@ internal data class PaddingSettings(
 
 internal data class GapSettings(
     val tiny: Dp = 4.dp,
-    val small: Dp = tiny * 2,
-    val default: Dp = small * 2,
-    val medium: Dp = default + tiny,
-    val large: Dp = medium * 2,
+    val small: Dp = tiny * 2, // 8.dp
+    val default: Dp = small * 2, // 16.dp
+    val medium: Dp = default + tiny, // 20.dp
+    val large: Dp = medium * 2, // 40.dp
 
     val chip: Dp = small,
     val episodeRow: Dp = medium,
