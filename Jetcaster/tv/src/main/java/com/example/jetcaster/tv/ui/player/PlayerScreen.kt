@@ -386,7 +386,7 @@ private fun EpisodePlayerWithBackground(
  * player is visible when focused.
  *
  * Our root composable is a [Column] whose arguments are:
- *  - `verticalArrangement` is [Arrangement.spacedBy] whose `space` argument is the constant
+ *  - `verticalArrangement` is a [Arrangement.spacedBy] whose `space` argument is the constant
  *  `JetcasterAppDefaults.gap.section` (40.dp)
  *  - `modifier` is a [Modifier.bringIntoViewRequester] whose `bringIntoViewRequester` argument is
  *  our [BringIntoViewRequester] parameter [bringIntoViewRequester], to which is chained a
@@ -507,7 +507,7 @@ private fun EpisodePlayer(
  *
  * Our root composable is a [Row] whose arguments are:
  *  - `modifier` is our [Modifier] parameter [modifier].
- *  - `horizontalArrangement` is [Arrangement.spacedBy] whose `space` argument is the constant
+ *  - `horizontalArrangement` is an [Arrangement.spacedBy] whose `space` argument is the constant
  *  `JetcasterAppDefaults.gap.item` (16.dp)
  *
  * In the [RowScope] `content` composable lambda argument of the [Row] we first compose an
@@ -566,16 +566,17 @@ private fun EpisodeControl(
  *
  * At the top of the [ColumnScope] `content` lambda argument of the [Column] we compose a [Row] whose
  * arguments are:
- *  - `horizontalArrangement` is a [Arrangement.spacedBy] whose `space` argument is the constant
+ *  - `horizontalArrangement` is an [Arrangement.spacedBy] whose `space` argument is the constant
  * `JetcasterAppDefaults.gap.default` (16.dp), and whose `alignment` argument is
  * [Alignment.CenterHorizontally].
  *  - `verticalAlignment` is [Alignment.CenterVertically].
  *  - `modifier` is a [Modifier.fillMaxWidth] to which is chained a [Modifier.focusRequester] whose
  *  `focusRequester` argument is our [FocusRequester] parameter [focusRequester], chained to a
- *  [Modifier.onFocusChanged] whose `onFocused` lambda argument checks whether the [FocusState]
- *  passed the lambda argument is `true` and if it is `true` it calls the [FocusRequester.requestFocus]
- *  method of our [FocusRequester] variable `playPauseButton` to request focus on our [PlayPauseButton],
- *  and at the end of the chain is a [Modifier.focusable].
+ *  [Modifier.onFocusChanged] whose `onFocused` lambda argument checks whether the
+ *  [FocusState.isFocused] property of the [FocusState] passed the lambda argument is `true` and if
+ *  it is `true` it calls the [FocusRequester.requestFocus] method of our [FocusRequester] variable
+ *  `playPauseButton` to request focus on our [PlayPauseButton]. At the end of the [Modifier] chain
+ *  is a [Modifier.focusable].
  *
  * In the [RowScope] `content` composable lambda argument of the [Row] we compose a [PreviousButton],
  * whose `onClick` argument is our [previous] lambda parameter, and whose `modifier` argument is a
@@ -613,7 +614,7 @@ private fun EpisodeControl(
  *
  * @param isPlaying Boolean indicating whether the media is currently playing.
  * @param timeElapsed [Duration] representing the elapsed time of the media playback.
- * @param length Optional [Duration] representing the total length of the media. If null, the
+ * @param length Optional [Duration] representing the total length of the media. If `null`, the
  * elapsed time indicator is not shown.
  * @param play Callback function invoked when the play button is clicked.
  * @param pause Callback function invoked when the pause button is clicked.
