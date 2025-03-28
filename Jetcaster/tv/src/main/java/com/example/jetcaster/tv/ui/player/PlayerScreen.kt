@@ -64,6 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.tv.material3.Typography
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.R
@@ -704,6 +705,37 @@ private fun PlayerControl(
     }
 }
 
+/**
+ * Displays an indicator showing the elapsed time of a media item and a seek bar
+ * to control the playback position.
+ *
+ * Our root composable is a [Column] whose arguments are:
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *  - `verticalArrangement` is a [Arrangement.spacedBy] whose `space` argument is the constant
+ *  `JetcasterAppDefaults.gap.tiny` (4.dp)
+ *
+ * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose an
+ * [ElapsedTime] whose arguments are:
+ *  - `timeElapsed` is our [Duration] parameter [timeElapsed].
+ *  - `length` is our [Duration] parameter [length].
+ *
+ * Next in the [Column] we compose a [Seekbar] whose arguments are:
+ *  - `timeElapsed` is our [Duration] parameter [timeElapsed].
+ *  - `length` is our [Duration] parameter [length].
+ *  - `knobSize` is our [Dp] parameter [knobSize].
+ *  - `onMoveLeft` is our lambda parameter [rewind].
+ *  - `onMoveRight` is our lambda parameter [skip].
+ *  - `modifier` is a [Modifier.fillMaxWidth].
+ *
+ * @param timeElapsed The duration of time that has elapsed in the media item.
+ * @param length The total duration of the media item.
+ * @param skip A lambda function to be called when the user wants to skip forward.
+ * @param rewind A lambda function to be called when the user wants to rewind.
+ * @param modifier [Modifier] to be applied to the outer Column layout. Our caller, [PlayerControl],
+ * does not pass us any so the empty, default, or starter [Modifier] that contains no elements is
+ * used.
+ * @param knobSize The size of the seek bar's knob.
+ */
 @Composable
 private fun ElapsedTimeIndicator(
     timeElapsed: Duration,
@@ -729,6 +761,35 @@ private fun ElapsedTimeIndicator(
     }
 }
 
+/**
+ * Displays the elapsed time and the total length of a process, formatted as "MM:SS".
+ *
+ * This composable function takes the elapsed time and the total length as [Duration] objects
+ * and displays them in a user-friendly format: "MM:SS•MM:SS". It uses string resources
+ * for localization.
+ *
+ * We start by initializing our [String] variable `elapsed` with a formatted string created using
+ * the format [String] with resource Id `R.string.minutes_seconds` ("%1$02d:%2$02d") and the arguments
+ * [Duration.toMinutes] of [Duration] parameter [timeElapsed] and [Duration.toSeconds] modulo 60 of
+ * [Duration] parameter [timeElapsed], and initializing our [String] variable `l` with a formatted
+ * string created using the same format as `elapsed` but with the arguments [Duration.toMinutes]
+ * of [Duration] parameter [length] and [Duration.toSeconds] modulo 60 of [Duration] parameter
+ * [length].
+ *
+ * Then our root composable is a [Text] whose arguments are:
+ *  - `text` is our [String] variable `elapsed` and [String] variable `l` formatted using the [String]
+ *  format with ID `R.string.elapsed_time` ("%1$s•%2$s").
+ *  - `style` is our [TextStyle] parameter [style].
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * @param timeElapsed The elapsed time as a [Duration].
+ * @param length The total length of the process as a [Duration].
+ * @param modifier [Modifier] to apply to the Text composable. Our caller, [ElapsedTimeIndicator],
+ * does not pass us any so the empty, default, or starter [Modifier] that contains no elements is
+ * used.
+ * @param style The text style to apply to the displayed text. Defaults to the [Typography.bodySmall]
+ * of our custom [MaterialTheme.typography].
+ */
 @Composable
 private fun ElapsedTime(
     timeElapsed: Duration,
@@ -743,7 +804,11 @@ private fun ElapsedTime(
             timeElapsed.toSeconds() % 60
         )
     val l: String =
-        stringResource(R.string.minutes_seconds, length.toMinutes(), length.toSeconds() % 60)
+        stringResource(
+            R.string.minutes_seconds,
+            length.toMinutes(),
+            length.toSeconds() % 60
+        )
     Text(
         text = stringResource(R.string.elapsed_time, elapsed, l),
         style = style,
@@ -751,6 +816,47 @@ private fun ElapsedTime(
     )
 }
 
+/**
+ * Displays a screen indicating that there are no episodes in the queue.
+ *
+ * This composable displays a message informing the user that their queue is empty.
+ * It provides a button that, when clicked, navigates the user back to the home screen.
+ *
+ * We start by composing a [LaunchedEffect] keyes on the [Unit] object. This ensures that the
+ * [LaunchedEffect] block is executed only once, during the initial composition of the composable.
+ * In its [CoroutineScope] `block` lambda argument we call the [FocusRequester.requestFocus] method
+ * of our [FocusRequester] parameter [focusRequester] to request focus on the "Back to Home" button.
+ *
+ * Our root composable is a [Box] whose arguments are:
+ *  - `contentAlignment` is [Alignment.Center] to center the content within the box both vertically
+ *  and horizontally.
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [Column], and in
+ * its [ColumnScope] `content` composable lambda argument we compose a [Text] whose arguments are:
+ *  - `text` is a string resource with ID `R.string.display_nothing_in_queue` ("No episode in the queue").
+ *  - `style` is the [TextStyle] of [Typography.displayMedium] of our custom [MaterialTheme.typography].
+ *
+ * Next in the [Column] we compose a [Spacer] whose `modifier` argument a is a [Modifier.height] whose
+ * `height` argument is the constant `JetcasterAppDefaults.gap.paragraph` (16.dp).
+ *
+ * Next in the [Column] we compose a [Text] whose `text` argument is a string resource with ID
+ * `R.string.message_nothing_in_queue` ("Discover the Podcast you want to listen to").
+ *
+ * Finally in the [Column] we compose a [Button] whose arguments are:
+ *  - `onClick` is our [backToHome] lambda parameter.
+ *  - `modifier` is a [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester]
+ *  parameter [focusRequester].
+ *  - `content` composable lambda argument of the [Button] is a [Text] whose `text` argument is the
+ *  string resource with ID `R.string.label_back_to_home` ("Back to Home").
+ *
+ * @param backToHome A lambda function that is called when the "Back to Home" button is clicked.
+ * This function should handle the navigation back to the home screen.
+ * @param modifier [Modifier] to be applied to the layout. Our caller [PlayerScreen] passes us its
+ * own [Modifier] parameter which traces back to a [Modifier.fillMaxSize] instance.
+ * @param focusRequester [FocusRequester] instance to manage focus. Defaults to a new instance.
+ * This is used to automatically focus the "Back to Home" button when the composable is displayed.
+ */
 @Composable
 private fun NoEpisodeInQueue(
     backToHome: () -> Unit,
