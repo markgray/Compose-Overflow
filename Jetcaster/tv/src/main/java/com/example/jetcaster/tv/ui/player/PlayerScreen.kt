@@ -711,7 +711,7 @@ private fun PlayerControl(
  *
  * Our root composable is a [Column] whose arguments are:
  *  - `modifier` is our [Modifier] parameter [modifier].
- *  - `verticalArrangement` is a [Arrangement.spacedBy] whose `space` argument is the constant
+ *  - `verticalArrangement` is an [Arrangement.spacedBy] whose `space` argument is the constant
  *  `JetcasterAppDefaults.gap.tiny` (4.dp)
  *
  * In the [ColumnScope] `content` composable lambda argument of the [Column] we compose an
@@ -727,8 +727,8 @@ private fun PlayerControl(
  *  - `onMoveRight` is our lambda parameter [skip].
  *  - `modifier` is a [Modifier.fillMaxWidth].
  *
- * @param timeElapsed The duration of time that has elapsed in the media item.
- * @param length The total duration of the media item.
+ * @param timeElapsed The [Duration] of time that has elapsed in the media item.
+ * @param length The total [Duration] of the media item.
  * @param skip A lambda function to be called when the user wants to skip forward.
  * @param rewind A lambda function to be called when the user wants to rewind.
  * @param modifier [Modifier] to be applied to the outer Column layout. Our caller, [PlayerControl],
@@ -822,7 +822,7 @@ private fun ElapsedTime(
  * This composable displays a message informing the user that their queue is empty.
  * It provides a button that, when clicked, navigates the user back to the home screen.
  *
- * We start by composing a [LaunchedEffect] keyes on the [Unit] object. This ensures that the
+ * We start by composing a [LaunchedEffect] keyed on the [Unit] object. This ensures that the
  * [LaunchedEffect] block is executed only once, during the initial composition of the composable.
  * In its [CoroutineScope] `block` lambda argument we call the [FocusRequester.requestFocus] method
  * of our [FocusRequester] parameter [focusRequester] to request focus on the "Back to Home" button.
