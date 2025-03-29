@@ -37,6 +37,7 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -884,6 +885,49 @@ private fun NoEpisodeInQueue(
     }
 }
 
+/**
+ * An overlay that displays the current player's queue of episodes.
+ *
+ * This composable displays a list of episodes in a row, typically at the bottom of the screen,
+ * representing the queue of episodes that will be played. It also supports a scrim effect
+ * when the overlay is focused, enhancing visual clarity.
+ *
+ * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable `hasFocus`
+ * with `false`. Then we initialize our [DpOffset] variable `actualOffset` with to [DpOffset.Zero]
+ * if our [Boolean] variable `hasFocus` is `true`, or to our [DpOffset] parameter [offset] if it is
+ * `false`.
+ *
+ * Our root composable is a [Box] whose arguments are:
+ *  - `modifier` chains to our [Modifier] parameter [modifier] a [Modifier.drawWithCache] whose
+ *  [DrawScope] `block` lambda argument is a lambda that checks whether our [Boolean] variable
+ *  `hasFocus` is `true` and if it is `true` it calls our lambda parameter [scrim].
+ *  - `contentAlignment` is our [Alignment] parameter [contentAlignment].
+ *
+ * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [EpisodeRow]
+ * whose arguments are:
+ *  - `playerEpisodeList` is our [EpisodeList] parameter [playerEpisodeList].
+ *  - `onSelected` is our [onSelected] lambda parameter.
+ *  - `horizontalArrangement` is our [Arrangement.Horizontal] parameter [horizontalArrangement].
+ *  - `contentPadding` is our [PaddingValues] parameter [contentPadding].
+ *  - `modifier` is a [Modifier.offset] whose `x` argument is our [DpOffset.x] of our [DpOffset]
+ *  variable `actualOffset` and whose `y` argument is our [DpOffset.y] of our [DpOffset] variable
+ *  `actualOffset`, to which is chained a [Modifier.onFocusChanged] in whose `onFocused` lambda
+ *  argument we update our [MutableState] variable `hasFocus` with the [FocusState.hasFocus] property
+ *  of the [FocusState] passed to the lambda.
+ *
+ * @param playerEpisodeList The list of episodes to display in the queue.
+ * @param onSelected A callback invoked when an episode in the queue is selected. It is provided
+ * the selected [PlayerEpisode].
+ * @param modifier Modifiers to be applied to the overlay.
+ * @param horizontalArrangement The horizontal arrangement of the episodes within the row.
+ * Defaults to spaced evenly with the constant `JetcasterAppDefaults.gap.item` (16.dp)
+ * @param contentPadding Padding around the content of the episode row. Defaults to no padding.
+ * @param contentAlignment The alignment of the content within the overlay's bounds.
+ * Defaults to [Alignment.BottomStart].
+ * @param scrim A lambda that defines how the scrim is to be drawn. Defaults to a vertical gradient
+ * (a visual effect that colors from [Color.Transparent] to [Color.Black] evenly dispersed).
+ * @param offset The offset to apply to the overlay. Defaults to [DpOffset.Zero].
+ */
 @Composable
 private fun PlayerQueueOverlay(
     playerEpisodeList: EpisodeList,
@@ -924,7 +968,7 @@ private fun PlayerQueueOverlay(
             contentPadding = contentPadding,
             modifier = Modifier
                 .offset(x = actualOffset.x, y = actualOffset.y)
-                .onFocusChanged { hasFocus = it.hasFocus }
+                .onFocusChanged { focusState: FocusState -> hasFocus = focusState.hasFocus }
         )
     }
 }
