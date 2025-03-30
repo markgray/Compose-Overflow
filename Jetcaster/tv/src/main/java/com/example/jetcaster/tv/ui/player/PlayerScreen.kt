@@ -45,6 +45,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.FocusState
@@ -893,14 +894,16 @@ private fun NoEpisodeInQueue(
  * when the overlay is focused, enhancing visual clarity.
  *
  * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable `hasFocus`
- * with `false`. Then we initialize our [DpOffset] variable `actualOffset` with to [DpOffset.Zero]
+ * with `false`. Then we initialize our [DpOffset] variable `actualOffset` to [DpOffset.Zero]
  * if our [Boolean] variable `hasFocus` is `true`, or to our [DpOffset] parameter [offset] if it is
  * `false`.
  *
  * Our root composable is a [Box] whose arguments are:
- *  - `modifier` chains to our [Modifier] parameter [modifier] a [Modifier.drawWithCache] whose
- *  [DrawScope] `block` lambda argument is a lambda that checks whether our [Boolean] variable
- *  `hasFocus` is `true` and if it is `true` it calls our lambda parameter [scrim].
+ *  - `modifier` chains to our [Modifier] parameter [modifier] a [Modifier.drawWithCache] in whose
+ *  [CacheDrawScope] `onBuildDrawCache` lambda argument we call the [CacheDrawScope.onDrawBehind]
+ *  method and in its [DrawScope] `block` lambda argument we check whether our [Boolean] variable
+ *  `hasFocus` is `true` and if it is `true` we call our lambda parameter [scrim] (this draws
+ *  [scrim] before the layout content of the [Box] is drawn).
  *  - `contentAlignment` is our [Alignment] parameter [contentAlignment].
  *
  * In the [BoxScope] `content` composable lambda argument of the [Box] we compose a [EpisodeRow]
@@ -917,10 +920,11 @@ private fun NoEpisodeInQueue(
  *
  * @param playerEpisodeList The list of episodes to display in the queue.
  * @param onSelected A callback invoked when an episode in the queue is selected. It is provided
- * the selected [PlayerEpisode].
- * @param modifier Modifiers to be applied to the overlay.
+ * the selected [PlayerEpisode] as its argument.
+ * @param modifier [Modifier] to be applied to the overlay. Our caller [EpisodePlayerWithBackground]
+ * passes us a [Modifier.fillMaxSize].
  * @param horizontalArrangement The horizontal arrangement of the episodes within the row.
- * Defaults to spaced evenly with the constant `JetcasterAppDefaults.gap.item` (16.dp)
+ * Defaults to spaced evenly with the `space` constant `JetcasterAppDefaults.gap.item` (16.dp)
  * @param contentPadding Padding around the content of the episode row. Defaults to no padding.
  * @param contentAlignment The alignment of the content within the overlay's bounds.
  * Defaults to [Alignment.BottomStart].

@@ -50,14 +50,15 @@ class PlayerScreenViewModel @Inject constructor(
      * This flow emits different states based on the underlying [EpisodePlayer.playerState] of our
      * [EpisodePlayer] parameter [episodePlayer].
      * It handles cases where:
-     *   - There are no episodes in the queue, emitting [PlayerScreenUiState.NoEpisodeInQueue].
-     *   - The player is ready to play with an episode in the queue, emitting [PlayerScreenUiState.Ready]
-     *   containing the current [EpisodePlayerState].
-     *   - The player is still loading and not yet ready, emitting [PlayerScreenUiState.Loading].
+     *   - There are no episodes in the queue, emitting a [PlayerScreenUiState.NoEpisodeInQueue].
+     *   - The player is ready to play with an episode in the queue, emitting a
+     *   [PlayerScreenUiState.Ready] containing the current [EpisodePlayerState].
+     *   - The player is still loading and not yet ready, emitting a [PlayerScreenUiState.Loading].
      *
      * The flow is started using [SharingStarted.WhileSubscribed] with a stop timeout of 5 seconds.
-     * This means that the flow will only be active and collecting values as long as there are subscribers.
-     * If there are no subscribers for 5 seconds, the flow will stop collecting and emitting values.
+     * This means that the flow will only be active and collecting values as long as there are
+     * subscribers. If there are no subscribers for 5 seconds, the flow will stop collecting and
+     * emitting values.
      *
      * It is initially set to [PlayerScreenUiState.Loading]
      */
@@ -159,7 +160,7 @@ class PlayerScreenViewModel @Inject constructor(
      *
      * This function utilizes the [EpisodePlayer.advanceBy] method of [EpisodePlayer] property
      * [episodePlayer] to advance the playback position by the [Duration] specified in [Duration]
-     * variable `skipAmount` (10 seconds).
+     * property [skipAmount] (10 seconds).
      */
     fun skip() {
         episodePlayer.advanceBy(duration = skipAmount)
