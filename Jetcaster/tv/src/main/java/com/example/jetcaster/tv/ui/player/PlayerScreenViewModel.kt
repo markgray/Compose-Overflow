@@ -166,20 +166,82 @@ class PlayerScreenViewModel @Inject constructor(
         episodePlayer.advanceBy(duration = skipAmount)
     }
 
+    /**
+     * Rewinds the currently playing episode by a predefined skip amount.
+     *
+     * This function utilizes the [EpisodePlayer.rewindBy] method of [EpisodePlayer] property
+     * [episodePlayer] to move the playback position backward. The amount of time skipped is
+     * determined by the [Duration] property [skipAmount] (10 seconds)
+     *
+     * @see EpisodePlayer.rewindBy for details on how the rewinding is performed.
+     * @see skipAmount the duration to be skipped when rewinding
+     */
     fun rewind() {
         episodePlayer.rewindBy(duration = skipAmount)
     }
 
+    /**
+     * Adds a [PlayerEpisode] to the playback queue.
+     *
+     * This function enqueues the [PlayerEpisode] parameter [playerEpisode] into the playback queue
+     * to be played after the currently playing episode (if any) or at the beginning of the queue if
+     * the queue is empty. It utilizes the [EpisodePlayer.addToQueue] method of our [EpisodePlayer]
+     * property [episodePlayer].
+     *
+     * @param playerEpisode The [PlayerEpisode] to be added to the queue.
+     */
     fun enqueue(playerEpisode: PlayerEpisode) {
         episodePlayer.addToQueue(episode = playerEpisode)
     }
 }
 
+/**
+ * Represents the UI state of the player screen.
+ *
+ * This sealed interface defines the different states the player screen can be in,
+ * such as loading, ready to play with episode information, or having no episodes in the queue.
+ */
 sealed interface PlayerScreenUiState {
+    /**
+     * Represents the loading state of the player screen UI.
+     * This state indicates that the necessary data for the player screen
+     * is currently being fetched or initialized.  The UI should typically
+     * display a loading indicator or placeholder content while in this state.
+     *
+     * This is a sealed class data object used as a state in UI.
+     *
+     * This state should be replaced by a different state when the loading
+     * process is completed or an error occurs.
+     */
     data object Loading : PlayerScreenUiState
+
+    /**
+     * Represents the "Ready" state of the player screen UI.
+     *
+     * This state indicates that the player is prepared to start playback and is
+     * currently displaying the relevant information for the episode.  It contains
+     * the current state of the episode player.
+     *
+     * @property playerState The current state of the episode player. This provides details about
+     * the playback status, like whether the episode is paused, buffering, or ready to play.
+     */
     data class Ready(
         val playerState: EpisodePlayerState
     ) : PlayerScreenUiState
 
+    /**
+     * Represents the UI state when there are no episodes in the playback queue.
+     * This state indicates that the player is idle because there's nothing to play.
+     * It's a specific state within the broader [PlayerScreenUiState] hierarchy.
+     *
+     * Typically, this state would be displayed when:
+     *  - The user has not added any episodes to the playback queue.
+     *  - The playback queue was previously populated but has now been cleared.
+     *  - The player has finished playing the last episode in the queue and is waiting for more.
+     *
+     * This state provides a clear signal to the UI to display a message or other
+     * relevant content indicating the empty queue status. For instance, the UI can
+     * guide the user to add episodes.
+     */
     data object NoEpisodeInQueue : PlayerScreenUiState
 }
