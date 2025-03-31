@@ -22,7 +22,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -60,6 +63,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.tv.material3.Typography
 import com.example.jetcaster.core.model.PodcastInfo
 import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.tv.R
@@ -75,6 +79,7 @@ import com.example.jetcaster.tv.ui.component.PlayButton
 import com.example.jetcaster.tv.ui.component.Thumbnail
 import com.example.jetcaster.tv.ui.component.TwoColumn
 import com.example.jetcaster.tv.ui.theme.JetcasterAppDefaults
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 
@@ -222,6 +227,59 @@ private fun PodcastDetailsWithBackground(
     }
 }
 
+/**
+ * Displays the details of a podcast, including its information and a list of its episodes.
+ *
+ * This composable uses a two-column layout to display the podcast's general information (such as
+ * title, author, and subscribe button) on the left and a list of its episodes on the right.
+ *
+ * Our root composable is a [TwoColumn] composable whose `modifier` argument is our [Modifier]
+ * parameter [modifier], and whose `horizontalArrangement` argument is a [Arrangement.spacedBy]
+ * whose `space` argument is `JetcasterAppDefaults.gap.twoColumn` (48.dp). Its `first` argument is
+ * a [PodcastInfo] composable whose arguments are:
+ *  - `podcastInfo` is our [PodcastInfo] parameter [podcastInfo],
+ *  - `isSubscribed` is our [Boolean] parameter [isSubscribed],
+ *  - `subscribe` is our [subscribe] lambda parameter,
+ *  - `unsubscribe` is our [unsubscribe] lambda parameter,
+ *  - `modifier` is a [RowScope.weight] (weight = 0.3f) [Modifier], with a [Modifier.padding]
+ *  chained to that whose `paddingValues` argument is a copy of the [PaddingValues] created from
+ *  `JetcasterAppDefaults.overScanMargin.podcast` with its `end` argument set to 0.dp (top = 40.dp,
+ *  bottom = 40.dp, start = 80.dp, end = 0.dp)
+ *
+ * The `second` argument is a [PodcastEpisodeList] composable whose arguments are:
+ *  - `episodeList` is our [EpisodeList] parameter [episodeList],
+ *  - `playEpisode` is a lambda that calls our [playEpisode] lambda parameter with the [PlayerEpisode]
+ *  that is passed to it as its argument,
+ *  - `showDetails` is our [showEpisodeDetails] lambda parameter,
+ *  - `enqueue` is our [enqueue] lambda parameter,
+ *  - `modifier` is a [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester]
+ *  parameter [focusRequester], with a [Modifier.focusRestorer] chained to that, followed by a
+ *  [RowScope.weight] (weight = 0.7f) at the end of the chain.
+ *
+ * After the [TwoColumn] composable we use a [LaunchedEffect] composable whose `key1` argument is
+ * `Unit` (insures that it will run only once) and whose [CoroutineScope] `block` lambda argument
+ * is a lambda that calls the [FocusRequester.requestFocus] method of our [FocusRequester] parameter
+ * [focusRequester].
+ *
+ * @param podcastInfo The [PodcastInfo] data to display. Contains details about the podcast.
+ * @param episodeList The [EpisodeList] to display. Contains the list of episodes for the podcast.
+ * @param isSubscribed A boolean indicating whether the user is subscribed to the podcast.
+ * @param subscribe A callback function that is invoked when the user wants to subscribe to the
+ * podcast. It takes the [PodcastInfo] and the desired subscription state (`true` for subscribe)
+ * as parameters.
+ * @param unsubscribe A callback function that is invoked when the user wants to unsubscribe from
+ * the podcast. It takes the [PodcastInfo] and the desired subscription state (`false` for
+ * unsubscribe) as parameters.
+ * @param playEpisode A callback function that is invoked when the user wants to play an episode.
+ * It takes the [PlayerEpisode] to play as a parameter.
+ * @param showEpisodeDetails A callback function that is invoked when the user wants to view
+ * details of an episode. It takes the [PlayerEpisode] to show details of as a parameter.
+ * @param enqueue A callback function that is invoked when the user wants to enqueue an episode.
+ * It takes the [PlayerEpisode] to enqueue as a parameter.
+ * @param modifier The [Modifier] to be applied to the root composable. Our caller,
+ * [PodcastDetailsWithBackground] passes us a [Modifier.fillMaxSize].
+ * @param focusRequester The [FocusRequester] used to request focus on the episode list.
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun PodcastDetails(
@@ -272,6 +330,53 @@ private fun PodcastDetails(
     }
 }
 
+/**
+ * Displays the general information of a podcast, including its title, author, and subscription
+ * status.
+ *
+ * This composable displays the title, author, and subscription status of a podcast. It also
+ * provides interactions for subscribing and unsubscribing from the podcast.
+ *
+ * Our root composable is a [Column] whose `modifier` argument is our [Modifier] parameter [modifier].
+ * In the [ColumnScope] `content` composable lambda argument we compose a [Thumbnail] composable
+ * whose `podcastInfo` argument is our [PodcastInfo] parameter [podcastInfo], followed by a
+ * [Spacer] whose `modifier` argument is a [Modifier.height] whose `height` argument is 16.dp.
+ *
+ * Then we compose a [Text] composable whose `text` argument is the [PodcastInfo.author] property of
+ * our [PodcastInfo] parameter [podcastInfo], and whose `style` argument is the
+ * [Typography.bodySmall] of our custom [MaterialTheme.typography].
+ *
+ * Next we compose a [Text] composable whose `text` argument is the [PodcastInfo.title] property of
+ * our [PodcastInfo] parameter [podcastInfo], and whose `style` argument is th
+ * e [Typography.headlineSmall] of our custom [MaterialTheme.typography].
+ *
+ * After that we compose a [Text] composable whose `text` argument is the [PodcastInfo.description]
+ * property of our [PodcastInfo] parameter [podcastInfo], whose `maxLines` argument is 2,
+ * whose `overflow` argument is [TextOverflow.Ellipsis], and whose `style` argument is the
+ * [Typography.bodyMedium] of our custom [MaterialTheme.typography].
+ *
+ * Finally we compose a [ToggleSubscriptionButton] composable whose arguments are:
+ *  - `podcastInfo` is our [PodcastInfo] parameter [podcastInfo],
+ *  - `isSubscribed` is our [Boolean] parameter [isSubscribed],
+ *  - `subscribe` is our [subscribe] lambda parameter,
+ *  - `unsubscribe` is our [unsubscribe] lambda parameter,
+ *  - `modifier` is a [Modifier.padding] whose `top` argument is
+ *  `JetcasterAppDefaults.gap.podcastRow` (20.dp)
+ *
+ * @param podcastInfo The [PodcastInfo] data to display. Contains details about the podcast.
+ * @param isSubscribed A boolean indicating whether the user is subscribed to the podcast.
+ * @param subscribe A callback function that is invoked when the user wants to subscribe to the
+ * podcast. It takes the [PodcastInfo] and the desired subscription state (`true` for subscribe)
+ * as parameters.
+ * @param unsubscribe A callback function that is invoked when the user wants to unsubscribe from
+ * the podcast. It takes the [PodcastInfo] and the desired subscription state (`false` for
+ * unsubscribe) as parameters.
+ * @param modifier The [Modifier] to be applied to the root composable. Our caller [PodcastDetails]
+ * passes us a [RowScope.weight] (weight = 0.3f) [Modifier], with a [Modifier.padding] chained to
+ * that whose `paddingValues` argument is a copy of the [PaddingValues] created from
+ * `JetcasterAppDefaults.overScanMargin.podcast` with its `end` argument set to 0.dp (top = 40.dp,
+ * bottom = 40.dp, start = 80.dp, end = 0.dp).
+ */
 @Composable
 private fun PodcastInfo(
     podcastInfo: PodcastInfo,
@@ -299,16 +404,50 @@ private fun PodcastInfo(
             style = MaterialTheme.typography.bodyMedium
         )
         ToggleSubscriptionButton(
-            podcastInfo,
-            isSubscribed,
-            subscribe,
-            unsubscribe,
+            podcastInfo = podcastInfo,
+            isSubscribed = isSubscribed,
+            subscribe = subscribe,
+            unsubscribe = unsubscribe,
             modifier = Modifier
                 .padding(top = JetcasterAppDefaults.gap.podcastRow)
         )
     }
 }
 
+/**
+ * A composable function that displays a button to toggle the subscription status of a podcast.
+ *
+ * This button dynamically changes its icon and label based on the current subscription state.
+ * When clicked, it triggers the appropriate subscribe or unsubscribe action.
+ *
+ * We start by initializing our [ImageVector] variable `icon` with the appropriate icon based on
+ * the current subscription state: [Icons.Filled.Remove] is [isSubscribed] is `true`, and
+ * [Icons.Filled.Add] if it is `false`. We also initialize our [String] variable `label` with the
+ * appropriate label based on the current subscription state: [R.string.label_unsubscribe]
+ * ("Subscribed") if [isSubscribed] is `true`, and [R.string.label_subscribe] ("Subscribe") if it
+ * is `false`. Finally, we initialize our `action` lambda taking [PodcastInfo] and [Boolean]
+ * variable with the appropriate action based on the current subscription state: [unsubscribe] if
+ * [isSubscribed] is `true`, and [subscribe] if it is `false`.
+ *
+ * Our root composable is a [ButtonWithIcon] composable whose arguments are:
+ *  - `label` is our [String] variable `label`,
+ *  - `icon` is our [ImageVector] variable `icon`,
+ *  - `onClick` is a lambda that calls our `action` lambda parameter with our [PodcastInfo] parameter
+ *  [podcastInfo] and our [Boolean] parameter [isSubscribed].
+ *  - `scale` is the [ButtonDefaults.scale] of [ButtonDefaults] with its `scale` argument
+ *  set to 1f (the scale to be used for this Button when enabled is the original),
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * @param podcastInfo The [PodcastInfo] object representing the podcast.
+ * @param isSubscribed A boolean indicating whether the user is currently subscribed to the podcast.
+ * @param subscribe A lambda function that is invoked when the user wants to subscribe to the podcast.
+ * It takes the [PodcastInfo] and the subscription status (should be `true` after subscription) as parameters.
+ * @param unsubscribe A lambda function that is invoked when the user wants to unsubscribe from the
+ * podcast. It takes the [PodcastInfo] and the subscription status (should be `false` after
+ * unsubscription) as parameters.
+ * @param modifier [Modifier] to be applied to the button. Our caller [PodcastInfo] passes us a
+ * [Modifier.padding] whose `top` argument is `JetcasterAppDefaults.gap.podcastRow` (20.dp).
+ */
 @Composable
 private fun ToggleSubscriptionButton(
     podcastInfo: PodcastInfo,
