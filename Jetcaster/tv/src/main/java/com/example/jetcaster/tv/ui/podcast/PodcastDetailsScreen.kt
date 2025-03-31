@@ -87,7 +87,7 @@ import java.time.Duration
  *
  * We start by initializing our [State] wrapped [PodcastScreenUiState] variable `uiState` by using
  * the [StateFlow.collectAsState] method of the [PodcastDetailsScreenViewModel.uiStateFlow] property
- * of our [PodcastDetailsScreenViewModel] parameter [podcastDetailsScreenViewModel]. Then in an
+ * of our [PodcastDetailsScreenViewModel] parameter [podcastDetailsScreenViewModel]. Then in a
  * `when` statement we copy it to [PodcastScreenUiState] variable `s` and branch on the type of `s`:
  *  - [PodcastScreenUiState.Loading] -> We compose a [Loading] composable whose `modifier` argument
  *  is our [Modifier] parameter [modifier].
@@ -102,13 +102,13 @@ import java.time.Duration
  *  [PodcastDetailsScreenViewModel] parameter [podcastDetailsScreenViewModel], whose `unsubscribe`
  *  argument is the [PodcastDetailsScreenViewModel.unsubscribe] method of our
  *  [PodcastDetailsScreenViewModel] parameter [podcastDetailsScreenViewModel], whose `playEpisode`
- *  is a lambda that accepts the [PlayerEpisode] passed the lambda in variable `episodeToPlay` and
- *  calls the [PodcastDetailsScreenViewModel.play] method of our [PodcastDetailsScreenViewModel]
- *  parameter [podcastDetailsScreenViewModel] with `episodeToPlay` as its argument, and calls our
- *  [playEpisode] lambda parameter with `episodeToPlay` as its argument. The `enqueue` argument is
- *  is the [PodcastDetailsScreenViewModel.enqueue] method of our [PodcastDetailsScreenViewModel]
- *  parameter [podcastDetailsScreenViewModel], and the `showEpisodeDetails` argument is our
- *  [showEpisodeDetails] lambda parameter.
+ *  argument is a lambda that accepts the [PlayerEpisode] passed the lambda in variable
+ *  `episodeToPlay` and calls the [PodcastDetailsScreenViewModel.play] method of our
+ *  [PodcastDetailsScreenViewModel] parameter [podcastDetailsScreenViewModel] with `episodeToPlay`
+ *  as its argument, and calls our [playEpisode] lambda parameter with `episodeToPlay` as its
+ *  argument. The `enqueue` argument is is the [PodcastDetailsScreenViewModel.enqueue] method of
+ *  our [PodcastDetailsScreenViewModel] parameter [podcastDetailsScreenViewModel], and the
+ *  `showEpisodeDetails` argument is our [showEpisodeDetails] lambda parameter.
  *
  * @param backToHomeScreen Callback function invoked to navigate back to the home screen.
  * @param playEpisode Callback function invoked when an episode is selected for playback.

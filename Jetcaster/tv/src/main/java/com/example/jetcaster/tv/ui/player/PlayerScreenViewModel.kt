@@ -203,7 +203,7 @@ class PlayerScreenViewModel @Inject constructor(
  */
 sealed interface PlayerScreenUiState {
     /**
-     * Represents the loading state of the player screen UI.
+     * Represents the "Loading" state of the player screen UI.
      * This state indicates that the necessary data for the player screen
      * is currently being fetched or initialized.  The UI should typically
      * display a loading indicator or placeholder content while in this state.
