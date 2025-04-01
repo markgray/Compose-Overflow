@@ -234,7 +234,7 @@ private fun PodcastDetailsWithBackground(
  * title, author, and subscribe button) on the left and a list of its episodes on the right.
  *
  * Our root composable is a [TwoColumn] composable whose `modifier` argument is our [Modifier]
- * parameter [modifier], and whose `horizontalArrangement` argument is a [Arrangement.spacedBy]
+ * parameter [modifier], and whose `horizontalArrangement` argument is an [Arrangement.spacedBy]
  * whose `space` argument is `JetcasterAppDefaults.gap.twoColumn` (48.dp). Its `first` argument is
  * a [PodcastInfo] composable whose arguments are:
  *  - `podcastInfo` is our [PodcastInfo] parameter [podcastInfo],
@@ -347,8 +347,8 @@ private fun PodcastDetails(
  * [Typography.bodySmall] of our custom [MaterialTheme.typography].
  *
  * Next we compose a [Text] composable whose `text` argument is the [PodcastInfo.title] property of
- * our [PodcastInfo] parameter [podcastInfo], and whose `style` argument is th
- * e [Typography.headlineSmall] of our custom [MaterialTheme.typography].
+ * our [PodcastInfo] parameter [podcastInfo], and whose `style` argument is the
+ * [Typography.headlineSmall] of our custom [MaterialTheme.typography].
  *
  * After that we compose a [Text] composable whose `text` argument is the [PodcastInfo.description]
  * property of our [PodcastInfo] parameter [podcastInfo], whose `maxLines` argument is 2,
@@ -421,7 +421,7 @@ private fun PodcastInfo(
  * When clicked, it triggers the appropriate subscribe or unsubscribe action.
  *
  * We start by initializing our [ImageVector] variable `icon` with the appropriate icon based on
- * the current subscription state: [Icons.Filled.Remove] is [isSubscribed] is `true`, and
+ * the current subscription state: [Icons.Filled.Remove] if [isSubscribed] is `true`, and
  * [Icons.Filled.Add] if it is `false`. We also initialize our [String] variable `label` with the
  * appropriate label based on the current subscription state: [R.string.label_unsubscribe]
  * ("Subscribed") if [isSubscribed] is `true`, and [R.string.label_subscribe] ("Subscribe") if it
@@ -435,7 +435,7 @@ private fun PodcastInfo(
  *  - `onClick` is a lambda that calls our `action` lambda parameter with our [PodcastInfo] parameter
  *  [podcastInfo] and our [Boolean] parameter [isSubscribed].
  *  - `scale` is the [ButtonDefaults.scale] of [ButtonDefaults] with its `scale` argument
- *  set to 1f (the scale to be used for this Button when enabled is the original),
+ *  set to 1f (the scale to be used for this Button when enabled is the "original"),
  *  - `modifier` is our [Modifier] parameter [modifier].
  *
  * @param podcastInfo The [PodcastInfo] object representing the podcast.
