@@ -31,6 +31,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -38,6 +40,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +57,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusRestorer
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.ColorScheme
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import androidx.tv.material3.Typography
@@ -480,6 +485,44 @@ private fun ToggleSubscriptionButton(
     )
 }
 
+/**
+ * Displays a scrollable list of podcast episodes.
+ *
+ * This composable takes a list of [PlayerEpisode] objects and renders them using the
+ * [EpisodeListItem] composable. It also provides callbacks for handling user interactions
+ * with each episode, such as playing, showing details, and enqueuing.
+ *
+ * Our root composable is a [LazyColumn] whose `verticalArrangement` argument is an
+ * [Arrangement.spacedBy] whose `space` argument is `JetcasterAppDefaults.gap.podcastRow` (20.dp),
+ * whose `modifier` argument is our [Modifier] parameter [modifier], and whose `contentPadding`
+ * argument is a copy of the [PaddingValues] created from `JetcasterAppDefaults.overScanMargin.podcast`
+ * (top = 40.dp, bottom = 40.dp, start = 80.dp, end = 80.dp).
+ *
+ * In the [LazyListScope] `content` Composable lambda argument we compose a [LazyListScope.items]
+ * whose `items` argument is our [EpisodeList] parameter [episodeList], and in the [LazyItemScope]
+ * `itemContent` Composable lambda argument we accept the [PlayerEpisode] object that is passed in
+ * variable `episode` and compose a [EpisodeListItem] composable for each episode in the list, whose
+ * arguments are:
+ *  - `playerEpisode` is our [PlayerEpisode] variable `episode`,
+ *  - `onEpisodeSelected` is a lambda that calls our [playEpisode] lambda parameter with our
+ *  [PlayerEpisode] variable `episode`,
+ *  - `onInfoClicked` is a lambda that calls our [showDetails] lambda parameter with our
+ *  [PlayerEpisode] variable `episode`,
+ *  - `onEnqueueClicked` is a lambda that calls our [enqueue] lambda parameter with our
+ *  [PlayerEpisode] variable `episode`.
+ *
+ * @param episodeList The list of [PlayerEpisode] objects to display.
+ * @param playEpisode A callback function that is invoked when the user wants to play an episode.
+ * It takes the [PlayerEpisode] to be played as a parameter.
+ * @param showDetails A callback function that is invoked when the user wants to see more details
+ * about an episode. It takes the [PlayerEpisode] to show details for as a parameter.
+ * @param enqueue A callback function that is invoked when the user wants to enqueue an episode.
+ * It takes the [PlayerEpisode] to be enqueued as a parameter.
+ * @param modifier [Modifier] to be applied to the list. Our caller [PodcastDetails] passes us a
+ * [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester] parameter
+ * [focusRequester], with a [Modifier.focusRestorer] chained to that, followed by a [RowScope.weight]
+ * (weight = 0.7f) at the end of the chain.
+ */
 @Composable
 private fun PodcastEpisodeList(
     episodeList: EpisodeList,
@@ -504,6 +547,49 @@ private fun PodcastEpisodeList(
     }
 }
 
+/**
+ * A composable function that represents a single item in a list of episodes.
+ * It displays information about an episode and provides actions to interact with it.
+ *
+ * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable `hasFocus`
+ * to `false`, and initializing our [Shape] variable `shape` to a [RoundedCornerShape] whose `size`
+ * argument is our [Dp] parameter [cornerRadius]. We initialize our [Color] variable `backgroundColor`
+ * to the [ColorScheme.surface] is `hasFocus` is `true`, and to [Color.Transparent] otherwise. We
+ * initialize our [Color] variable `borderColor` to the [ColorScheme.border] if `hasFocus` is `true`,
+ * and to [Color.Transparent] otherwise. We initialize our [Dp] variable `elevation` to 10.dp if
+ * `hasFocus` is `true`, and to 0.dp otherwise.
+ *
+ * Our root composable is a [EpisodeListItemContentLayer] whose arguments are:
+ *  - `playerEpisode` is our [PlayerEpisode] parameter [playerEpisode],
+ *  - `onEpisodeSelected` is our [onEpisodeSelected] lambda parameter,
+ *  - `onInfoClicked` is our [onInfoClicked] lambda parameter,
+ *  - `onEnqueueClicked` is our [onEnqueueClicked] lambda parameter,
+ *  - `modifier` chains to our [Modifier] parameter [modifier] a [Modifier.clip] whose `shape`
+ *  argument is our [Shape] variable `shape`, followed by a [Modifier.onFocusChanged] that accepts
+ *  the [FocusState] passed it in variable `focusState` and sets our [MutableState] wrapped [Boolean]
+ *  variable `hasFocus` to the [FocusState.hasFocus] property of `focusState`, followed by a
+ *  [Modifier.border] whose `width` argument is our [Dp] parameter [borderWidth], whose `color`
+ *  argument is our [Color] variable `borderColor`, whose `shape` argument is our [Shape] variable
+ *  `shape`, followed by a [Modifier.background] whose `color` argument is our [Color] variable
+ *  `backgroundColor`, followed by a [Modifier.shadow] whose `elevation` argument is our [Dp]
+ *  variable `elevation`, whose `shape` argument is our [Shape] variable `shape`, anc at the end of
+ *  the chain is a [Modifier.padding] whose arguments are `start` = 12.dp, `top` = 12.dp,
+ *  `bottom` = 12.dp, and `end` = 16.dp.
+ *
+ * @param playerEpisode The [PlayerEpisode] data to display in the list item.
+ * @param onEpisodeSelected A lambda function to be called when the episode is selected
+ * (e.g., clicked).
+ * @param onInfoClicked A lambda function to be called when the info button for the episode
+ * is clicked.
+ * @param onEnqueueClicked A lambda function to be called when the enqueue button for the
+ * episode is clicked.
+ * @param modifier [Modifier] to be applied to the list item's layout. Our caller
+ * [PodcastEpisodeList] does not pass us any so the empty, default, or starter [Modifier]
+ * that contains no elements is used.
+ * @param borderWidth The width of the border around the list item when it has focus.
+ * Defaults to 2.dp.
+ * @param cornerRadius The radius of the corners of the list item. Defaults to 12.dp.
+ */
 @Composable
 private fun EpisodeListItem(
     playerEpisode: PlayerEpisode,
@@ -553,6 +639,50 @@ private fun EpisodeListItem(
     )
 }
 
+/**
+ * Composable function that displays the content layer for an episode list item.
+ *
+ * This function renders the title of the episode, along with buttons for playing,
+ * enqueuing, and viewing more information about the episode. It also displays the
+ * episode's published date and duration if available.
+ *
+ * We start by initializing our [Duration] variable `duration` to the [PlayerEpisode.duration]
+ * property of our [PlayerEpisode] parameter [playerEpisode]. We initialize and remember our
+ * [FocusRequester] variable `playButton` to a new instance (it will be used to request and
+ * restore focus on the play button).
+ *
+ * Our root composable is a [Box] whose `contentAlignment` argument is [Alignment.CenterStart]
+ * and whose `modifier` argument is our [Modifier] parameter [modifier]. In the [BoxScope] `content`
+ * Composable lambda argument of the [Box] we compose a [Column] whose `verticalArrangement` argument
+ * is an [Arrangement.spacedBy] whose `space` argument is `JetcasterAppDefaults.gap.tiny` (4.dp).
+ * In the [ColumnScope] `content` Composable lambda argument of the [Column] we compose an
+ * [EpisodeTitle] whose `playerEpisode` argument is our [PlayerEpisode] parameter [playerEpisode].
+ * Below that we compose a [Row] whose `horizontalArrangement` argument is an [Arrangement.spacedBy]
+ * whose `space` argument is `JetcasterAppDefaults.gap.default` (16.dp), whose `verticalAlignment`
+ * argument is [Alignment.CenterVertically], and whose `modifier` argument is a [Modifier.padding]
+ * whose `top` argument is `JetcasterAppDefaults.gap.paragraph` (16.dp).
+ *
+ * In the [RowScope] `content` Composable lambda argument of the [Row] we compose a [PlayButton]
+ * whose `onClick` argument is our [onEpisodeSelected] lambda parameter, and whose `modifier`
+ * argument is a [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester]
+ * variable `playButton`. Then if our [Duration] variable `duration` is not `null` we compose an
+ * [EpisodeDataAndDuration] whose `offsetDateTime` argument is the [PlayerEpisode.published] of
+ * our [PlayerEpisode] parameter [playerEpisode], and whose `duration` argument is our [Duration]
+ * variable `duration`. This is followed by a [Spacer] whose `modifier` argument is a [RowScope.weight]
+ * (weight = 1f) followed by a [EnqueueButton] whose `onClick` argument is our [onEnqueueClicked]
+ * lambda parameter. Finally we compose an [InfoButton] whose `onClick` argument is our [onInfoClicked]
+ * lambda parameter.
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the data for the episode.
+ * @param onEpisodeSelected Callback function to be executed when the play button is clicked.
+ * Typically, this would trigger the playback of the selected episode.
+ * @param onInfoClicked Callback function to be executed when the info button is clicked.
+ * This would usually navigate to a details screen for the episode.
+ * @param onEnqueueClicked Callback function to be executed when the enqueue button is clicked.
+ * This would add the episode to a queue for later playback.
+ * @param modifier [Modifier] for styling and layout customization of the content layer. See our
+ * caller [EpisodeListItem] for the complete [Modifier] chain that it passes to this composable.
+ */
 @Composable
 private fun EpisodeListItemContentLayer(
     playerEpisode: PlayerEpisode,
