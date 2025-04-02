@@ -494,9 +494,10 @@ private fun ToggleSubscriptionButton(
  *
  * Our root composable is a [LazyColumn] whose `verticalArrangement` argument is an
  * [Arrangement.spacedBy] whose `space` argument is `JetcasterAppDefaults.gap.podcastRow` (20.dp),
- * whose `modifier` argument is our [Modifier] parameter [modifier], and whose `contentPadding`
- * argument is a copy of the [PaddingValues] created from `JetcasterAppDefaults.overScanMargin.podcast`
- * (top = 40.dp, bottom = 40.dp, start = 80.dp, end = 80.dp).
+ * the `modifier` argument of the [LazyColumn] is our [Modifier] parameter [modifier], and its
+ * `contentPadding` argument is a copy of the [PaddingValues] created from
+ * `JetcasterAppDefaults.overScanMargin.podcast` (top = 40.dp, bottom = 40.dp, start = 80.dp,
+ * end = 80.dp).
  *
  * In the [LazyListScope] `content` Composable lambda argument we compose a [LazyListScope.items]
  * whose `items` argument is our [EpisodeList] parameter [episodeList], and in the [LazyItemScope]
@@ -554,8 +555,9 @@ private fun PodcastEpisodeList(
  * We start by initializing and remembering our [MutableState] wrapped [Boolean] variable `hasFocus`
  * to `false`, and initializing our [Shape] variable `shape` to a [RoundedCornerShape] whose `size`
  * argument is our [Dp] parameter [cornerRadius]. We initialize our [Color] variable `backgroundColor`
- * to the [ColorScheme.surface] is `hasFocus` is `true`, and to [Color.Transparent] otherwise. We
- * initialize our [Color] variable `borderColor` to the [ColorScheme.border] if `hasFocus` is `true`,
+ * to the [ColorScheme.surface] of our custom [MaterialTheme.colorScheme] if `hasFocus` is `true`,
+ * and to [Color.Transparent] otherwise. We initialize our [Color] variable `borderColor` to the
+ * [ColorScheme.border] of our custom [MaterialTheme.colorScheme] if `hasFocus` is `true`,
  * and to [Color.Transparent] otherwise. We initialize our [Dp] variable `elevation` to 10.dp if
  * `hasFocus` is `true`, and to 0.dp otherwise.
  *
@@ -567,12 +569,12 @@ private fun PodcastEpisodeList(
  *  - `modifier` chains to our [Modifier] parameter [modifier] a [Modifier.clip] whose `shape`
  *  argument is our [Shape] variable `shape`, followed by a [Modifier.onFocusChanged] that accepts
  *  the [FocusState] passed it in variable `focusState` and sets our [MutableState] wrapped [Boolean]
- *  variable `hasFocus` to the [FocusState.hasFocus] property of `focusState`, followed by a
- *  [Modifier.border] whose `width` argument is our [Dp] parameter [borderWidth], whose `color`
+ *  variable `hasFocus` to the [FocusState.hasFocus] property of `focusState`. Next in the chain is
+ *  a [Modifier.border] whose `width` argument is our [Dp] parameter [borderWidth], whose `color`
  *  argument is our [Color] variable `borderColor`, whose `shape` argument is our [Shape] variable
  *  `shape`, followed by a [Modifier.background] whose `color` argument is our [Color] variable
  *  `backgroundColor`, followed by a [Modifier.shadow] whose `elevation` argument is our [Dp]
- *  variable `elevation`, whose `shape` argument is our [Shape] variable `shape`, anc at the end of
+ *  variable `elevation`, whose `shape` argument is our [Shape] variable `shape`, and at the end of
  *  the chain is a [Modifier.padding] whose arguments are `start` = 12.dp, `top` = 12.dp,
  *  `bottom` = 12.dp, and `end` = 16.dp.
  *
@@ -666,12 +668,12 @@ private fun EpisodeListItem(
  * whose `onClick` argument is our [onEpisodeSelected] lambda parameter, and whose `modifier`
  * argument is a [Modifier.focusRequester] whose `focusRequester` argument is our [FocusRequester]
  * variable `playButton`. Then if our [Duration] variable `duration` is not `null` we compose an
- * [EpisodeDataAndDuration] whose `offsetDateTime` argument is the [PlayerEpisode.published] of
- * our [PlayerEpisode] parameter [playerEpisode], and whose `duration` argument is our [Duration]
- * variable `duration`. This is followed by a [Spacer] whose `modifier` argument is a [RowScope.weight]
- * (weight = 1f) followed by a [EnqueueButton] whose `onClick` argument is our [onEnqueueClicked]
- * lambda parameter. Finally we compose an [InfoButton] whose `onClick` argument is our [onInfoClicked]
- * lambda parameter.
+ * [EpisodeDataAndDuration] whose `offsetDateTime` argument is the [PlayerEpisode.published]
+ * property of our [PlayerEpisode] parameter [playerEpisode], and whose `duration` argument is our
+ * [Duration] variable `duration`. This is followed by a [Spacer] whose `modifier` argument is a
+ * [RowScope.weight] (weight = 1f) followed by a [EnqueueButton] whose `onClick` argument is our
+ * [onEnqueueClicked] lambda parameter. Finally we compose an [InfoButton] whose `onClick` argument
+ * is our [onInfoClicked] lambda parameter.
  *
  * @param playerEpisode The [PlayerEpisode] object containing the data for the episode.
  * @param onEpisodeSelected Callback function to be executed when the play button is clicked.
