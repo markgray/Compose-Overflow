@@ -728,6 +728,22 @@ private fun EpisodeListItemContentLayer(
     }
 }
 
+/**
+ * Displays the title of a player episode.
+ *
+ * This composable function renders the title of a [PlayerEpisode] object using the
+ * [Typography.titleLarge] text style from our custom [MaterialTheme.typography].
+ *
+ * Our root composable is a [Text] whose `text` argument is the [PlayerEpisode.title] property
+ * of our [PlayerEpisode] parameter [playerEpisode], whose `style` argument is the
+ * [Typography.titleLarge] of our custom [MaterialTheme.typography], and whose `modifier`
+ * argument is our [Modifier] parameter [modifier].
+ *
+ * @param playerEpisode The [PlayerEpisode] object containing the title to display.
+ * @param modifier [Modifier] to apply to the Text composable. Our caller
+ * [EpisodeListItemContentLayer] does not pass us any so the empty, default, or starter [Modifier]
+ * that contains no elements is used.
+ */
 @Composable
 private fun EpisodeTitle(playerEpisode: PlayerEpisode, modifier: Modifier = Modifier) {
     Text(
