@@ -231,7 +231,7 @@ private fun Route(jetcasterAppState: JetcasterAppState) {
             ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
+                    .padding(paddingValues = JetcasterAppDefaults.overScanMargin.default.intoPaddingValues())
             )
         }
 

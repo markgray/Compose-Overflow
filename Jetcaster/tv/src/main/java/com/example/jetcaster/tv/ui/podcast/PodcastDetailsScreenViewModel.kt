@@ -149,9 +149,57 @@ class PodcastDetailsScreenViewModel @Inject constructor(
             EpisodeList(member = list.map { it.toPlayerEpisode() })
         }
 
+    /**
+     * A [Flow] that emits a list of [PodcastWithExtraInfo] representing the podcasts
+     * the user is currently subscribed to.  The list is sorted by the last published
+     * episode date, with the most recently updated podcast appearing first.
+     *
+     * This flow is derived from the underlying [PodcastStore] property [podcastStore]
+     * and provides a reactive stream of subscribed podcasts. Any changes to the user's
+     * subscriptions or the latest episode details of followed podcasts will be reflected
+     * in subsequent emissions from this flow.
+     *
+     * The list includes extra information about each podcast as described in
+     * [PodcastWithExtraInfo].
+     *
+     * Emits:
+     *  - A `List<PodcastWithExtraInfo>`: A list of subscribed podcasts, ordered by the last episode date.
+     *  - An empty list (`listOf()`) is emitted if the user is not subscribed to any podcasts.
+     */
     private val subscribedPodcastListFlow: Flow<List<PodcastWithExtraInfo>> =
         podcastStore.followedPodcastsSortedByLastEpisode()
 
+    /**
+     * The UI state for the Podcast screen.
+     *
+     * This [StateFlow] emits different [PodcastScreenUiState] instances based on the combined data
+     * from the underlying flows: [podcastFlow], [episodeListFlow], and [subscribedPodcastListFlow].
+     *
+     * The flow combines these three sources:
+     *  - [podcastFlow]: A flow that emits the [Podcast] details. It can be null if the podcast
+     *  is not found.
+     *  - [episodeListFlow]: A flow that emits the [EpisodeList] associated with the podcast.
+     *  - [subscribedPodcastListFlow]: A flow that emits the list of [PodcastWithExtraInfo]
+     *  the user is subscribed to.
+     *
+     * Emitted states:
+     *  - [PodcastScreenUiState.Loading]: The initial state, indicating that data is being loaded.
+     *  - [PodcastScreenUiState.Ready]: Emitted when the [podcastFlow] emits a non-null [Podcast],
+     *  along with its [EpisodeList] and subscription state:
+     *      - [PodcastScreenUiState.Ready.podcastInfo]: The [Podcast] details as an external model.
+     *      - [PodcastScreenUiState.Ready.episodeList]: The [EpisodeList] of the podcast.
+     *      - [PodcastScreenUiState.Ready.isSubscribed]: A boolean indicating if the user is
+     *      subscribed to this podcast.
+     *  - [PodcastScreenUiState.Error]: Emitted when the [podcastFlow] emits null, indicating that
+     *  the podcast was not found.
+     *
+     * The [StateFlow] is configured with:
+     *  - [viewModelScope]: The scope in which the flow is active.
+     *  - [SharingStarted.WhileSubscribed]: The flow will start collecting when the first subscriber
+     *  appears and will continue to collect while there are active subscribers. It will stop
+     *  collecting after 5 seconds of inactivity (no subscribers).
+     *  - [PodcastScreenUiState.Loading]: The initial value of the [StateFlow]
+     */
     val uiStateFlow: StateFlow<PodcastScreenUiState> = combine(
         flow = podcastFlow,
         flow2 = episodeListFlow,
@@ -169,6 +217,23 @@ class PodcastDetailsScreenViewModel @Inject constructor(
         initialValue = PodcastScreenUiState.Loading
     )
 
+    /**
+     * Subscribes to a podcast if its not already subscribed to.
+     *
+     * If `isSubscribed` is `false`, it means the user wants to subscribe to the podcast.
+     * This function will then call `togglePodcastFollowed` in the `podcastStore` to update the
+     * subscription status persistently.
+     *
+     * If `isSubscribed` is `true`, this function will do nothing, assuming the user has already subscribed.
+     *
+     * The subscription toggle operation is launched in the `viewModelScope` to ensure it's
+     * lifecycle-aware and runs on a background thread.
+     *
+     * @param podcastInfo The information about the podcast to subscribe to.
+     * @param isSubscribed A boolean indicating whether the user is already subscribed to the
+     * podcast. `false` implies the user wants to subscribe. `true` implies the user is already
+     * subscribed.
+     */
     fun subscribe(podcastInfo: PodcastInfo, isSubscribed: Boolean) {
         if (!isSubscribed) {
             viewModelScope.launch {
@@ -177,6 +242,21 @@ class PodcastDetailsScreenViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Unsubscribes from a podcast if the user is currently subscribed.
+     *
+     * This function takes a [PodcastInfo] object and a boolean indicating the current subscription
+     * status. If the user is subscribed (i.e., [isSubscribed] is true), it triggers a coroutine to
+     * update the podcast's subscription status in the [podcastStore]. The [podcastStore] will then
+     * handle the logic of actually unsubscribing (e.g., removing the podcast from the user's
+     * followed list).
+     *
+     * If the user is not subscribed, this function does nothing.
+     *
+     * @param podcastInfo The [PodcastInfo] object representing the podcast to unsubscribe from.
+     * @param isSubscribed A boolean indicating whether the user is currently subscribed to the
+     * podcast. If `true`, the unsubscribe action will be performed. If false, no `action` is taken.
+     */
     fun unsubscribe(podcastInfo: PodcastInfo, isSubscribed: Boolean) {
         if (isSubscribed) {
             viewModelScope.launch {
@@ -185,18 +265,73 @@ class PodcastDetailsScreenViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Initiates playback of a given episode.
+     *
+     * This function delegates the actual playback operation to the [EpisodePlayer] property
+     * [episodePlayer].
+     *
+     * @param playerEpisode The [PlayerEpisode] object containing the necessary information
+     * to play the episode (e.g., media URL, episode ID, etc.).
+     *
+     * @see PlayerEpisode
+     * @see EpisodePlayer.play
+     */
     fun play(playerEpisode: PlayerEpisode) {
         episodePlayer.play(playerEpisode = playerEpisode)
     }
 
+    /**
+     * Adds a [PlayerEpisode] to the playback queue.
+     *
+     * This function enqueues the provided [PlayerEpisode] to be played after the currently
+     * playing episode (if any) or at the beginning of the queue if the queue is empty.
+     *
+     * @param playerEpisode The [PlayerEpisode] to be added to the queue.
+     */
     fun enqueue(playerEpisode: PlayerEpisode) {
         episodePlayer.addToQueue(episode = playerEpisode)
     }
 }
 
+/**
+ * Represents the UI state of the Podcast screen.
+ *
+ * This sealed interface defines the possible states the Podcast screen can be in,
+ * including loading, error, and ready states with relevant data.
+ */
 sealed interface PodcastScreenUiState {
+    /**
+     * Represents the loading state of the podcast screen.
+     *
+     * This object signifies that the podcast screen is currently in a loading state,
+     * fetching or processing data required for display.  No actual podcast or error
+     * information is available during this state.
+     *
+     * It implements the [PodcastScreenUiState] interface, providing a concrete
+     * implementation for the loading scenario within the screen's UI state management.
+     */
     data object Loading : PodcastScreenUiState
+
+    /**
+     * Represents an error state in the Podcast Screen UI.
+     * This state indicates that an error occurred while fetching or processing
+     * podcast data. It can be used to display an error message to the user,
+     * allowing them to retry or take other appropriate actions.
+     *
+     * This object is a concrete implementation of the [PodcastScreenUiState] sealed
+     * class/interface.
+     */
     data object Error : PodcastScreenUiState
+
+    /**
+     * Represents the UI state when the podcast information, episode list, and subscription status
+     * are successfully loaded and ready to be displayed.
+     *
+     * @property podcastInfo Details about the podcast, such as title, author, and description.
+     * @property episodeList A list of episodes associated with the podcast.
+     * @property isSubscribed Indicates whether the user is currently subscribed to the podcast.
+     */
     data class Ready(
         val podcastInfo: PodcastInfo,
         val episodeList: EpisodeList,
