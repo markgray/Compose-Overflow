@@ -48,12 +48,12 @@ import kotlinx.coroutines.launch
  * [PodcastDetailsScreenViewModel] is the ViewModel for the Podcast Details screen.
  *
  * It is responsible for:
- * - Retrieving and providing podcast details based on the provided podcast URI.
- * - Retrieving and providing the list of episodes for the selected podcast.
- * - Providing the list of followed podcasts for checking the subscribed status.
- * - Managing the UI state of the Podcast Details screen.
- * - Handling user interactions like subscribing/unsubscribing to a podcast,
- * playing an episode, and adding an episode to the queue.
+ *  - Retrieving and providing podcast details based on the provided podcast URI.
+ *  - Retrieving and providing the list of episodes for the selected podcast.
+ *  - Providing the list of followed podcasts for checking the subscribed status.
+ *  - Managing the UI state of the Podcast Details screen.
+ *  - Handling user interactions like subscribing/unsubscribing to a podcast,
+ *  playing an episode, and adding an episode to the queue.
  *
  * @property handle [SavedStateHandle] to access and observe saved state parameters, such as the
  * podcast URI.
@@ -84,9 +84,8 @@ class PodcastDetailsScreenViewModel @Inject constructor(
      * A [Flow] that emits the [Podcast] associated with the URI stored in the navigation handle,
      * or null if no URI is present.
      *
-     * This flow is derived from a state flow in the [SavedStateHandle] navigation property [handle]
-     * that holds a podcast URI.
-     *
+     * This flow is derived from the state flow retrieved from [SavedStateHandle] navigation
+     * property [handle] using the key [Screen.Podcast.PARAMETER_NAME], which holds a podcast URI.     *
      *  - It first observes the state flow for changes in the podcast URI, identified by the
      *  [Screen.Podcast.PARAMETER_NAME] key.
      *  - When a non-null URI is received, it uses the [podcastStore] to fetch the corresponding
@@ -124,8 +123,9 @@ class PodcastDetailsScreenViewModel @Inject constructor(
      *   1. [podcastFlow]: A flow emitting the currently selected [Podcast] (or null if none is
      *   selected).
      *   2. [flatMapLatest]:  Ensures that only the latest podcast's episode list is observed. When
-     *   a new podcast is emitted by `podcastFlow`, any ongoing episode retrieval for the previous
-     *   podcast is canceled, and a new one starts for the new podcast.
+     *   a new podcast is emitted by [podcastFlow], any ongoing episode retrieval for the previous
+     *   podcast is canceled, and a new one starts for the new podcast. The [Podcast] emitted is
+     *   accepted in variable `podcast`, then
      *   3. Condition check: If `podcast` is not null, it fetches episodes from [episodeStore] using
      *   the podcast's `uri`. Otherwise it emits an empty list.
      *   4. `episodeStore.episodesInPodcast`: Retrieves a list of [EpisodeToPodcast] objects for
@@ -136,7 +136,6 @@ class PodcastDetailsScreenViewModel @Inject constructor(
      *   [EpisodeToPodcast] to a [PlayerEpisode].
      *
      * The [EpisodeList] is essentially a wrapper around a list of [PlayerEpisode] objects.
-     *
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private val episodeListFlow: Flow<EpisodeList> = podcastFlow
