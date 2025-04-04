@@ -27,7 +27,8 @@ import com.example.jetcaster.tv.ui.component.NotAvailableFeature
  * Represents the Profile screen of the application.
  *
  * Currently, this screen displays the [NotAvailableFeature] placeholder indicating that the
- * profile feature is not yet available.
+ * profile feature is not yet available. It is called with its `modifier` argument our [Modifier]
+ * parameter [modifier].
  *
  * @param modifier [Modifier] to be applied to the layout. Our caller the `Route` method of
  * `JetcasterApp` passes us a [Modifier.fillMaxSize] with a [Modifier.padding] chained to it

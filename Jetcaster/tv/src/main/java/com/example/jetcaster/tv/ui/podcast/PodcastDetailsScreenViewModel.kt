@@ -224,9 +224,10 @@ class PodcastDetailsScreenViewModel @Inject constructor(
      * This function will then call `togglePodcastFollowed` in the `podcastStore` to update the
      * subscription status persistently.
      *
-     * If `isSubscribed` is `true`, this function will do nothing, assuming the user has already subscribed.
+     * If `isSubscribed` is `true`, this function will do nothing, assuming the user has already
+     * subscribed.
      *
-     * The subscription toggle operation is launched in the `viewModelScope` to ensure it's
+     * The subscription toggle operation is launched in the [viewModelScope] to ensure it's
      * lifecycle-aware and runs on a background thread.
      *
      * @param podcastInfo The information about the podcast to subscribe to.
@@ -247,9 +248,9 @@ class PodcastDetailsScreenViewModel @Inject constructor(
      *
      * This function takes a [PodcastInfo] object and a boolean indicating the current subscription
      * status. If the user is subscribed (i.e., [isSubscribed] is true), it triggers a coroutine to
-     * update the podcast's subscription status in the [podcastStore]. The [podcastStore] will then
-     * handle the logic of actually unsubscribing (e.g., removing the podcast from the user's
-     * followed list).
+     * update the podcast's subscription status in the [PodcastStore] property [podcastStore]. The
+     * [PodcastStore] will then handle the logic of actually unsubscribing (e.g., removing the
+     * podcast from the user's followed list).
      *
      * If the user is not subscribed, this function does nothing.
      *
@@ -268,8 +269,9 @@ class PodcastDetailsScreenViewModel @Inject constructor(
     /**
      * Initiates playback of a given episode.
      *
-     * This function delegates the actual playback operation to the [EpisodePlayer] property
-     * [episodePlayer].
+     * This function delegates the actual playback operation to the [EpisodePlayer.play] method of
+     * [EpisodePlayer] property [episodePlayer], passing it our [PlayerEpisode] parameter
+     * [playerEpisode] as its `playerEpisode` argument.
      *
      * @param playerEpisode The [PlayerEpisode] object containing the necessary information
      * to play the episode (e.g., media URL, episode ID, etc.).
@@ -285,7 +287,10 @@ class PodcastDetailsScreenViewModel @Inject constructor(
      * Adds a [PlayerEpisode] to the playback queue.
      *
      * This function enqueues the provided [PlayerEpisode] to be played after the currently
-     * playing episode (if any) or at the beginning of the queue if the queue is empty.
+     * playing episode (if any) or at the beginning of the queue if the queue is empty. It
+     * does this by calling the [EpisodePlayer.addToQueue] method of our [EpisodePlayer]
+     * property [episodePlayer] with our [PlayerEpisode] parameter [playerEpisode] as its
+     * `episode` argument.
      *
      * @param playerEpisode The [PlayerEpisode] to be added to the queue.
      */

@@ -89,17 +89,20 @@ import kotlinx.coroutines.flow.StateFlow
  *  a [Loading] composable with its `modifier` argument our [Modifier] parameter [modifier].
  *  - **SearchScreenUiState.Ready:** If the type is [SearchScreenUiState.Ready], we display
  *  a [Ready] composable with its `keyword` argument the value of the [SearchScreenUiState.Ready.keyword]
- *  property of `s`, `categorySelectionList` argument the value of the [SearchScreenUiState.Ready.categorySelectionList]
- *  property of `s`, `onKeywordInput` argument the [SearchScreenViewModel.setKeyword] method of our
- *  [SearchScreenViewModel] parameter [searchScreenViewModel], `onCategorySelected` argument the
+ *  property of `s`, `categorySelectionList` argument the value of the
+ *  [SearchScreenUiState.Ready.categorySelectionList] property of `s`, `onKeywordInput` argument the
+ *  [SearchScreenViewModel.setKeyword] method of our [SearchScreenViewModel] parameter
+ *  [searchScreenViewModel], `onCategorySelected` argument the
  *  [SearchScreenViewModel.addCategoryToSelectedCategoryList] method of our [SearchScreenViewModel]
  *  parameter [searchScreenViewModel], `onCategoryUnselected` argument the
- *  [SearchScreenViewModel.removeCategoryFromSelectedCategoryList] method of our [SearchScreenViewModel]
- *  parameter [searchScreenViewModel], and `modifier` argument our [Modifier] parameter [modifier].
+ *  [SearchScreenViewModel.removeCategoryFromSelectedCategoryList] method of our
+ *  [SearchScreenViewModel] parameter [searchScreenViewModel], and `modifier` argument our
+ *  [Modifier] parameter [modifier].
  *  - **SearchScreenUiState.HasResult:** If the type is [SearchScreenUiState.HasResult], we display
- *  a [HasResult] composable with its `keyword` argument the value of the [SearchScreenUiState.HasResult.keyword]
- *  property of `s`, `categorySelectionList` argument the value of the [SearchScreenUiState.HasResult.categorySelectionList]
- *  property of `s`, `podcastList` argument the value of the [SearchScreenUiState.HasResult.result] property of `
+ *  a [HasResult] composable with its `keyword` argument the value of the
+ *  [SearchScreenUiState.HasResult.keyword] property of `s`, `categorySelectionList` argument the
+ *  value of the [SearchScreenUiState.HasResult.categorySelectionList] property of `s`,
+ *  `podcastList` argument the value of the [SearchScreenUiState.HasResult.result] property of
  *  `s`, `onKeywordInput` argument the [SearchScreenViewModel.setKeyword] method of our
  *  [SearchScreenViewModel] parameter [searchScreenViewModel], `onCategorySelected` argument the
  *  [SearchScreenViewModel.addCategoryToSelectedCategoryList] method of our [SearchScreenViewModel]
