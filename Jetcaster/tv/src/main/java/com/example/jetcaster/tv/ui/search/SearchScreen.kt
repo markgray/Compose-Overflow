@@ -33,6 +33,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -500,6 +502,39 @@ private fun CategorySelection(
     }
 }
 
+/**
+ * Displays a grid of podcast cards, representing search results.
+ *
+ * This composable arranges a list of podcasts in a vertical grid, with a custom header
+ * at the top. Each podcast is displayed as a [PodcastCard].
+ *
+ * Our root composable is a [LazyVerticalGrid] whose arguments are:
+ *  - `columns` is a [GridCells.Fixed] with its `count` argument `4`.
+ *  - `horizontalArrangement` is a [Arrangement.spacedBy] with its `space` argument the constant
+ *  `JetcasterAppDefaults.gap.podcastRow` (20.dp)
+ *  - `verticalArrangement` is a [Arrangement.spacedBy] with its `space` argument the constant
+ *  `JetcasterAppDefaults.gap.podcastRow` (20.dp)
+ *  - `modifier` is our [Modifier] parameter [modifier].
+ *
+ * In the [LazyGridScope] `content` composable lambda argument of the [LazyVerticalGrid] we first
+ * compose an [LazyGridScope.item] whose `span` argument is a [GridItemSpan] with its
+ * `currentLineSpan` argument set to `maxLineSpan`. In the [LazyGridItemScope] `content` composable
+ * lambda argument of the [LazyGridScope.item] we compose our [header] lambda parameter.
+ *
+ * Below this we compose a [LazyGridScope.items] whose `items` argument is our [PodcastList]
+ * parameter [podcastList]. In its [LazyGridItemScope] `itemContent` composable lambda argument
+ * we accept the [PodcastInfo] of each podcast in variable `podcast` and compose a [PodcastCard]
+ * whose `podcastInfo` argument is `podcast` and whose `onClick` argument is a lambda that calls
+ * our [onPodcastSelected] lambda parameter with `podcast` as its argument.
+ *
+ * @param podcastList The list of [PodcastInfo] to display.
+ * @param onPodcastSelected A callback function that is invoked when a podcast card is clicked.
+ * It receives the clicked [PodcastInfo] as a parameter.
+ * @param header A composable lambda that provides the content for the header of the grid.
+ * This is typically used to display a title or other relevant information above the list
+ * of podcasts.
+ * @param modifier [Modifier] to be applied to the grid.
+ */
 @Composable
 private fun SearchResult(
     podcastList: PodcastList,
