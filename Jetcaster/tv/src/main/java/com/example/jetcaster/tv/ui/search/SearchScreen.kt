@@ -231,14 +231,14 @@ private fun Ready(
  * @param categorySelectionList The list of categories available for selection and their current
  * selection state.
  * @param podcastList The list of podcasts matching the current search criteria.
- * @param onKeywordInput Callback triggered when the user inputs a new keyword. It is called with
+ * @param onKeywordInput Callback to be called when the user inputs a new keyword. It is called with
  * the updated keyword as its argument.
- * @param onCategorySelected Callback triggered when the user selects a category. It is called with
- * the selected [CategoryInfo] as its argument.
- * @param onCategoryUnselected Callback triggered when the user unselects a category. It is called
- * with the unselected [CategoryInfo] as its argument.
- * @param onPodcastSelected Callback triggered when the user selects a podcast. It is called the
- * selected [PodcastInfo] as its argument.
+ * @param onCategorySelected Callback to be called when the user selects a category. It is called
+ * with the selected [CategoryInfo] as its argument.
+ * @param onCategoryUnselected Callback to be called when the user unselects a category. It is
+ * called with the unselected [CategoryInfo] as its argument.
+ * @param onPodcastSelected Callback to be called when the user selects a podcast. It is called with
+ * the  selected [PodcastInfo] as its argument.
  * @param modifier [Modifier] for styling and layout customization. Our caller [SearchScreen] calls
  * us with its own [Modifier] parameter which traces back to a [Modifier.fillMaxSize] with a
  * [Modifier.padding] chained to it that adds the [PaddingValues] constant
@@ -377,10 +377,11 @@ private fun Controls(
  * [MaterialTheme.colorScheme] and whose `shape` argument is a [RoundedCornerShape] with its
  * `percent` argument set to `50`. In the [BoxScope]  `content` composable lambda argument of the
  * [Box] we compose a [Row] whose `modifier` argument is a [Modifier.padding] with its `horizontal`
- * argument set to `16.dp` and its `vertical` argument set to `12.dp`. In the [RowScope] `content`
- * composable lambda argument of the [Row] we first compose an [Icon] whose arguments are:
+ * argument set to `16.dp` and its `vertical` argument set to `12.dp`, and the `verticalAlignment`
+ * argument of the [Row] is [Alignment.CenterVertically]. In the [RowScope] `content` composable
+ * lambda argument of the [Row] we first compose an [Icon] whose arguments are:
  *  - `imageVector` is the [ImageVector] drawn by [Icons.Filled.Search].
- *  - `contentDescription` is the [String] resource whose `id` is `R.string.label_search`
+ *  - `contentDescription` is the [String] whose resource `id` is `R.string.label_search`
  *  ("Search podcasts by keyword").
  *  - `modifier` is a [Modifier.padding] with its `end` argument set to `12.dp`.
  *
@@ -462,9 +463,9 @@ private fun KeywordInput(
  *
  * @param categorySelectionList A list of [CategorySelection] objects, each containing information
  * about a category and its selected state.
- * @param onCategorySelected A callback function invoked when a category is selected. It is called
- * with the [CategoryInfo] of the selected category.
- * @param onCategoryUnselected A callback function invoked when a category is unselected. It is
+ * @param onCategorySelected A callback function to be called when a category is selected. It is
+ * called with the [CategoryInfo] of the selected category.
+ * @param onCategoryUnselected A callback function to be called when a category is unselected. It is
  * called with the [CategoryInfo] of the unselected category.
  * @param modifier An optional [Modifier] to customize the layout and appearance of the [FlowRow]
  * containing the category chips.
