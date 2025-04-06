@@ -22,13 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.jetcaster.core.player.model.PlayerEpisode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class JetcasterAppState(
     val navHostController: NavHostController
 ) {
 
-    val currentRouteFlow = navHostController.currentBackStackEntryFlow.map {
+    val currentRouteFlow: Flow<String?> = navHostController.currentBackStackEntryFlow.map {
         it.destination.route
     }
 

@@ -20,6 +20,16 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.tv.material3.MaterialTheme
 
+/**
+ *  JetcasterTheme is the application's custom theme, built on top of Material Design 3.
+ *
+ *  It provides consistent theming across the Jetcaster application, adapting to
+ *  the user's system preference for dark mode or light mode.
+ *
+ *  @param isInDarkTheme Specifies whether the theme should be in dark mode. Defaults
+ *  to the system's dark mode setting.
+ *  @param content The composable content to be displayed within this theme.
+ */
 @Composable
 fun JetcasterTheme(
     isInDarkTheme: Boolean = isSystemInDarkTheme(),

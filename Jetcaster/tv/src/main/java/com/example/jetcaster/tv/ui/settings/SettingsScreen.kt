@@ -20,6 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.jetcaster.tv.ui.component.NotAvailableFeature
 
+/**
+ * Displays the Settings screen.
+ *
+ * This screen currently indicates that the settings feature is not yet available.
+ * It utilizes the [NotAvailableFeature] composable to display a placeholder message.
+ *
+ * @param modifier Modifier to be applied to the layout.
+ */
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier

@@ -204,10 +204,35 @@ class SearchScreenViewModel @Inject constructor(
             initialValue = SearchScreenUiState.Loading,
         )
 
+    /**
+     * Sets the current keyword used for filtering or searching.
+     *
+     * This function updates the value of the underlying [keywordFlow] with the [String] parameter
+     * [keyword]. This will trigger any collectors of [keywordFlow] to receive the new keyword.
+     *
+     * @param keyword The new keyword to be set. This string will be used for
+     * filtering or searching purposes. It can be an empty string.
+     *
+     * @see keywordFlow
+     */
     fun setKeyword(keyword: String) {
         keywordFlow.value = keyword
     }
 
+    /**
+     * Adds a category to the list of selected categories if it's not already present.
+     *
+     * This function takes a [CategoryInfo] object and adds it to the [selectedCategoryListFlow]
+     * if the category is not already present in the list. It uses an immutable list approach,
+     * creating a new list with the added category instead of modifying the existing one.
+     * This ensures that any subscribers to the flow receive a new list instance, triggering updates.
+     *
+     * @param category The [CategoryInfo] object to be added to the selected category list.
+     * It must not be `null`.
+     * @throws IllegalArgumentException if the passed category is null.
+     * @see MutableStateFlow
+     * @see CategoryInfo
+     */
     fun addCategoryToSelectedCategoryList(category: CategoryInfo) {
         val list: List<CategoryInfo> = selectedCategoryListFlow.value
         if (!list.contains(category)) {
@@ -215,6 +240,17 @@ class SearchScreenViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Removes a category from the list of selected categories if it's present.
+     *
+     * We start by initializing our [List] of [CategoryInfo] variable `list` to the value of
+     * [selectedCategoryListFlow]. We then check if `list` contains the [CategoryInfo] parameter
+     * [category]. If it does, we create a new [MutableList] of [CategoryInfo] variable `mutable`
+     * then use the [MutableList.remove] method to remove [category] from `list`. Finally we update
+     * the value of [selectedCategoryListFlow] to `mutable`.
+     *
+     * @param category The [CategoryInfo] object to be removed from the selected category list.
+     */
     fun removeCategoryFromSelectedCategoryList(category: CategoryInfo) {
         val list: List<CategoryInfo> = selectedCategoryListFlow.value
         if (list.contains(category)) {
@@ -224,6 +260,9 @@ class SearchScreenViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Updates the list of podcasts in the [PodcastsRepository] property [podcastsRepository].
+     */
     init {
         viewModelScope.launch {
             podcastsRepository.updatePodcasts(force = false)
@@ -231,6 +270,21 @@ class SearchScreenViewModel @Inject constructor(
     }
 }
 
+/**
+ * Represents the search conditions used to filter search results.
+ *
+ * This data class holds the keyword to search for and the list of selected categories to filter by.
+ *
+ * @property keyword The keyword to search for. This can be an empty string if no keyword search
+ * is needed.
+ * @property selectedCategories The list of selected categories used to filter the search results.
+ * It's an instance of [CategoryInfoList].
+ *
+ * @constructor Creates a [SearchCondition] instance with the given keyword and a [CategoryInfoList].
+ *
+ * @constructor Creates a [SearchCondition] instance with the given keyword and a list of [CategoryInfo].
+ *              This constructor converts the list of [CategoryInfo] to [CategoryInfoList].
+ */
 private data class SearchCondition(val keyword: String, val selectedCategories: CategoryInfoList) {
     constructor(keyword: String, categoryInfoList: List<CategoryInfo>) : this(
         keyword = keyword,
@@ -238,13 +292,42 @@ private data class SearchCondition(val keyword: String, val selectedCategories: 
     )
 }
 
+/**
+ * Represents the UI state of the Search Screen.
+ *
+ * This sealed interface defines the different states the Search Screen can be in,
+ * including loading, ready for input, and having search results.
+ */
 sealed interface SearchScreenUiState {
     data object Loading : SearchScreenUiState
+    /**
+     * Represents the UI state when the search screen is ready to display search results.
+     *
+     * This state indicates that the search screen has received the necessary data
+     * (a keyword and a list of category selections) to perform a search and display
+     * relevant results.
+     *
+     * @property keyword The keyword used for the search.
+     * @property categorySelectionList The list of category selections that can be used to filter
+     * the search results.
+     */
     data class Ready(
         val keyword: String,
         val categorySelectionList: CategorySelectionList
     ) : SearchScreenUiState
 
+    /**
+     * Represents the UI state of the search screen when a search has yielded results.
+     *
+     * This class encapsulates the data associated with a successful search, including:
+     *  - The keyword that was used for the search.
+     *  - The list of categories that were selected for the search.
+     *  - The list of podcasts that match the search criteria.
+     *
+     * @property keyword The keyword used for the search.
+     * @property categorySelectionList The list of selected categories for the search.
+     * @property result The list of podcasts that match the search criteria.
+     */
     data class HasResult(
         val keyword: String,
         val categorySelectionList: CategorySelectionList,

@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.tv.ui.theme
 
+import androidx.tv.material3.ColorScheme
 import androidx.tv.material3.darkColorScheme
 import androidx.tv.material3.lightColorScheme
 import com.example.jetcaster.designsystem.theme.backgroundDark
@@ -75,7 +76,7 @@ import com.example.jetcaster.designsystem.theme.tertiaryContainerLight
 import com.example.jetcaster.designsystem.theme.tertiaryDark
 import com.example.jetcaster.designsystem.theme.tertiaryLight
 
-val colorSchemeForDarkMode = darkColorScheme(
+val colorSchemeForDarkMode: ColorScheme = darkColorScheme(
     primary = primaryDark,
     onPrimary = onPrimaryDark,
     primaryContainer = primaryContainerDark,
@@ -107,7 +108,7 @@ val colorSchemeForDarkMode = darkColorScheme(
 )
 
 // Todo: specify surfaceTint
-val colorSchemeForLightMode = lightColorScheme(
+val colorSchemeForLightMode: ColorScheme = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,

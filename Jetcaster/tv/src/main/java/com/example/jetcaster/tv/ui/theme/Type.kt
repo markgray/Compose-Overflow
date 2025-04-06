@@ -23,7 +23,7 @@ import androidx.tv.material3.Typography
 import com.example.jetcaster.designsystem.theme.Montserrat
 
 // Set of Material typography styles to start with
-val Typography = Typography(
+val Typography: Typography = Typography(
     displayLarge = TextStyle(
         fontFamily = Montserrat,
         fontWeight = FontWeight.Normal,
