@@ -519,7 +519,7 @@ private fun CategorySelection(
  * In the [LazyGridScope] `content` composable lambda argument of the [LazyVerticalGrid] we first
  * compose an [LazyGridScope.item] whose `span` argument is a [GridItemSpan] with its
  * `currentLineSpan` argument set to `maxLineSpan`. In the [LazyGridItemScope] `content` composable
- * lambda argument of the [LazyGridScope.item] we compose our [header] lambda parameter.
+ * lambda argument of the [LazyGridScope.item] we compose our [header] Composable lambda parameter.
  *
  * Below this we compose a [LazyGridScope.items] whose `items` argument is our [PodcastList]
  * parameter [podcastList]. In its [LazyGridItemScope] `itemContent` composable lambda argument
@@ -528,7 +528,7 @@ private fun CategorySelection(
  * our [onPodcastSelected] lambda parameter with `podcast` as its argument.
  *
  * @param podcastList The list of [PodcastInfo] to display.
- * @param onPodcastSelected A callback function that is invoked when a podcast card is clicked.
+ * @param onPodcastSelected A callback function to be invoked when a podcast card is clicked.
  * It receives the clicked [PodcastInfo] as a parameter.
  * @param header A composable lambda that provides the content for the header of the grid.
  * This is typically used to display a title or other relevant information above the list
