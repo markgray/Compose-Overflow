@@ -93,7 +93,7 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
  * [NavigationDrawerScope] `drawerContent` composable lambda argument, we start by initializing
  * our [Boolean] variable `isClosed` to `true` if the [DrawerValue] passed the lambda in variable
  * `drawerValue` is equal to the value of the [DrawerValue.Closed] enum constant. Then we compose
- * a [Column] whose `modifier` argument a [Modifier.padding] whose `paddingValues` argument is
+ * a [Column] whose `modifier` argument is a [Modifier.padding] whose `paddingValues` argument is
  * the constant `JetcasterAppDefaults.overScanMargin.drawer` (start = 16.dp, end = 16.dp) to which
  * is chained a [Modifier.focusProperties] whose `enter` lambda argument that switches on the
  * value of [String] variable `currentRoute` and returns the appropriate [FocusRequester] based on
@@ -109,13 +109,13 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
  *  [jetcasterAppState].
  *  - `leadingContent` is an [Icon] whose `imageVector` argument is [Icons.Filled.Person] and
  *  whose `contentDescription` argument is `null`.
- *  - In its `content` composable lambda argument, we compose a [Column] whose `content` composable
- *  lambda argument a [Column] which contains a [Text] whose text is "Name" and a [Text] whose
- *  text is "Switch Account" and whose style is the [Typography.labelSmall] from our custom
- *  [MaterialTheme.typography].
+ *  - In the `content` composable lambda argument of the [NavigationDrawerItem], we compose a
+ *  [Column] whose [ColumnScope] `content` composable lambda argument contains a [Text] whose text
+ *  is "Name" and a [Text] whose text is "Switch Account" and whose style is the
+ *  [Typography.labelSmall] from our custom [MaterialTheme.typography].
  *
- * Next we compose a [Spacer] whose `modifier` argument is a [ColumnScope.weight] whose `weight`
- * is `1f`.
+ * Next in the [Column] of the [NavigationDrawer] we compose a [Spacer] whose `modifier` argument
+ * is a [ColumnScope.weight] whose `weight` is `1f`.
  *
  * We then compose another [NavigationDrawerItem] whose arguments are:
  *  - `selected` is `true` if `isClosed` is `true` and `currentRoute` is equal to
@@ -134,7 +134,8 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
  *  - `leadingContent` is an [Icon] whose `imageVector` argument is [Icons.Filled.Home] and
  *  whose `contentDescription` argument is `null`.
  *  - `modifier` is a [Modifier.focusRequester] whose `focusRequester` argument is `discover`.
- *  - In its `content` composable lambda argument, we compose a [Text] whose text is "Discover".
+ *  - In the `content` composable lambda argument of the [NavigationDrawerItem], we compose a [Text]
+ *  whose text is "Discover".
  *
  * We then compose another [NavigationDrawerItem] whose arguments are:
  *  - `selected` is `true` if `isClosed` is `true` and `currentRoute` is equal to
@@ -144,10 +145,11 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
  *  - `leadingContent` is an [Icon] whose `imageVector` argument is [Icons.Filled.VideoLibrary] and
  *  whose `contentDescription` argument is `null`.
  *  - `modifier` is a [Modifier.focusRequester] whose `focusRequester` argument is `library`.
- *  - In its `content` composable lambda argument, we compose a [Text] whose text is "Library".
+ *  - In the `content` composable lambda argument of the [NavigationDrawerItem], we compose a [Text]
+ *  whose text is "Library".
  *
- * We then compose a [Spacer] whose `modifier` argument is a [ColumnScope.weight] whose `weight`
- * is `1f`.
+ * Next in the [Column] of the [NavigationDrawer] we compose a [Spacer] whose `modifier` argument is
+ * a [ColumnScope.weight] whose `weight` is `1f`.
  *
  * We then compose another [NavigationDrawerItem] whose arguments are:
  *  - `selected` is `true` if `isClosed` is `true` and `currentRoute` is equal to
@@ -156,7 +158,8 @@ fun JetcasterApp(jetcasterAppState: JetcasterAppState = rememberJetcasterAppStat
  *  [jetcasterAppState].
  *  - `leadingContent` is an [Icon] whose `imageVector` argument is [Icons.Filled.Settings] and
  *  whose `contentDescription` argument is `null`.
- *  - In its `content` composable lambda argument, we compose a [Text] whose text is "Settings".
+ *  - In the `content` composable lambda argument of the [NavigationDrawerItem], we compose a [Text]
+ *  whose text is "Settings".
  *
  * @param jetcasterAppState The [JetcasterAppState] instance that holds the navigation state
  * and provides navigation actions.

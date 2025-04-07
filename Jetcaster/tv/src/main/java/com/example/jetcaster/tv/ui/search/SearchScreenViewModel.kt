@@ -153,29 +153,29 @@ class SearchScreenViewModel @Inject constructor(
             CategorySelectionList(member = list)
         }
 
+    /**
+     * A [StateFlow] of [SearchScreenUiState] representing the current UI state of the search
+     * screen. We use the [combine] function to combine the [keywordFlow],
+     * [categorySelectionFlow], and [searchResultFlow] flows accepting the [String] from
+     * [keywordFlow] in variable `keyword`, the [CategorySelectionList] from
+     * [categorySelectionFlow] in variable `categorySelection`, and the [List] of [PodcastInfo]
+     * from [searchResultFlow] in variable `result` respectively. Then in the `transform` lambda
+     * argument of [combine] we initialize our [List] of [PodcastInfo] variable `podcastList` to
+     * the result of using the [Iterable.map] method of `result` accepting the
+     * [PodcastWithExtraInfo] from `result` in variable `podcast` then call the
+     * [PodcastWithExtraInfo.asExternalModel] method of `podcast` to convert it to a
+     * [PodcastInfo] object. Finally we use a `when` statement to branch on the result of
+     * checking if `result` is empty. If it is empty we emit a [SearchScreenUiState.Ready]
+     * object whose `keyword` argument is `keyword`, and whose `categorySelectionList` argument
+     * is `categorySelection`. Otherwise we emit a [SearchScreenUiState.HasResult] object whose
+     * `keyword` argument is `keyword`, whose `categorySelectionList` argument is
+     * `categorySelection`, and whose `result` argument is `podcastList`. We then use the
+     * [Flow.stateIn] method of the [Flow] emitted to convert the [Flow] to a [StateFlow] using
+     * the `scope` argument [viewModelScope], the `started` argument
+     * [SharingStarted.WhileSubscribed] with a `stopTimeoutMillis` of 5_000, and the
+     * `initialValue` argument of [SearchScreenUiState.Loading].
+     */
     val uiStateFlow: StateFlow<SearchScreenUiState> =
-        /**
-         * A [StateFlow] of [SearchScreenUiState] representing the current UI state of the search
-         * screen. We use the [combine] function to combine the [keywordFlow],
-         * [categorySelectionFlow], and [searchResultFlow] flows accepting the [String] from
-         * [keywordFlow] in variable `keyword`, the [CategorySelectionList] from
-         * [categorySelectionFlow] in variable `categorySelection`, and the [List] of [PodcastInfo]
-         * from [searchResultFlow] in variable `result` respectively. Then in the `transform` lambda
-         * argument of [combine] we initialize our [List] of [PodcastInfo] variable `podcastList` to
-         * the result of using the [Iterable.map] method of `result` accepting the
-         * [PodcastWithExtraInfo] from `result` in variable `podcast` then call the
-         * [PodcastWithExtraInfo.asExternalModel] method of `podcast` to convert it to a
-         * [PodcastInfo] object. Finally we use a `when` statement to branch on the result of
-         * checking if `result` is empty. If it is empty we emit a [SearchScreenUiState.Ready]
-         * object whose `keyword` argument is `keyword`, and whose `categorySelectionList` argument
-         * is `categorySelection`. Otherwise we emit a [SearchScreenUiState.HasResult] object whose
-         * `keyword` argument is `keyword`, whose `categorySelectionList` argument is
-         * `categorySelection`, and whose `result` argument is `podcastList`. We then use the
-         * [Flow.stateIn] method of the [Flow] emitted to convert the [Flow] to a [StateFlow] using
-         * the `scope` argument [viewModelScope], the `started` argument
-         * [SharingStarted.WhileSubscribed] with a `stopTimeoutMillis` of 5_000, and the
-         * `initialValue` argument of [SearchScreenUiState.Loading].
-         */
         combine(
             flow = keywordFlow,
             flow2 = categorySelectionFlow,
@@ -246,8 +246,8 @@ class SearchScreenViewModel @Inject constructor(
      * We start by initializing our [List] of [CategoryInfo] variable `list` to the value of
      * [selectedCategoryListFlow]. We then check if `list` contains the [CategoryInfo] parameter
      * [category]. If it does, we create a new [MutableList] of [CategoryInfo] variable `mutable`
-     * then use the [MutableList.remove] method to remove [category] from `list`. Finally we update
-     * the value of [selectedCategoryListFlow] to `mutable`.
+     * from [selectedCategoryListFlow] then use the [MutableList.remove] method to remove [category]
+     * from `list`. Finally we update the value of [selectedCategoryListFlow] to `mutable`.
      *
      * @param category The [CategoryInfo] object to be removed from the selected category list.
      */
@@ -282,8 +282,9 @@ class SearchScreenViewModel @Inject constructor(
  *
  * @constructor Creates a [SearchCondition] instance with the given keyword and a [CategoryInfoList].
  *
- * @constructor Creates a [SearchCondition] instance with the given keyword and a list of [CategoryInfo].
- *              This constructor converts the list of [CategoryInfo] to [CategoryInfoList].
+ * @constructor Creates a [SearchCondition] instance with the given keyword and a list of
+ * [CategoryInfo]. This constructor converts its list of [CategoryInfo] parameter `categoryInfoList`
+ * to [CategoryInfoList].
  */
 private data class SearchCondition(val keyword: String, val selectedCategories: CategoryInfoList) {
     constructor(keyword: String, categoryInfoList: List<CategoryInfo>) : this(
@@ -299,7 +300,11 @@ private data class SearchCondition(val keyword: String, val selectedCategories: 
  * including loading, ready for input, and having search results.
  */
 sealed interface SearchScreenUiState {
+    /**
+     * Represents the UI state before a search has been started.
+     */
     data object Loading : SearchScreenUiState
+
     /**
      * Represents the UI state when the search screen is ready to display search results.
      *
