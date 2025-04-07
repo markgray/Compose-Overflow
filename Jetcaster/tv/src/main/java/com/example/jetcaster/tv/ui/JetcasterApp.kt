@@ -37,6 +37,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.tv.material3.DrawerValue
@@ -272,6 +273,97 @@ private fun GlobalNavigationContainer(
     )
 }
 
+/**
+ * Defines the navigation structure for the Jetcaster application.
+ *
+ * This composable function sets up the navigation graph using [NavHost] and
+ * defines the destinations and their corresponding composable screens. It handles
+ * navigation between different screens of the application, such as Discover,
+ * Library, Search, Podcast Details, Episode Details, Player, Profile, and Settings.
+ *
+ * Our root composable is a [NavHost] whose `navController` argument is the
+ * [JetcasterAppState.navHostController] property of our [JetcasterAppState] parameter
+ * [jetcasterAppState], and whose `startDestination` argument is [Screen.Discover.route].
+ *
+ * First in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Discover.route], which is
+ * a [GlobalNavigationContainer] whose `jetcasterAppState` argument is [jetcasterAppState] and
+ * whose `content` composable lambda argument is a [DiscoverScreen] whose arguments are:
+ *  - `showPodcastDetails` is a lambda that calls the [JetcasterAppState.showPodcastDetails]
+ *  method of [jetcasterAppState] with its `podcastUri` argument the [PodcastInfo.uri] of the
+ *  [PodcastInfo] parameter `podcast` that is passed to the lambda.
+ *  - `playEpisode` is a lambda that calls the [JetcasterAppState.playEpisode] method of
+ *  [jetcasterAppState].
+ *  - `modifier` is a [Modifier.fillMaxSize] modifier.
+ *
+ * Second in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Library.route], which is
+ * a [GlobalNavigationContainer] whose `jetcasterAppState` argument is [jetcasterAppState] and
+ * whose `content` composable lambda argument is a [LibraryScreen] whose arguments are:
+ *  - `navigateToDiscover` is a lambda that calls the [JetcasterAppState.navigateToDiscover]
+ *  method of [jetcasterAppState].
+ *  - `showPodcastDetails` is a lambda that calls the [JetcasterAppState.showPodcastDetails]
+ *  method of [jetcasterAppState] with its `podcastUri` argument the [PodcastInfo.uri] of the
+ *  [PodcastInfo] parameter `podcast` that is passed to the lambda.
+ *  - `playEpisode` is a lambda that calls the [JetcasterAppState.playEpisode] method of
+ *  [jetcasterAppState].
+ *  - `modifier` is a [Modifier.fillMaxSize].
+ *
+ * Third in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Search.route], which is
+ * a [SearchScreen] whose arguments are:
+ *  - `onPodcastSelected` is a lambda that calls the [JetcasterAppState.showPodcastDetails]
+ *  method of [jetcasterAppState] with its `podcastUri` argument the [PodcastInfo.uri] of the
+ *  [PodcastInfo] parameter `podcast` that is passed to the lambda.
+ *  - `modifier` is a [Modifier.padding] whose `paddingValues` argument is the constant
+ *  `JetcasterAppDefaults.overScanMargin.default` (start = 48.dp, top = 24.dp, end = 48.dp,
+ *  bottom = 24.dp) and a [Modifier.fillMaxSize] chained to that.
+ *
+ * Fourth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Podcast.route], which is
+ * a [PodcastDetailsScreen] whose arguments are:
+ *  - `backToHomeScreen` is a lambda that calls the [JetcasterAppState.navigateToDiscover]
+ *  method of [jetcasterAppState].
+ *  - `playEpisode` is a lambda that calls the [JetcasterAppState.playEpisode] method of
+ *  [jetcasterAppState].
+ *  - `showEpisodeDetails` is a lambda that calls the [JetcasterAppState.showEpisodeDetails]
+ *  method of [jetcasterAppState] with its `episodeUri` argument the [PlayerEpisode.uri] of the
+ *  [PlayerEpisode] parameter `episode` that is passed to the lambda.
+ *  - `modifier` is a [Modifier.padding] whose `paddingValues` argument is the constant
+ *  `JetcasterAppDefaults.overScanMargin.podcast` (top = 40.dp, bottom = 40.dp, start = 80.dp,
+ *  end = 80.dp) and a [Modifier.fillMaxSize] chained to that.
+ *
+ * Fifth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Episode.route], which is
+ * a [EpisodeScreen] whose arguments are:
+ *  - `playEpisode` is a lambda that calls the [JetcasterAppState.playEpisode] method of
+ *  [jetcasterAppState].
+ *  - `backToHome` is a lambda that calls the [JetcasterAppState.backToHome] method of
+ *  [jetcasterAppState].
+ *
+ * Sixth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Player.route], which is
+ * a [PlayerScreen] whose arguments are:
+ *  - `backToHome` is a lambda that calls the [JetcasterAppState.backToHome] method of
+ *  [jetcasterAppState].
+ *  - `modifier` is a [Modifier.fillMaxSize].
+ *  - `showDetails` is the [JetcasterAppState.showEpisodeDetails] method of [jetcasterAppState].
+ *
+ * Seventh in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Profile.route], which is
+ * a [ProfileScreen] whose `modifier` argument is a [Modifier.fillMaxSize] and a [Modifier.padding]
+ * whose `paddingValues` argument is the constant `JetcasterAppDefaults.overScanMargin.default`
+ * (start = 48.dp, top = 24.dp, end = 48.dp, bottom = 24.dp).
+ *
+ * Eighth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
+ * method to define the composable screen for the `route` [Screen.Settings.route], which is
+ * a [SettingsScreen] whose `modifier` argument is a [Modifier.fillMaxSize] and a [Modifier.padding]
+ * whose `paddingValues` argument is the constant `JetcasterAppDefaults.overScanMargin.default`
+ * (start = 48.dp, top = 24.dp, end = 48.dp, bottom = 24.dp).
+ *
+ * @param jetcasterAppState The state holder for the Jetcaster application, providing
+ * access to the navigation controller and various application actions.
+ */
 @Composable
 private fun Route(jetcasterAppState: JetcasterAppState) {
     NavHost(
