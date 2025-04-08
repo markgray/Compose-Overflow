@@ -322,8 +322,7 @@ private fun GlobalNavigationContainer(
  * Fourth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
  * method to define the composable screen for the `route` [Screen.Podcast.route], which is
  * a [PodcastDetailsScreen] whose arguments are:
- *  - `backToHomeScreen` is a lambda that calls the [JetcasterAppState.navigateToDiscover]
- *  method of [jetcasterAppState].
+ *  - `backToHomeScreen` is the [JetcasterAppState.navigateToDiscover] method of [jetcasterAppState].
  *  - `playEpisode` is a lambda that calls the [JetcasterAppState.playEpisode] method of
  *  [jetcasterAppState].
  *  - `showEpisodeDetails` is a lambda that calls the [JetcasterAppState.showEpisodeDetails]
@@ -335,17 +334,15 @@ private fun GlobalNavigationContainer(
  *
  * Fifth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
  * method to define the composable screen for the `route` [Screen.Episode.route], which is
- * a [EpisodeScreen] whose arguments are:
+ * an [EpisodeScreen] whose arguments are:
  *  - `playEpisode` is a lambda that calls the [JetcasterAppState.playEpisode] method of
  *  [jetcasterAppState].
- *  - `backToHome` is a lambda that calls the [JetcasterAppState.backToHome] method of
- *  [jetcasterAppState].
+ *  - `backToHome` is the [JetcasterAppState.backToHome] method of [jetcasterAppState].
  *
  * Sixth in the [NavGraphBuilder] `builder` lambda argument, we use the [NavGraphBuilder.composable]
  * method to define the composable screen for the `route` [Screen.Player.route], which is
  * a [PlayerScreen] whose arguments are:
- *  - `backToHome` is a lambda that calls the [JetcasterAppState.backToHome] method of
- *  [jetcasterAppState].
+ *  - `backToHome` is the [JetcasterAppState.backToHome] method of [jetcasterAppState].
  *  - `modifier` is a [Modifier.fillMaxSize].
  *  - `showDetails` is the [JetcasterAppState.showEpisodeDetails] method of [jetcasterAppState].
  *

@@ -85,7 +85,7 @@ class JetcasterAppState(
      * designed to direct the user to the screen designated for content discovery.
      *
      * It utilizes the [Screen.Discover] object to identify the target destination
-     * and calls the underlying navigation mechanism to perform the transition.
+     * and calls our [navigate] method to perform the transition.
      */
     fun navigateToDiscover() {
         navigate(screen = Screen.Discover)
@@ -94,7 +94,7 @@ class JetcasterAppState(
     /**
      * Navigates the user to the Library screen.
      *
-     * This function utilizes the [navigate] function to trigger navigation to the [Screen.Library]
+     * This function utilizes our [navigate] method to trigger navigation to the [Screen.Library]
      * destination.
      *
      * @see Screen.Library The screen destination representing the library section of the application.
@@ -107,11 +107,10 @@ class JetcasterAppState(
     /**
      * Navigates the user to the profile screen.
      *
-     * This function uses the navigation controller to navigate to the screen
+     * This function uses tour [navigate] method to navigate to the screen
      * represented by [Screen.Profile]. It's a simple wrapper around the
      * [navigate] function, providing a clear and concise way to navigate to
      * the user's profile from any screen where it's needed.
-     *
      */
     fun navigateToProfile() {
         navigate(screen = Screen.Profile)
@@ -120,7 +119,7 @@ class JetcasterAppState(
     /**
      * Navigates the user to the Search screen.
      *
-     * This function uses the navigation controller to navigate to the screen
+     * This function uses our [navigate] method to navigate to the screen
      * represented by [Screen.Search]. It's a simple wrapper around the
      * [navigate] function, providing a clear and concise way to navigate to
      * the search feature from any screen where it's needed.
@@ -135,9 +134,10 @@ class JetcasterAppState(
     /**
      * Navigates the user to the Settings screen.
      *
-     * This function triggers the navigation to the Settings screen, utilizing the
-     * [navigate] function with the [Screen.Settings] destination.  It's a
-     * convenience method to centralize the navigation logic for this specific screen.
+     * This function triggers the navigation to the Settings screen, utilizing our
+     * [navigate] method called with the [Screen.Settings] destination as its `screen`
+     * argument.  It's a convenience method to centralize the navigation logic for this
+     * specific screen.
      *
      * @see navigate
      * @see Screen.Settings
@@ -150,8 +150,8 @@ class JetcasterAppState(
      * Navigates to the podcast details screen for a given podcast URI.
      *
      * This function encodes the provided podcast URI to ensure it's properly formatted for navigation.
-     * It then creates a [Screen.Podcast] object with the encoded URI and uses the [navigate]
-     * function to display the podcast details screen.
+     * It then creates a [Screen.Podcast] object with the encoded URI and uses our [navigate]
+     * method to display the podcast details screen.
      *
      * @param podcastUri The URI of the podcast to show details for. This should be a valid URI string
      * representing the podcast's location or identifier. Example : "https://example.com/podcast/123"
@@ -167,8 +167,8 @@ class JetcasterAppState(
      * Navigates to the episode details screen for the specified episode.
      *
      * This function takes the URI of an episode as a string, encodes it for URL safety,
-     * constructs a [Screen.Episode] object with the encoded URI, and then calls the
-     * [navigate] function to navigate to the episode details screen.
+     * constructs a [Screen.Episode] object with the encoded URI, and then calls our
+     * [navigate] method to navigate to the episode details screen.
      *
      * @param episodeUri The raw URI string of the episode to display details for.
      * This URI should uniquely identify the episode.
@@ -183,9 +183,9 @@ class JetcasterAppState(
      * Displays the details of an episode.
      *
      * This function serves as a convenient way to show episode details when provided with a
-     * [PlayerEpisode] object. It internally extracts the episode's URI from the [PlayerEpisode]
-     * and then calls the overloaded [showEpisodeDetails] function that takes an episode URI as
-     * its argument.
+     * [PlayerEpisode] object. It internally extracts the episode's URI from the [PlayerEpisode.uri]
+     * property of its [PlayerEpisode] parameter [playerEpisode] and then calls the overloaded
+     * [showEpisodeDetails] method that takes an episode URI as its argument.
      *
      * @param playerEpisode The [PlayerEpisode] object containing the episode's information,
      * including the URI.
@@ -199,7 +199,7 @@ class JetcasterAppState(
      *
      * This function is responsible for initiating the playback of an episode by
      * navigating the user to the dedicated player screen within the application.
-     * It just calls the [navigate] function with the [Screen.Player] object as its
+     * It just calls our [navigate] method with the [Screen.Player] object as its
      * `screen` argument.
      */
     fun playEpisode() {
@@ -211,18 +211,18 @@ class JetcasterAppState(
      * "Discover" screen.
      *
      * This function performs the following actions:
-     * 1. **Pops the back stack:** Removes the current screen from the navigation stack using
-     * `navHostController.popBackStack()`. This effectively takes the user back to the screen
-     * they were previously on.
-     * 2. **Navigates to Discover:** After popping the back stack, it calls `navigateToDiscover()`,
-     * which navigates the user to the designated "Discover" screen.
+     * 1. **Pops the back stack:** Removes the current screen from the navigation stack using the
+     * [NavHostController.popBackStack] method of [NavHostController] property [navHostController].
+     * This effectively takes the user back to the screen they were previously on.
+     * 2. **Navigates to Discover:** After popping the back stack, it calls [navigateToDiscover],
+     * which navigates the user to the "Discover" screen.
      *
      * This is useful when you want to ensure that the user ends up on the "Discover" screen after
      * potentially moving back from a deeper navigation point. For example, after completing an
      * action on a detail screen, you might want to use this to go back to the previous screen,
      * and from there straight to Discover.
      *
-     * Note that if there is no screen in the backstack `navHostController.popBackStack()` will
+     * Note that if there is no screen in the backstack [NavHostController.popBackStack] will
      * do nothing.
      *
      * @see NavHostController.popBackStack
