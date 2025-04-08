@@ -22,8 +22,10 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Typography
 import com.example.jetcaster.designsystem.theme.Montserrat
 
-// Set of Material typography styles to start with
-val Typography = Typography(
+/**
+ * Set of Material typography styles to start with
+ */
+val Typography: Typography = Typography(
     body1 = TextStyle(
         fontFamily = Montserrat,
         fontWeight = FontWeight.Normal,

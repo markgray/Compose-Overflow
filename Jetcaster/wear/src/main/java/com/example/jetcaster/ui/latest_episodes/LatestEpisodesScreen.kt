@@ -42,6 +42,7 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -52,13 +53,27 @@ import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
+/**
+ * Composable function representing the screen that displays the latest episodes.
+ *
+ * This screen fetches and displays the latest episodes using the [LatestEpisodeViewModel].
+ * It handles user interactions like playing all episodes or a single episode, and
+ * dismissing the screen.
+ *
+ * @param onPlayButtonClick Callback function to be executed when the play button is clicked
+ * (likely for the entire list).
+ * @param onDismiss Callback function to be executed when the user dismisses the screen.
+ * @param modifier Modifier for styling and layout adjustments of the composable.
+ * @param latestEpisodeViewModel The ViewModel responsible for managing the latest episodes
+ * data and logic. Defaults to an instance provided by Hilt.
+ */
 @Composable fun LatestEpisodesScreen(
     onPlayButtonClick: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     latestEpisodeViewModel: LatestEpisodeViewModel = hiltViewModel()
 ) {
-    val uiState by latestEpisodeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: LatestEpisodeScreenState by latestEpisodeViewModel.uiState.collectAsStateWithLifecycle()
     LatestEpisodeScreen(
         modifier = modifier,
         uiState = uiState,
@@ -78,7 +93,7 @@ fun LatestEpisodeScreen(
     onPlayEpisode: (PlayerEpisode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val columnState = rememberResponsiveColumnState(
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip
@@ -103,7 +118,7 @@ fun LatestEpisodeScreen(
                 AlertDialog(
                     showDialog = true,
                     onDismiss = onDismiss,
-                    message = stringResource(R.string.podcasts_no_episode_podcasts)
+                    message = stringResource(id = R.string.podcasts_no_episode_podcasts)
                 )
             }
 
@@ -149,11 +164,11 @@ fun LatestEpisodesScreen(
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
             ) {
-                Text(text = stringResource(id = R.string.latest_episodes),)
+                Text(text = stringResource(id = R.string.latest_episodes))
             }
         },
         content = {
-            items(count = episodeList.size) { index ->
+            items(count = episodeList.size) { index: Int ->
                 MediaContent(
                     episode = episodeList[index],
                     episodeArtworkPlaceholder = rememberVectorPainter(
@@ -188,7 +203,7 @@ fun LatestEpisodesScreenLoading(
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
             ) {
-                Text(text = stringResource(id = R.string.latest_episodes),)
+                Text(text = stringResource(id = R.string.latest_episodes))
             }
         },
         content = {
@@ -206,6 +221,7 @@ fun LatestEpisodesScreenLoading(
     )
 }
 
+@Suppress("UnusedVariable")
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
@@ -213,7 +229,7 @@ fun LatestEpisodeScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode
 ) {
-    val columnState = rememberResponsiveColumnState(
+    @Suppress("unused") val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip
@@ -227,11 +243,12 @@ fun LatestEpisodeScreenLoadedPreview(
     )
 }
 
+@Suppress("UnusedVariable")
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
 fun LatestEpisodeScreenLoadingPreview() {
-    val columnState = rememberResponsiveColumnState(
+    @Suppress("unused") val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip

@@ -19,6 +19,17 @@ package com.example.jetcaster.theme
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme
 
+/**
+ * WearAppTheme is the custom Material Theme for Wear OS applications.
+ *
+ * This function applies a specific Material Theme configuration to the composable content it wraps,
+ * utilizing a predefined color palette (`wearColorPalette`) and typography (`Typography`) designed
+ * for Wear OS devices. It also defaults to using the standard Material Wear shapes, which are
+ * recommended for their optimization on both round and non-round screens.
+ *
+ * @param content The composable content to which the Wear OS Material Theme will be applied.
+ * This is a lambda function that takes no parameters and returns a `Composable` unit.
+ */
 @Composable
 fun WearAppTheme(
     content: @Composable () -> Unit

@@ -234,6 +234,23 @@ class JetcasterAppState(
     }
 }
 
+/**
+ * Creates and remembers a [JetcasterAppState] instance.
+ *
+ * This function is a composable utility that creates and remembers a [JetcasterAppState] object.
+ * The [JetcasterAppState] is responsible for holding the state related to the navigation and
+ * potentially other UI state of the Jetcaster application.
+ *
+ * It uses the `remember` composable function to ensure that the [JetcasterAppState] instance is
+ * only created once during the composition and is then retained across recompositions unless the
+ * [navHostController] changes.
+ *
+ * @param navHostController The [NavHostController] instance to be used by the [JetcasterAppState]
+ * for managing navigation within the application. Defaults to a new [NavHostController] instance
+ * created by [rememberNavController] if not provided.
+ * @return A remembered [JetcasterAppState] instance associated with the provided or default
+ * [navHostController].
+ */
 @Composable
 fun rememberJetcasterAppState(
     navHostController: NavHostController = rememberNavController()
@@ -242,29 +259,118 @@ fun rememberJetcasterAppState(
         JetcasterAppState(navHostController = navHostController)
     }
 
+/**
+ * Represents a screen in the application's navigation hierarchy.
+ * Each screen has a unique route that can be used to navigate to it.
+ *
+ * This interface is sealed, meaning that all implementing classes must be defined
+ * within this file. This ensures a closed set of possible screens.
+ */
 sealed interface Screen {
+    /**
+     * The route associated with this element.
+     *
+     * This string represents a unique path or identifier that can be used
+     * to navigate to or locate this specific element within a larger structure
+     * or system (e.g., a navigation graph, a data hierarchy).
+     *
+     * It's commonly used for routing in navigation systems, API endpoints,
+     * or identifying a specific data entity.
+     *
+     * Examples:
+     * - In a navigation graph: "home", "profile", "settings/notifications"
+     * - In an API: "/users/123", "/products/details/456"
+     * - In a data hierarchy: "root/folderA/fileX.txt"
+     */
     val route: String
 
+    /**
+     * Represents the "Discover" screen in the application.
+     *
+     * This object encapsulates the route and other screen-specific
+     * properties related to the Discover section of the app.
+     *
+     * This object is a singleton and should be used to navigate to the
+     * discover screen using the defined [route].
+     *
+     * @property route The navigation route associated with the Discover screen.
+     * In this case, it's "/discover".
+     */
     data object Discover : Screen {
         override val route: String = "/discover"
     }
 
+    /**
+     * Represents the Library screen in the application.
+     *
+     * This is a data object implementing the [Screen] interface. It defines the
+     * route used to navigate to the Library screen within the app's navigation graph.
+     *
+     * @property route The navigation route associated with the Library screen.
+     * In this case, it's "/library".
+     */
     data object Library : Screen {
         override val route: String = "/library"
     }
 
+    /**
+     * Represents the Search screen in the application.
+     *
+     * This object defines the route for the Search screen, which can be used for
+     * navigation and other screen-related operations. It extends the `Screen`
+     * interface, indicating that it's a specific screen within the application's
+     * navigation structure.
+     *
+     * @property route The unique route associated with the Search screen. This route is used for
+     * navigating to the search screen. In this case, the route is "/search".
+     */
     data object Search : Screen {
         override val route: String = "/search"
     }
 
+    /**
+     * Represents the Profile screen in the application.
+     *
+     * This object is a singleton that encapsulates the navigation route and any screen-specific
+     * configurations related to the user's profile. It implements the [Screen] interface, making
+     * it compatible with our navigation system which is designed to handle [Screen] objects.
+     *
+     * @property route The navigation route associated with the Profile screen. In this case,
+     * it's "/profile".
+     */
     data object Profile : Screen {
         override val route: String = "/profile"
     }
 
+    /**
+     * Represents the Settings screen in the application.
+     *
+     * This object serves as a singleton representation of the Settings screen. It implements the
+     * [Screen] interface, providing a route for navigation.
+     *
+     * @property route The navigation route associated with the Settings screen. In this case,
+     * it's "settings".
+     */
     data object Settings : Screen {
         override val route: String = "settings"
     }
 
+    /**
+     * Represents a Podcast screen in the navigation graph.
+     *
+     * This class defines the structure and routing information for a podcast screen.
+     * It also acts as a companion object to define the overall route pattern
+     * for all podcast screens and the parameter name used to identify a specific podcast.
+     *
+     * @property podcastUri The unique identifier (URI) of the specific podcast to display.
+     * This is used as a parameter in the navigation route. It should be a string that can
+     * be safely encoded in a URL.
+     * @property route The full navigation route for this podcast screen. It is constructed
+     * by combining the root route ("/podcast") followed by the `PARAMETER_NAME` ("podcastUri")
+     * followed by the actual podcast URI, our [String] property [podcastUri].
+     * @constructor Creates a Podcast screen instance with the specified podcast URI.
+     * @see Screen
+     */
     data class Podcast(private val podcastUri: String) : Screen {
         override val route: String = "$ROOT/$podcastUri"
 
@@ -275,6 +381,21 @@ sealed interface Screen {
         }
     }
 
+    /**
+     * Represents a specific episode screen in the application.
+     *
+     * This class encapsulates the necessary information to navigate to and display a particular
+     * episode. It implements the [Screen] interface, making it compatible with our navigation
+     * system.
+     *
+     * @property episodeUri The unique identifier (URI) of the episode. This is used to construct
+     * the navigational route to the episode. It is passed as part of the route.
+     * @property route The full navigation route for this episode screen. It is constructed by
+     * combining the root route ("/episode") followed by the `PARAMETER_NAME` ("episodeUri")
+     * followed by the actual episode URI, our [String] property [episodeUri].
+     *
+     * @constructor Creates an [Episode] instance with the specified episode URI.
+     */
     data class Episode(private val episodeUri: String) : Screen {
 
         override val route: String = "$ROOT/$episodeUri"
@@ -286,6 +407,17 @@ sealed interface Screen {
         }
     }
 
+    /**
+     * Represents the Player screen in the application.
+     *
+     * This object defines the Player screen's route and serves as a singleton
+     * to access screen-specific navigation information. It inherits from the
+     * `Screen` interface, providing a standardized way to manage navigation
+     * destinations within the app.
+     *
+     * @property route The unique route string for the Player screen, used for
+     * navigation purposes. It is set to "player" for this screen.
+     */
     data object Player : Screen {
         override val route: String = "player"
     }

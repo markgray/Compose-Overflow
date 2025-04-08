@@ -50,6 +50,7 @@ import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.listTextPadding
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -58,6 +59,20 @@ import com.google.android.horologist.compose.material.ListHeaderDefaults
 import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
+/**
+ * Composable function representing the Episode screen.
+ *
+ * This composable is a high-level representation of the Episode screen, responsible for
+ * collecting the UI state from the [EpisodeViewModel] and passing it down to the
+ * lower-level [EpisodeScreen] composable. It also handles the interactions with the
+ * [EpisodeViewModel] through the provided lambda functions.
+ *
+ * @param onPlayButtonClick Lambda function to be executed when the play button is clicked.
+ * @param onDismiss Lambda function to be executed when the screen should be dismissed.
+ * @param modifier Modifier for styling and layout adjustments.
+ * @param episodeViewModel The ViewModel responsible for managing the episode's data and logic.
+ * Defaults to a ViewModel instance provided by Hilt.
+ */
 @Composable
 fun EpisodeScreen(
     onPlayButtonClick: () -> Unit,
@@ -65,7 +80,7 @@ fun EpisodeScreen(
     modifier: Modifier = Modifier,
     episodeViewModel: EpisodeViewModel = hiltViewModel()
 ) {
-    val uiState by episodeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: EpisodeScreenState by episodeViewModel.uiState.collectAsStateWithLifecycle()
 
     EpisodeScreen(
         uiState = uiState,
@@ -77,6 +92,17 @@ fun EpisodeScreen(
     )
 }
 
+/**
+ * Stateless composable function representing the Episode screen, it is called by the "Stateful"
+ * [EpisodeScreen] composable override.
+ *
+ * @param uiState The current state of the Episode screen, including the loaded episode.
+ * @param onPlayButtonClick Lambda function to be executed when the play button is clicked.
+ * @param onPlayEpisode Lambda function to be executed when an episode is played.
+ * @param onAddToQueue Lambda function to be executed when an episode is added to the queue.
+ * @param onDismiss Lambda function to be executed when the screen should be dismissed.
+ * @param modifier Modifier for styling and layout adjustments.
+ */
 @Composable
 fun EpisodeScreen(
     uiState: EpisodeScreenState,
@@ -86,7 +112,7 @@ fun EpisodeScreen(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val columnState = rememberResponsiveColumnState(
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip
@@ -141,6 +167,29 @@ fun EpisodeScreen(
     }
 }
 
+/**
+ * Displays a row of buttons for interacting with an episode, specifically a play button and an
+ * "add to queue" button.
+ *
+ * This composable uses the following components:
+ * - A [Row] to arrange the buttons horizontally.
+ * - [Button] (custom composable, assumed to be defined elsewhere) for the play and "add to queue" actions.
+ * - Icons from [Icons.Outlined] and [Icons.AutoMirrored.Filled].
+ * - [stringResource] for localized content descriptions.
+ *
+ * The buttons are arranged with a spacing of 6.dp and are center-aligned vertically. Each button
+ * takes up 30% of the available space. When the user click on play button both [onPlayButtonClick]
+ * and [onPlayEpisode] are triggered
+ *
+ * @param episode The episode data to be used when triggering actions. It's an
+ * [EpisodeToPodcast] object.
+ * @param onPlayButtonClick Callback triggered when the main play button is clicked.
+ * @param onPlayEpisode Callback triggered when an episode should start playing.
+ * It receives the [PlayerEpisode] object as its parameter.
+ * @param onAddToQueue Callback triggered when an episode should be added to the playback queue.
+ * It receives the [PlayerEpisode] object as its parameter.
+ * @param enabled Controls whether the buttons are enabled or disabled. Defaults to `true`.
+ */
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun LoadedButtonsContent(
@@ -181,6 +230,15 @@ fun LoadedButtonsContent(
         )
     }
 }
+/**
+ * Displays a loading screen with a header, placeholder content, and loading buttons.
+ *
+ * This composable function presents a screen that indicates data is being loaded.
+ * It includes a header displaying the text "Loading", placeholder chips to represent
+ * loading data, and a section for loading-related buttons.
+ *
+ * The screen uses the [EntityScreen] composable to structure its layout.
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun LoadingScreen() {
@@ -189,7 +247,7 @@ fun LoadingScreen() {
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
             ) {
-                Text(text = stringResource(R.string.loading))
+                Text(text = stringResource(id = R.string.loading))
             }
         },
         buttonsContent = {
@@ -203,15 +261,40 @@ fun LoadingScreen() {
     )
 }
 
+/**
+ * [LoadingButtonsContent] is a composable function that displays a row of two disabled buttons:
+ * a "Play" button and an "Add to Queue" button. These buttons are intended to be used in a loading
+ * state where the user should not be able to interact with them.
+ *
+ * The buttons are arranged horizontally with spacing between them and are vertically centered.
+ * Both buttons are disabled and use icons to indicate their function.
+ *
+ * The content descriptions for the buttons are loaded from string resources.
+ *
+ * This Composable needs [ExperimentalHorologistApi] because it's using
+ * the custom Button from the Horologist library.
+ *
+ * Example Use Case:
+ * This function can be used in a UI where content is being loaded, and the user
+ * should not be able to interact with media controls or playlist manipulation until
+ * the content has finished loading.
+ *
+ * @see Button
+ * @see Icons.Outlined.PlayArrow
+ * @see Icons.AutoMirrored.Filled.PlaylistAdd
+ */
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun LoadingButtonsContent() {
     Row(
         modifier = Modifier
             .padding(bottom = 16.dp)
-            .height(52.dp),
+            .height(height = 52.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 6.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
     ) {
 
         Button(
@@ -234,6 +317,16 @@ fun LoadingButtonsContent() {
     }
 }
 
+/**
+ * Composable function to display episode information within a scaling lazy list.
+ *
+ * This function displays the author, published date, duration (if available), and
+ * summary of an episode. It handles null or empty values for these fields gracefully.
+ *
+ * @param episode The [EpisodeToPodcast] object containing the episode's information.
+ * @see ScalingLazyListScope
+ * @see EpisodeToPodcast
+ */
 private fun ScalingLazyListScope.episodeInfoContent(episode: EpisodeToPodcast) {
     val author = episode.episode.author
     val duration = episode.episode.duration
@@ -274,7 +367,7 @@ private fun ScalingLazyListScope.episodeInfoContent(episode: EpisodeToPodcast) {
         )
     }
     if (summary != null) {
-        val summaryInParagraphs = summary.split("\n+".toRegex()).orEmpty()
+        val summaryInParagraphs = summary.split("\n+".toRegex())
         items(summaryInParagraphs) {
             HtmlTextContainer(text = summary) {
                 Text(

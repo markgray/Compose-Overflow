@@ -34,8 +34,18 @@ import com.google.android.horologist.audio.ui.components.actions.SettingsButton
 import com.google.android.horologist.compose.material.IconRtlMode
 
 /**
- * Settings buttons for the Jetcaster media app.
- * Add to queue and Set Volume.
+ * Displays a row of buttons for settings related actions.
+ *
+ * This composable arranges the playback speed button, a brand logo icon, and the volume button
+ * horizontally within a row. It provides functionality to adjust the playback speed and
+ * control the volume.
+ *
+ * @param volumeUiState The current state of the volume settings, used by the volume button.
+ * @param onVolumeClick Callback function invoked when the volume button is clicked.
+ * @param playerUiState The current state of the player, including the playback speed.
+ * @param onPlaybackSpeedChange Callback function invoked when the playback speed needs to be changed.
+ * @param modifier Modifier for styling and layout customization of the row.
+ * @param enabled Controls whether the buttons within this row are enabled or disabled.
  */
 @Composable
 fun SettingsButtons(
@@ -71,6 +81,20 @@ fun SettingsButtons(
     }
 }
 
+/**
+ * A composable button that allows the user to change the playback speed of a media player.
+ *
+ * The button's icon changes based on the [currentPlayerSpeed]. It displays "1x" for 1.0,
+ * "1.5x" for 1.5, and "2x" for any other value.
+ *
+ * @param currentPlayerSpeed The current playback speed of the media player. This value determines
+ * the icon displayed on the button.
+ * @param onPlaybackSpeedChange A callback function that is invoked when the button is clicked.
+ * This should trigger the change in playback speed.
+ * @param modifier Modifier for styling and layout of the button.
+ * @param enabled Controls the enabled state of the button. When `false`, the button is disabled
+ * and does not respond to clicks. Defaults to `true`.
+ */
 @Composable
 fun PlaybackSpeedButton(
     currentPlayerSpeed: Float,
