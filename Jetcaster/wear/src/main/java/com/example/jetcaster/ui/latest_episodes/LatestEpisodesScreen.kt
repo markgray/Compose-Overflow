@@ -84,6 +84,26 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     )
 }
 
+/**
+ * Composable function representing the screen displaying the latest episodes.
+ *
+ * This screen handles three different states:
+ *  - `Loaded`: Displays a list of the latest episodes.
+ *  - `Empty`: Displays an alert dialog indicating that no episodes are available.
+ *  - `Loading`: Displays a loading indicator while fetching the latest episodes.
+ *
+ * @param uiState The current state of the latest episode screen, which can be one of:
+ *  - `LatestEpisodeScreenState.Loaded`: Contains a list of `PlayerEpisode` to display.
+ *  - `LatestEpisodeScreenState.Empty`: Indicates that there are no episodes to display.
+ *  - `LatestEpisodeScreenState.Loading`: Indicates that the episodes are being loaded.
+ * @param onPlayButtonClick Callback triggered when the global "play" button is clicked.
+ * @param onDismiss Callback triggered when the alert dialog (in the `Empty` state) is dismissed.
+ * @param onPlayEpisodes Callback triggered when a request to play a list of episodes is made.
+ * It receive a `List<PlayerEpisode>` as param
+ * @param onPlayEpisode Callback triggered when a request to play a single episode is made.
+ * It receives a `PlayerEpisode` as param
+ * @param modifier Modifier for styling and layout adjustments of the composable.
+ */
 @Composable
 fun LatestEpisodeScreen(
     uiState: LatestEpisodeScreenState,
@@ -131,6 +151,20 @@ fun LatestEpisodeScreen(
     }
 }
 
+/**
+ * A composable function that displays a "Play" button as a Chip.
+ *
+ * This button triggers two actions when clicked:
+ *  1. `onPlayButtonClick`: A callback to handle the primary "Play" action.
+ *  2. `onPlayEpisodes`: A callback to provide the list of episodes to be played.
+ *
+ * @param episodes The list of [PlayerEpisode]s to be played.
+ * @param onPlayButtonClick A lambda function to be executed when the "Play" button is clicked.
+ * This is intended for general play button actions, such as starting playback.
+ * @param onPlayEpisodes A lambda function that receives the list of [PlayerEpisode]s.
+ * This is used to specify which episodes should be played.
+ * @param modifier Modifier for styling and layout adjustments of the Chip.
+ */
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
@@ -150,6 +184,22 @@ fun ButtonsContent(
     )
 }
 
+/**
+ * Displays a screen showing a list of the latest episodes.
+ *
+ * This composable displays a list of [PlayerEpisode] objects, allowing the user to
+ * interact with them. It includes a header indicating that these are the "Latest Episodes",
+ * a list of episodes with their media content, and buttons to control playback.
+ *
+ * @param episodeList The list of [PlayerEpisode] objects to display.
+ * @param onPlayButtonClick Callback triggered when a "play" button is clicked, typically for
+ * general play actions.
+ * @param onPlayEpisode Callback triggered when a specific episode is selected to be played.
+ * It provides the [PlayerEpisode] that was clicked.
+ * @param onPlayEpisodes Callback triggered when a "play all" or similar action is performed
+ * on the entire list of episodes. It provides the entire list of [PlayerEpisode] objects.
+ * @param modifier Modifier for styling and layout of the screen.
+ */
 @Composable
 fun LatestEpisodesScreen(
     episodeList: List<PlayerEpisode>,
@@ -192,6 +242,16 @@ fun LatestEpisodesScreen(
     )
 }
 
+/**
+ * Displays a loading screen for the "Latest Episodes" section.
+ *
+ * This composable provides a visual representation of the screen while the actual
+ * latest episodes are being fetched or loaded. It uses placeholder chips and
+ * a header to indicate the loading state.
+ *
+ * @param modifier Modifier to apply to the outer container of the loading screen.
+ * Defaults to [Modifier].
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun LatestEpisodesScreenLoading(
@@ -221,6 +281,9 @@ fun LatestEpisodesScreenLoading(
     )
 }
 
+/**
+ * A preview of the Latest Episodes Screen.
+ */
 @Suppress("UnusedVariable")
 @WearPreviewDevices
 @WearPreviewFontScales
@@ -243,6 +306,9 @@ fun LatestEpisodeScreenLoadedPreview(
     )
 }
 
+/**
+ * A preview of the Latest Episodes Screen Loading.
+ */
 @Suppress("UnusedVariable")
 @WearPreviewDevices
 @WearPreviewFontScales

@@ -52,6 +52,24 @@ import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
+/**
+ * Composable function for displaying the Library Screen.
+ *
+ * This screen is responsible for showing the user's library, which includes
+ * their subscribed podcasts, up next queue, and other related content.
+ *
+ * It handles different states of the library data, including:
+ *  - Loading: When the library data is being fetched.
+ *  - NoSubscribedPodcast: When the user hasn't subscribed to any podcasts yet.
+ *  - Ready: When the library data is available and ready to be displayed.
+ *
+ * @param onLatestEpisodeClick Callback triggered when the "Latest Episode" item is clicked.
+ * @param onYourPodcastClick Callback triggered when the "Your Podcast" item is clicked.
+ * @param onUpNextClick Callback triggered when the "Up Next" item is clicked.
+ * @param modifier Modifier for styling and layout customization.
+ * @param libraryScreenViewModel ViewModel responsible for managing the library screen's
+ * state and logic. Defaults to an instance provided by Hilt.
+ */
 @Composable
 fun LibraryScreen(
     onLatestEpisodeClick: () -> Unit,
@@ -60,16 +78,22 @@ fun LibraryScreen(
     modifier: Modifier = Modifier,
     libraryScreenViewModel: LibraryViewModel = hiltViewModel()
 ) {
-    val uiState by libraryScreenViewModel.uiState.collectAsState()
+    /**
+     * The current UI state of the library screen.
+     */
+    val uiState: LibraryScreenUiState by libraryScreenViewModel.uiState.collectAsState()
 
-    val columnState = rememberResponsiveColumnState(
+    /**
+     * The state for the library screen's column.
+     */
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip,
         ),
     )
 
-    when (val s = uiState) {
+    when (val s: LibraryScreenUiState = uiState) {
         is LibraryScreenUiState.Loading ->
             LoadingScreen(
                 modifier = modifier
@@ -94,6 +118,20 @@ fun LibraryScreen(
     }
 }
 
+/**
+ * Displays a loading screen with a header and placeholder chips.
+ *
+ * This composable function creates a loading screen commonly used to indicate that data
+ * is being fetched or processed. It features a header displaying the "Loading" text
+ * and placeholder chips to visually represent content that is not yet available.
+ *
+ * @param modifier Modifier to be applied to the root layout of the loading screen.
+ * This allows customization of the appearance and layout.
+ * @see EntityScreen
+ * @see ResponsiveListHeader
+ * @see PlaceholderChip
+ * @see ChipDefaults
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun LoadingScreen(
@@ -104,7 +142,7 @@ fun LoadingScreen(
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
             ) {
-                Text(text = stringResource(R.string.loading))
+                Text(text = stringResource(id = R.string.loading))
             }
         },
         modifier = modifier,
@@ -116,6 +154,16 @@ fun LoadingScreen(
     )
 }
 
+/**
+ * Displays a screen indicating that the user has not subscribed to any podcasts yet.
+ * It also shows a list of top podcasts that the user can follow.
+ *
+ * @param columnState The state of the scaling lazy column for controlling scrolling.
+ * @param modifier Modifier for styling the screen.
+ * @param topPodcasts A list of [PodcastInfo] representing the top podcasts to display.
+ * @param onTogglePodcastFollowed Callback function invoked when the user wants to
+ * follow/unfollow a podcast. It receives the podcast's URI as a parameter.
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun NoSubscribedPodcastScreen(
@@ -131,11 +179,11 @@ fun NoSubscribedPodcastScreen(
                     modifier = modifier.listTextPadding(),
                     contentColor = MaterialTheme.colors.onSurface
                 ) {
-                    Text(stringResource(R.string.entity_no_featured_podcasts))
+                    Text(text = stringResource(id = R.string.entity_no_featured_podcasts))
                 }
             }
             if (topPodcasts.isNotEmpty()) {
-                items(topPodcasts.take(3)) { podcast ->
+                items(items = topPodcasts.take(3)) { podcast: PodcastInfo ->
                     PodcastContent(
                         podcast = podcast,
                         downloadItemArtworkPlaceholder = rememberVectorPainter(
@@ -159,6 +207,17 @@ fun NoSubscribedPodcastScreen(
     }
 }
 
+/**
+ * Displays a chip representing a podcast.
+ *
+ * This composable displays a clickable chip with the podcast's title and artwork.
+ *
+ * @param podcast The [PodcastInfo] object containing the podcast's details.
+ * @param downloadItemArtworkPlaceholder An optional [Painter] to be used as a placeholder while
+ * the podcast's artwork is loading. If null, a default placeholder might be used by the Coil library.
+ * @param onClick The callback to be invoked when the chip is clicked.
+ * @param modifier Optional [Modifier] to be applied to the chip.
+ */
 @Composable
 private fun PodcastContent(
     podcast: PodcastInfo,
@@ -166,18 +225,30 @@ private fun PodcastContent(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val mediaTitle = podcast.title
+    val mediaTitle: String = podcast.title
 
     Chip(
         label = mediaTitle,
         onClick = onClick,
         modifier = modifier,
-        icon = CoilPaintable(podcast.imageUrl, downloadItemArtworkPlaceholder),
+        icon = CoilPaintable(model = podcast.imageUrl, placeholder = downloadItemArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
     )
 }
 
+/**
+ * Composable function that displays the Library screen, showing options for Latest Episodes,
+ * Your Podcasts, and Up Next.
+ *
+ * @param columnState The state of the scrolling column. Used for managing the scrolling position.
+ * @param modifier Modifier for styling the layout.
+ * @param onLatestEpisodeClick Callback to be invoked when the "Latest Episodes" chip is clicked.
+ * @param onYourPodcastClick Callback to be invoked when the "Your Podcasts" chip is clicked.
+ * @param onUpNextClick Callback to be invoked when the "Up Next" chip is clicked.
+ * @param queue The list of episodes in the queue. Determines whether to show the "Up Next" chip
+ * or the "Queue Empty" message.
+ */
 @Composable
 fun LibraryScreen(
     columnState: ScalingLazyColumnState,
@@ -191,28 +262,28 @@ fun LibraryScreen(
         ScalingLazyColumn(columnState = columnState) {
             item {
                 ResponsiveListHeader(modifier = Modifier.listTextPadding()) {
-                    Text(stringResource(R.string.home_library))
+                    Text(text = stringResource(id = R.string.home_library))
                 }
             }
             item {
                 Chip(
-                    label = stringResource(R.string.latest_episodes),
+                    label = stringResource(id = R.string.latest_episodes),
                     onClick = onLatestEpisodeClick,
-                    icon = DrawableResPaintable(R.drawable.new_releases),
+                    icon = DrawableResPaintable(id = R.drawable.new_releases),
                     colors = ChipDefaults.secondaryChipColors()
                 )
             }
             item {
                 Chip(
-                    label = stringResource(R.string.podcasts),
+                    label = stringResource(id = R.string.podcasts),
                     onClick = onYourPodcastClick,
-                    icon = DrawableResPaintable(R.drawable.podcast),
+                    icon = DrawableResPaintable(id = R.drawable.podcast),
                     colors = ChipDefaults.secondaryChipColors()
                 )
             }
             item {
                 ResponsiveListHeader(modifier = Modifier.listTextPadding()) {
-                    Text(stringResource(R.string.queue))
+                    Text(text = stringResource(id = R.string.queue))
                 }
             }
             item {
@@ -220,9 +291,9 @@ fun LibraryScreen(
                     QueueEmpty()
                 } else {
                     Chip(
-                        label = stringResource(R.string.up_next),
+                        label = stringResource(id = R.string.up_next),
                         onClick = onUpNextClick,
-                        icon = DrawableResPaintable(R.drawable.up_next),
+                        icon = DrawableResPaintable(id = R.drawable.up_next),
                         colors = ChipDefaults.secondaryChipColors()
                     )
                 }
@@ -231,6 +302,13 @@ fun LibraryScreen(
     }
 }
 
+/**
+ * Displays a message indicating that the queue is empty.
+ *
+ * This composable is used to inform the user that there are currently no
+ * episodes in the queue. It displays a centered text message prompting
+ * the user to add episodes.
+ */
 @Composable
 private fun QueueEmpty() {
     Text(
