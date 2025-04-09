@@ -389,7 +389,7 @@ sealed interface Screen {
      * system.
      *
      * @property episodeUri The unique identifier (URI) of the episode. This is used to construct
-     * the navigational route to the episode. It is passed as part of the route.
+     * the navigational route to the episode. It is included as part of the route.
      * @property route The full navigation route for this episode screen. It is constructed by
      * combining the root route ("/episode") followed by the `PARAMETER_NAME` ("episodeUri")
      * followed by the actual episode URI, our [String] property [episodeUri].
@@ -412,7 +412,7 @@ sealed interface Screen {
      *
      * This object defines the Player screen's route and serves as a singleton
      * to access screen-specific navigation information. It inherits from the
-     * `Screen` interface, providing a standardized way to manage navigation
+     * [Screen] interface, which is the way used to manage navigation
      * destinations within the app.
      *
      * @property route The unique route string for the Player screen, used for

@@ -64,8 +64,9 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
  *
  * This composable is a high-level representation of the Episode screen, responsible for
  * collecting the UI state from the [EpisodeViewModel] and passing it down to the
- * lower-level [EpisodeScreen] composable. It also handles the interactions with the
- * [EpisodeViewModel] through the provided lambda functions.
+ * lower-level stateless [EpisodeScreen] composable. It also handles the interactions with
+ * the [EpisodeViewModel] by using function references to methods in the [EpisodeViewModel]
+ * as lambda arguments to the lower-level [EpisodeScreen] override.
  *
  * @param onPlayButtonClick Lambda function to be executed when the play button is clicked.
  * @param onDismiss Lambda function to be executed when the screen should be dismissed.
@@ -173,12 +174,13 @@ fun EpisodeScreen(
  *
  * This composable uses the following components:
  * - A [Row] to arrange the buttons horizontally.
- * - [Button] (custom composable, assumed to be defined elsewhere) for the play and "add to queue" actions.
+ * - [Button] for the play and "add to queue" actions.
  * - Icons from [Icons.Outlined] and [Icons.AutoMirrored.Filled].
  * - [stringResource] for localized content descriptions.
  *
  * The buttons are arranged with a spacing of 6.dp and are center-aligned vertically. Each button
- * takes up 30% of the available space. When the user click on play button both [onPlayButtonClick]
+ * takes up 30% of the available space. When the user clicks
+ * on play button both [onPlayButtonClick]
  * and [onPlayEpisode] are triggered
  *
  * @param episode The episode data to be used when triggering actions. It's an

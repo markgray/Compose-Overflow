@@ -43,6 +43,7 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.ui.Episode
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,6 +53,14 @@ import kotlinx.coroutines.flow.stateIn
 
 /**
  * ViewModel that handles the business logic and screen state of the Episode screen.
+ *
+ * @param savedStateHandle handle to saved state passed down to [ViewModel]. It is a key-value map
+ * that will let you write and retrieve objects to and from the saved state. These values will
+ * persist after the process is killed by the system and remain available via the same object.
+ * @param episodeStore [EpisodeStore] for managing Episode instances and their relationships with
+ * Podcast instances.
+ * @param episodePlayer an episode player which defines high-level functions such as queuing
+ * episodes, playing an episode, pausing, seeking, etc.
  */
 @HiltViewModel
 class EpisodeViewModel @Inject constructor(
@@ -69,8 +78,7 @@ class EpisodeViewModel @Inject constructor(
      * any URL-encoded characters. If no URI is found in the saved state handle, this property
      * will be `null`.
      *
-     * This is typically used for identifying and accessing the specific episode's data or
-     * resources.
+     * This is used for identifying and accessing the specific episode's data or resources.
      */
     private val episodeUri: String? =
         savedStateHandle.get<String>(Episode.EPISODE_URI).let {
@@ -80,8 +88,9 @@ class EpisodeViewModel @Inject constructor(
     /**
      * A [StateFlow] that emits the [EpisodeToPodcast] associated with the [episodeUri], if provided.
      *
-     * This flow is derived from the [EpisodeStore]. If an [episodeUri] is available, it fetches the corresponding
-     * episode and podcast data using [EpisodeStore.episodeAndPodcastWithUri]. Otherwise, it emits a single null value.
+     * This flow is derived from the [EpisodeStore]. If an [episodeUri] is available, it fetches
+     * the corresponding episode and podcast data using [EpisodeStore.episodeAndPodcastWithUri].
+     * Otherwise, it emits a single null value.
      *
      * The flow is configured to:
      *  - Share its value with multiple collectors.
@@ -90,7 +99,7 @@ class EpisodeViewModel @Inject constructor(
      *  - Stop sharing after a 5-second timeout of no subscribers.
      *  - Emit null as the initial value before any data is available.
      *
-     * The `stateIn` operator is used to convert the flow into a StateFlow.
+     * The [Flow.stateIn] operator is used to convert the flow into a [StateFlow].
      *
      * The flow will emit:
      * - [EpisodeToPodcast]: when the [episodeUri] is not null and the data exists in the store.
@@ -120,13 +129,12 @@ class EpisodeViewModel @Inject constructor(
      *  providing the actual episode data.
      *
      * The [StateFlow] is configured with:
-     * - `scope`: [viewModelScope] to tie its lifecycle to the ViewModel.
-     * - `started`: [SharingStarted.WhileSubscribed] for a `stopTimeoutMillis` of 5_000 to keep
-     * the flow active while there are active as long as there are active subscribers, and for
-     * 5 seconds after the last subscriber disappears. This helps in retaining data for short
-     * configuration changes.
-     * - `initialValue`: [EpisodeScreenState.Loading] to immediately show a loading state while
-     * the data is being fetched.
+     *  - `scope`: [viewModelScope] to tie its lifecycle to the ViewModel.
+     *  - `started`: [SharingStarted.WhileSubscribed] for a `stopTimeoutMillis` of 5_000 to keep
+     *  the flow active as long as there are active subscribers, and for 5 seconds after the last
+     *  subscriber disappears. This helps in retaining data for short configuration changes.
+     *  - `initialValue`: [EpisodeScreenState.Loading] to immediately show a loading state while
+     *  the data is being fetched.
      *
      * Use this [StateFlow] in your UI to update the screen based on the current state of
      * the episode data.

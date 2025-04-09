@@ -33,7 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
  *
  * This activity sets up the application's UI using Jetpack Compose. It configures
  * the theme, including enforcing dark mode, and initializes the main application
- * composable, `JetcasterApp`.
+ * composable, [JetcasterApp].
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -49,8 +49,9 @@ class MainActivity : ComponentActivity() {
      * compose a [JetcasterTheme] with its `isInDarkTheme` set to `true`. This ensures
      * that the theme is set to dark mode. In the `content` composable lambda argument
      * of the [JetcasterTheme] we compose a [Surface] with its `modifier` set to
-     * [Modifier.fillMaxSize] and its `shape` set to [RectangleShape]. In its [BoxScope]
-     * `content` composable lambda argument we call our [JetcasterApp] composable.
+     * [Modifier.fillMaxSize] and its `shape` set to [RectangleShape]. In the [BoxScope]
+     * `content` composable lambda argument of the [Surface] we call our [JetcasterApp]
+     * composable.
      *
      * @param savedInstanceState If the activity is being re-initialized after
      * previously being shut down then this Bundle contains the data it most

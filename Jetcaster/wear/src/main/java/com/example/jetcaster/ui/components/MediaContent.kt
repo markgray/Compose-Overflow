@@ -30,7 +30,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 /**
- * Displays the content of a media item (e.g., an episode) as a [Chip].
+ * Displays the information about a media item (e.g., an episode) as a [Chip].
  *
  * This composable shows the title, date, and optional duration of a media episode,
  * along with an associated artwork (if available). It provides a clickable
@@ -40,7 +40,7 @@ import java.time.format.FormatStyle
  * @param episodeArtworkPlaceholder A [Painter] to be used as a placeholder for the
  * episode's artwork while it's loading or if no artwork is available.
  * @param onItemClick A lambda function that's invoked when the chip is clicked.
- * It is passed the clicked [PlayerEpisode] as its parameter.
+ * It is passed our [PlayerEpisode] parameter [episode] as its argument.
  * @param modifier Modifier for styling and layout adjustments of the chip.
  */
 @Composable
