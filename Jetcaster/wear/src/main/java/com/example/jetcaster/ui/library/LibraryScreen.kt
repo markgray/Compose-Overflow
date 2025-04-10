@@ -66,7 +66,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
  * @param onLatestEpisodeClick Callback triggered when the "Latest Episode" item is clicked.
  * @param onYourPodcastClick Callback triggered when the "Your Podcast" item is clicked.
  * @param onUpNextClick Callback triggered when the "Up Next" item is clicked.
- * @param modifier Modifier for styling and layout customization.
+ * @param modifier [Modifier] for styling and layout customization.
  * @param libraryScreenViewModel ViewModel responsible for managing the library screen's
  * state and logic. Defaults to an instance provided by Hilt.
  */
@@ -84,7 +84,7 @@ fun LibraryScreen(
     val uiState: LibraryScreenUiState by libraryScreenViewModel.uiState.collectAsState()
 
     /**
-     * The state for the library screen's column.
+     * The state for the library screen's various columns.
      */
     val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(

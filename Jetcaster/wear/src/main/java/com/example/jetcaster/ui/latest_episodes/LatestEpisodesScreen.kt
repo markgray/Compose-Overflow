@@ -93,16 +93,16 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
  *  - `Loading`: Displays a loading indicator while fetching the latest episodes.
  *
  * @param uiState The current state of the latest episode screen, which can be one of:
- *  - `LatestEpisodeScreenState.Loaded`: Contains a list of `PlayerEpisode` to display.
- *  - `LatestEpisodeScreenState.Empty`: Indicates that there are no episodes to display.
- *  - `LatestEpisodeScreenState.Loading`: Indicates that the episodes are being loaded.
+ *  - [LatestEpisodeScreenState.Loaded]: Contains a list of [PlayerEpisode] to display.
+ *  - [LatestEpisodeScreenState.Empty]: Indicates that there are no episodes to display.
+ *  - [LatestEpisodeScreenState.Loading]: Indicates that the episodes are being loaded.
  * @param onPlayButtonClick Callback triggered when the global "play" button is clicked.
  * @param onDismiss Callback triggered when the alert dialog (in the `Empty` state) is dismissed.
  * @param onPlayEpisodes Callback triggered when a request to play a list of episodes is made.
  * It receive a `List<PlayerEpisode>` as param
  * @param onPlayEpisode Callback triggered when a request to play a single episode is made.
- * It receives a `PlayerEpisode` as param
- * @param modifier Modifier for styling and layout adjustments of the composable.
+ * It receives a [PlayerEpisode] as param
+ * @param modifier [Modifier] for styling and layout adjustments of the composable.
  */
 @Composable
 fun LatestEpisodeScreen(
@@ -187,18 +187,18 @@ fun ButtonsContent(
 /**
  * Displays a screen showing a list of the latest episodes.
  *
- * This composable displays a list of [PlayerEpisode] objects, allowing the user to
+ * This composable displays a [List] of [PlayerEpisode] objects, allowing the user to
  * interact with them. It includes a header indicating that these are the "Latest Episodes",
  * a list of episodes with their media content, and buttons to control playback.
  *
- * @param episodeList The list of [PlayerEpisode] objects to display.
+ * @param episodeList The [List] of [PlayerEpisode] objects to display.
  * @param onPlayButtonClick Callback triggered when a "play" button is clicked, typically for
  * general play actions.
  * @param onPlayEpisode Callback triggered when a specific episode is selected to be played.
  * It provides the [PlayerEpisode] that was clicked.
  * @param onPlayEpisodes Callback triggered when a "play all" or similar action is performed
- * on the entire list of episodes. It provides the entire list of [PlayerEpisode] objects.
- * @param modifier Modifier for styling and layout of the screen.
+ * on the entire list of episodes. It is provided the entire [List] of [PlayerEpisode] objects.
+ * @param modifier [Modifier] for styling and layout of the screen.
  */
 @Composable
 fun LatestEpisodesScreen(
@@ -249,8 +249,8 @@ fun LatestEpisodesScreen(
  * latest episodes are being fetched or loaded. It uses placeholder chips and
  * a header to indicate the loading state.
  *
- * @param modifier Modifier to apply to the outer container of the loading screen.
- * Defaults to [Modifier].
+ * @param modifier Modifier to apply to the outer container of the loading screen. Defaults to
+ * [Modifier], the empty, default, or starter Modifier that contains no elements.
  */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
