@@ -45,6 +45,7 @@ import androidx.wear.compose.foundation.rotary.rotaryScrollable
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.MaterialTheme
 import com.example.jetcaster.R
+import com.example.jetcaster.core.player.model.PlayerEpisode
 import com.example.jetcaster.ui.components.SettingsButtons
 import com.google.android.horologist.audio.ui.VolumeUiState
 import com.google.android.horologist.audio.ui.VolumeViewModel
@@ -56,7 +57,20 @@ import com.google.android.horologist.media.ui.components.controls.SeekButtonIncr
 import com.google.android.horologist.media.ui.components.display.LoadingMediaDisplay
 import com.google.android.horologist.media.ui.components.display.TextMediaDisplay
 import com.google.android.horologist.media.ui.screens.player.PlayerScreen
+import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * A composable function that represents the main Player screen.
+ * It manages the state related to the volume and interacts with
+ * the [PlayerViewModel] and [VolumeViewModel] and then calls the
+ * stateless [PlayerScreen] override to render the UI.
+ *
+ * @param volumeViewModel The [VolumeViewModel] responsible for managing the volume state.
+ * @param onVolumeClick A callback function invoked when the volume control is clicked.
+ * @param modifier [Modifier] for styling and layout customization.
+ * @param playerScreenViewModel The [PlayerViewModel] responsible for managing the player state.
+ * Default is created using hiltViewModel().
+ */
 @Composable
 fun PlayerScreen(
     volumeViewModel: VolumeViewModel,
@@ -64,7 +78,12 @@ fun PlayerScreen(
     modifier: Modifier = Modifier,
     playerScreenViewModel: PlayerViewModel = hiltViewModel(),
 ) {
-    val volumeUiState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
+    /**
+     * The current state of the volume. A [State] wrapped [VolumeUiState] created from the
+     * [StateFlow] of [VolumeViewModel] provided by the [VolumeViewModel.volumeUiState] property
+     * of our [VolumeViewModel] property [volumeViewModel].
+     */
+    val volumeUiState: VolumeUiState by volumeViewModel.volumeUiState.collectAsStateWithLifecycle()
 
     PlayerScreen(
         playerScreenViewModel = playerScreenViewModel,
@@ -75,6 +94,19 @@ fun PlayerScreen(
     )
 }
 
+/**
+ * Displays the player screen, showing media information, playback controls, and settings.
+ *
+ * This composable handles different states of the player, including loading, empty (nothing playing),
+ * and ready (media is playing). It uses a [PlayerViewModel] to manage the player's state and actions.
+ *
+ * @param playerScreenViewModel The [PlayerViewModel] that provides the player's state and
+ * handles actions.
+ * @param volumeUiState The current state of the volume UI, provided as a [VolumeUiState].
+ * @param onVolumeClick Callback to be executed when the volume button is clicked.
+ * @param onUpdateVolume Callback to be executed when the volume is changed via rotary input.
+ * @param modifier [Modifier] for styling and layout customization.
+ */
 @OptIn(ExperimentalWearFoundationApi::class, ExperimentalWearMaterialApi::class)
 @Composable
 private fun PlayerScreen(
@@ -84,15 +116,20 @@ private fun PlayerScreen(
     onUpdateVolume: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val uiState by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
+    /**
+     * The current state of the player screen. A [State] wrapped [PlayerScreenUiState] created
+     * from the [StateFlow] of [PlayerScreenUiState] provided by the [PlayerViewModel.uiState]
+     * property of our [PlayerViewModel] property [playerScreenViewModel].
+     */
+    val uiState: PlayerScreenUiState by playerScreenViewModel.uiState.collectAsStateWithLifecycle()
 
-    when (val state = uiState) {
-        PlayerScreenUiState.Loading -> LoadingMediaDisplay(modifier)
+    when (val state: PlayerScreenUiState = uiState) {
+        PlayerScreenUiState.Loading -> LoadingMediaDisplay(modifier = modifier)
         PlayerScreenUiState.Empty -> {
             PlayerScreen(
                 mediaDisplay = {
                     TextMediaDisplay(
-                        title = stringResource(R.string.nothing_playing),
+                        title = stringResource(id = R.string.nothing_playing),
                         subtitle = ""
                     )
                 },
@@ -123,7 +160,7 @@ private fun PlayerScreen(
         is PlayerScreenUiState.Ready -> {
             // When screen is ready, episode is always not null, however EpisodePlayerState may
             // return a null episode
-            val episode = state.playerState.episodePlayerState.currentEpisode
+            val episode: PlayerEpisode? = state.playerState.episodePlayerState.currentEpisode
 
             PlayerScreen(
                 mediaDisplay = {
@@ -134,7 +171,7 @@ private fun PlayerScreen(
                         )
                     } else {
                         TextMediaDisplay(
-                            title = stringResource(R.string.nothing_playing),
+                            title = stringResource(id = R.string.nothing_playing),
                             subtitle = ""
                         )
                     }
@@ -156,6 +193,7 @@ private fun PlayerScreen(
                     )
                 },
                 buttons = {
+                    @Suppress("RedundantValueArgument")
                     SettingsButtons(
                         volumeUiState = volumeUiState,
                         onVolumeClick = onVolumeClick,
@@ -174,7 +212,7 @@ private fun PlayerScreen(
                     ),
                 background = {
                     ArtworkColorBackground(
-                        paintable = episode?.let { CoilPaintable(episode.podcastImageUrl) },
+                        paintable = episode?.let { CoilPaintable(model = episode.podcastImageUrl) },
                         defaultColor = MaterialTheme.colors.primary,
                         modifier = Modifier.fillMaxSize(),
                     )

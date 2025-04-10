@@ -45,6 +45,7 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -55,14 +56,32 @@ import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
-@Composable fun PodcastDetailsScreen(
+/**
+ * Composable function representing the Podcast Details screen.
+ *
+ * This screen displays detailed information about a selected podcast, including
+ * its title, description, and a list of episodes. It also handles interactions
+ * like playing an episode or navigating back.
+ *
+ * @param onPlayButtonClick Callback triggered when the main play button is clicked.
+ * This is typically used to start playing the entire podcast.
+ * @param onEpisodeItemClick Callback triggered when an episode item in the list is clicked.
+ * It is provided the [PlayerEpisode] representing the selected episode.
+ * @param onDismiss Callback triggered when the screen should be dismissed, typically when
+ * the user navigates back or closes the screen.
+ * @param modifier [Modifier] for styling and layout customization of the screen.
+ * @param podcastDetailsViewModel `ViewModel` responsible for managing the state and logic
+ * of the Podcast Details screen. By default, it uses a Hilt-injected [PodcastDetailsViewModel].
+ */
+@Composable
+fun PodcastDetailsScreen(
     onPlayButtonClick: () -> Unit,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     podcastDetailsViewModel: PodcastDetailsViewModel = hiltViewModel()
 ) {
-    val uiState by podcastDetailsViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: PodcastDetailsScreenState by podcastDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
     PodcastDetailsScreen(
         uiState = uiState,
@@ -84,7 +103,7 @@ fun PodcastDetailsScreen(
     onPlayEpisode: (List<PlayerEpisode>) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val columnState = rememberResponsiveColumnState(
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip
@@ -112,7 +131,7 @@ fun PodcastDetailsScreen(
                         )
                     },
                     content = {
-                        items(uiState.episodeList) { episode ->
+                        items(uiState.episodeList) { episode: PlayerEpisode ->
                             MediaContent(
                                 episode = episode,
                                 episodeArtworkPlaceholder = rememberVectorPainter(
@@ -130,9 +149,10 @@ fun PodcastDetailsScreen(
                 AlertDialog(
                     showDialog = true,
                     onDismiss = { onDismiss },
-                    message = stringResource(R.string.podcasts_no_episode_podcasts)
+                    message = stringResource(id = R.string.podcasts_no_episode_podcasts)
                 )
             }
+
             PodcastDetailsScreenState.Loading -> {
                 EntityScreen(
                     headerContent = {
@@ -192,6 +212,9 @@ sealed class PodcastDetailsScreenState {
     data object Empty : PodcastDetailsScreenState()
 }
 
+/**
+ * Podcast Details Screen Loaded Preview
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
@@ -211,6 +234,10 @@ fun PodcastDetailsScreenLoadedPreview(
     )
 }
 
+/**
+ * Podcast Details Screen Loading Preview
+ */
+@Suppress("unused")
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
