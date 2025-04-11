@@ -187,21 +187,21 @@ class LibraryViewModel @Inject constructor(
      *  [episodeStore].
      *  3. Combines the most recent episodes from each podcast into a single list.
      *  4. If no podcasts are followed, it emits an empty list.
-     *  5. Converts each `EpisodeToPodcast` object in the list to a `PlayerEpisode` object.
+     *  5. Converts each [EpisodeToPodcast] object in the list to a [PlayerEpisode] object.
      *
      * This flow is recomposed whenever:
      *  - The list of followed podcasts changes.
      *  - The latest episode of a followed podcast changes.
      *
-     * The flow uses `flatMapLatest` to ensure that only the most recent list of podcasts is being
-     * processed. When the list of followed podcasts changes, any ongoing processing of previous
-     * lists is cancelled and restarted.
+     * The flow uses [Flow.flatMapLatest] to ensure that only the most recent list of podcasts is
+     * being processed. When the list of followed podcasts changes, any ongoing processing of
+     * previous lists is cancelled and restarted.
      *
-     * The flow uses `combine` operator to wait for all inner flows (one for each podcast) to emit
+     * The flow uses [combine] operator to wait for all inner flows (one for each podcast) to emit
      * before emitting a combined result.
      *
-     * The `episodesInPodcast` method is called with a limit of 1 to efficiently only retrieve the
-     * most recent episode.
+     * The [EpisodeStore.episodesInPodcast] method is called with a limit of 1 to efficiently only
+     * retrieve the most recent episode.
      *
      * @see PodcastStore.followedPodcastsSortedByLastEpisode
      * @see EpisodeStore.episodesInPodcast

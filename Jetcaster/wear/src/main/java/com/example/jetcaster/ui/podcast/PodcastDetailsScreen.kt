@@ -55,6 +55,7 @@ import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable.Companion.asPaintable
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Composable function representing the Podcast Details screen.
@@ -81,6 +82,11 @@ fun PodcastDetailsScreen(
     modifier: Modifier = Modifier,
     podcastDetailsViewModel: PodcastDetailsViewModel = hiltViewModel()
 ) {
+    /**
+     * [State] wrapped [PodcastDetailsScreenState] collected as state from the [StateFlow]
+     * of [PodcastDetailsScreenState] property [PodcastDetailsViewModel.uiState] of our
+     * [PodcastDetailsViewModel] property [podcastDetailsViewModel].
+     */
     val uiState: PodcastDetailsScreenState by podcastDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
     PodcastDetailsScreen(

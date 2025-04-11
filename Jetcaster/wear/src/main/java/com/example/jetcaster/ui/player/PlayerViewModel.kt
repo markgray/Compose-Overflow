@@ -23,6 +23,7 @@ import com.example.jetcaster.core.player.EpisodePlayerState
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.media.ui.state.model.TrackPositionUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import java.time.Duration
 import javax.inject.Inject
 import kotlin.time.toKotlinDuration
@@ -74,7 +75,7 @@ class PlayerViewModel @Inject constructor(
      *  or determining its initial state.
      *
      * The [StateFlow] is configured to:
-     *  - Share its emissions with multiple collectors using `stateIn`.
+     *  - Share its emissions with multiple collectors using [Flow.stateIn].
      *  - Be scoped to the [viewModelScope], meaning it's lifecycle-aware and automatically cancels
      *  emissions when the [ViewModel] is cleared.
      *  - Use [SharingStarted.WhileSubscribed] to keep the upstream flow active as long as there are
