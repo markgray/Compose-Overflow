@@ -20,7 +20,22 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.jetcaster.core.domain.testing.PreviewPlayerEpisodes
 import com.example.jetcaster.core.player.model.PlayerEpisode
 
-public class WearPreviewEpisodes : PreviewParameterProvider<PlayerEpisode> {
-    public override val values: Sequence<PlayerEpisode>
+/**
+ * [PreviewParameterProvider] for providing a sequence of [PlayerEpisode] objects
+ * specifically for Wear OS previews.
+ *
+ * This class is designed to be used with the `@Preview` annotation in Compose
+ * to display example [PlayerEpisode] data within the Android Studio preview panel
+ * for Wear OS components. It leverages the fake data in the [PreviewPlayerEpisodes]
+ * object to provide a predefined set of episodes.
+ *
+ * @see PreviewParameterProvider
+ * @see androidx.compose.ui.tooling.preview.Preview
+ * @see androidx.compose.ui.tooling.preview.PreviewParameter
+ * @see PlayerEpisode
+ * @see PreviewPlayerEpisodes
+ */
+class WearPreviewEpisodes : PreviewParameterProvider<PlayerEpisode> {
+    override val values: Sequence<PlayerEpisode>
         get() = PreviewPlayerEpisodes.asSequence()
 }

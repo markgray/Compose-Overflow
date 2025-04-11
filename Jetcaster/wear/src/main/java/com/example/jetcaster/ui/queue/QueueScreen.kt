@@ -48,6 +48,7 @@ import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults.padding
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -57,7 +58,29 @@ import com.google.android.horologist.compose.material.ResponsiveListHeader
 import com.google.android.horologist.images.base.util.rememberVectorPainter
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
+import kotlinx.coroutines.flow.StateFlow
 
+/**
+ * Stateful composable override that displays the Queue screen, managing the list of episodes
+ * queued for playback. It calls the Stateless [QueueScreen] composable override to render the UI.
+ *
+ * This composable provides a UI to interact with the queue, allowing users to:
+ *  - View the current queue of episodes.
+ *  - Initiate playback of the entire queue.
+ *  - Navigate to a specific episode's details.
+ *  - Delete episodes from the queue
+ *  - Dismiss the queue screen
+ *
+ * @param onPlayButtonClick Callback triggered when the user clicks the "Play" button for the
+ * entire queue.
+ * @param onEpisodeItemClick Callback triggered when the user clicks on a specific episode item
+ * in the queue. It is provided the clicked [PlayerEpisode] as a parameter.
+ * @param onDismiss Callback triggered when the user dismisses the queue screen (e.g., by clicking
+ * a close button).
+ * @param modifier [Modifier] for styling and layout customization of the [QueueScreen].
+ * @param queueViewModel The [QueueViewModel] instance responsible for managing the queue's data
+ * and logic. Defaults to a new instance provided by Hilt.
+ */
 @Composable fun QueueScreen(
     onPlayButtonClick: () -> Unit,
     onEpisodeItemClick: (PlayerEpisode) -> Unit,
@@ -65,7 +88,12 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     modifier: Modifier = Modifier,
     queueViewModel: QueueViewModel = hiltViewModel()
 ) {
-    val uiState by queueViewModel.uiState.collectAsStateWithLifecycle()
+    /**
+     * [State] wrapped [QueueScreenState] representing the current state of the queue collected
+     * from the [StateFlow] of [QueueViewModel] properyt [QueueViewModel.uiState] of our
+     * [QueueViewModel] property [queueViewModel].
+     */
+    val uiState: QueueScreenState by queueViewModel.uiState.collectAsStateWithLifecycle()
 
     QueueScreen(
         uiState = uiState,
@@ -78,6 +106,21 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
     )
 }
 
+/**
+ * Stateless composable override that displays the Queue screen.
+ *
+ * @param uiState The current state of the queue, represented as a [QueueScreenState].
+ * @param onPlayButtonClick Callback to triggered when the user clicks the "Play" button for the
+ * entire queue.
+ * @param onPlayEpisodes Callback to triggered when the user clicks the "Play" button for the
+ * entire queue. It is provided the list of [PlayerEpisode] as a parameter.
+ * @param modifier [Modifier] for styling and layout customization of the [QueueScreen].
+ * @param onEpisodeItemClick Callback triggered when the user clicks on a specific episode item
+ * in the queue. It is provided the clicked [PlayerEpisode] as a parameter.
+ * @param onDeleteQueueEpisodes Callback triggered when the user deletes episodes from the queue.
+ * @param onDismiss Callback triggered when the user dismisses the queue screen (e.g., by clicking
+ * a close button).
+ */
 @Composable
 fun QueueScreen(
     uiState: QueueScreenState,
@@ -88,7 +131,11 @@ fun QueueScreen(
     onDeleteQueueEpisodes: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val columnState = rememberResponsiveColumnState(
+    /**
+     * [ScalingLazyColumnState] used  by [ScreenScaffold] as the ScrollableState to show in a
+     * default PositionIndicator.
+     */
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip
@@ -127,7 +174,7 @@ fun QueueScreenLoaded(
             ResponsiveListHeader(
                 contentPadding = ListHeaderDefaults.firstItemPadding()
             ) {
-                Text(text = stringResource(R.string.queue))
+                Text(text = stringResource(id = R.string.queue))
             }
         },
         buttonsContent = {
@@ -139,7 +186,7 @@ fun QueueScreenLoaded(
             )
         },
         content = {
-            items(episodeList) { episode ->
+            items(items = episodeList) { episode: PlayerEpisode ->
                 MediaContent(
                     episode = episode,
                     episodeArtworkPlaceholder = rememberVectorPainter(
@@ -162,7 +209,7 @@ fun QueueScreenLoading(
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
-                title = stringResource(R.string.queue)
+                title = stringResource(id = R.string.queue)
             )
         },
         buttonsContent = {
@@ -190,8 +237,8 @@ fun QueueScreenEmpty(
     AlertDialog(
         showDialog = true,
         onDismiss = onDismiss,
-        title = stringResource(R.string.display_nothing_in_queue),
-        message = stringResource(R.string.no_episodes_from_queue),
+        title = stringResource(id = R.string.display_nothing_in_queue),
+        message = stringResource(id = R.string.no_episodes_from_queue),
         modifier = modifier
     )
 }
@@ -203,16 +250,19 @@ fun ButtonsContent(
     onPlayButtonClick: () -> Unit,
     onPlayEpisodes: (List<PlayerEpisode>) -> Unit,
     onDeleteQueueEpisodes: () -> Unit,
-    enabled: Boolean = true,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
 
     Row(
         modifier = modifier
             .padding(bottom = 16.dp)
-            .height(52.dp),
+            .height(height = 52.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 6.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
     ) {
         Button(
             imageVector = Icons.Outlined.PlayArrow,
@@ -241,10 +291,11 @@ fun ButtonsContent(
 @WearPreviewFontScales
 @Composable
 fun QueueScreenLoadedPreview(
-    @PreviewParameter(WearPreviewEpisodes::class)
+    @PreviewParameter(provider = WearPreviewEpisodes::class)
     episode: PlayerEpisode
 ) {
-    val columnState = rememberResponsiveColumnState(
+    @Suppress("UnusedVariable", "unused")
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip
@@ -263,7 +314,8 @@ fun QueueScreenLoadedPreview(
 @WearPreviewFontScales
 @Composable
 fun QueueScreenLoadingPreview() {
-    val columnState = rememberResponsiveColumnState(
+    @Suppress("UnusedVariable", "unused")
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
             last = ScalingLazyColumnDefaults.ItemType.Chip

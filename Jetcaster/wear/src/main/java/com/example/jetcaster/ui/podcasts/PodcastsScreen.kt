@@ -38,6 +38,7 @@ import com.example.jetcaster.ui.preview.WearPreviewPodcasts
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.composables.PlaceholderChip
 import com.google.android.horologist.compose.layout.ScalingLazyColumnDefaults
+import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.ScreenScaffold
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.AlertDialog
@@ -55,21 +56,20 @@ fun PodcastsScreen(
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val uiState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: PodcastsScreenState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
 
-    val modifiedState = when (uiState) {
+    val modifiedState: PodcastsScreenState = when (uiState) {
         is PodcastsScreenState.Loaded -> {
-            val modifiedPodcast = (uiState as PodcastsScreenState.Loaded).podcastList.map {
-                it.takeIf { it.title.isNotEmpty() }
-                    ?: it.copy(title = stringResource(id = R.string.no_title))
-            }
-
-            PodcastsScreenState.Loaded(modifiedPodcast)
+            val modifiedPodcast: List<PodcastInfo> = (uiState as PodcastsScreenState.Loaded)
+                .podcastList.map { podcast: PodcastInfo ->
+                    podcast.takeIf { it.title.isNotEmpty() }
+                        ?: podcast.copy(title = stringResource(id = R.string.no_title))
+                }
+            PodcastsScreenState.Loaded(podcastList = modifiedPodcast)
         }
-
         PodcastsScreenState.Empty,
         PodcastsScreenState.Loading,
-        -> uiState
+            -> uiState
     }
 
     PodcastsScreen(
@@ -88,7 +88,7 @@ fun PodcastsScreen(
     modifier: Modifier = Modifier,
 ) {
 
-    val columnState = rememberResponsiveColumnState()
+    val columnState: ScalingLazyColumnState = rememberResponsiveColumnState()
     ScreenScaffold(
         scrollState = columnState,
         modifier = modifier
@@ -98,8 +98,10 @@ fun PodcastsScreen(
                 podcastList = podcastsScreenState.podcastList,
                 onPodcastsItemClick = onPodcastsItemClick
             )
+
             PodcastsScreenState.Empty ->
                 PodcastScreenEmpty(onDismiss)
+
             PodcastsScreenState.Loading ->
                 PodcastScreenLoading()
         }
@@ -122,8 +124,7 @@ fun PodcastScreenLoaded(
             }
         },
         content = {
-            items(count = podcastList.size) {
-                    index ->
+            items(count = podcastList.size) { index: Int ->
                 MediaContent(
                     podcast = podcastList[index],
                     downloadItemArtworkPlaceholder = rememberVectorPainter(
@@ -145,7 +146,7 @@ fun PodcastScreenEmpty(
 ) {
     AlertDialog(
         showDialog = true,
-        message = stringResource(R.string.podcasts_no_podcasts),
+        message = stringResource(id = R.string.podcasts_no_podcasts),
         onDismiss = onDismiss,
         modifier = modifier
     )
@@ -160,7 +161,7 @@ fun PodcastScreenLoading(
         modifier = modifier,
         headerContent = {
             DefaultEntityScreenHeader(
-                title = stringResource(R.string.podcasts)
+                title = stringResource(id = R.string.podcasts)
             )
         },
         content = {
@@ -171,12 +172,16 @@ fun PodcastScreenLoading(
     )
 }
 
+/**
+ * Preview of the [PodcastScreenLoaded] composable.
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
 fun PodcastScreenLoadedPreview(
     @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
 ) {
+    @Suppress("UnusedVariable", "unused")
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
@@ -189,10 +194,14 @@ fun PodcastScreenLoadedPreview(
     )
 }
 
+/**
+ * Preview of the [PodcastScreenLoading] composable.
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
 fun PodcastScreenLoadingPreview() {
+    @Suppress("UnusedVariable", "unused")
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
@@ -202,6 +211,9 @@ fun PodcastScreenLoadingPreview() {
     PodcastScreenLoading()
 }
 
+/**
+ * Preview of the [PodcastScreenEmpty] composable.
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
@@ -209,21 +221,35 @@ fun PodcastScreenEmptyPreview() {
     PodcastScreenEmpty(onDismiss = {})
 }
 
+/**
+ * Displays a media content item (typically a podcast) as a Chip.
+ *
+ * This composable represents a single item in a list of media content, typically podcasts.
+ * It displays the podcast's title and author as the main and secondary labels, respectively,
+ * and provides a visual representation using an image loaded via Coil.
+ *
+ * @param podcast The [PodcastInfo] object containing the details of the podcast to be displayed.
+ * It holds information like the podcast's title, author, and image URL.
+ * @param downloadItemArtworkPlaceholder An optional [Painter] to be used as a placeholder while
+ * the podcast image is being loaded. If null, a default placeholder from Coil will be used.
+ * @param onPodcastsItemClick A callback function that is invoked when the user clicks on the
+ * podcast item. It receives the [PodcastInfo] of the clicked podcast as a parameter.
+ */
 @Composable
 fun MediaContent(
     podcast: PodcastInfo,
     downloadItemArtworkPlaceholder: Painter?,
     onPodcastsItemClick: (PodcastInfo) -> Unit
 ) {
-    val mediaTitle = podcast.title
+    val mediaTitle: String = podcast.title
 
-    val secondaryLabel = podcast.author
+    val secondaryLabel: String = podcast.author
 
     Chip(
         label = mediaTitle,
         onClick = { onPodcastsItemClick(podcast) },
         secondaryLabel = secondaryLabel,
-        icon = CoilPaintable(podcast.imageUrl, downloadItemArtworkPlaceholder),
+        icon = CoilPaintable(model = podcast.imageUrl, placeholder = downloadItemArtworkPlaceholder),
         largeIcon = true,
         colors = ChipDefaults.secondaryChipColors(),
     )

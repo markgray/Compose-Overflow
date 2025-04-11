@@ -19,7 +19,22 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.example.jetcaster.core.domain.testing.PreviewPodcasts
 import com.example.jetcaster.core.model.PodcastInfo
 
-public class WearPreviewPodcasts : PreviewParameterProvider<PodcastInfo> {
-    public override val values: Sequence<PodcastInfo>
+/**
+ * [PreviewParameterProvider] for [PodcastInfo] used to provide sample data for Compose Previews.
+ *
+ * This class provides a sequence of [PodcastInfo] objects obtained from [PreviewPodcasts]
+ * to be used in UI previews within Android Studio. This allows developers to see how their
+ * Composable functions will render with various example podcast data without needing to
+ * run the application on a device or emulator.
+ *
+ * The `values` property returns a sequence of [PodcastInfo] instances, which are
+ * internally sourced from the [PreviewPodcasts] object.
+ *
+ * @see PodcastInfo
+ * @see PreviewParameterProvider
+ * @see PreviewPodcasts
+ */
+class WearPreviewPodcasts : PreviewParameterProvider<PodcastInfo> {
+    override val values: Sequence<PodcastInfo>
         get() = PreviewPodcasts.asSequence()
 }

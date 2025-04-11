@@ -58,7 +58,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Composable function representing the Podcast Details screen.
+ * Stateful Composable function representing the Podcast Details screen.
  *
  * This screen displays detailed information about a selected podcast, including
  * its title, description, and a list of episodes. It also handles interactions
@@ -99,6 +99,26 @@ fun PodcastDetailsScreen(
     )
 }
 
+/**
+ * Stateless Composable function representing the Podcast Details screen.
+ *
+ * This screen displays detailed information about a selected podcast, including
+ * its title, description, and a list of episodes. It also handles interactions
+ * like playing an episode or navigating back.
+ *
+ * @param uiState The current state of the Podcast Details screen.
+ * This can be either [PodcastDetailsScreenState.Loaded], [PodcastDetailsScreenState.Loading],
+ * or [PodcastDetailsScreenState.Empty].
+ * @param onPlayButtonClick Callback triggered when the main play button is clicked.
+ * This is typically used to start playing the entire podcast.
+ * @param modifier [Modifier] for styling and layout customization of the screen.
+ * @param onEpisodeItemClick Callback triggered when an episode item in the list is clicked.
+ * It is provided the [PlayerEpisode] representing the selected episode.
+ * @param onPlayEpisode Callback triggered when the main play button is clicked.
+ * This is typically used to start playing the entire podcast.
+ * @param onDismiss Callback triggered when the screen should be dismissed, typically when
+ * the user navigates back or closes the screen.
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun PodcastDetailsScreen(
@@ -186,6 +206,19 @@ fun PodcastDetailsScreen(
     }
 }
 
+/**
+ * A composable function that displays a play button (Chip) for a list of episodes.
+ *
+ * When the button is clicked, it triggers both `onPlayButtonClick` and `onPlayEpisode`.
+ *
+ * @param episodes The list of [PlayerEpisode] to be played.
+ * @param onPlayButtonClick A callback function invoked when the play button is clicked.
+ * This is intended for actions that need to happen before the episode list is passed to player.
+ * For example, to inform the UI that the button is clicked.
+ * @param onPlayEpisode A callback function invoked when the play button is clicked,
+ * passing the list of [PlayerEpisode] to be played. This is intended for the actual
+ * action of the player to start playing the episodes.
+ */
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
@@ -205,16 +238,50 @@ fun ButtonsContent(
     )
 }
 
+/**
+ * Represents the different states of the Podcast Details screen.
+ * This sealed class allows for a clear and concise way to manage the UI state
+ * of the Podcast Details screen, including loading, loaded, and empty states.
+ *
+ * @see PodcastInfo
+ * @see PlayerEpisode
+ */
 @ExperimentalHorologistApi
 sealed class PodcastDetailsScreenState {
 
+    /**
+     * Represents the loading state of the Podcast Details screen.
+     * This state indicates that the application is currently fetching
+     * or processing data required to display the podcast details.
+     *
+     * This is one of the possible states for the [PodcastDetailsScreenState] sealed class.
+     * When the screen is in this state, a loading indicator (e.g., a progress bar)
+     * should be displayed to the user to signify that data is being retrieved.
+     */
     data object Loading : PodcastDetailsScreenState()
 
+    /**
+     * Represents the state of the Podcast Details screen when the data has been successfully loaded.
+     *
+     * This state indicates that both the list of episodes and the podcast information have been
+     * fetched and are ready to be displayed.
+     *
+     * @property episodeList The list of episodes associated with the podcast. Each episode is
+     * represented by a [PlayerEpisode] object, containing details like title, description,
+     * audio URL, etc.
+     * @property podcast The [PodcastInfo] object containing metadata about the podcast itself,
+     * such as its title, author, description, artwork URL, etc.
+     */
     data class Loaded(
         val episodeList: List<PlayerEpisode>,
         val podcast: PodcastInfo,
     ) : PodcastDetailsScreenState()
 
+    /**
+     * Represents the state of the Podcast Details Screen when there is no data to display.
+     * This state indicates that the podcast details are empty or have not yet been loaded.
+     * It's typically used as an initial state or when an error occurs that prevents data retrieval.
+     */
     data object Empty : PodcastDetailsScreenState()
 }
 
