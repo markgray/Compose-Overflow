@@ -18,14 +18,46 @@ package com.example.jetcaster
 
 import android.app.Application
 import android.os.StrictMode
+import android.widget.ImageView
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
+/**
+ * [JetcasterWearApplication] is the main application class for the Jetcaster Wear app.
+ *
+ * It extends [Application] and uses [HiltAndroidApp] for dependency injection.
+ * It also implements [ImageLoaderFactory] to provide a custom [ImageLoader] instance for Coil.
+ *
+ * This class initializes the application, configures StrictMode for debugging,
+ * and makes the [ImageLoader] available for injection.
+ */
 @HiltAndroidApp
 class JetcasterWearApplication : Application(), ImageLoaderFactory {
 
+    /**
+     * The [ImageLoader] instance used for loading and caching images.
+     *
+     * This property is dependency-injected using Dagger/Hilt. It provides a centralized
+     * mechanism for managing image loading tasks within the application.
+     *
+     * The [ImageLoader] handles:
+     *  - Fetching image data from various sources (network, local storage, resources).
+     *  - Decoding image data into bitmaps.
+     *  - Applying image transformations (resizing, cropping, etc.).
+     *  - Caching images in memory and on disk to optimize performance and reduce network usage.
+     *  - Managing image loading requests, including cancellations and priorities.
+     *
+     * You can use this instance to load images into UI components, such as [ImageView]s,
+     * using Coil's API (e.g., `imageView.load(...)`).
+     *
+     * Note: This property should be considered a singleton within the application's
+     * dependency graph. Avoid creating multiple [ImageLoader] instances.
+     *
+     * @see coil.ImageLoader
+     * @see coil.load
+     */
     @Inject lateinit var imageLoader: ImageLoader
 
     override fun onCreate() {

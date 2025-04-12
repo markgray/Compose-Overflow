@@ -159,6 +159,22 @@ fun QueueScreen(
     }
 }
 
+/**
+ * Composable function that displays the loaded state of the queue screen.
+ *
+ * This function renders a list of episodes currently in the playback queue, along with
+ * controls to manage the queue. It uses the [EntityScreen] composable as a layout container.
+ *
+ * @param episodeList The list of [PlayerEpisode] objects to display in the queue.
+ * @param onPlayButtonClick Callback function to be executed when the "Play" button is clicked.
+ * @param onPlayEpisodes Callback function to be executed when the "Play All" button is clicked,
+ * it is provided the list of [PlayerEpisode] to be played as a parameter.
+ * @param onDeleteQueueEpisodes Callback function to be executed when the "Delete All" button
+ * is clicked.
+ * @param onEpisodeItemClick Callback function to be executed when an individual episode item
+ * in the list is clicked. It it provided the clicked [PlayerEpisode] as a parameter.
+ * @param modifier [Modifier] to be applied to the root layout of the queue screen.
+ */
 @Composable
 fun QueueScreenLoaded(
     episodeList: List<PlayerEpisode>,
@@ -200,6 +216,15 @@ fun QueueScreenLoaded(
     )
 }
 
+/**
+ * Displays a loading screen for the queue, indicating that data is being fetched or processed.
+ *
+ * This composable provides a visual representation of the queue screen in a loading state.
+ * It uses placeholder chips to simulate the appearance of queue items while the actual content
+ * is being loaded. The header and buttons are also displayed in their default state but disabled.
+ *
+ * @param modifier [Modifier] for styling and layout adjustments of the root composable.
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun QueueScreenLoading(
@@ -229,6 +254,16 @@ fun QueueScreenLoading(
     )
 }
 
+/**
+ * Displays an empty state alert dialog for the Queue screen.
+ *
+ * This composable function shows an alert dialog to inform the user that
+ * the queue is empty and there are no episodes to display.
+ *
+ * @param onDismiss Callback invoked when the dialog is dismissed, either by clicking outside
+ * the dialog or pressing the back button. Used to close the dialog or navigate back.
+ * @param modifier [Modifier] to be applied to the dialog.
+ */
 @Composable
 fun QueueScreenEmpty(
     onDismiss: () -> Unit,
@@ -243,6 +278,24 @@ fun QueueScreenEmpty(
     )
 }
 
+/**
+ * Displays a row of buttons for controlling the playback queue.
+ *
+ * This composable provides two buttons: a "Play" button and a "Delete Queue" button.
+ * The "Play" button triggers playback of the provided list of episodes,
+ * and the "Delete Queue" button clears the current playback queue.
+ *
+ * @param episodes The list of [PlayerEpisode] to be played when the "Play" button is clicked.
+ * @param onPlayButtonClick A callback function invoked when the "Play" button is clicked. This
+ * callback is used to update UI state or perform other actions related to play button interaction.
+ * @param onPlayEpisodes A callback function invoked when the "Play" button is clicked.
+ * This callback is called with the list of episodes to be played.
+ * @param onDeleteQueueEpisodes A callback function invoked when the "Delete Queue" button is
+ * clicked. This callback is used to clear the playback queue.
+ * @param modifier [Modifier] to apply to the row of buttons.
+ * @param enabled [Boolean] indicating whether the buttons should be enabled or disabled.
+ * Defaults to `true`.
+ */
 @OptIn(ExperimentalHorologistApi::class)
 @Composable
 fun ButtonsContent(
@@ -287,6 +340,9 @@ fun ButtonsContent(
     }
 }
 
+/**
+ * Preview of the [QueueScreenLoaded] composable.
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
@@ -310,6 +366,9 @@ fun QueueScreenLoadedPreview(
     )
 }
 
+/**
+ * Preview of the [QueueScreenLoading] composable.
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable
@@ -324,6 +383,9 @@ fun QueueScreenLoadingPreview() {
     QueueScreenLoading()
 }
 
+/**
+ * Preview of the [QueueScreenEmpty] composable.
+ */
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable

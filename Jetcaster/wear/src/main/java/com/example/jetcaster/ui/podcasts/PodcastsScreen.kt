@@ -50,14 +50,34 @@ import com.google.android.horologist.images.coil.CoilPaintable
 import com.google.android.horologist.media.ui.screens.entity.DefaultEntityScreenHeader
 import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 
+/**
+ * The stateful main screen for displaying a list of podcasts. It calls the stateless
+ * [PodcastsScreen] composable override to render the UI.
+ *
+ * This composable handles fetching the podcast list from the [PodcastsViewModel],
+ * processing the list (e.g., handling empty titles), and rendering the appropriate
+ * UI state (loading, empty, or loaded).
+ *
+ * @param podcastsViewModel The [PodcastsViewModel] responsible for managing the podcast data.
+ * Defaults to a Hilt-provided ViewModel.
+ * @param onPodcastsItemClick A callback function invoked when a podcast item is clicked.
+ * It receives the [PodcastInfo] of the clicked podcast.
+ * @param onDismiss A callback function invoked when the screen should be dismissed or navigated away from.
+ */
 @Composable
 fun PodcastsScreen(
     podcastsViewModel: PodcastsViewModel = hiltViewModel(),
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    /**
+     * [State] wrapped [PodcastsScreenState] representing the current state of the podcasts
+     */
     val uiState: PodcastsScreenState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
 
+    /**
+     * [PodcastsScreenState] that is modified to handle empty titles.
+     */
     val modifiedState: PodcastsScreenState = when (uiState) {
         is PodcastsScreenState.Loaded -> {
             val modifiedPodcast: List<PodcastInfo> = (uiState as PodcastsScreenState.Loaded)
@@ -79,6 +99,23 @@ fun PodcastsScreen(
     )
 }
 
+/**
+ * The stateless composable function that displays a screen for listing podcasts. It is called by
+ * the stateful [PodcastsScreen] override to render the UI.
+ *
+ * It handles different states of podcast data loading, including:
+ *  - Loading: Shows a loading indicator while fetching podcast data.
+ *  - Loaded: Displays a list of podcasts fetched successfully.
+ *  - Empty: Shows an empty state when no podcasts are available.
+ *
+ * @param podcastsScreenState The current state of the podcasts screen, which can be
+ * [PodcastsScreenState.Loading], [PodcastsScreenState.Loaded], or [PodcastsScreenState.Empty].
+ * @param onPodcastsItemClick A callback function that is invoked when a podcast item in the list
+ * is clicked. It is providesd the clicked [PodcastInfo] as a parameter.
+ * @param onDismiss A callback function that is invoked when the empty state screen should
+ * be dismissed.
+ * @param modifier [Modifier] for styling and layout customization of the screen.
+ */
 @ExperimentalHorologistApi
 @Composable
 fun PodcastsScreen(
@@ -87,8 +124,12 @@ fun PodcastsScreen(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
+    /**
+     * [ScalingLazyColumnState] used  by [ScreenScaffold] as the ScrollableState to show in a
+     * default PositionIndicator.
+     */
     val columnState: ScalingLazyColumnState = rememberResponsiveColumnState()
+
     ScreenScaffold(
         scrollState = columnState,
         modifier = modifier
@@ -108,6 +149,18 @@ fun PodcastsScreen(
     }
 }
 
+/**
+ * Displays the screen that shows a list of podcasts.
+ *
+ * This composable function renders a list of podcasts using the [EntityScreen] layout.
+ * It includes a header with the title "Podcasts" and displays each podcast as a [MediaContent]
+ * item.
+ *
+ * @param podcastList The list of [PodcastInfo] objects to display.
+ * @param onPodcastsItemClick Callback function to be invoked when a podcast item is clicked.
+ * It receives the [PodcastInfo] object associated with the clicked item as a parameter.
+ * @param modifier [Modifier] for customizing the layout of the screen.
+ */
 @Composable
 fun PodcastScreenLoaded(
     podcastList: List<PodcastInfo>,
@@ -139,6 +192,16 @@ fun PodcastScreenLoaded(
     )
 }
 
+/**
+ * Displays an empty state screen for the Podcast screen.
+ *
+ * This composable displays an alert dialog indicating that no podcasts are currently available.
+ * It's shown when the user has no saved podcasts or when the podcast list is empty.
+ *
+ * @param onDismiss Callback to be invoked when the dialog is dismissed (e.g., when the user taps
+ * outside or presses back).
+ * @param modifier [Modifier] to apply to the [AlertDialog].
+ */
 @Composable
 fun PodcastScreenEmpty(
     onDismiss: () -> Unit,
@@ -152,6 +215,16 @@ fun PodcastScreenEmpty(
     )
 }
 
+/**
+ * Displays a loading screen for the Podcast screen.
+ *
+ * This composable shows a placeholder UI indicating that the list of podcasts
+ * is currently loading. It utilizes [EntityScreen] to structure the layout with a
+ * header and a content area. The content area displays two placeholder chips
+ * to represent loading items.
+ *
+ * @param modifier [Modifier] for styling and layout customization.
+ */
 @OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun PodcastScreenLoading(
