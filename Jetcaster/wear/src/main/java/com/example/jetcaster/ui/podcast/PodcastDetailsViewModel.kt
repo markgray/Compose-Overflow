@@ -175,10 +175,10 @@ class PodcastDetailsViewModel @Inject constructor(
      * It uses [combine] to merge these two flows and determine the appropriate
      * [PodcastDetailsScreenState].
      * The flow is converted into a [StateFlow] using [stateIn], ensuring that it:
-     * - Shares the latest emitted value.
-     * - Starts emitting when there is at least one subscriber.
-     * - Stops emitting after 5 seconds of no subscribers.
-     * - Has an initial value of [PodcastDetailsScreenState.Loading].
+     *  - Shares the latest emitted value.
+     *  - Starts emitting when there is at least one subscriber.
+     *  - Stops emitting after 5 seconds of no subscribers.
+     *  - Has an initial value of [PodcastDetailsScreenState.Loading].
      */
     val uiState: StateFlow<PodcastDetailsScreenState> =
         combine(

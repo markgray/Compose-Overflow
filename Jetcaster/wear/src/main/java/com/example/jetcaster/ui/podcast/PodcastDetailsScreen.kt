@@ -58,7 +58,7 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
 import kotlinx.coroutines.flow.StateFlow
 
 /**
- * Stateful Composable function representing the Podcast Details screen.
+ * Stateful Composable function that renders the Podcast Details screen.
  *
  * This screen displays detailed information about a selected podcast, including
  * its title, description, and a list of episodes. It also handles interactions
@@ -100,7 +100,7 @@ fun PodcastDetailsScreen(
 }
 
 /**
- * Stateless Composable function representing the Podcast Details screen.
+ * Stateless Composable function that renders the Podcast Details screen.
  *
  * This screen displays detailed information about a selected podcast, including
  * its title, description, and a list of episodes. It also handles interactions
@@ -113,7 +113,7 @@ fun PodcastDetailsScreen(
  * This is typically used to start playing the entire podcast.
  * @param modifier [Modifier] for styling and layout customization of the screen.
  * @param onEpisodeItemClick Callback triggered when an episode item in the list is clicked.
- * It is provided the [PlayerEpisode] representing the selected episode.
+ * It is called with the [PlayerEpisode] representing the selected episode.
  * @param onPlayEpisode Callback triggered when the main play button is clicked.
  * This is typically used to start playing the entire podcast.
  * @param onDismiss Callback triggered when the screen should be dismissed, typically when
@@ -207,9 +207,10 @@ fun PodcastDetailsScreen(
 }
 
 /**
- * A composable function that displays a play button (Chip) for a list of episodes.
+ * A composable function that displays a play button ([Chip]) for a list of episodes.
  *
- * When the button is clicked, it triggers both `onPlayButtonClick` and `onPlayEpisode`.
+ * When the button is clicked, it calls both [onPlayButtonClick] and [onPlayEpisode] lambda
+ * parameters.
  *
  * @param episodes The list of [PlayerEpisode] to be played.
  * @param onPlayButtonClick A callback function invoked when the play button is clicked.
