@@ -438,11 +438,15 @@ private fun HomeScreenReady(
     navigateToPlayer: (EpisodeInfo) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val navigator: ThreePaneScaffoldNavigator<String> = rememberSupportingPaneScaffoldNavigator<String>(
-        scaffoldDirective = calculateScaffoldDirective(windowAdaptiveInfo = currentWindowAdaptiveInfo())
-    )
+    val navigator: ThreePaneScaffoldNavigator<String> =
+        rememberSupportingPaneScaffoldNavigator<String>(
+            scaffoldDirective = calculateScaffoldDirective(windowAdaptiveInfo = currentWindowAdaptiveInfo())
+        )
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
     BackHandler(enabled = navigator.canNavigateBack()) {
-        navigator.navigateBack()
+        coroutineScope.launch {
+            navigator.navigateBack()
+        }
     }
 
     Surface {
@@ -461,17 +465,19 @@ private fun HomeScreenReady(
                     library = uiState.library,
                     onHomeAction = viewModel::onHomeAction,
                     navigateToPodcastDetails = {
-                        navigator.navigateTo(
-                            pane = SupportingPaneScaffoldRole.Supporting,
-                            content = it.uri
-                        )
+                        coroutineScope.launch {
+                            navigator.navigateTo(
+                                pane = SupportingPaneScaffoldRole.Supporting,
+                                contentKey = it.uri
+                            )
+                        }
                     },
                     navigateToPlayer = navigateToPlayer,
                     modifier = Modifier.fillMaxSize()
                 )
             },
             supportingPane = {
-                val podcastUri: String? = navigator.currentDestination?.content
+                val podcastUri: String? = navigator.currentDestination?.contentKey
                 if (!podcastUri.isNullOrEmpty()) {
                     val podcastDetailsViewModel: PodcastDetailsViewModel =
                         hiltViewModel<PodcastDetailsViewModel, PodcastDetailsViewModel.Factory>(
@@ -484,7 +490,9 @@ private fun HomeScreenReady(
                         navigateToPlayer = navigateToPlayer,
                         navigateBack = {
                             if (navigator.canNavigateBack()) {
-                                navigator.navigateBack()
+                                coroutineScope.launch {
+                                    navigator.navigateBack()
+                                }
                             }
                         },
                         showBackButton = navigator.isMainPaneHidden(),
@@ -596,7 +604,7 @@ private fun HomeAppBar(
  * `modifier` argument is a [Modifier.fillMaxSize], with a [Modifier.radialGradientScrim] chained
  * to that whose `color` argument is a copy of the [ColorScheme.primary] of our custom
  * [MaterialTheme.colorScheme] with its `alpha` property set to 0.15f. The [BoxScope] `content`
- * composable lambda argument of the [Box] composes our [content] Composable lambda parameter. 
+ * composable lambda argument of the [Box] composes our [content] Composable lambda parameter.
  *
  * @param modifier The modifier to be applied to the background Box.
  * @param content The content to be displayed on top of the background. This lambda receives a
