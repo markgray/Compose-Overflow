@@ -51,8 +51,8 @@ class PodcastsViewModel @Inject constructor(
     /**
      * Represents the UI state of the Podcasts screen.
      *
-     * This [StateFlow] emits different states based on the loading and availability of followed podcasts.
-     * It initially emits [PodcastsScreenState.Loading], then transitions to either:
+     * This [StateFlow] emits different states based on the loading and availability of followed
+     * podcasts. It initially emits [PodcastsScreenState.Loading], then transitions to either:
      *   - [PodcastsScreenState.Loaded]: If followed podcasts are found, containing a list of
      *   [PodcastInfo] objects.
      *   - [PodcastsScreenState.Empty]: If no followed podcasts are found or an error occurs
@@ -116,19 +116,20 @@ sealed interface PodcastsScreenState {
      * This state indicates that the application is currently fetching or loading
      * podcast data from a data source (e.g., network, local database).
      * When the screen is in this state, a loading indicator or placeholder
-     * should typically be displayed to inform the user that data is being
-     * retrieved.
+     * will be displayed to inform the user that data is being retrieved.
      *
      * Inherits from [PodcastsScreenState].
      */
     data object Loading : PodcastsScreenState
 
     /**
-     * Represents the state of the Podcasts screen when the podcast list has been successfully loaded.
+     * Represents the state of the Podcasts screen when the podcast list has been successfully
+     * loaded.
      *
-     * This state contains the list of [PodcastInfo] objects retrieved from the data source.
+     * This state contains the [List] of [PodcastInfo] objects retrieved from the data source in
+     * its [podcastList].property
      *
-     * @property podcastList The list of [PodcastInfo] objects that were successfully loaded.
+     * @property podcastList The [List] of [PodcastInfo] objects that were successfully loaded.
      * This list represents the podcasts to be displayed on the screen.
      */
     data class Loaded(

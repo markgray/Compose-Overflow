@@ -36,8 +36,7 @@ import kotlinx.coroutines.flow.stateIn
  */
 @HiltViewModel
 class QueueViewModel @Inject constructor(
-    private val episodePlayer: EpisodePlayer,
-
+    private val episodePlayer: EpisodePlayer
 ) : ViewModel() {
 
     /**
@@ -128,7 +127,8 @@ class QueueViewModel @Inject constructor(
  * Represents the state of the queue screen.
  * This sealed interface encapsulates the different possible states of the queue:
  *  - Loading: Indicates that the queue is currently being loaded.
- *  - Loaded: Indicates that the queue has been successfully loaded and contains a list of [PlayerEpisode].
+ *  - Loaded: Indicates that the queue has been successfully loaded and contains a [List] of
+ *  [PlayerEpisode].
  *  - Empty: Indicates that the queue is empty.
  */
 @ExperimentalHorologistApi

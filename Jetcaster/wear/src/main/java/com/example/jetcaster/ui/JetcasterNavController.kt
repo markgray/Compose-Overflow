@@ -62,7 +62,8 @@ object JetcasterNavController {
      * Navigates to the podcast details screen for a given podcast URI.
      *
      * This function uses the [NavController] to navigate to the screen that displays the details
-     * of a specific podcast. It constructs the destination route using the provided podcast URI.
+     * of a specific podcast. It constructs the destination route from the [String] parameter
+     * [podcastUri].
      *
      * @param podcastUri The URI of the podcast whose details should be displayed. This string is
      * used to construct the navigation route and is passed as an argument to the podcast details

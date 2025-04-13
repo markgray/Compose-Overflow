@@ -62,7 +62,8 @@ import com.google.android.horologist.media.ui.screens.entity.EntityScreen
  * Defaults to a Hilt-provided ViewModel.
  * @param onPodcastsItemClick A callback function invoked when a podcast item is clicked.
  * It receives the [PodcastInfo] of the clicked podcast.
- * @param onDismiss A callback function invoked when the screen should be dismissed or navigated away from.
+ * @param onDismiss A callback function invoked when the screen should be dismissed or navigated
+ * away from.
  */
 @Composable
 fun PodcastsScreen(
@@ -304,7 +305,7 @@ fun PodcastScreenEmptyPreview() {
  * @param podcast The [PodcastInfo] object containing the details of the podcast to be displayed.
  * It holds information like the podcast's title, author, and image URL.
  * @param downloadItemArtworkPlaceholder An optional [Painter] to be used as a placeholder while
- * the podcast image is being loaded. If null, a default placeholder from Coil will be used.
+ * the podcast image is being loaded. If `null`, a default placeholder from Coil will be used.
  * @param onPodcastsItemClick A callback function that is invoked when the user clicks on the
  * podcast item. It receives the [PodcastInfo] of the clicked podcast as a parameter.
  */
@@ -314,8 +315,14 @@ fun MediaContent(
     downloadItemArtworkPlaceholder: Painter?,
     onPodcastsItemClick: (PodcastInfo) -> Unit
 ) {
+    /**
+     * The [PodcastInfo.title] of our [PodcastInfo] parameter [podcast]
+     */
     val mediaTitle: String = podcast.title
 
+    /**
+     * The [PodcastInfo.author] of our [PodcastInfo] parameter [podcast]
+     */
     val secondaryLabel: String = podcast.author
 
     Chip(

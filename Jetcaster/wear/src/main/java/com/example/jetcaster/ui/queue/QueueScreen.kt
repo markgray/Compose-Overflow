@@ -90,7 +90,7 @@ import kotlinx.coroutines.flow.StateFlow
 ) {
     /**
      * [State] wrapped [QueueScreenState] representing the current state of the queue collected
-     * from the [StateFlow] of [QueueViewModel] properyt [QueueViewModel.uiState] of our
+     * from the [StateFlow] of [QueueViewModel] property [QueueViewModel.uiState] of our
      * [QueueViewModel] property [queueViewModel].
      */
     val uiState: QueueScreenState by queueViewModel.uiState.collectAsStateWithLifecycle()
@@ -117,7 +117,8 @@ import kotlinx.coroutines.flow.StateFlow
  * @param modifier [Modifier] for styling and layout customization of the [QueueScreen].
  * @param onEpisodeItemClick Callback triggered when the user clicks on a specific episode item
  * in the queue. It is provided the clicked [PlayerEpisode] as a parameter.
- * @param onDeleteQueueEpisodes Callback triggered when the user deletes episodes from the queue.
+ * @param onDeleteQueueEpisodes Callback to be triggered when the user deletes all episodes from
+ * the queue.
  * @param onDismiss Callback triggered when the user dismisses the queue screen (e.g., by clicking
  * a close button).
  */
