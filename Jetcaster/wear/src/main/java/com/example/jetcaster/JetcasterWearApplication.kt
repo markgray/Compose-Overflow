@@ -60,11 +60,37 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
      */
     @Inject lateinit var imageLoader: ImageLoader
 
+    /**
+     * Called when the activity is first created.
+     *
+     * This method performs the following tasks:
+     *  1. Calls the superclass's [onCreate] method to perform standard activity initialization.
+     *  2. Calls [setStrictMode] to configure [StrictMode] strict mode for development purposes.
+     *  This typically includes detecting things like disk or network access on the main thread.
+     */
     override fun onCreate() {
         super.onCreate()
         setStrictMode()
     }
 
+    /**
+     * Enables Strict Mode for the application.
+     *
+     * This function configures StrictMode to detect and report violations of common
+     * performance and best-practice rules during development. Specifically, it configures
+     * the thread policy to:
+     *
+     * - `detectDiskReads()`: Detects any disk read operations performed on the main thread.
+     * - `detectDiskWrites()`: Detects any disk write operations performed on the main thread.
+     * - `detectNetwork()`: Detects any network operations performed on the main thread.
+     * - `penaltyLog()`: Logs any detected violations to the system log.
+     *
+     * By enabling these checks during development, potential performance bottlenecks and
+     * issues related to main thread responsiveness can be identified and resolved early.
+     *
+     * Note: Strict Mode is primarily intended for use during development and should generally
+     * be disabled or its penalties significantly reduced in production builds.
+     */
     private fun setStrictMode() {
         StrictMode.setThreadPolicy(
             StrictMode.ThreadPolicy.Builder()
@@ -76,6 +102,17 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
         )
     }
 
+    /**
+     * Provides a new instance of the application's shared [ImageLoader].
+     *
+     * This function returns the same [ImageLoader] instance that is used
+     * throughout the application for image loading. It's designed to be
+     * overridden in subclasses (e.g., within test classes) to provide
+     * a different, potentially mocked or stubbed, [ImageLoader] for
+     * testing purposes.
+     *
+     * @return The shared [ImageLoader] instance used by the application.
+     */
     override fun newImageLoader(): ImageLoader =
         imageLoader
 }

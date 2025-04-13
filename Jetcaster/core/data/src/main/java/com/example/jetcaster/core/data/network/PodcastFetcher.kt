@@ -275,7 +275,7 @@ sealed class PodcastRssResponse {
  * First we initialize our [String] variable `val podcastUri` with the [SyndFeed.getUri] value of
  * our [SyndFeed] receiver, or if this is `null`, we use our [String] parameter [feedUrl]. Then
  * we initialize our [List] of [Episode] variable `val episodes` with the results of applying the
- * [List.map] extension function to the [SyndFeed.getEntries] property of our [SyndFeed] receiver,
+ * [Iterable.map] extension function to the [SyndFeed.getEntries] property of our [SyndFeed] receiver,
  * and in the `transform` lambda we call our [SyndEntry.toEpisode] extension function on each
  * [SyndEntry] in the [SyndFeed] feed to convert it to an [Episode]. We initialize our
  * [FeedInformation] variable `val feedInfo` with the value of the [SyndFeed.getModule] property
@@ -293,9 +293,9 @@ sealed class PodcastRssResponse {
  *  the [FeedInformation.getImageUri] property.
  *
  * We initialize our [Set] of [Category] variable `val categories` with the results of applying
- * the [List.map] extension function to the [FeedInformation.getCategories] property of our [SyndFeed]
+ * the [Iterable.map] extension function to the [FeedInformation.getCategories] property of our [SyndFeed]
  * receiver, and in the `transform` lambda we create a new [Category] instance for each [Category.name]
- * in the [List], then use the [List.toSet] extension function to convert the [List] of [Category]
+ * in the [List], then use the [Iterable.toSet] extension function to convert the [List] of [Category]
  * to a [Set] of [Category], or if anything in the chain is `null`, we return an empty [Set].
  *
  * Finally, we return a [PodcastRssResponse.Success] instance with the following properties:
