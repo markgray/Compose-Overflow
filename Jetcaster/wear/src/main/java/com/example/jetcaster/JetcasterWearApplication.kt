@@ -66,7 +66,7 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
      * This method performs the following tasks:
      *  1. Calls the superclass's [onCreate] method to perform standard activity initialization.
      *  2. Calls [setStrictMode] to configure [StrictMode] strict mode for development purposes.
-     *  This typically includes detecting things like disk or network access on the main thread.
+     *  This includes detecting things like disk or network access on the main thread.
      */
     override fun onCreate() {
         super.onCreate()
@@ -76,14 +76,14 @@ class JetcasterWearApplication : Application(), ImageLoaderFactory {
     /**
      * Enables Strict Mode for the application.
      *
-     * This function configures StrictMode to detect and report violations of common
+     * This function configures [StrictMode] to detect and report violations of common
      * performance and best-practice rules during development. Specifically, it configures
      * the thread policy to:
      *
-     * - `detectDiskReads()`: Detects any disk read operations performed on the main thread.
-     * - `detectDiskWrites()`: Detects any disk write operations performed on the main thread.
-     * - `detectNetwork()`: Detects any network operations performed on the main thread.
-     * - `penaltyLog()`: Logs any detected violations to the system log.
+     *  - `detectDiskReads()`: Detects any disk read operations performed on the main thread.
+     *  - `detectDiskWrites()`: Detects any disk write operations performed on the main thread.
+     *  - `detectNetwork()`: Detects any network operations performed on the main thread.
+     *  - `penaltyLog()`: Logs any detected violations to the system log.
      *
      * By enabling these checks during development, potential performance bottlenecks and
      * issues related to main thread responsiveness can be identified and resolved early.

@@ -70,12 +70,12 @@ import com.google.android.horologist.media.ui.screens.playerlibrarypager.PlayerL
  * to handle volume-related state and events.
  *
  * The app's structure consists of:
- * - A [NavHostController] for navigation between screens.
- * - A [SwipeDismissableNavHostState] to control the navigation state.
- * - A [VolumeViewModel] for managing volume.
- * - A [WearAppTheme] to provide the application's theme.
- * - An [AppScaffold] for the main layout.
- * - Different composable destinations using [composable] for each screen:
+ *  - A [NavHostController] for navigation between screens.
+ *  - A [SwipeDismissableNavHostState] to control the navigation state.
+ *  - A [VolumeViewModel] for managing volume.
+ *  - A [WearAppTheme] to provide the application's theme.
+ *  - An [AppScaffold] for the main layout.
+ *  - Different composable destinations using [composable] for each screen:
  *
  *  1. [PlayerLibraryPagerScreen]: A screen that displays a pager with the player and
  *  library screens.
