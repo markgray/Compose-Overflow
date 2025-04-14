@@ -39,10 +39,10 @@ horologist = "0.6.22"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
 jdkDesugar = "2.1.5"
 junit = "4.13.2"
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 kotlinx-serialization-json = "1.7.3"
 kotlinx_immutable = "0.3.8"
-ksp = "2.1.10-1.0.30"
+ksp = "2.1.20-1.0.31"
 maps-compose = "3.1.1"
 # @keep
 minSdk = "21"

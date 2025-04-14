@@ -116,7 +116,7 @@ object DataDiModule {
         Room.databaseBuilder(context, JetcasterDatabase::class.java, "data.db")
             // This is not recommended for normal apps, but the goal of this sample isn't to
             // showcase all of Room.
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
     /**
