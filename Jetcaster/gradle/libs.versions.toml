@@ -30,10 +30,10 @@ androix-test-uiautomator = "2.3.0"
 coil = "2.7.0"
 # @keep
 compileSdk = "35"
-coroutines = "1.10.1"
-google-maps = "19.1.0"
+coroutines = "1.10.2"
+google-maps = "19.2.0"
 gradle-versions = "0.52.0"
-hilt = "2.55"
+hilt = "2.56.1"
 hiltExt = "1.2.0"
 horologist = "0.6.22"
 # @pin When updating to AGP 7.4.0-alpha10 and up we can update this https://developer.android.com/studio/write/java8-support#library-desugaring-versions
@@ -42,8 +42,8 @@ junit = "4.13.2"
 kotlin = "2.1.20"
 kotlinx-serialization-json = "1.7.3"
 kotlinx_immutable = "0.3.8"
-ksp = "2.1.20-1.0.31"
-maps-compose = "3.1.1"
+ksp = "2.1.20-2.0.0"
+maps-compose = "6.5.2"
 # @keep
 minSdk = "21"
 okhttp = "4.12.0"
@@ -55,7 +55,7 @@ room = "2.7.0"
 secrets = "2.0.1"
 # @keep
 targetSdk = "33"
-version-catalog-update = "0.8.5"
+version-catalog-update = "1.0.0"
 
 [libraries]
 accompanist-adaptive = { module = "com.google.accompanist:accompanist-adaptive", version.ref = "accompanist" }
