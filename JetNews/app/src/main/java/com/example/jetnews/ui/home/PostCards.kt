@@ -99,7 +99,7 @@ fun AuthorAndReadTime(
         Text(
             text = stringResource(
                 id = R.string.home_post_min_read,
-                formatArgs = arrayOf(
+                formatArgs = arrayOf<Any>(
                     post.metadata.author.name,
                     post.metadata.readTimeMinutes
                 )

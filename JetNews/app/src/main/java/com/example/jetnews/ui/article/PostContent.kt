@@ -263,7 +263,7 @@ private fun PostMetadata(
             Text(
                 text = stringResource(
                     id = R.string.article_post_min_read,
-                    formatArgs = arrayOf(
+                    formatArgs = arrayOf<Any>(
                         metadata.date,
                         metadata.readTimeMinutes
                     )
