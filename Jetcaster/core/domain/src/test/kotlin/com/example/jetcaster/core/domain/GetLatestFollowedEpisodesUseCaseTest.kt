@@ -21,6 +21,7 @@ import com.example.jetcaster.core.data.testing.repository.TestEpisodeStore
 import com.example.jetcaster.core.data.testing.repository.TestPodcastStore
 import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,12 +31,12 @@ class GetLatestFollowedEpisodesUseCaseTest {
     private val episodeStore = TestEpisodeStore()
     private val podcastStore = TestPodcastStore()
 
-    val useCase = GetLatestFollowedEpisodesUseCase(
+    val useCase: GetLatestFollowedEpisodesUseCase = GetLatestFollowedEpisodesUseCase(
         episodeStore = episodeStore,
         podcastStore = podcastStore
     )
 
-    val testEpisodes = listOf(
+    val testEpisodes: List<Episode> = listOf(
         Episode(
             uri = "",
             podcastUri = testPodcasts[0].podcast.uri,
@@ -57,7 +58,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
     )
 
     @Test
-    fun whenNoFollowedPodcasts_emptyFlow() = runTest {
+    fun whenNoFollowedPodcasts_emptyFlow(): TestResult = runTest {
         val result = useCase()
 
         episodeStore.addEpisodes(testEpisodes)
@@ -69,7 +70,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
     }
 
     @Test
-    fun whenFollowedPodcasts_nonEmptyFlow() = runTest {
+    fun whenFollowedPodcasts_nonEmptyFlow(): TestResult = runTest {
         val result = useCase()
 
         episodeStore.addEpisodes(testEpisodes)
@@ -82,7 +83,7 @@ class GetLatestFollowedEpisodesUseCaseTest {
     }
 
     @Test
-    fun whenFollowedPodcasts_sortedByPublished() = runTest {
+    fun whenFollowedPodcasts_sortedByPublished(): TestResult = runTest {
         val result = useCase()
 
         episodeStore.addEpisodes(testEpisodes)

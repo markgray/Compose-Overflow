@@ -20,6 +20,7 @@ import com.example.jetcaster.core.data.database.model.Category
 import com.example.jetcaster.core.data.testing.repository.TestCategoryStore
 import com.example.jetcaster.core.model.asExternalModel
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -35,7 +36,7 @@ class FilterableCategoriesUseCaseTest {
         Category(2, "TV & Film"),
     )
 
-    val useCase = FilterableCategoriesUseCase(
+    val useCase: FilterableCategoriesUseCase = FilterableCategoriesUseCase(
         categoryStore = categoriesStore
     )
 
@@ -45,7 +46,7 @@ class FilterableCategoriesUseCaseTest {
     }
 
     @Test
-    fun whenNoSelectedCategory_onEmptySelectedCategoryInvoked() = runTest {
+    fun whenNoSelectedCategory_onEmptySelectedCategoryInvoked(): TestResult = runTest {
         val filterableCategories = useCase(null).first()
         assertEquals(
             filterableCategories.categories[0],
@@ -54,7 +55,7 @@ class FilterableCategoriesUseCaseTest {
     }
 
     @Test
-    fun whenSelectedCategory_correctFilterableCategoryIsSelected() = runTest {
+    fun whenSelectedCategory_correctFilterableCategoryIsSelected(): TestResult = runTest {
         val selectedCategory = testCategories[2]
         val filterableCategories = useCase(selectedCategory.asExternalModel()).first()
         assertEquals(

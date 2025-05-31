@@ -21,6 +21,7 @@ import com.example.jetcaster.core.player.model.PlayerEpisode
 import java.time.Duration
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -49,7 +50,7 @@ class MockEpisodePlayerTest {
     )
 
     @Test
-    fun whenPlay_incrementsByPlaySpeed() = runTest(testDispatcher) {
+    fun whenPlay_incrementsByPlaySpeed(): TestResult = runTest(testDispatcher) {
         val playSpeed = Duration.ofSeconds(2)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
@@ -65,7 +66,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenPlayDone_playerAutoPlaysNextEpisode() = runTest(testDispatcher) {
+    fun whenPlayDone_playerAutoPlaysNextEpisode(): TestResult = runTest(testDispatcher) {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
@@ -81,7 +82,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNext_queueIsNotEmpty_autoPlaysNextEpisode() = runTest(testDispatcher) {
+    fun whenNext_queueIsNotEmpty_autoPlaysNextEpisode(): TestResult = runTest(testDispatcher) {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
@@ -97,7 +98,7 @@ class MockEpisodePlayerTest {
         assertTrue(mockEpisodePlayer.playerState.value.isPlaying)
     }
     @Test
-    fun whenPlayListOfEpisodes_playerAutoPlaysNextEpisode() = runTest(testDispatcher) {
+    fun whenPlayListOfEpisodes_playerAutoPlaysNextEpisode(): TestResult = runTest(testDispatcher) {
         val duration = Duration.ofSeconds(60)
         val currEpisode = PlayerEpisode(
             uri = "currentEpisode",
@@ -138,7 +139,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenAddToQueue_queueIsNotEmpty() = runTest(testDispatcher) {
+    fun whenAddToQueue_queueIsNotEmpty(): TestResult = runTest(testDispatcher) {
         testEpisodes.forEach { mockEpisodePlayer.addToQueue(it) }
 
         advanceUntilIdle()
@@ -151,7 +152,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNext_queueIsNotEmpty_removeFromQueue() = runTest(testDispatcher) {
+    fun whenNext_queueIsNotEmpty_removeFromQueue(): TestResult = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = PlayerEpisode(
             uri = "currentEpisode",
             duration = Duration.ofSeconds(60)
@@ -171,7 +172,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenNext_queueIsNotEmpty_notRemovedFromQueue() = runTest(testDispatcher) {
+    fun whenNext_queueIsNotEmpty_notRemovedFromQueue(): TestResult = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = PlayerEpisode(
             uri = "currentEpisode",
             duration = Duration.ofSeconds(60)
@@ -191,7 +192,7 @@ class MockEpisodePlayerTest {
     }
 
     @Test
-    fun whenPrevious_queueIsEmpty_resetSameEpisode() = runTest(testDispatcher) {
+    fun whenPrevious_queueIsEmpty_resetSameEpisode(): TestResult = runTest(testDispatcher) {
         mockEpisodePlayer.currentEpisode = testEpisodes[0]
         mockEpisodePlayer.play()
         advanceTimeBy(1000L)

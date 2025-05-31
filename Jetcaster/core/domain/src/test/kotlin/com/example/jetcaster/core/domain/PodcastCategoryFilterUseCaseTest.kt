@@ -26,6 +26,7 @@ import com.example.jetcaster.core.model.asExternalModel
 import com.example.jetcaster.core.model.asPodcastToEpisodeInfo
 import java.time.OffsetDateTime
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -80,12 +81,12 @@ class PodcastCategoryFilterUseCaseTest {
     )
     private val testCategory = Category(1, "Technology")
 
-    val useCase = PodcastCategoryFilterUseCase(
+    val useCase: PodcastCategoryFilterUseCase = PodcastCategoryFilterUseCase(
         categoryStore = categoriesStore
     )
 
     @Test
-    fun whenCategoryNull_emptyFlow() = runTest {
+    fun whenCategoryNull_emptyFlow(): TestResult = runTest {
         val resultFlow = useCase(null)
 
         categoriesStore.setEpisodesFromPodcast(testCategory.id, testEpisodeToPodcast)
@@ -97,7 +98,7 @@ class PodcastCategoryFilterUseCaseTest {
     }
 
     @Test
-    fun whenCategoryNotNull_validFlow() = runTest {
+    fun whenCategoryNotNull_validFlow(): TestResult = runTest {
         val resultFlow = useCase(testCategory.asExternalModel())
 
         categoriesStore.setEpisodesFromPodcast(testCategory.id, testEpisodeToPodcast)
@@ -115,7 +116,7 @@ class PodcastCategoryFilterUseCaseTest {
     }
 
     @Test
-    fun whenCategoryInfoNotNull_verifyLimitFlow() = runTest {
+    fun whenCategoryInfoNotNull_verifyLimitFlow(): TestResult = runTest {
         val resultFlow = useCase(testCategory.asExternalModel())
 
         categoriesStore.setEpisodesFromPodcast(
@@ -133,7 +134,7 @@ class PodcastCategoryFilterUseCaseTest {
     }
 }
 
-val testPodcasts = listOf(
+val testPodcasts: List<PodcastWithExtraInfo> = listOf(
     PodcastWithExtraInfo().apply {
         podcast = Podcast(uri = "nia", title = "Now in Android")
     },
