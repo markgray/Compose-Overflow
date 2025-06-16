@@ -43,7 +43,7 @@ junit = "4.13.2"
 kotlin = "2.1.21"
 kotlinx-serialization-json = "1.7.3"
 kotlinx_immutable = "0.3.8"
-ksp = "2.1.21-2.0.1"
+ksp = "2.1.21-2.0.2"
 maps-compose = "6.5.2"
 # @keep
 minSdk = "21"
