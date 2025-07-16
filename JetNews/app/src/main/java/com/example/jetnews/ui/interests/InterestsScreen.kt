@@ -105,7 +105,7 @@ import kotlin.math.max
  * @param titleResId resource ID of a [String] to use as the title of a [Tab] in the
  * [InterestsTabRowContent] Composable
  */
-enum class Sections(@StringRes val titleResId: Int) {
+enum class Sections(@param:StringRes val titleResId: Int) {
     /**
      * Used by the [TabContent] that displays the [List] of [InterestSection] of the
      * [InterestsUiState.topics], and the [Set] of [TopicSelection] collected as [State] from

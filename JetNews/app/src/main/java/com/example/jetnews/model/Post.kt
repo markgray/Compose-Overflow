@@ -63,8 +63,8 @@ data class Post(
     val publication: Publication? = null,
     val metadata: Metadata,
     val paragraphs: List<Paragraph> = emptyList(),
-    @DrawableRes val imageId: Int,
-    @DrawableRes val imageThumbId: Int
+    @param:DrawableRes val imageId: Int,
+    @param:DrawableRes val imageThumbId: Int
 )
 
 /**

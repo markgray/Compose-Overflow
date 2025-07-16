@@ -37,4 +37,4 @@ import java.util.UUID
  * @param messageId the resource ID of a [String] explaining this [ErrorMessage]. Always
  * `R.string.load_error` ("Can't update latest news").
  */
-data class ErrorMessage(val id: Long, @StringRes val messageId: Int)
+data class ErrorMessage(val id: Long, @param:StringRes val messageId: Int)
