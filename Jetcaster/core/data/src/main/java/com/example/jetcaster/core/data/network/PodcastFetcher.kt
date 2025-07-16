@@ -60,7 +60,7 @@ import javax.inject.Inject
 class PodcastsFetcher @Inject constructor(
     private val okHttpClient: OkHttpClient,
     private val syndFeedInput: SyndFeedInput,
-    @Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @param:Dispatcher(JetcasterDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
 
     /**
@@ -220,7 +220,7 @@ class PodcastsFetcher @Inject constructor(
             // Otherwise we can parse the response using a Rome SyndFeedInput, then map it
             // to a Podcast instance. We run this on the IO dispatcher since the parser is reading
             // from a stream.
-            response.body!!.use { body: ResponseBody ->
+            response.body.use { body: ResponseBody ->
                 syndFeedInput.build(body.charStream()).toPodcastResponse(feedUrl = url)
             }
         }
@@ -329,7 +329,7 @@ private fun SyndFeed.toPodcastResponse(feedUrl: String): PodcastRssResponse {
         description = feedInfo?.summary ?: description,
         author = author,
         copyright = copyright,
-        imageUrl = feedInfo?.imageUri?.toString()
+        imageUrl = feedInfo?.imageUri
     )
 
     val categories: Set<Category> = feedInfo?.categories

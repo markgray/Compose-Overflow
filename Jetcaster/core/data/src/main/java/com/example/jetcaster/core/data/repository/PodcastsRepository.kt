@@ -55,7 +55,7 @@ class PodcastsRepository @Inject constructor(
     private val episodeStore: EpisodeStore,
     private val categoryStore: CategoryStore,
     private val transactionRunner: TransactionRunner,
-    @Dispatcher(JetcasterDispatchers.Main)
+    @param:Dispatcher(JetcasterDispatchers.Main)
     private val mainDispatcher: CoroutineDispatcher
 ) {
     /**
