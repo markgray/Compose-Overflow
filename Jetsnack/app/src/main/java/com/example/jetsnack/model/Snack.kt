@@ -40,7 +40,7 @@ import kotlin.random.Random
 data class Snack(
     val id: Long,
     val name: String,
-    @DrawableRes
+    @param:DrawableRes
     val imageRes: Int,
     val price: Long,
     val tagline: String = "",

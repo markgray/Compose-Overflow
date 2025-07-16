@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.update
  * @param id a unique ID number for the [Message].
  * @param messageId the resource ID for the [String] to display in the Snackbar.
  */
-data class Message(val id: Long, @StringRes val messageId: Int)
+data class Message(val id: Long, @param:StringRes val messageId: Int)
 
 /**
  * Class responsible for managing Snackbar messages to show on the screen

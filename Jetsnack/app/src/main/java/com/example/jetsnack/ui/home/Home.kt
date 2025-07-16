@@ -252,7 +252,7 @@ enum class HomeSections(
     /**
      * A [String] resource ID representing the title of this tab.
      */
-    @StringRes val title: Int,
+    @param:StringRes val title: Int,
     /**
      * An [ImageVector] to use for the [Icon] of this tab.
      */
