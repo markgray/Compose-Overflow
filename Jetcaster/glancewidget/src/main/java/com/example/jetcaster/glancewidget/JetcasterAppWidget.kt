@@ -16,6 +16,7 @@
 
 package com.example.jetcaster.glancewidget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -191,9 +192,10 @@ private fun WidgetUiNarrow(
     }
 }
 
+@SuppressLint("RestrictedApi")
 @Composable
 private fun WidgetUiInvalidSize() {
-    Box(modifier = GlanceModifier.fillMaxSize().background(ColorProvider(Color.Magenta))) {
+    Box(modifier = GlanceModifier.fillMaxSize().background(ColorProvider(color = Color.Magenta))) {
         Text("invalid size")
     }
 }
