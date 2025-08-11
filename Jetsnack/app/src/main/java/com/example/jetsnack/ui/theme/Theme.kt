@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("UNUSED_PARAMETER", "PropertyName")
+@file:Suppress("UNUSED_PARAMETER", "PropertyName", "UnusedImport", "RedundantSuppression")
 
 package com.example.jetsnack.ui.theme
 

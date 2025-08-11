@@ -17,6 +17,7 @@
 @file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class,
     ExperimentalSharedTransitionApi::class, ExperimentalSharedTransitionApi::class
 )
+@file:Suppress("UnusedImport")
 
 package com.example.jetsnack.ui.components
 

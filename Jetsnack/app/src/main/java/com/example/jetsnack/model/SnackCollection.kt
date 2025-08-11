@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression")
+
 package com.example.jetsnack.model
 
 import androidx.compose.foundation.lazy.LazyColumn

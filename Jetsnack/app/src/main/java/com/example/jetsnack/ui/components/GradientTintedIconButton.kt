@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("RedundantValueArgument")
+@file:Suppress("RedundantValueArgument", "UnusedImport")
 
 package com.example.jetsnack.ui.components
 
