@@ -67,7 +67,7 @@ class DiscoverScreenViewModel @Inject constructor(
      * A [MutableStateFlow] that represents the currently selected category.
      */
     private val _selectedCategory: MutableStateFlow<CategoryInfo?> =
-        MutableStateFlow<CategoryInfo?>(null)
+        MutableStateFlow(null)
 
     /**
      * A [Flow] that emits a list of [CategoryInfo]. It uses the

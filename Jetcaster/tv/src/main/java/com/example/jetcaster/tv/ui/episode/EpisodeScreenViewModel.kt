@@ -74,7 +74,7 @@ class EpisodeScreenViewModel @Inject constructor(
      * initial value of `null`.
      */
     private val episodeUriFlow: StateFlow<String?> =
-        handle.getStateFlow<String?>(key = Screen.Episode.PARAMETER_NAME, initialValue = null)
+        handle.getStateFlow(key = Screen.Episode.PARAMETER_NAME, initialValue = null)
 
     /**
      * A [StateFlow] of [EpisodeToPodcast] that is derived from [episodeUriFlow]. It uses the

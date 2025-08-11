@@ -106,6 +106,7 @@ suspend fun Call.await(): Response =
                     continuation.resume(value = response) {
                         // If we have a response but we're cancelled while resuming, we need to
                         // close() the unused response
+                        @Suppress("SENSELESS_COMPARISON")
                         if (response.body != null) {
                             response.closeQuietly()
                         }

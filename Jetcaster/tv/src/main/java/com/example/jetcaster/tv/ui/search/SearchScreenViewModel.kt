@@ -71,7 +71,7 @@ class SearchScreenViewModel @Inject constructor(
      * A [MutableStateFlow] of [List] of [CategoryInfo] representing the selected categories.
      */
     private val selectedCategoryListFlow: MutableStateFlow<List<CategoryInfo>> =
-        MutableStateFlow<List<CategoryInfo>>(emptyList())
+        MutableStateFlow(emptyList())
 
     /**
      * A [Flow] of [CategoryInfoList] representing the list of all categories sorted by the number of

@@ -70,8 +70,9 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.core.net.toUri
 
-internal val TAG = "JetcasterAppWidegt"
+internal const val TAG = "JetcasterAppWidegt"
 
 /**
  * Implementation of App Widget functionality.
@@ -130,7 +131,7 @@ class JetcasterAppWidget : GlanceAppWidget() {
         provideContent {
             val sizeBucket = calculateSizeBucket()
             val playPauseIcon = if (testState.isPlaying) PlayPauseIcon.Pause else PlayPauseIcon.Play
-            val artUri = Uri.parse(testState.albumArtUri)
+            val artUri = testState.albumArtUri.toUri()
 
             GlanceTheme(
                 colors = ColorProviders(
@@ -170,7 +171,7 @@ private fun WidgetUiNormal(
         ) {
             AlbumArt(imageUri, GlanceModifier.size(Sizes.imageNormal))
             PodcastText(title, subtitle, modifier = GlanceModifier.padding(16.dp).defaultWeight())
-            PlayPauseButton(playPauseIcon, {})
+            PlayPauseButton(state = playPauseIcon) {}
         }
     }
 }
@@ -187,7 +188,7 @@ private fun WidgetUiNarrow(
         ) {
             AlbumArt(imageUri, GlanceModifier.size(Sizes.imageCondensed))
             Spacer(GlanceModifier.defaultWeight())
-            PlayPauseButton(playPauseIcon, {})
+            PlayPauseButton(state = playPauseIcon) {}
         }
     }
 }

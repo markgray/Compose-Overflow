@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression")
+
 package com.example.jetcaster.core.data.database.dao
 
 import androidx.room.Delete
