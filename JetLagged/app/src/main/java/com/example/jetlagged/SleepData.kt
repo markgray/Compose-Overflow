@@ -72,14 +72,14 @@ data class SleepDayData(
      * Returns the earliest [SleepPeriod.startTime] in our [List] of [SleepPeriod] field [sleepPeriods]
      */
     val firstSleepStart: LocalDateTime by lazy {
-        sleepPeriods.sortedBy(SleepPeriod::startTime).first().startTime
+        sleepPeriods.minByOrNull(SleepPeriod::startTime)!!.startTime
     }
 
     /**
      * Returns the last [SleepPeriod.endTime] in our [List] of [SleepPeriod] field [sleepPeriods]
      */
     val lastSleepEnd: LocalDateTime by lazy {
-        sleepPeriods.sortedBy(SleepPeriod::startTime).last().endTime
+        sleepPeriods.maxByOrNull(SleepPeriod::startTime)!!.endTime
     }
 
     /**

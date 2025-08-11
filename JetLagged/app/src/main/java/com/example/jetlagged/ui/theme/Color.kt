@@ -84,28 +84,28 @@ val DarkCoral: Color = Color(color = 0xFFF7A374)
 val DarkYellow: Color = Color(color = 0xFFFFCE6F)
 
 /**
- * Used as the [SleepType.Awake.color] of the [SleepType.Awake] enum that is used as a `type` of
+ * Used as the [SleepType.color] of the [SleepType.Awake] enum that is used as a `type` of
  * [SleepPeriod] in the [List] of [SleepDayData] that is used in the faked [SleepGraphData] dataset
  * [sleepData].
  */
 val Yellow_Awake: Color = Color(color = 0xFFffeac1)
 
 /**
- * Used as the [SleepType.REM.color] of the [SleepType.REM] enum that is used as a `type` of
+ * Used as the [SleepType.color] of the [SleepType.REM] enum that is used as a `type` of
  * [SleepPeriod] in the [List] of [SleepDayData] that is used in the faked [SleepGraphData] dataset
  * [sleepData].
  */
 val Yellow_Rem: Color = Color(color = 0xFFffdd9a)
 
 /**
- * Used as the [SleepType.Light.color] of the [SleepType.Light] enum that is used as a `type` of
+ * Used as the [SleepType.color] of the [SleepType.Light] enum that is used as a `type` of
  * [SleepPeriod] in the [List] of [SleepDayData] that is used in the faked [SleepGraphData] dataset
  * [sleepData].
  */
 val Yellow_Light: Color = Color(color = 0xFFffcb66)
 
 /**
- * Used as the [SleepType.Deep.color] of the [SleepType.Deep] enum that is used as a `type` of
+ * Used as the [SleepType.color] of the [SleepType.Deep] enum that is used as a `type` of
  * [SleepPeriod] in the [List] of [SleepDayData] that is used in the faked [SleepGraphData] dataset
  * [sleepData].
  */
