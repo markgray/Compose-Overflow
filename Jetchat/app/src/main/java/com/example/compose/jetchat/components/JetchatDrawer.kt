@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.compose.jetchat.components
 
 import android.os.Bundle

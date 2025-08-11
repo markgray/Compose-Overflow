@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.compose.jetchat.conversation
 
 import androidx.compose.animation.core.Transition
