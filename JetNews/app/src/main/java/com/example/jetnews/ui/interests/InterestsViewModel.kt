@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantSuppression")
+
 package com.example.jetnews.ui.interests
 
 import androidx.compose.runtime.State

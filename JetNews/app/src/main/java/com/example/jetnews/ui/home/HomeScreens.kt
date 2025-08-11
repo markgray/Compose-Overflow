@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("Destructure", "DEPRECATION")
+@file:Suppress("Destructure", "DEPRECATION", "UnusedImport")
 
 package com.example.jetnews.ui.home
 

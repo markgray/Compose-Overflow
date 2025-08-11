@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("RedundantValueArgument")
+@file:Suppress("RedundantValueArgument", "RedundantSuppression")
 
 package com.example.jetnews.ui.home
 

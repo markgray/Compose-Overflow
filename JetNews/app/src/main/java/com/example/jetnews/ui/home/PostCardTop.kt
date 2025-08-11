@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.jetnews.ui.home
 
 import androidx.compose.foundation.Image

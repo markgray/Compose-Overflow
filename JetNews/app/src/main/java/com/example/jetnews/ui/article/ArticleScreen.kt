@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.example.jetnews.ui.article
 
 import android.content.Context
@@ -75,6 +77,7 @@ import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.Publication
+import com.example.jetnews.ui.home.HomeRoute
 import com.example.jetnews.ui.home.HomeScreenType
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
