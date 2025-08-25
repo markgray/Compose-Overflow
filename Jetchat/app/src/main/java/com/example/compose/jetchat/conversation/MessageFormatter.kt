@@ -178,7 +178,7 @@ fun messageFormatter(
  *  whose `fontWeight` argument is [FontWeight.Bold]. The [StringAnnotation] of the [SymbolAnnotation]
  *  is constructed with its `item` argument the substring of the [MatchResult.value] from `startIndex`
  *  of 1 to its end, whose `start` is the [IntRange.first] of the [MatchResult.range], whose `end` is
- *  the [IntRange.last] of the [MatchResult.range], and whose `tag` is [SymbolAnnotationType.PERSON.name]
+ *  the [IntRange.last] of the [MatchResult.range], and whose `tag` is `SymbolAnnotationType.PERSON.name`
  *  - ``"*"`` We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
  *  is the result of using the [String.trim] method of the [MatchResult.value] to remove the "*" at
  *  either end of the [String], and whose `spanStyle` argument is a [SpanStyle] whose `fontWeight`
@@ -205,7 +205,7 @@ fun messageFormatter(
  *  [StringAnnotation] of the [SymbolAnnotation] is constructed with its `item` argument the
  *  [MatchResult.value], whose `start` is the [IntRange.first] of the [MatchResult.range], whose
  *  `end` is the [IntRange.last] of the [MatchResult.range], and whose `tag` is
- *  [SymbolAnnotationType.LINK.name].
+ *  `SymbolAnnotationType.LINK.name`.
  *  - `else` We return a [SymbolAnnotation] constructed from an [AnnotatedString] whose `text` argument
  *  is the [MatchResult.value], with `null` for the [StringAnnotation] of the [SymbolAnnotation].
  *

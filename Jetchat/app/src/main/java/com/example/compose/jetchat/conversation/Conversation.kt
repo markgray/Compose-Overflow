@@ -839,9 +839,9 @@ fun ChatItemBubble(
  * first [AnnotatedString.Range] of [String] in the [List] (or `null`) and if that is not `null` it
  * uses the [let] extension function to feed a `when` switch with that `annotation` to switch on the
  * [AnnotatedString.Range.tag]:
- *  - [SymbolAnnotationType.LINK.name] it calls the [UriHandler.openUri] method of our `uriHandler`
+ *  - `SymbolAnnotationType.LINK.name` it calls the [UriHandler.openUri] method of our `uriHandler`
  *  variable with its `uri` argument the [AnnotatedString.Range.item] property of the `annotation`
- *  - [SymbolAnnotationType.PERSON.name] it calls our [authorClicked] lambda parameter with the
+ *  - `SymbolAnnotationType.PERSON.name` it calls our [authorClicked] lambda parameter with the
  *  [AnnotatedString.Range.item] property of the `annotation`.
  *  - `else` [Unit]
  *
