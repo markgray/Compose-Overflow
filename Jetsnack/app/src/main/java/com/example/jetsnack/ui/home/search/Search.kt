@@ -74,14 +74,13 @@ import com.example.jetsnack.model.SnackRepo
 import com.example.jetsnack.ui.components.JetsnackDivider
 import com.example.jetsnack.ui.components.JetsnackScaffold
 import com.example.jetsnack.ui.components.JetsnackSurface
-import com.example.jetsnack.ui.home.HomeSections
 import com.example.jetsnack.ui.navigation.JetsnackNavController
 import com.example.jetsnack.ui.theme.JetsnackColors
 import com.example.jetsnack.ui.theme.JetsnackTheme
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Composed when the user navigates to [HomeSections.SEARCH.route]. Our root composable is a
+ * Composed when the user navigates to `HomeSections.SEARCH.route`. Our root composable is a
  * [JetsnackSurface] whose `modifier` argument is a [Modifier.fillMaxSize] that has it occupy its
  * entire incoming size constraints. In its `content` Composable lambda argument we have a [Column]
  * in whose [ColumnScope] `content` Composable lambda argument we have:

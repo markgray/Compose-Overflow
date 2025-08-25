@@ -68,7 +68,7 @@ import com.example.jetsnack.ui.snackdetail.SnackDetail
 import com.example.jetsnack.ui.theme.JetsnackTheme
 
 /**
- * The Composable displayed for the route [HomeSections.FEED.route], which is the first destination
+ * The Composable displayed for the route `HomeSections.FEED.route`, which is the first destination
  * of the app. We start by initializing and remembering our [List] of [SnackCollection]s variable
  * `val snackCollections` from the [SnackRepo.getSnacks] method, and our [List] of [Filter]s variable
  * `val filters` from the [SnackRepo.getFilters] method. We then compose our [Feed] override with its

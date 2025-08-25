@@ -190,22 +190,22 @@ fun NavGraphBuilder.composableWithCompositionLocal(
  * This adds [composable] routes for all the home screens: [Feed], [Search], [Cart], and [Profile].
  * Our content block just consists of 4 calls to the [NavGraphBuilder.composable] method to add
  * the following routes to our [NavGraphBuilder]:
- *  - `route` = [HomeSections.FEED.route] composes a [Feed] whose `onSnackClick` lambda argument
+ *  - `route` = `HomeSections.FEED.route` composes a [Feed] whose `onSnackClick` lambda argument
  *  calls our [onSnackSelected] lambda parameter passing it the [Long] and [String] passed the
  *  `onSnackClick` lambda as well as the [NavBackStackEntry] passed the `content` Composable of
  *  the [composable] method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
  *  [modifier].
- *  - `route` = [HomeSections.SEARCH.route] composes a [Search] whose `onSnackClick` lambda argument
+ *  - `route` = `HomeSections.SEARCH.route` composes a [Search] whose `onSnackClick` lambda argument
  *  calls our [onSnackSelected] lambda parameter passing it the [Long] and [String] passed the
  *  `onSnackClick` lambda as well as the [NavBackStackEntry] passed the content Composable of the
  *  composable method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
  *  [modifier].
- *  - `route` = [HomeSections.CART.route] composes a [Cart] whose `onSnackClick` lambda argument
+ *  - `route` = `HomeSections.CART.route` composes a [Cart] whose `onSnackClick` lambda argument
  *  calls our [onSnackSelected] lambda parameter passing it the [Long] and [String] passed the
  *  `onSnackClick` lambda as well as the [NavBackStackEntry] passed the content Composable of the
  *  composable method, and whose [Modifier] `modifier` argument is our [Modifier] parameter
  *  [modifier].
- *  - `route` = [HomeSections.PROFILE.route] composes a [Profile] whose [Modifier] `modifier`
+ *  - `route` = `HomeSections.PROFILE.route` composes a [Profile] whose [Modifier] `modifier`
  *  argument is our [Modifier] parameter [modifier].
  *
  * @param onSnackSelected a lambda that can be called with the [Snack.id] of a [Snack] that is

@@ -78,6 +78,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -328,7 +329,7 @@ private fun CartContent(
     onSnackClick: (Long, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val resources: Resources = LocalContext.current.resources
+    val resources: Resources = LocalResources.current
     val snackCountFormattedString: String = remember(orderLines.size, resources) {
         resources.getQuantityString(
             R.plurals.cart_order_count,

@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.navigation.compose.NavHost
 import com.example.jetsnack.model.Message
 import com.example.jetsnack.model.SnackbarManager
@@ -201,5 +202,5 @@ class JetsnackScaffoldState(
 @ReadOnlyComposable
 private fun resources(): Resources {
     LocalConfiguration.current
-    return LocalContext.current.resources
+    return LocalResources.current
 }
