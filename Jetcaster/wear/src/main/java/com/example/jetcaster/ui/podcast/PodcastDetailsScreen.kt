@@ -87,8 +87,11 @@ fun PodcastDetailsScreen(
      * of [PodcastDetailsScreenState] property [PodcastDetailsViewModel.uiState] of our
      * [PodcastDetailsViewModel] property [podcastDetailsViewModel].
      */
+    @OptIn(ExperimentalHorologistApi::class)
     val uiState: PodcastDetailsScreenState by podcastDetailsViewModel.uiState.collectAsStateWithLifecycle()
 
+
+    @OptIn(ExperimentalHorologistApi::class)
     PodcastDetailsScreen(
         uiState = uiState,
         onEpisodeItemClick = onEpisodeItemClick,
@@ -119,7 +122,7 @@ fun PodcastDetailsScreen(
  * @param onDismiss Callback triggered when the screen should be dismissed, typically when
  * the user navigates back or closes the screen.
  */
-@OptIn(ExperimentalWearMaterialApi::class)
+@OptIn(ExperimentalWearMaterialApi::class, ExperimentalHorologistApi::class)
 @Composable
 fun PodcastDetailsScreen(
     uiState: PodcastDetailsScreenState,
@@ -296,6 +299,7 @@ fun PodcastDetailsScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode
 ) {
+    @OptIn(ExperimentalHorologistApi::class)
     PodcastDetailsScreen(
         uiState = PodcastDetailsScreenState.Loaded(
             episodeList = listOf(episode),
@@ -319,6 +323,7 @@ fun PodcastDetailsScreenLoadingPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode
 ) {
+    @OptIn(ExperimentalHorologistApi::class)
     PodcastDetailsScreen(
         uiState = PodcastDetailsScreenState.Loading,
         onPlayButtonClick = { },

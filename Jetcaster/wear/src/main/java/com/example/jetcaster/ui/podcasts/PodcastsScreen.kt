@@ -74,11 +74,13 @@ fun PodcastsScreen(
     /**
      * [State] wrapped [PodcastsScreenState] representing the current state of the podcasts
      */
+    @OptIn(ExperimentalHorologistApi::class)
     val uiState: PodcastsScreenState by podcastsViewModel.uiState.collectAsStateWithLifecycle()
 
     /**
      * [PodcastsScreenState] that is modified to handle empty titles.
      */
+    @OptIn(ExperimentalHorologistApi::class)
     val modifiedState: PodcastsScreenState = when (uiState) {
         is PodcastsScreenState.Loaded -> {
             val modifiedPodcast: List<PodcastInfo> = (uiState as PodcastsScreenState.Loaded)
@@ -93,6 +95,7 @@ fun PodcastsScreen(
             -> uiState
     }
 
+    @OptIn(ExperimentalHorologistApi::class)
     PodcastsScreen(
         podcastsScreenState = modifiedState,
         onPodcastsItemClick = onPodcastsItemClick,
@@ -168,6 +171,7 @@ fun PodcastScreenLoaded(
     onPodcastsItemClick: (PodcastInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    @OptIn(ExperimentalHorologistApi::class)
     EntityScreen(
         modifier = modifier,
         headerContent = {
@@ -208,6 +212,7 @@ fun PodcastScreenEmpty(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    @OptIn(ExperimentalHorologistApi::class)
     AlertDialog(
         showDialog = true,
         message = stringResource(id = R.string.podcasts_no_podcasts),
@@ -231,6 +236,7 @@ fun PodcastScreenEmpty(
 fun PodcastScreenLoading(
     modifier: Modifier = Modifier
 ) {
+    @OptIn(ExperimentalHorologistApi::class)
     EntityScreen(
         modifier = modifier,
         headerContent = {
@@ -255,6 +261,7 @@ fun PodcastScreenLoading(
 fun PodcastScreenLoadedPreview(
     @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
 ) {
+    @OptIn(ExperimentalHorologistApi::class)
     @Suppress("UnusedVariable", "unused")
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
@@ -275,6 +282,7 @@ fun PodcastScreenLoadedPreview(
 @WearPreviewFontScales
 @Composable
 fun PodcastScreenLoadingPreview() {
+    @OptIn(ExperimentalHorologistApi::class)
     @Suppress("UnusedVariable", "unused")
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
@@ -325,6 +333,7 @@ fun MediaContent(
      */
     val secondaryLabel: String = podcast.author
 
+    @OptIn(ExperimentalHorologistApi::class)
     Chip(
         label = mediaTitle,
         onClick = { onPodcastsItemClick(podcast) },
