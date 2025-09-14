@@ -133,7 +133,7 @@ object YourPodcasts : NavigationScreens(navRoute = "yourPodcasts") {
  * [LatestEpisodes] is a singleton object representing the "Latest Episodes" screen in the
  * application's navigation.
  *
- * It inherits from [NavigationScreens] and provides a convenient way to refer to the route
+ * It inherits from `NavigationScreens` and provides a convenient way to refer to the route
  * associated with the latest episodes screen.
  *
  * This object is primarily used for defining and accessing the navigation route for the

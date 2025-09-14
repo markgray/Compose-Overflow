@@ -315,7 +315,6 @@ fun PodcastDetailsScreenLoadedPreview(
 /**
  * Podcast Details Screen Loading Preview
  */
-@Suppress("unused")
 @WearPreviewDevices
 @WearPreviewFontScales
 @Composable

@@ -292,7 +292,6 @@ fun LatestEpisodeScreenLoadedPreview(
     @PreviewParameter(WearPreviewEpisodes::class)
     episode: PlayerEpisode
 ) {
-    @Suppress("unused")
     @OptIn(ExperimentalHorologistApi::class)
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
@@ -317,7 +316,6 @@ fun LatestEpisodeScreenLoadedPreview(
 @Composable
 fun LatestEpisodeScreenLoadingPreview() {
     @OptIn(ExperimentalHorologistApi::class)
-    @Suppress("unused")
     val columnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,

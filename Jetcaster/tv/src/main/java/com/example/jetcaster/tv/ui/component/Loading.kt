@@ -146,7 +146,7 @@ fun CircularProgressIndicator(
         initialValue = 0f,
         targetValue = JumpRotationAngle,
         animationSpec = infiniteRepeatable(
-            animation = keyframes<Float> {
+            animation = keyframes {
                 durationMillis = HeadAndTailAnimationDuration + HeadAndTailDelayDuration
                 0f at 0 using CircularEasing
                 JumpRotationAngle at HeadAndTailAnimationDuration

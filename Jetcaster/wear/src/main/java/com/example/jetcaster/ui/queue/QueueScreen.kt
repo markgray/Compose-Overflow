@@ -351,7 +351,7 @@ fun QueueScreenLoadedPreview(
     @PreviewParameter(provider = WearPreviewEpisodes::class)
     episode: PlayerEpisode
 ) {
-    @Suppress("UnusedVariable", "unused")
+    @Suppress("UnusedVariable")
     val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
@@ -374,7 +374,7 @@ fun QueueScreenLoadedPreview(
 @WearPreviewFontScales
 @Composable
 fun QueueScreenLoadingPreview() {
-    @Suppress("UnusedVariable", "unused")
+    @Suppress("UnusedVariable")
     val columnState: ScalingLazyColumnState = rememberResponsiveColumnState(
         contentPadding = padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,

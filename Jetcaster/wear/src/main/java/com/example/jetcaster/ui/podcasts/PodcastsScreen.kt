@@ -262,7 +262,7 @@ fun PodcastScreenLoadedPreview(
     @PreviewParameter(WearPreviewPodcasts::class) podcasts: PodcastInfo
 ) {
     @OptIn(ExperimentalHorologistApi::class)
-    @Suppress("UnusedVariable", "unused")
+    @Suppress("UnusedVariable")
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
@@ -283,7 +283,7 @@ fun PodcastScreenLoadedPreview(
 @Composable
 fun PodcastScreenLoadingPreview() {
     @OptIn(ExperimentalHorologistApi::class)
-    @Suppress("UnusedVariable", "unused")
+    @Suppress("UnusedVariable")
     val columnState = rememberResponsiveColumnState(
         contentPadding = ScalingLazyColumnDefaults.padding(
             first = ScalingLazyColumnDefaults.ItemType.Text,
