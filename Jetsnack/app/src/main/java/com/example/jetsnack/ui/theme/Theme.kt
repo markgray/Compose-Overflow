@@ -321,6 +321,7 @@ private val LocalJetsnackColors = staticCompositionLocalOf<JetsnackColors> {
  * @param darkTheme if `true` the system is in "dark theme" mode.
  * @param debugColor the debug color to apply to all the [ColorScheme].
  */
+@Suppress("DEPRECATION") // Another Bizarre DEPRECATION, quick fix does nothing!
 fun debugColors(
     darkTheme: Boolean,
     debugColor: Color = Color.Magenta
