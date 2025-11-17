@@ -50,25 +50,31 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.ui.MainActivity
 
 /**
- * TODO: Add kdoc
+ * Describes the different layouts that a post can have in the glance UI,
+ * depending on the available size.
  */
 enum class PostLayout {
     /**
-     * TODO: Add kdoc
+     * A horizontal layout for medium-sized widgets, displaying a post with a smaller thumbnail.
      */
     HORIZONTAL_SMALL,
     /**
-     * TODO: Add kdoc
+     * A horizontally-oriented layout for displaying a post. This layout is used for wider widgets
+     * and shows a larger, cropped version of the post's image on the left, with the title,
+     * metadata, and bookmark button to its right.
      */
     HORIZONTAL_LARGE,
     /**
-     * TODO: Add kdoc
+     * A layout where the post image is displayed above the post's title and metadata.
      */
     VERTICAL
 }
 
 /**
- * TODO: Add kdoc
+ * Maps a [DpSize] to a [PostLayout] based on the available width.
+ *
+ * This is used to determine the best layout for a post in the widget, depending on the widget's
+ * current size.
  */
 fun DpSize.toPostLayout(): PostLayout {
     return when {
@@ -78,10 +84,24 @@ fun DpSize.toPostLayout(): PostLayout {
     }
 }
 
+/**
+ * A helper function to format the author and read time string.
+ *
+ * @param author the author's name.
+ * @param readTimeMinutes the estimated read time in minutes.
+ * @return a formatted string combining the author's name and the read time.
+ */
 private fun Context.authorReadTimeString(author: String, readTimeMinutes: Int) =
     getString(R.string.home_post_min_read)
         .format(author, readTimeMinutes)
 
+/**
+ * Creates an [Action] that opens the article details when the widget is clicked.
+ *
+ * @param context the context to use to create the intent.
+ * @param post the post to open.
+ * @return an [Action] that launches the [MainActivity] to display the post.
+ */
 private fun openPostDetails(context: Context, post: Post): Action {
     // actionStartActivity is the preferred way to start activities.
     return actionStartActivity(
@@ -95,7 +115,20 @@ private fun openPostDetails(context: Context, post: Post): Action {
 }
 
 /**
- * TODO: Add kdoc
+ * A composable function that displays a single post item in a Glance widget, adapting its
+ * layout based on the provided [postLayout].
+ *
+ * This function acts as a router, delegating the rendering to more specific composables
+ * like [HorizontalPost] or [VerticalPost] depending on the layout strategy.
+ *
+ * @param post The [Post] data object to be displayed.
+ * @param bookmarks A set of strings representing the IDs of bookmarked posts. This is used
+ * to determine the state of the bookmark icon.
+ * @param onToggleBookmark A lambda function that is invoked when the user clicks the bookmark
+ * icon. It passes the ID of the post.
+ * @param modifier A [GlanceModifier] to be applied to the root of the composable.
+ * @param postLayout The [PostLayout] enum that dictates which layout (e.g., vertical or
+ * horizontal) should be used to render the post.
  */
 @Composable
 fun Post(
@@ -131,7 +164,19 @@ fun Post(
 }
 
 /**
- * TODO: Add kdoc
+ * A composable that displays a post in a horizontal layout.
+ *
+ * This layout is suitable for medium to large-sized widgets. It displays the post's image on the
+ * left and the title, metadata, and bookmark button to the right. The entire layout is clickable
+ * and opens the post details.
+ *
+ * @param post The [Post] to be displayed.
+ * @param bookmarks A set of bookmarked post IDs, used to determine the state of the bookmark icon.
+ * @param onToggleBookmark A lambda function to be invoked when the bookmark button is clicked. It
+ * receives the post ID as an argument.
+ * @param modifier A [GlanceModifier] to be applied to the root [Row] composable.
+ * @param showImageThumbnail A boolean that determines which version of the post's image to show.
+ * If `true`, a smaller, fitted thumbnail is used. If `false`, a larger, cropped image is displayed.
  */
 @Composable
 fun HorizontalPost(
@@ -176,7 +221,16 @@ fun HorizontalPost(
 }
 
 /**
- * TODO: Add kdoc
+ * A composable that displays a post in a vertical layout.
+ *
+ * This layout is ideal for narrow widgets where the width is constrained. It shows a full-width
+ * image at the top, followed by the post's title, metadata, and a bookmark button below.
+ *
+ * @param post The post to display.
+ * @param bookmarks A set of bookmarked post IDs, used to determine the state of the bookmark button.
+ * @param onToggleBookmark A lambda function to be invoked when the bookmark button is clicked. It
+ * receives the post's ID.
+ * @param modifier A [GlanceModifier] to be applied to the root Column of the composable.
  */
 @Composable
 fun VerticalPost(
@@ -212,7 +266,14 @@ fun VerticalPost(
 }
 
 /**
- * TODO: Add kdoc
+ * A composable function that displays a bookmark icon button. The icon changes state
+ * (filled or outlined) based on whether the post is bookmarked.
+ *
+ * @param id The unique identifier of the post associated with this bookmark button.
+ * @param isBookmarked A boolean indicating if the post is currently bookmarked. This determines
+ * which icon is displayed.
+ * @param onToggleBookmark A lambda function that is invoked when the button is clicked. It
+ * passes the post's [id] to handle the bookmarking logic.
  */
 @Composable
 fun BookmarkButton(id: String, isBookmarked: Boolean, onToggleBookmark: (String) -> Unit) {
@@ -231,7 +292,14 @@ fun BookmarkButton(id: String, isBookmarked: Boolean, onToggleBookmark: (String)
 }
 
 /**
- * TODO: Add kdoc
+ * A composable that displays an image for a post, with a default corner radius.
+ *
+ * This is a simple wrapper around the Glance [Image] composable that applies a corner radius
+ * and loads the image from a drawable resource.
+ *
+ * @param imageId The resource ID of the drawable to be displayed.
+ * @param contentScale The scaling strategy to use for the image. Defaults to [ContentScale.Crop].
+ * @param modifier A [GlanceModifier] to be applied to the image. Defaults to an empty modifier.
  */
 @Composable
 fun PostImage(
@@ -248,7 +316,13 @@ fun PostImage(
 }
 
 /**
- * TODO: Add kdoc
+ * A composable that displays the title and metadata of a post in a vertical column.
+ *
+ * @param title The main title of the post. It is displayed with a larger font and can span up
+ * to three lines.
+ * @param metadata A string containing secondary information about the post, such as the author
+ * and read time. It is displayed below the title with a smaller font.
+ * @param modifier A [GlanceModifier] to be applied to the root [Column] of the composable.
  */
 @Composable
 fun PostDescription(title: String, metadata: String, modifier: GlanceModifier) {

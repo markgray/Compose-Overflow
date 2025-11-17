@@ -46,11 +46,17 @@ fun Divider(
     )
 }
 
-/** Default values for [Divider] */
+/**
+ * Default values for [Divider]
+ */
 object DividerDefaults {
-    /** Default thickness of a divider. */
+    /**
+     * Default thickness of a divider.
+     */
     val Thickness: Dp = 1.dp
 
-    /** Default color of a divider. */
+    /**
+     * Default color of a divider.
+     */
     val color: ColorProvider @Composable get() = JetnewsGlanceColorScheme.outlineVariant
 }

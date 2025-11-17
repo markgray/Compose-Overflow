@@ -21,8 +21,14 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import com.example.jetnews.glance.ui.JetnewsGlanceAppWidget
 
 /**
- * TODO: Add kdoc
+ * Glance App Widget receiver for the Jetnews app.
+ *
+ * This class is the entry point for the app widget, responsible for handling widget updates and
+ * other lifecycle events. It provides an instance of [JetnewsGlanceAppWidget] to the system.
  */
 class JetnewsGlanceAppWidgetReceiver : GlanceAppWidgetReceiver() {
+    /**
+     * The [GlanceAppWidget] that defines the content of the widget.
+     */
     override val glanceAppWidget: GlanceAppWidget = JetnewsGlanceAppWidget()
 }

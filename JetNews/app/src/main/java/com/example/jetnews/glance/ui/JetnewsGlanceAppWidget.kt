@@ -61,11 +61,36 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * TODO: Add kdoc
+ * Glance app widget that displays the latest Jetnews posts.
+ *
+ * When the widget is added to the home screen, it will be able to display a list of posts
+ * directly without having to open the app. The user can also toggle bookmarks from the widget.
+ *
+ * The widget is responsive to the size it is allocated, displaying a single column of posts
+ * in smaller sizes and a two-column layout in larger sizes.
  */
 class JetnewsGlanceAppWidget : GlanceAppWidget() {
+    /**
+     * Define a fixed size for this widget.
+     */
     override val sizeMode: SizeMode = SizeMode.Exact
 
+    /**
+     * Called by the App Widget Host to build the Glance-based App Widget. This function is
+     * responsible for loading the necessary data and providing the composable content of
+     * the widget.
+     *
+     * It fetches the initial posts feed and bookmarked posts from the [PostsRepository]. This data
+     * is then observed as a [State] within the `provideContent` block, allowing the widget to
+     * automatically update its UI when the underlying data changes.
+     *
+     * The UI is composed by the [JetnewsContent] composable, which is wrapped in a [GlanceTheme]
+     * to provide a consistent color scheme. A custom color scheme is used for SDK versions older
+     * than S, where dynamic colors are not available.
+     *
+     * @param context The application context.
+     * @param id The unique identifier for this widget instance.
+     */
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val application = context.applicationContext as JetnewsApplication
         val postsRepository: PostsRepository = application.container.postsRepository
@@ -105,6 +130,13 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
         }
     }
 
+    /**
+     * The content of the Jetnews App Widget.
+     *
+     * @param posts The list of posts to display.
+     * @param bookmarks A set of bookmarked post IDs.
+     * @param onToggleBookmark A lambda to be invoked when the user toggles a bookmark.
+     */
     @Composable
     private fun JetnewsContent(
         posts: List<Post>,
@@ -131,7 +163,12 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
     }
 
     /**
-     * TODO: Add kdoc
+     * A composable function that displays the header of the Jetnews app widget.
+     *
+     * This header contains the Jetnews logo and wordmark, centered horizontally. It provides a
+     * consistent branding element at the top of the widget's layout.
+     *
+     * @param modifier The [GlanceModifier] to be applied to the header layout.
      */
     @Composable
     fun Header(modifier: GlanceModifier) {
@@ -157,7 +194,18 @@ class JetnewsGlanceAppWidget : GlanceAppWidget() {
     }
 
     /**
-     * TODO: Add kdoc
+     * The main content of the widget, which displays a list of posts.
+     *
+     * This composable uses a [LazyColumn] to efficiently display a potentially long list of posts.
+     * The layout of each post item is determined by the available size, switching between a more
+     * detailed view for larger areas and a more compact one for smaller areas.
+     *
+     * @param modifier The modifier to be applied to the lazy column.
+     * @param posts The list of [Post]s to display.
+     * @param bookmarks A set of bookmarked post IDs, used to show the correct bookmark state for
+     * each post.
+     * @param onToggleBookmark A lambda function to be invoked when the user taps the bookmark icon
+     * on a post.
      */
     @Composable
     fun Body(

@@ -20,15 +20,22 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.text.TextStyle
 
 /**
- * TODO: Add kdoc
+ * A collection of [TextStyle]s for the Jetnews Glance widget.
+ *
+ * These styles are simplified versions of the main app's typography, suitable for the constraints
+ * of a Glance widget.
  */
 object JetnewsGlanceTextStyles {
     /**
-     * TODO: Add kdoc
+     * The largest body style.
+     *
+     * This is used for the main text of a story.
      */
     val bodyLarge: TextStyle = TextStyle(fontSize = 16.sp)
+    
     /**
-     * TODO: Add kdoc
+     * A small-sized text style for body content, typically used for metadata, captions, or less
+     * important information.
      */
     val bodySmall: TextStyle = TextStyle(fontSize = 12.sp)
 }
