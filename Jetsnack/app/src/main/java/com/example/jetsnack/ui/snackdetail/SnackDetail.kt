@@ -401,7 +401,7 @@ fun SnackDetail(
  * [snackDetailBoundsTransform], the `enter` argument is a [fadeIn] whose `animationSpec` argument is
  * our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring], the `exit` argument is a [fadeOut]
  * whose `animationSpec` is our [FiniteAnimationSpec] property [nonSpatialExpressiveSpring], and the
- * `resizeMode` argument is [SharedTransitionScope.ResizeMode.ScaleToBounds] (will measure the child
+ * `resizeMode` argument is [SharedTransitionScope.ResizeMode.scaleToBounds] (will measure the child
  * layout with lookahead constraints to obtain the size of the stable layout. This stable layout is
  * the post-animation layout of the child. The default [ContentScale] of [ContentScale.FillWidth] will
  * be used to calculate a scale for both width and height. The resulting effect is that the child
@@ -463,7 +463,7 @@ private fun Header(snackId: Long, origin: String) {
                     boundsTransform = snackDetailBoundsTransform,
                     enter = fadeIn(nonSpatialExpressiveSpring()),
                     exit = fadeOut(nonSpatialExpressiveSpring()),
-                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds()
                 )
                 .height(height = 280.dp)
                 .fillMaxWidth()

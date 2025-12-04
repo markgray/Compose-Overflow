@@ -411,7 +411,7 @@ private fun Snacks(
  *  [AnimatedVisibilityScope] variable `animatedVisibilityScope`, its [EnterTransition] argument `enter`
  *  is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring] spring, its [ExitTransition]
  *  argument `exit` is a [fadeOut] whose `animationSpec` is our [nonSpatialExpressiveSpring] spring,
- *  its [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale the stable
+ *  its [ResizeMode] argument `resizeMode` is a [ResizeMode.scaleToBounds] (will scale the stable
  *  layout based on the animated size), and its `boundsTransform` argument is our global
  *  [BoundsTransform] property [snackDetailBoundsTransform].
  *
@@ -490,7 +490,7 @@ fun SnackItem(
                             animatedVisibilityScope = animatedVisibilityScope,
                             enter = fadeIn(animationSpec = nonSpatialExpressiveSpring()),
                             exit = fadeOut(animationSpec = nonSpatialExpressiveSpring()),
-                            resizeMode = ResizeMode.ScaleToBounds(),
+                            resizeMode = ResizeMode.scaleToBounds(),
                             boundsTransform = snackDetailBoundsTransform
                         )
                 )
@@ -555,7 +555,7 @@ fun SnackItem(
  *  its [EnterTransition] argument `enter` is a [fadeIn] whose `animationSpec` is our
  *  [nonSpatialExpressiveSpring] spring, its [ExitTransition] argument `exit` is a [fadeOut] whose
  *  `animationSpec` is our [nonSpatialExpressiveSpring] spring, and its [ResizeMode] argument
- *  `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale the stable layout based on the animated
+ *  `resizeMode` is a [ResizeMode.scaleToBounds] (will scale the stable layout based on the animated
  *  size).
  *  - The [SnackImage] on top of this background [Box] has as its `imageRes` argument the [Snack.imageRes]
  *  resource ID of our [Snack] parameter [snack], its `contentDescription` argument is `null`, and its
@@ -588,7 +588,7 @@ fun SnackItem(
  *  its [EnterTransition] argument `enter` is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring]
  *  spring, its [ExitTransition] argument `exit` is a [fadeOut] whose `animationSpec` is our
  *  [nonSpatialExpressiveSpring] spring, its `boundsTransform` argument is our global [BoundsTransform]
- *  property, and ts [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale
+ *  property, and ts [ResizeMode] argument `resizeMode` is a [ResizeMode.scaleToBounds] (will scale
  *  the stable layout based on the animated size), and at the end of the [Modifier] chain is a
  *  [Modifier.wrapContentWidth] that allows the [Text] to measure at its desired width without regard
  *  for the incoming minimum width constraint.
@@ -607,7 +607,7 @@ fun SnackItem(
  *  its [EnterTransition] argument `enter` is a [fadeIn] whose `animationSpec` is our [nonSpatialExpressiveSpring]
  *  spring, its [ExitTransition] argument `exit` is a [fadeOut] whose `animationSpec` is our
  *  [nonSpatialExpressiveSpring] spring, its `boundsTransform` argument is our global [BoundsTransform]
- *  property, and ts [ResizeMode] argument `resizeMode` is a [ResizeMode.ScaleToBounds] (will scale
+ *  property, and ts [ResizeMode] argument `resizeMode` is a [ResizeMode.scaleToBounds] (will scale
  *  the stable layout based on the animated size), and at the end of the [Modifier] chain is a
  *  [Modifier.wrapContentWidth] that allows the [Text] to measure at its desired width without regard
  *  for the incoming minimum width constraint.
@@ -714,7 +714,7 @@ private fun HighlightSnackItem(
                                 boundsTransform = snackDetailBoundsTransform,
                                 enter = fadeIn(nonSpatialExpressiveSpring()),
                                 exit = fadeOut(nonSpatialExpressiveSpring()),
-                                resizeMode = ResizeMode.ScaleToBounds()
+                                resizeMode = ResizeMode.scaleToBounds()
                             )
                             .height(height = 100.dp)
                             .fillMaxWidth()
@@ -776,7 +776,7 @@ private fun HighlightSnackItem(
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = ResizeMode.ScaleToBounds()
+                            resizeMode = ResizeMode.scaleToBounds()
                         )
                         .wrapContentWidth()
                 )
@@ -800,7 +800,7 @@ private fun HighlightSnackItem(
                             enter = fadeIn(nonSpatialExpressiveSpring()),
                             exit = fadeOut(nonSpatialExpressiveSpring()),
                             boundsTransform = snackDetailBoundsTransform,
-                            resizeMode = ResizeMode.ScaleToBounds()
+                            resizeMode = ResizeMode.scaleToBounds()
                         )
                         .wrapContentWidth()
                 )
