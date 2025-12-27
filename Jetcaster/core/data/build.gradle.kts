@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -16,6 +19,13 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+            languageVersion.set(KotlinVersion.KOTLIN_2_2) // TODO: Remove this kludge eventually
+            coreLibrariesVersion = "2.2.21" // TODO: Remove this kludge eventually
+        }
+    }
     buildFeatures {
         buildConfig = true
     }

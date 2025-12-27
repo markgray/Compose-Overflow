@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -69,6 +72,13 @@ android {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+            languageVersion.set(KotlinVersion.KOTLIN_2_2) // TODO: Remove this kludge eventually
+            coreLibrariesVersion = "2.2.21" // TODO: Remove this kludge eventually
+        }
     }
 
     buildFeatures {
